@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE uam SYSTEM "src/main/resources/dtd/uam.dtd">
+<uam>
+	<stations>
+		<station name="origin A" id="00" landingcap="100" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_00_ga-uam_st_00_fa" />
+		<station name="origin B" id="01" landingcap="100" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_01_ga-uam_st_01_fa" />
+		<station name="destination A" id="04" landingcap="100" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_04_ga-uam_st_04_fa" />
+		<station name="destination B" id="05" landingcap="100" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_05_ga-uam_st_05_fa" />
+	</stations>
+	<vehicleTypes>
+		<vehicleType id="MC1" capacity="2" cruisespeed="42" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300" />
+		<vehicleType id="MC2" capacity="2" cruisespeed="42" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300" />
+		<vehicleType id="MC3" capacity="2" cruisespeed="42" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300" />
+	</vehicleTypes>
+	<vehicles>
+		<vehicle id="uam_vh_00-00" type="MC1" starttime="00:00:00" endtime="24:00:00"  initialstation="00" />
+		<vehicle id="uam_vh_00-01" type="MC2" starttime="00:00:00" endtime="24:00:00"  initialstation="01" />
+		<vehicle id="uam_vh_00-02" type="MC3" starttime="00:00:00" endtime="24:00:00" initialstation="01" />
+	</vehicles>
+</uam>

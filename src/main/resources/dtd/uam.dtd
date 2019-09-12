@@ -1,0 +1,201 @@
+<?xml encoding="UTF-8"?>
+
+<!-- ============================================================ -->
+
+<!-- For further information or questions, please contact
+     Raoul Rothfeld (RRothfeld) at www.bauhaus-luftfahrt.net -->
+
+<!-- ============================================================ -->
+
+<!ELEMENT uam (stations,vehicleTypes,vehicles)>
+<!ELEMENT stations (station)*>
+<!ELEMENT vehicleTypes (vehicleType)*>
+<!ELEMENT vehicles (vehicle)*>
+
+<!ELEMENT station EMPTY>
+<!ATTLIST station	name 			CDATA	#IMPLIED
+					id				CDATA	#REQUIRED
+					landingcap 		CDATA 	#REQUIRED
+					parkingcap		CDATA	#IMPLIED
+					preflighttime	CDATA	#REQUIRED
+					postflighttime	CDATA	#REQUIRED
+					defaultwaittime	CDATA	#IMPLIED
+					link  			CDATA	#IMPLIED
+					x				CDATA	#IMPLIED
+					y				CDATA	#IMPLIED>
+					
+<!ELEMENT vehicleType EMPTY>
+<!ATTLIST vehicleType	id				CDATA	#REQUIRED
+						capacity		CDATA	#REQUIRED
+						cruisespeed		CDATA	#IMPLIED
+						verticalspeed	CDATA	#IMPLIED
+						turnaroundtime	CDATA	#REQUIRED
+						boardingtime	CDATA	#REQUIRED
+						deboardingtime	CDATA	#REQUIRED>
+
+<!ELEMENT vehicle EMPTY>
+<!ATTLIST vehicle	id				CDATA	#REQUIRED
+					type			CDATA	#REQUIRED
+					length			CDATA	#IMPLIED
+					width	 		CDATA	#IMPLIED
+					range			CDATA	#IMPLIED
+					starttime		CDATA	#REQUIRED
+					endtime			CDATA	#REQUIRED
+					initialstation	CDATA	#REQUIRED>
+
+<!-- ============================================================ -->
+
+<!-- ROOT ELEMENT uam:
+     Hold all the information on the Urban Air Mobility stations and
+     vehicles -->
+     
+<!-- ============================================================ -->
+
+<!-- ELEMENT stations:
+     Holds all the Urban Air Mobility stations. -->
+     
+<!-- ELEMENT vehicleTypes:
+     Holds all the Urban Air Mobility vehicle types. -->
+     
+<!-- ELEMENT vehicles:
+     Holds all the Urban Air Mobility vehicles. -->
+
+<!-- ============================================================ -->
+
+<!-- ELEMENT station:
+     An Urban Air Mobility station. -->
+     
+<!-- ATTRIBUTE name:
+     Each station can be (optionally) provided with a name for easier
+     identification.
+     format := string -->
+
+<!-- ATTRIBUTE id:
+     Each station has to have a unique id.
+     format := string -->
+     
+<!-- ATTRIBUTE landingcap:
+     Each station has to provide the maximum number of spots for
+     simultaneous take-offs or landings.
+     format := unsigned integer -->
+     
+<!-- ATTRIBUTE parkingcap:
+     Each station has to provide the maximum number of spots for
+     simultaneously parked vehicles.
+     status := unimplemented
+     format := unsigned integer -->
+     
+<!-- ATTRIBUTE preflighttime:
+     Each station has to provide the Time needed by the passenger
+     to get from the vertiport and entry to his/her aircraft in 
+     seconds.
+     status := unimplemented
+     format := seconds -->
+     
+<!-- ATTRIBUTE postflighttime:
+     Each station has to provide the Time needed by the passenger
+     after leaving the aircraft to leave the vertiport in seconds.
+     status := unimplemented
+     format := seconds  -->
+     
+<!-- ATTRIBUTE defaultwaittime:
+     An initial average waiting time for passengers at UAM stations can be defined. 
+     This default waiting time is being included in UAM trip duration estimations 
+     when no recorded waiting times are available from previous iterations
+     (e.g. in the first iteration)
+     status := unimplemented
+     format := seconds  -->   
+     
+<!-- ATTRIBUTE link:
+     Each node has to have a connecting link to the network.
+     format := string -->
+<!-- ============================================================ -->
+    
+<!-- ELEMENT vehicleType:
+     A type of Urban Air Mobility vehicle. -->
+
+<!-- ATTRIBUTE id:
+     Each vehicle type has to have a unique id.
+     format := string -->
+          
+<!-- ATTRIBUTE capacity:
+     Each vehicle type has to have a passenger capacity.
+     status := unimplemented
+     format := unsigned integer -->
+     
+<!-- ATTRIBUTE range:
+     Each vehicle type has to have a vehicle range.
+     status := unimplemented
+     format := double
+     units  := meter -->
+     
+<!-- ATTRIBUTE cruisespeed:
+     Each vehicle type has to have a cruise speed during level flight.
+     status := unimplemented
+     format := double
+     units  := meter/second -->
+     
+<!-- ATTRIBUTE verticalspeed:
+     Each vehicle type has to have a vertical speed during take-off and landing.
+     status := unimplemented
+     format := double
+     units  := meter/second -->
+     
+<!-- ATTRIBUTE boardingtime:
+     Each vehicle type has to provide the Time for the passenger to
+     board in the aircraft in seconds.
+     status := unimplemented
+     format := seconds  -->                
+     
+<!-- ATTRIBUTE deboardingtime:
+     Each vehicle type has to provide the Time for the passenger to
+     board off from the aircraft in seconds.
+     status := unimplemented
+     format := seconds  -->                
+     
+<!-- ATTRIBUTE turnaroundtime:
+     Each vehicle type has to provide the Time needed for the 
+     UAM Vehicle to stay unavailable for other trips after
+     landing in seconds.
+     status := unimplemented
+     format := seconds  -->   
+     
+<!-- ============================================================ -->
+    
+<!-- ELEMENT vehicle:
+     An Urban Air Mobility vehicle. -->
+
+<!-- ATTRIBUTE id:
+     Each vehicle has to have a unique id.
+     format := string -->
+     
+<!-- ATTRIBUTE type:
+     Each vehicle has to have a type.
+     format := string -->
+     
+<!-- ATTRIBUTE length:
+     Each vehicle has to have a vehicle length.
+     status := unimplemented
+     format := double
+     units  := meter -->
+    
+<!-- ATTRIBUTE width:
+     Each vehicle has to have a vehicle width.
+     status := unimplemented
+     format := double
+     units  := meter -->
+     
+<!-- ATTRIBUTE starttime:
+     Each vehicle has to have the time of day of first possible vehicle usage.
+     status := unimplemented
+     format := "hh:mm:ss" -->
+     
+<!-- ATTRIBUTE endtime:
+     Each vehicle has to have the time of day of latest vehicle usage ending.
+     status := unimplemented
+     format := "hh:mm:ss" -->
+     
+<!-- ATTRIBUTE initialstation:
+     Each vehicle has to have the id of its base station at which at which it
+     available at the start of the simulation/an iteration.
+     format := string -->

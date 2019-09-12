@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE network SYSTEM "http://www.matsim.org/files/dtd/network_v2.dtd">
+<network name="uam-test-scenario">
+	<nodes>
+		<!--- Road nodes -->
+		<node id="00" x="0" y="0" />
+		<node id="01" x="10" y="0" />
+		<node id="02" x="5010" y="0" />
+		<node id="03" x="5020" y="0" />
+		<node id="04A" x="6020" y="500" />
+		<node id="04B" x="6020" y="-500" />
+		<node id="06A" x="14020" y="500" />
+		<node id="06B" x="14020" y="-500" />
+		<node id="07" x="15020" y="0" />
+		<node id="08" x="15030" y="0" />
+		<node id="09" x="20030" y="0" />
+		<node id="10" x="20040" y="0" />
+
+		<!--- UAM nodes -->
+		<node id="uam_st_00_ga" x="6020" y="500" />
+		<node id="uam_st_00_fa" x="6020" y="500" />
+		<node id="uam_st_00_fl" x="6020" y="500" />
+		<node id="uam_st_01_ga" x="6020" y="-500" />
+		<node id="uam_st_01_fa" x="6020" y="-500" />
+		<node id="uam_st_01_fl" x="6020" y="-500" />
+		<node id="uam_st_02_fl" x="7515" y="0" />
+		<node id="uam_st_03_fl" x="12525" y="0" />
+		<node id="uam_st_04_ga" x="14020" y="500" />
+		<node id="uam_st_04_fa" x="14020" y="500" />
+		<node id="uam_st_04_fl" x="14020" y="500" />
+		<node id="uam_st_05_ga" x="14020" y="-500" />
+		<node id="uam_st_05_fa" x="14020" y="-500" />
+		<node id="uam_st_05_fl" x="14020" y="-500" />
+	</nodes>
+	<links capperiod="01:00:00">
+		<!--- Road links -->
+		<link id="0001" from="00" to="01" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0102" from="01" to="02" length="5000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0203" from="02" to="03" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0304A" from="03" to="04A" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0304B" from="03" to="04B" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="06A07" from="06A" to="07" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="06B07" from="06B" to="07" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0708" from="07" to="08" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0809" from="08" to="09" length="5000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0910" from="09" to="10" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+
+		<link id="0100" to="00" from="01" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0201" to="01" from="02" length="5000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0302" to="02" from="03" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="04A03" to="03" from="04A" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="04B03" to="03" from="04B" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0706A" to="06A" from="07" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0706B" to="06B" from="07" length="1000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0807" to="07" from="08" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="0908" to="08" from="09" length="5000" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+		<link id="1009" to="09" from="10" length="10" modes="car,pt,bus" capacity="600.0" permlanes="1.0" freespeed="16.7" />
+
+		<link id="0307" to="03" from="07" length="99999" modes="car" capacity="1.0" permlanes="1.0" freespeed="1.0" />
+		<link id="0703" from="03" to="07" length="99999" modes="car" capacity="1.0" permlanes="1.0" freespeed="1.0" />
+
+		<!--- UAM station links -->
+		<link id="uam_gl-04A-uam_st_00_ga" from="04A" to="uam_st_00_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_gl-uam_st_00_ga-04A" to="04A" from="uam_st_00_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_sl-uam_st_00_ga-uam_st_00_fa" from="uam_st_00_ga" to="uam_st_00_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_sl-uam_st_00_fa-uam_st_00_ga" to="uam_st_00_ga" from="uam_st_00_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_vl-uam_st_00_fa-uam_st_00_fl" from="uam_st_00_fa" to="uam_st_00_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_vl-uam_st_00_fl-uam_st_00_fa" to="uam_st_00_fa" from="uam_st_00_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_gl-04B-uam_st_01_ga" from="04B" to="uam_st_01_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_gl-uam_st_01_ga-04B" to="04B" from="uam_st_01_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_sl-uam_st_01_ga-uam_st_01_fa" from="uam_st_01_ga" to="uam_st_01_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_sl-uam_st_01_fa-uam_st_01_ga" to="uam_st_01_ga" from="uam_st_01_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_vl-uam_st_01_fa-uam_st_01_fl" from="uam_st_01_fa" to="uam_st_01_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_vl-uam_st_01_fl-uam_st_01_fa" to="uam_st_01_fa" from="uam_st_01_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_gl-06A-uam_st_04_ga" from="06A" to="uam_st_04_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_gl-uam_st_04_ga-06A" to="06A" from="uam_st_04_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_sl-uam_st_04_ga-uam_st_04_fa" from="uam_st_04_ga" to="uam_st_04_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_sl-uam_st_04_fa-uam_st_04_ga" to="uam_st_04_ga" from="uam_st_04_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_vl-uam_st_04_fa-uam_st_04_fl" from="uam_st_04_fa" to="uam_st_04_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_vl-uam_st_04_fl-uam_st_04_fa" to="uam_st_04_fa" from="uam_st_04_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_gl-06B-uam_st_05_ga" from="06B" to="uam_st_05_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_gl-uam_st_05_ga-06B" to="06B" from="uam_st_05_ga" length="1" capacity="600" freespeed="10" permlanes="1" modes="car" />
+		<link id="uam_sl-uam_st_05_ga-uam_st_05_fa" from="uam_st_05_ga" to="uam_st_05_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_sl-uam_st_05_fa-uam_st_05_ga" to="uam_st_05_ga" from="uam_st_05_fa" length="1" capacity="600" freespeed="100" permlanes="1" modes="car,uam" />
+		<link id="uam_vl-uam_st_05_fa-uam_st_05_fl" from="uam_st_05_fa" to="uam_st_05_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_vl-uam_st_05_fl-uam_st_05_fa" to="uam_st_05_fa" from="uam_st_05_fl" length="0" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+
+		<!--- UAM flight links -->
+		<!--<link id="uam_hl-uam_st_00_fl-uam_st_04_fl" from="uam_st_00_fl" to="uam_st_04_fl" length="8000" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_04_fl-uam_st_00_fl" to="uam_st_00_fl" from="uam_st_04_fl" length="8000" capacity="100" freespeed="42" permlanes="1" modes="uam" />-->
+		<link id="uam_hl-uam_st_00_fl-uam_st_02_fl" from="uam_st_00_fl" to="uam_st_02_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_02_fl-uam_st_00_fl" to="uam_st_00_fl" from="uam_st_02_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<!--<link id="uam_hl-uam_st_01_fl-uam_st_05_fl" from="uam_st_01_fl" to="uam_st_05_fl" length="8000" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_05_fl-uam_st_01_fl" to="uam_st_01_fl" from="uam_st_05_fl" length="8000" capacity="100" freespeed="42" permlanes="1" modes="uam" />-->
+		<link id="uam_hl-uam_st_01_fl-uam_st_02_fl" from="uam_st_01_fl" to="uam_st_02_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_02_fl-uam_st_01_fl" to="uam_st_01_fl" from="uam_st_02_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_02_fl-uam_st_03_fl" from="uam_st_02_fl" to="uam_st_03_fl" length="5010" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_03_fl-uam_st_02_fl" to="uam_st_02_fl" from="uam_st_03_fl" length="5010" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_03_fl-uam_st_04_fl" from="uam_st_03_fl" to="uam_st_04_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_04_fl-uam_st_03_fl" to="uam_st_03_fl" from="uam_st_04_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_03_fl-uam_st_05_fl" from="uam_st_03_fl" to="uam_st_05_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+		<link id="uam_hl-uam_st_05_fl-uam_st_03_fl" to="uam_st_03_fl" from="uam_st_05_fl" length="1576.396206542" capacity="100" freespeed="42" permlanes="1" modes="uam" />
+	</links>
+</network>
