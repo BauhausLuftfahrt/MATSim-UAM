@@ -9,8 +9,7 @@ See [DOCUMENTATION](https://github.com/RRothfeld/uam-extension/blob/master/DOCUM
 ## Versions and Change Log
 
 ### v1
-- Features:
-# TODO
+- Features: //TODO
 
 ## Publications
 The following list provides a reverse-chronological overview of publications related to or based on or related to the UAM-Extension:
