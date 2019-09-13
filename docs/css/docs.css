@@ -1,0 +1,29 @@
+/* Justify text blocks */
+p { text-align: justify; }
+
+/* Make comments look more like comments */
+pre comment { color: gray; }
+
+/* Highlight design */
+hi { color: MediumSeaGreen;}
+
+/* restrict content width */
+.container { max-width: 900px; }
+
+/* space out API boxes */
+.row { margin-top: 10px; }
+
+/* space out sections */
+h2 { margin-top: 60px; padding-bottom: 2px; border-bottom: 1px solid Gainsboro;}
+
+/* Align paragraphs with code boxes */
+p { padding-left: 3px; padding-right: 3px; }
+
+/* Allow for readable breaking of headers on small screens */
+.breakpoint { display: inline-block;}
+
+/* Separate font awesome icons from text */
+i.fa { padding-right: 5px; }
+
+/* Underline links when hovering to increase the difference with highlights */
+a:hover { text-decoration: underline; }
