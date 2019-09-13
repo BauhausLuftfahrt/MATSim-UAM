@@ -6,6 +6,22 @@ This extension enhances MATSim (see the project's [Website](https://www.matsim.o
 ## Installation and Usage
 See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md).
 
+Add to pom.xml:
+```xml
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+        ...
+
+        <dependency>
+            <groupId>com.github.BauhausLuftfahrt</groupId>
+            <artifactId>MATSim-UAM</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+```
+
 ## Versions and Change Log
 
 ### v1
