@@ -1,4 +1,0 @@
-theme: jekyll-theme-cayman
-title: MATSim-UAM
-description: Extension for MATSim to allow for the inclusion of aerial mobility vehicles, i.e. a station- and network-bound mode that requires station access and egress trips with convetional modes.
-show_downloads: "true"
