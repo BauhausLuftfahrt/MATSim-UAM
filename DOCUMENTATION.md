@@ -1,4 +1,3 @@
-
 # UAM-MATSim Input Files
 * UAM-MATSim Version: uam-1.0-SNAPSHOT
 
@@ -36,7 +35,7 @@ A UAM-enabled MATSim network is required to run a UAM-enabled MATSim simulation.
 Use [RunCreateUAMScenario](#runcreateuamscenario) to generate UAM-enabled MATSim network.
 
 ## 2. UAM Vehicles
-A UAM vehicles file is required to run a UAM-enabled MATSim simulation. As shown in the script excerpt below, a UAM vehicles file contains attribute values for stations, vehicle types, and vehicles.
+A UAM vehicles file (or simply, uam file) is required to run a UAM-enabled MATSim simulation. As shown in the script excerpt below, a UAM vehicles file contains attribute values for stations, vehicle types, and vehicles.
 
 Use [RunCreateUAMScenario](#runcreateuamscenario) to generate UAM vehicles file.
 ### Structure
@@ -131,7 +130,7 @@ Creates UAM-including MATSim network and corresponding uam-vehicles file, which 
 	* (optional) flight-links.csv header [format]: node_from [`String`], node_to [`String`], link_capacity [`double`], link_freespeed [`double` m/s]
 
 ### RunAddModeToNetwork
-(**???**) Adds a specified mode to an existing network if another specified mode is present. (**???**)
+Adds specified mode(s) to an existing network if other specified mode(s) is (are) present.
 * Location: net.bhl.matsim.uam.scenario.utils.network.RunAddModeToNetwork
 * Arguments: `PATH/network.xml(.gz)`
 
@@ -155,7 +154,10 @@ Generates a shape file of a given network in MATSim format.
 ### ConfigAddUAMParameters
 Adds UAM parameters to an existing configuration file
 * Location: net.bhl.matsim.uam.scenario.utils
-* Arguments: TODO
+* Arguments: `PATH/config.xml NAME-uam-file(.xml) allowed-modes threads search-radius walk-distance routing-strategy pt-simulation PATH/output-file.xml`
+	* allowed-modes example: `car,pt,uam`
+	* Possible routing strategies: `MAXUTILITY`, `MAXACCESSUTILITY`, `MINTRAVELTIME`, `MINACCESSTRAVELTIME`, `MINDISTANCE`, `MINACCESSDISTANCE`, `PREDEFINED`
+	* pt-simulation: `true`, `false`
 
 ## 3. Analysis Scripts
 ### RunCalculatePTTravelTimes
