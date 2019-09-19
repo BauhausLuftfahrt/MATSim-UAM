@@ -8,6 +8,11 @@ import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+* This script takes a specific folder path and runs {@link ConvertTripsFromPopulation} for all MATSim output folders within the provided base folder.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class BatchConvertTripsFromPopulation {
 	// PROVIDE PARENT FOLDER OF OUTPUT FOLDERS
 	private static String eventfile = "output_plans.xml";

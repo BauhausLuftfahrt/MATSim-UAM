@@ -6,6 +6,11 @@ import org.matsim.api.core.v01.population.Person;
 
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
+/**
+* This class stores information about a UAM trip.
+* 
+* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+*/
 public class UAMDemandItem {
 	public Id<Person> personId;
 	public Coord origin;

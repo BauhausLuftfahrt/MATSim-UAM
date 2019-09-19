@@ -1,6 +1,8 @@
 package net.bhl.matsim.uam.analysis.traffic.run;
 
 import java.io.File;
+
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -8,6 +10,12 @@ import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+* This script takes a specific folder path and runs {@link ConvertLinkStatsFromEvents} for all
+* all MATSim output folders within the provided base folder.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class BatchConvertLinkStatsFromEvents {
 	// PROVIDE PARENT FOLDER OF OUTPUT FOLDERS
 	private static String eventfile = "output_events.xml";

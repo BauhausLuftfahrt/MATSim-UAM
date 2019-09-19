@@ -30,6 +30,11 @@ import org.matsim.core.utils.geometry.CoordUtils;
 import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
 import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
 
+/**
+* A listener that retrieves information from transit events.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class TransitTripListener
 		implements ActivityStartEventHandler, ActivityEndEventHandler, PersonDepartureEventHandler,
 		PersonArrivalEventHandler, GenericEventHandler, TeleportationArrivalEventHandler, PersonStuckEventHandler {

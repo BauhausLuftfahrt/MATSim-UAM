@@ -8,6 +8,13 @@ import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
 
+import net.bhl.matsim.uam.analysis.uamdemand.run.ConvertUAMDemandFromEvents;
+
+/**
+* This script takes a specific folder path and runs {@link ConvertUAMStationsFromUAMVehicles} for all MATSim output folders within the provided base folder.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class BatchConvertUAMStationsFromUAMVehicles {
 	// PROVIDE PARENT FOLDER OF OUTPUT FOLDERS
 	private static String vehiclefile = "output_uam_vehicles.xml";

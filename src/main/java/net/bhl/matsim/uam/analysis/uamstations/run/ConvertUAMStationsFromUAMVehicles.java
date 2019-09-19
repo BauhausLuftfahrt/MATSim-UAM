@@ -34,7 +34,7 @@ import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
  * -UAM Vehicles file
  * -output file;
  *
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 
 public class ConvertUAMStationsFromUAMVehicles {

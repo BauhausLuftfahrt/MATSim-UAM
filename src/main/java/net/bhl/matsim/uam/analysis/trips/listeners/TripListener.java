@@ -37,6 +37,11 @@ import org.matsim.vehicles.Vehicle;
 import net.bhl.matsim.uam.analysis.trips.TripItem;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 
+/**
+* A listener that retrieves information from trip events.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class TripListener implements ActivityStartEventHandler, ActivityEndEventHandler, PersonDepartureEventHandler,
 		PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, LinkEnterEventHandler,
 		PersonStuckEventHandler, TeleportationArrivalEventHandler {

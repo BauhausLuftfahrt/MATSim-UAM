@@ -20,6 +20,15 @@ import org.matsim.vehicles.Vehicle;
 import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
 import net.bhl.matsim.uam.analysis.trips.listeners.DeckGLTripListener;
 
+/**
+ * This script convert events file to deck.gl-readable trips input file.
+ * Necessary inputs are in the following order:
+ * -Network file; -Events file;
+ * Optional inputs:
+ * -EPSG:EPSG-code (Example: EPSG:2154)
+ *
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class ConvertDeckGLTripsFromEvents {
 	
 	private static String inCRS = "EPSG:2154";

@@ -14,6 +14,11 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+/**
+* This class stores information about a trip for deck.gl format.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class DeckGLTripItem {
 	public Coord location;
 	public long time;

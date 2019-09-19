@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
 
+/**
+* This class writes a CSV file containing information about trips performed by transit.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class CSVTransitTripWriter {
 	final private Collection<TransitTripItem> trips;
 	final private String delimiter;

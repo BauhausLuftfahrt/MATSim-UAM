@@ -24,6 +24,11 @@ import org.matsim.core.utils.geometry.CoordUtils;
 import net.bhl.matsim.uam.analysis.trips.TripItem;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 
+/**
+ * A reader for trips based on a population file (plans file).
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class PopulationTripReader {
 	final private Network network;
 	final private StageActivityTypes stageActivityTypes;

@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+/**
+* This class writes a CSV file containing information of links for different times.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class CSVLinkStatsWriter {
 	final private Collection<LinkStatsItem> links;
 	final private String delimiter;

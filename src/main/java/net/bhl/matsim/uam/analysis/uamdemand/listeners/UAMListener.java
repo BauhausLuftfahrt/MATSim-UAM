@@ -34,6 +34,11 @@ import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 
+/**
+* A listener that retrieves information from UAMtrip events.
+* 
+* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+*/
 public class UAMListener implements ActivityStartEventHandler, PersonDepartureEventHandler, PersonArrivalEventHandler,
 PersonEntersVehicleEventHandler{
 	final private StageActivityTypes stageActivityTypes;

@@ -16,6 +16,11 @@ import org.matsim.vehicles.Vehicle;
 
 import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
 
+/**
+* A listener that retrieves information from trip events and stores in <{@link DeckGLTripItem} format.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEventHandler {
 	final private Map<Id<Vehicle>, List<DeckGLTripItem>> deckGLTrips;
 	final private Network network;

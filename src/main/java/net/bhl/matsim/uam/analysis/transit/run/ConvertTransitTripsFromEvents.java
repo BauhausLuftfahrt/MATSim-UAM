@@ -22,6 +22,8 @@ import net.bhl.matsim.uam.analysis.transit.readers.EventsTransitTripReader;
 * -Network file;
 * -Events file;
 * -output file;
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
 */
 
 public class ConvertTransitTripsFromEvents {

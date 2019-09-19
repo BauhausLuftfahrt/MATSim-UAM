@@ -22,10 +22,18 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.households.Household;
 import org.matsim.households.HouseholdsReaderV10;
 
+/**
+ * This script Creates a demographics file by reading through and gathering
+ * socio-demographic attributes from each person object in an existing
+ * population (or plan) file. Necessary inputs are in the following order: -plans
+ * file; -households file; -output file
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class ConvertDemographicsFromPopulation {
 
 	public static void main(String[] args) throws IOException {
-		//cmd-line input: input-population input-households outfile
+		// cmd-line input: input-population input-households outfile
 		Scenario scenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
 
 		int i = 0;
@@ -37,93 +45,93 @@ public class ConvertDemographicsFromPopulation {
 		for (Household household : scenario.getHouseholds().getHouseholds().values()) {
 			household.getMemberIds().forEach(id -> householdMap.put(id, household.getId()));
 		}
-		
+
 		Set<String> columns = new HashSet<String>();
 		Set<Map<String, String>> population = new HashSet<Map<String, String>>();
 		for (Person person : scenario.getPopulation().getPersons().values()) {
 			Map<String, String> personAttrMap = new HashMap<String, String>();
-			
+
 			personAttrMap.put("ID", person.getId().toString());
 			columns.add("ID");
-			
-			String[] attributePairs = person.getAttributes().toString().split("[{}]+");			
+
+			String[] attributePairs = person.getAttributes().toString().split("[{}]+");
 			for (String attributePair : attributePairs) {
 				if (attributePair.isEmpty())
 					continue;
-				
+
 				String[] extracts = attributePair.split("[;=]+");
 				// e.g. key age object 39
 				columns.add(extracts[1].trim());
 				personAttrMap.put(extracts[1].trim(), extracts[3].trim());
 			}
-			
+
 			Household household = scenario.getHouseholds().getHouseholds().get(householdMap.get(person.getId()));
-			
+
 			if (household != null) {
 				personAttrMap.put("household_ID", household.getId().toString());
 				columns.add("household_ID");
-				
+
 				personAttrMap.put("household_income", "" + household.getIncome().getIncome());
 				columns.add("household_income");
-				
+
 				personAttrMap.put("household_currency", household.getIncome().getCurrency());
 				columns.add("household_currency");
-				
+
 				personAttrMap.put("household_incomePeriod", household.getIncome().getIncomePeriod().toString());
 				columns.add("household_incomePeriod");
 
-				String[] hhAttributePairs = household.getAttributes().toString().split("[{}]+");			
+				String[] hhAttributePairs = household.getAttributes().toString().split("[{}]+");
 				for (String hhAttributePair : hhAttributePairs) {
 					if (hhAttributePair.isEmpty())
 						continue;
-					
+
 					String[] extracts = hhAttributePair.split("[;=]+");
 					// e.g. key age object 39
 					columns.add("household_" + extracts[1].trim());
 					personAttrMap.put("household_" + extracts[1].trim(), extracts[3].trim());
 				}
 			}
-			
+
 			population.add(personAttrMap);
 		}
-		
+
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile)));
-		
+
 		// Make columns into ordered list, write header
 		List<String> columnList = new ArrayList<String>();
 		columnList.addAll(columns);
 		Collections.sort(columnList);
 		System.out.println(columnList);
-		
+
 		boolean first = true;
 		for (Map<String, String> personAttrMap : population) {
 			if (first) {
 				first = false;
-				
+
 				for (Iterator<String> it = columnList.iterator(); it.hasNext();) {
-				    writer.write(it.next());
-				    
-				    if (it.hasNext())
-				    	writer.write(",");
-				    else
-				    	writer.write(System.lineSeparator());
+					writer.write(it.next());
+
+					if (it.hasNext())
+						writer.write(",");
+					else
+						writer.write(System.lineSeparator());
 				}
 			}
-			
+
 			for (Iterator<String> it = columnList.iterator(); it.hasNext();) {
 				String key = it.next();
 				if (personAttrMap.containsKey(key))
 					writer.write(personAttrMap.get(key));
-			    
-			    if (it.hasNext())
-			    	writer.write(",");
-			    else
-			    	writer.write(System.lineSeparator());
+
+				if (it.hasNext())
+					writer.write(",");
+				else
+					writer.write(System.lineSeparator());
 			}
 		}
-		
+
 		writer.close();
-		
+
 		System.out.println("done.");
 	}
 }

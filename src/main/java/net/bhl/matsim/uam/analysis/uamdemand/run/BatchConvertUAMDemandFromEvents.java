@@ -8,6 +8,13 @@ import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
 
+import net.bhl.matsim.uam.analysis.trips.run.ConvertTripsFromEvents;
+
+/**
+* This script takes a specific folder path and runs {@link ConvertUAMDemandFromEvents} for all MATSim output folders within the provided base folder.
+* 
+* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+*/
 public class BatchConvertUAMDemandFromEvents {
 	// PROVIDE PARENT FOLDER OF OUTPUT FOLDERS
 	private static String eventfile = "output_events.xml";
