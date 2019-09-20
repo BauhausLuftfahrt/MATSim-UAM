@@ -30,78 +30,74 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This script generates a CSV file containing the distance, travel time and utility between UAM stations.
- * Necessary inputs are in the following order:
+ * This script generates a CSV file containing the distance, travel time and
+ * utility between UAM stations. Necessary inputs are in the following order:
  * -Network file; -UAMVehicles file; -output file;
  *
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RunCalculateUAMRoutes {
 
-    static private Map<Id<UAMStation>, UAMStation> stations;
-    static private UAMStationConnectionGraph uamSCG;
-    static final private String delimiter = ",";
+	static private Map<Id<UAMStation>, UAMStation> stations;
+	static private UAMStationConnectionGraph uamSCG;
+	static final private String delimiter = ",";
 
-    static public void main(String[] args) throws IOException {
-        // PROVIDE: NETWORK UAMVEHICLES OUTFILE-NAME
-        extract(args[0], args[1], args[2]);
-        System.out.println("done.");
-    }
+	static public void main(String[] args) throws IOException {
+		// PROVIDE: NETWORK UAMVEHICLES OUTFILE-NAME
+		extract(args[0], args[1], args[2]);
+		System.out.println("done.");
+	}
 
-    static public void extract(String networkString, String uamVehicles, String outfile) throws IOException {
-        Config config = ConfigUtils.createConfig();
-        config.network().setInputFile(networkString);
-        Network network = NetworkUtils.createNetwork();
-        new MatsimNetworkReader(network).readFile(networkString);
+	static public void extract(String networkString, String uamVehicles, String outfile) throws IOException {
+		Config config = ConfigUtils.createConfig();
+		config.network().setInputFile(networkString);
+		Network network = NetworkUtils.createNetwork();
+		new MatsimNetworkReader(network).readFile(networkString);
 
-        UAMXMLReader uamReader = new UAMXMLReader(network);
-        uamReader.readFile(uamVehicles);
+		UAMXMLReader uamReader = new UAMXMLReader(network);
+		uamReader.readFile(uamVehicles);
 
-        stations = uamReader.getStations();
-        uamSCG = calculateRoutes(network, uamReader);
-        write(outfile);
-    }
+		stations = uamReader.getStations();
+		uamSCG = calculateRoutes(network, uamReader);
+		write(outfile);
+	}
 
-    static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
-        TravelTime tt = new FreeSpeedTravelTime();
-        TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
-                ConfigUtils.createConfig().planCalcScore());
+	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
+		TravelTime tt = new FreeSpeedTravelTime();
+		TravelDisutility td = TravelDisutilityUtils
+				.createFreespeedTravelTimeAndDisutility(ConfigUtils.createConfig().planCalcScore());
 
-        UAMManager uamManager = new UAMManager(network);
-        uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-        uamManager.setVehicles(uamReader.getVehicles());
-        
-        return new UAMStationConnectionGraph(uamManager, null,
-                DefaultParallelLeastCostPathCalculator.create(
-                        Runtime.getRuntime().availableProcessors(),
-                        new DijkstraFactory(),
-                        network, td, tt));
-    }
+		UAMManager uamManager = new UAMManager(network);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+		uamManager.setVehicles(uamReader.getVehicles());
 
-    private static void write(String outputPath) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
-        writer.write(formatHeader() + "\n");
+		return new UAMStationConnectionGraph(uamManager, null, DefaultParallelLeastCostPathCalculator
+				.create(Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), network, td, tt));
+	}
 
-        for (UAMStation stationFrom : stations.values()) {
-            for (UAMStation stationTo : stations.values()) {
-                if (stationFrom.equals(stationTo))
-                    continue;
+	private static void write(String outputPath) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
+		writer.write(formatHeader() + "\n");
 
-                writer.write(String.join(delimiter, new String[] {
-                        String.valueOf(stationFrom.getId()),
-                        String.valueOf(stationTo.getId()),
-                        String.valueOf(uamSCG.getTravelTime(stationFrom.getId(), stationTo.getId())),
-                        String.valueOf(uamSCG.getDistance(stationFrom.getId(), stationTo.getId())),
-                        uamSCG.getUtility(stationFrom.getId(), stationTo.getId()) + "\n"}));
-            }
-        }
+		for (UAMStation stationFrom : stations.values()) {
+			for (UAMStation stationTo : stations.values()) {
+				if (stationFrom.equals(stationTo))
+					continue;
 
-        writer.flush();
-        writer.close();
-    }
+				writer.write(String.join(delimiter,
+						new String[] { String.valueOf(stationFrom.getId()), String.valueOf(stationTo.getId()),
+								String.valueOf(uamSCG.getTravelTime(stationFrom.getId(), stationTo.getId())),
+								String.valueOf(uamSCG.getDistance(stationFrom.getId(), stationTo.getId())),
+								uamSCG.getUtility(stationFrom.getId(), stationTo.getId()) + "\n" }));
+			}
+		}
 
-    private static String formatHeader() {
-        return String.join(delimiter,
-                new String[] { "station_from", "station_to", "travel_time_s", "travel_distance_m", "travel_utility"});
-    }
+		writer.flush();
+		writer.close();
+	}
+
+	private static String formatHeader() {
+		return String.join(delimiter,
+				new String[] { "station_from", "station_to", "travel_time_s", "travel_distance_m", "travel_utility" });
+	}
 }

@@ -15,10 +15,10 @@ import org.opengis.referencing.operation.TransformException;
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**
-* This class stores information about a trip for deck.gl format.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This class stores information about a trip for deck.gl format.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class DeckGLTripItem {
 	public Coord location;
 	public long time;
@@ -27,7 +27,7 @@ public class DeckGLTripItem {
 	public DeckGLTripItem(Coord location, long time) {
 		this(location, time, 0);
 	}
-	
+
 	public DeckGLTripItem(Coord location, long time, long timeShift) {
 		this.location = location;
 		this.time = time;
@@ -38,10 +38,10 @@ public class DeckGLTripItem {
 	public String toString() {
 		return "[" + location.getX() + "," + location.getY() + "," + time + "]";
 	}
-	
+
 	public String convert(String inputEPSGCode, String outputEPSGCode, long timeMultiplier) {
 		Coordinate convertedSource = null;
-		
+
 		CoordinateReferenceSystem crsIn = null;
 		CoordinateReferenceSystem crsOut = null;
 		try {
@@ -50,7 +50,7 @@ public class DeckGLTripItem {
 			MathTransform transform = CRS.findMathTransform(crsIn, crsOut);
 			Coordinate source = new Coordinate(location.getX(), location.getY());
 			convertedSource = JTS.transform(source, null, transform);
-			
+
 		} catch (IllegalArgumentException e) {
 			System.err.println("Old geotools version is not compatible with Java 9");
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class DeckGLTripItem {
 		} catch (TransformException e) {
 			e.printStackTrace();
 		}
-		
+
 		return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
 	}
 }

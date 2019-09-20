@@ -8,10 +8,10 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
-* This class writes a CSV file containing UAM Stations data.
-* 
-* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
-*/
+ * This class writes a CSV file containing UAM Stations data.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class CSVUAMStationWriter {
 	final private HashSet<UAMStationItem> uamStations;
 	final private String delimiter;

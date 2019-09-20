@@ -18,11 +18,11 @@ import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
  */
 public class EventsUAMReader {
 	final private UAMListener uamListener;
-	
+
 	public EventsUAMReader(UAMListener uamListener) {
 		this.uamListener = uamListener;
 	}
-	
+
 	/**
 	 * @param eventsPath the events file path
 	 * @return A collection of {@link UAMDemandItem}.

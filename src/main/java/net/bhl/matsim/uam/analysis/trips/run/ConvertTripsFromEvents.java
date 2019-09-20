@@ -23,11 +23,11 @@ import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 
 /**
- * This script creates a trips file by reading through and gathering trip information from an existing events file.
- * Necessary inputs are in the following order:
- * -Network file; -Events file; -output file;
+ * This script creates a trips file by reading through and gathering trip
+ * information from an existing events file. Necessary inputs are in the
+ * following order: -Network file; -Events file; -output file;
  *
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConvertTripsFromEvents {
 	static public void main(String[] args) throws IOException {

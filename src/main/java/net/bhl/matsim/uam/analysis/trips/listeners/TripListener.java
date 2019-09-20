@@ -38,10 +38,10 @@ import net.bhl.matsim.uam.analysis.trips.TripItem;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 
 /**
-* A listener that retrieves information from trip events.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * A listener that retrieves information from trip events.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class TripListener implements ActivityStartEventHandler, ActivityEndEventHandler, PersonDepartureEventHandler,
 		PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, LinkEnterEventHandler,
 		PersonStuckEventHandler, TeleportationArrivalEventHandler {
@@ -174,9 +174,9 @@ public class TripListener implements ActivityStartEventHandler, ActivityEndEvent
 	}
 
 	private double getNetworkDistance(TripListenerItem trip) {
-		
+
 		// TODO RAOUL CHECK FOR HOW UAM IS DONE HERE
-		
+
 		if (networkRouteModes.contains(mainModeIdentifier.identifyMainMode(trip.elements))) {
 			double distance = 0.0;
 

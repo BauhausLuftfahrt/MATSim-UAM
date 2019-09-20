@@ -26,7 +26,7 @@ public class EventsTransitTripReader {
 	}
 
 	/**
-	 * @param eventsPath the events file path 
+	 * @param eventsPath the events file path
 	 * @return A collection of {@link TransitTripItem}.
 	 */
 	public Collection<TransitTripItem> readTrips(String eventsPath) {

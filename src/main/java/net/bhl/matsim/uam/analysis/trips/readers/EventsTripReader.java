@@ -11,18 +11,18 @@ import net.bhl.matsim.uam.analysis.trips.TripItem;
 import net.bhl.matsim.uam.analysis.trips.listeners.TripListener;
 
 /**
- * This class is used to retrieve the a collection of {@link TripItem} by
- * using a simulation events file as input
+ * This class is used to retrieve the a collection of {@link TripItem} by using
+ * a simulation events file as input
  * 
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class EventsTripReader {
 	final private TripListener tripListener;
-	
+
 	public EventsTripReader(TripListener tripListener) {
 		this.tripListener = tripListener;
 	}
-	
+
 	/**
 	 * @param eventsPath the events file path
 	 * @return A collection of {@link TripItem}.

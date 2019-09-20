@@ -25,8 +25,8 @@ import org.matsim.households.HouseholdsReaderV10;
 /**
  * This script Creates a demographics file by reading through and gathering
  * socio-demographic attributes from each person object in an existing
- * population (or plan) file. Necessary inputs are in the following order: -plans
- * file; -households file; -output file
+ * population (or plan) file. Necessary inputs are in the following order:
+ * -plans file; -households file; -output file
  * 
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */

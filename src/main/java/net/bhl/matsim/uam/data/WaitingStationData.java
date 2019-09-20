@@ -12,8 +12,13 @@ import com.google.inject.Inject;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.WaitingData;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
+/**
+ * Class that stores waiting data of stations.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class WaitingStationData implements BeforeMobsimListener{
 	
 	@Inject

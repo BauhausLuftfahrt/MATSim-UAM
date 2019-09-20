@@ -35,12 +35,12 @@ import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 
 /**
-* A listener that retrieves information from UAMtrip events.
-* 
-* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
-*/
+ * A listener that retrieves information from UAMtrip events.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMListener implements ActivityStartEventHandler, PersonDepartureEventHandler, PersonArrivalEventHandler,
-PersonEntersVehicleEventHandler{
+		PersonEntersVehicleEventHandler {
 	final private StageActivityTypes stageActivityTypes;
 	final private Network network;
 	final private Collection<UAMDemandItem> uamData = new LinkedList<>();
@@ -49,41 +49,42 @@ PersonEntersVehicleEventHandler{
 	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
 	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 	UAMXMLReader uamReader;
-	final private UAMStations uamStations; 
+	final private UAMStations uamStations;
 	final private Map<Id<org.matsim.contrib.dvrp.data.Vehicle>, UAMVehicle> vehicles;
 	TransportModeNetworkFilter filter;
-	
-	public UAMListener(Network network, String uamConfigFile, StageActivityTypes stageActivityTypes, MainModeIdentifier mainModeIdentifier,
-			Collection<String> networkRouteModes) {
+
+	public UAMListener(Network network, String uamConfigFile, StageActivityTypes stageActivityTypes,
+			MainModeIdentifier mainModeIdentifier, Collection<String> networkRouteModes) {
 		this.network = network;
-		this.stageActivityTypes = stageActivityTypes;	
+		this.stageActivityTypes = stageActivityTypes;
 		Set<String> modes = new HashSet<>();
 		modes.add("uam");
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter = new TransportModeNetworkFilter(this.network);
-		filter.filter(networkUAM, modes);			
+		filter.filter(networkUAM, modes);
 		this.uamReader = new UAMXMLReader(networkUAM);
 		uamReader.readFile(uamConfigFile);
 		this.uamStations = new UAMStations(this.uamReader.getStations(), network);
 		this.vehicles = this.uamReader.getVehicles();
 	}
-	
+
 	@Override
 	public void reset(int iteration) {
 		uamData.clear();
 		ongoing.clear();
 		tempPTData = new ConcurrentHashMap<>();
 	}
-	
+
 	@Override
 	public void handleEvent(PersonDepartureEvent event) {
 		if (event.getLegMode().startsWith("access_uam")) {
-			ongoing.put(event.getPersonId(), new UAMListenerItem(event.getPersonId(), network.getLinks().get(event.getLinkId()).getCoord(),
-					event.getTime(), event.getLegMode()));			
+			ongoing.put(event.getPersonId(), new UAMListenerItem(event.getPersonId(),
+					network.getLinks().get(event.getLinkId()).getCoord(), event.getTime(), event.getLegMode()));
 		} else if (event.getLegMode().startsWith("egress_uam")) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
-			uamData.departureFromStationTime = event.getTime();		
-		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk")|| event.getLegMode().equals("pt")) {
+			uamData.departureFromStationTime = event.getTime();
+		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk")
+				|| event.getLegMode().equals("pt")) {
 			// we need to store the information about the pt trip
 			// in case this becomes an access or an egress uam trip
 			if (!tempPTData.containsKey(event.getPersonId())) {
@@ -93,8 +94,14 @@ PersonEntersVehicleEventHandler{
 				tempPTData.put(event.getPersonId(), ptData);
 			}
 		} else if (event.getLegMode().equals("uam")) {
-			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord(); // get the coord from the link
-			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId())); // uses the link to get station
+			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord(); // get the coord from the
+																								// link
+			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId())); // uses
+																												// the
+																												// link
+																												// to
+																												// get
+																												// station
 			if (tempPTData.containsKey(event.getPersonId())) {
 				// if there was pt information we need to add it
 				// to the UAMData object
@@ -104,7 +111,7 @@ PersonEntersVehicleEventHandler{
 				UAMDemandItem uamData = ongoing.get(event.getPersonId());
 				uamData.originStationCoord = originStationCoord;
 				uamData.originStationId = station.getId();
-				uamData.arrivalAtStationTime = data.endTime;			
+				uamData.arrivalAtStationTime = data.endTime;
 				this.tempPTData.remove(event.getPersonId());
 			} else {
 				// there was a normal access mode
@@ -114,7 +121,7 @@ PersonEntersVehicleEventHandler{
 				uamData.setOriginStationId(station.getId());
 			}
 		}
-		
+
 		if (event.getLegMode().equals("car") && event.getPersonId().toString().startsWith("uam_vh_")) {
 			// TODO: pooling is not correctly documented for take-off time
 			// this needs to be corrected
@@ -125,9 +132,9 @@ PersonEntersVehicleEventHandler{
 				}
 				this.vehicleToPerson.remove(event.getPersonId());
 			}
-		}		
+		}
 	}
-	
+
 	@Override
 	public void handleEvent(PersonArrivalEvent event) {
 		if (event.getLegMode().equals("uam")) {
@@ -135,9 +142,10 @@ PersonEntersVehicleEventHandler{
 			tempPTData.remove(event.getPersonId());
 			uamData.destinationStationCoord = network.getLinks().get(event.getLinkId()).getCoord();
 			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId()));
-			uamData.destinationStationId = station.getId(); 
+			uamData.destinationStationId = station.getId();
 			double deboardingTime = vehicles.get(this.personToVehicle.get(event.getPersonId())).getDeboardingTime();
-			uamData.landingTime = event.getTime() - deboardingTime; //#Landing time is when the vehicle touches the ground
+			uamData.landingTime = event.getTime() - deboardingTime; // #Landing time is when the vehicle touches the
+																	// ground
 			uamData.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			uamData.uamTrip = true;
 		} else if (event.getLegMode().startsWith("egress_uam")) {
@@ -148,14 +156,15 @@ PersonEntersVehicleEventHandler{
 		} else if (event.getLegMode().startsWith("access_uam")) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.arrivalAtStationTime = event.getTime();
-		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk")|| (event.getLegMode().equals("pt"))) {
+		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk")
+				|| (event.getLegMode().equals("pt"))) {
 			// we are still in the potential access or egress pt trip
 			PTData data = tempPTData.get(event.getPersonId());
 			data.endTime = event.getTime();
 			data.destinationLink = network.getLinks().get(event.getLinkId());
-		}	
+		}
 	}
-	
+
 	@Override
 	public void handleEvent(ActivityStartEvent event) {
 		// when we arrive at the destination we need to check if there was an egress pt
@@ -173,16 +182,16 @@ PersonEntersVehicleEventHandler{
 						tempPTData.remove(event.getPersonId());
 					}
 				}
-			}			
+			}
 			tempPTData.remove(event.getPersonId());
-		}		
-		//if it is not an stage activity it is the end of a trip
+		}
+		// if it is not an stage activity it is the end of a trip
 		if (!stageActivityTypes.isStageActivity(event.getActType()) && ongoing.containsKey(event.getPersonId())) {
 			UAMDemandItem uamItem = ongoing.remove(event.getPersonId());
 			this.uamData.add(uamItem);
-		}		
+		}
 	}
-	
+
 	public Collection<UAMDemandItem> getUAMItems() {
 		return uamData;
 	}

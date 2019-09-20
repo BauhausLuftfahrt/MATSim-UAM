@@ -11,12 +11,16 @@ import net.bhl.matsim.uam.analysis.uamdemand.run.ConvertUAMDemandFromEvents;
 import net.bhl.matsim.uam.analysis.uamstations.run.BatchConvertUAMStationsFromUAMVehicles;
 
 /**
-* This script takes a specific folder path and runs {@link BatchConvertUAMStationsFromUAMVehicles}, {@link BatchConvertUAMDemandFromEvents},
-* {@link BatchConvertTripsFromEvents}, {@link BatchConvertTransitTripsFromEvents}, {@link BatchConvertTripsFromPopulation} and 
-* {@link BatchConvertLinkStatsFromEvents} consecutively for all MATSim output folders within the provided base folder.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This script takes a specific folder path and runs
+ * {@link BatchConvertUAMStationsFromUAMVehicles},
+ * {@link BatchConvertUAMDemandFromEvents}, {@link BatchConvertTripsFromEvents},
+ * {@link BatchConvertTransitTripsFromEvents},
+ * {@link BatchConvertTripsFromPopulation} and
+ * {@link BatchConvertLinkStatsFromEvents} consecutively for all MATSim output
+ * folders within the provided base folder.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class RunBatchConversions {
 
 	public static void main(String[] args) throws IOException {

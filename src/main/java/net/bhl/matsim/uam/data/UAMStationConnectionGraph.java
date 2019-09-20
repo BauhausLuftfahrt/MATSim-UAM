@@ -16,102 +16,121 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/**
+ * Class that stores information about UAMStations, such as distances, travel
+ * times and utilities between stations.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMStationConnectionGraph {
 
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> utilities;
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> travelTimes;
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> distances;
+	private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> utilities;
+	private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> travelTimes;
+	private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> distances;
 
-	// TODO this class should store the distance each pair of stations for each vehicle, e.g.:
-    //private Map<Map<Id<UAMStation>, Id<UAMStation>>, Map<Id<UAMVehicle>, Double>> travelTimes;
+	// TODO this class should store the distance each pair of stations for each
+	// vehicle, e.g.:
+	// private Map<Map<Id<UAMStation>, Id<UAMStation>>, Map<Id<UAMVehicle>, Double>>
+	// travelTimes;
 
-    final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
+	final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
 
-    public UAMStationConnectionGraph(UAMManager uamManager, CustomModeChoiceParameters parameters,
-                                     @Named("uam") ParallelLeastCostPathCalculator plcpc) {
-        log.info("Calculating travel times and distances between all UAM stations.");
+	public UAMStationConnectionGraph(UAMManager uamManager, CustomModeChoiceParameters parameters,
+			@Named("uam") ParallelLeastCostPathCalculator plcpc) {
+		log.info("Calculating travel times and distances between all UAM stations.");
 
-        utilities = new HashMap<>();
-        travelTimes = new HashMap<>();
-        distances = new HashMap<>();
+		utilities = new HashMap<>();
+		travelTimes = new HashMap<>();
+		distances = new HashMap<>();
 
-        //TODO for now it assumes there only being one singular UAM vehicle type, enhancing this would be part of future work
-        double horizontalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getCruiseSpeed();
-        double verticalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getVerticalSpeed();
+		// TODO for now it assumes there only being one singular UAM vehicle type,
+		// enhancing this would be part of future work
+		double horizontalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getCruiseSpeed();
+		double verticalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getVerticalSpeed();
 
-        for (UAMStation uamStationOrigin : uamManager.getStations().stations.values()) {
-            for (UAMStation uamStationDestination : uamManager.getStations().stations.values()) {
-                if (uamStationOrigin == uamStationDestination)
-                    continue;
+		for (UAMStation uamStationOrigin : uamManager.getStations().stations.values()) {
+			for (UAMStation uamStationDestination : uamManager.getStations().stations.values()) {
+				if (uamStationOrigin == uamStationDestination)
+					continue;
 
-                Future<Path> path = plcpc.calcLeastCostPath(uamStationOrigin.getLocationLink().getFromNode(),
-                        uamStationDestination.getLocationLink().getToNode(), 0.0, null, null);
+				Future<Path> path = plcpc.calcLeastCostPath(uamStationOrigin.getLocationLink().getFromNode(),
+						uamStationDestination.getLocationLink().getToNode(), 0.0, null, null);
 
-                double distance = 0;
-                double travelTime = 0;
-                double utility = 0;
-                try {
-                    for (Link link : path.get().links) {
-                        distance += link.getLength();
+				double distance = 0;
+				double travelTime = 0;
+				double utility = 0;
+				try {
+					for (Link link : path.get().links) {
+						distance += link.getLength();
 
-                        if (!link.getId().toString().startsWith(RunCreateUAMScenario.name_uam_horizontal_link))
-                            travelTime += link.getLength() / verticalSpeed;
-                        else
-                            travelTime += link.getLength() / horizontalSpeed;
-                    }
+						if (!link.getId().toString().startsWith(RunCreateUAMScenario.name_uam_horizontal_link))
+							travelTime += link.getLength() / verticalSpeed;
+						else
+							travelTime += link.getLength() / horizontalSpeed;
+					}
 
-                    if (parameters != null)
-                        utility = estimateUtilityUAM(travelTime, distance, parameters, uamStationOrigin, uamStationDestination);
+					if (parameters != null)
+						utility = estimateUtilityUAM(travelTime, distance, parameters, uamStationOrigin,
+								uamStationDestination);
 
-                    if (travelTimes.containsKey(uamStationOrigin.getId())) {
-                        this.utilities.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), utility);
-                        this.travelTimes.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), travelTime);
-                        this.distances.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), distance);
-                    } else {
-                        Map<Id<UAMStation>, Double> newEntry = new HashMap<>();
-                        newEntry.put(uamStationDestination.getId(), utility);
-                        this.utilities.put(uamStationOrigin.getId(), newEntry);
+					if (travelTimes.containsKey(uamStationOrigin.getId())) {
+						this.utilities.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), utility);
+						this.travelTimes.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), travelTime);
+						this.distances.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), distance);
+					} else {
+						Map<Id<UAMStation>, Double> newEntry = new HashMap<>();
+						newEntry.put(uamStationDestination.getId(), utility);
+						this.utilities.put(uamStationOrigin.getId(), newEntry);
 
-                        Map<Id<UAMStation>, Double> newEntryTT = new HashMap<>();
-                        newEntryTT.put(uamStationDestination.getId(), travelTime);
-                        this.travelTimes.put(uamStationOrigin.getId(), newEntryTT);
+						Map<Id<UAMStation>, Double> newEntryTT = new HashMap<>();
+						newEntryTT.put(uamStationDestination.getId(), travelTime);
+						this.travelTimes.put(uamStationOrigin.getId(), newEntryTT);
 
-                        Map<Id<UAMStation>, Double> newEntryD = new HashMap<>();
-                        newEntryD.put(uamStationDestination.getId(), distance);
-                        this.distances.put(uamStationOrigin.getId(), newEntryD);
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+						Map<Id<UAMStation>, Double> newEntryD = new HashMap<>();
+						newEntryD.put(uamStationDestination.getId(), distance);
+						this.distances.put(uamStationOrigin.getId(), newEntryD);
+					}
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
-    private double estimateUtilityUAM(double travelTime, double distance, CustomModeChoiceParameters parameters,
-									  UAMStation stationOrigin, UAMStation stationDestination) {
+	/**
+	 * @param travelTime Travel time between two UAM stations.
+	 * @param distance Distance between two UAM stations.
+	 * @param parameters Parameters for utility calculation
+	 * @param stationOrigin Origin UAM Station
+	 * @param stationDestination Destination UAM Station
+	 * @return utility between two UAM Stations
+	 */
+	private double estimateUtilityUAM(double travelTime, double distance, CustomModeChoiceParameters parameters,
+			UAMStation stationOrigin, UAMStation stationDestination) {
 
-        double utility = 0.0;
+		double utility = 0.0;
 
-        utility += parameters.alphaUAM;
-        utility += parameters.betaTravelTimeUAM_min * travelTime / 60.0;
-        utility += parameters.betaWaitUAM_min *
-				(stationOrigin.getPreFlightTime() + stationDestination.getPostFlightTime()) / 60.0;
-        // utility += parameters.betaCost(distance * 1e-3, parameters.averageIncome) *
-        // parameters.distanceCostUAM_km * distance * 1e-3;
+		utility += parameters.alphaUAM;
+		utility += parameters.betaTravelTimeUAM_min * travelTime / 60.0;
+		utility += parameters.betaWaitUAM_min
+				* (stationOrigin.getPreFlightTime() + stationDestination.getPostFlightTime()) / 60.0;
+		// utility += parameters.betaCost(distance * 1e-3, parameters.averageIncome) *
+		// parameters.distanceCostUAM_km * distance * 1e-3;
 
-        return utility;
-    }
+		return utility;
+	}
 
-    public double getUtility(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.utilities.get(originStation).get(destinationStation);
-    }
+	public double getUtility(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
+		return this.utilities.get(originStation).get(destinationStation);
+	}
 
-    public double getTravelTime(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.travelTimes.get(originStation).get(destinationStation);
-    }
+	public double getTravelTime(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
+		return this.travelTimes.get(originStation).get(destinationStation);
+	}
 
-    public double getDistance(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.distances.get(originStation).get(destinationStation);
-    }
+	public double getDistance(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
+		return this.distances.get(originStation).get(destinationStation);
+	}
 
 }

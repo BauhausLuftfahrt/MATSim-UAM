@@ -13,7 +13,7 @@ import net.bhl.matsim.uam.schedule.UAMStayTask;
  * Class that loads the UAM vehicle data. 
  * Initially all vehicles are in the Stay mode at their initial stations.
  * 
- * @author balacm
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 @Singleton

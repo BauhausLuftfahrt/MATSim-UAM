@@ -16,15 +16,12 @@ import net.bhl.matsim.uam.analysis.transit.listeners.TransitTripListener;
 import net.bhl.matsim.uam.analysis.transit.readers.EventsTransitTripReader;
 
 /**
-* This script generates a csv file containing information of all public transport
-* trips performed from an events output file.
-* Necessary inputs are in the following order:
-* -Network file;
-* -Events file;
-* -output file;
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This script generates a csv file containing information of all public
+ * transport trips performed from an events output file. Necessary inputs are in
+ * the following order: -Network file; -Events file; -output file;
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 
 public class ConvertTransitTripsFromEvents {
 	static public void main(String[] args) throws IOException {
@@ -32,7 +29,7 @@ public class ConvertTransitTripsFromEvents {
 		extract(args[0], args[1], args[2]);
 		System.out.println("done.");
 	}
-	
+
 	static public void extract(String networkfile, String events, String outfile) throws IOException {
 		// PROVIDE: NETWORK EVENTS OUTFILE-NAME
 		Network network = NetworkUtils.createNetwork();

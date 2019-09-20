@@ -5,10 +5,10 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 
 /**
-* This class stores information about a trip.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This class stores information about a trip.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class TripItem {
 	public Id<Person> personId;
 	public int personTripId;

@@ -145,15 +145,15 @@ public class RunCalculateCarTravelTimes {
 		int counter = 1;
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
-				log.info("Calculation completion: " + counter + "/" + trips.size() +
-						" (" + String.format("%.0f", (double) counter / trips.size() * 100)  + "%).");
+				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
+						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
 			try {
 				Link from = NetworkUtils.getNearestLink(network, trip.origin);
 				Link to = NetworkUtils.getNearestLink(network, trip.destination);
 				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, networkCar, pathCalculator);
 			} catch (NullPointerException e) {
-				log.warn("No travel time estimation could be made for trip #" + counter + " from " + trip.origin +
-						" to " + trip.destination + " at departure time " + trip.departureTime + "!");
+				log.warn("No travel time estimation could be made for trip #" + counter + " from " + trip.origin
+						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
 				failedTrips.add(trip);
 			}
 
@@ -183,9 +183,11 @@ public class RunCalculateCarTravelTimes {
 			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 		Future<Path> path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
 				null);
-	/*		  for (Link link : path.get().links) { log.warn("Link ID: " + link.getId() +
-		  "  Capacity: "+ link.getCapacity() + " FlowCapacityPerSec: " +
-		  link.getFlowCapacityPerSec() +"   FreeSpeed: "+link.getFreespeed()); }*/
+		/*
+		 * for (Link link : path.get().links) { log.warn("Link ID: " + link.getId() +
+		 * "  Capacity: "+ link.getCapacity() + " FlowCapacityPerSec: " +
+		 * link.getFlowCapacityPerSec() +"   FreeSpeed: "+link.getFreespeed()); }
+		 */
 
 		return path.get().travelTime;
 	}

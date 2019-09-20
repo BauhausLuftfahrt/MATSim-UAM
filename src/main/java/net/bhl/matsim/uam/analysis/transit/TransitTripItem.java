@@ -5,10 +5,10 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 
 /**
-* This class stores information about a trip performed by transit.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This class stores information about a trip performed by transit.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class TransitTripItem {
 	public Id<Person> personId = null;
 	public int personTripId = -1;
@@ -30,7 +30,7 @@ public class TransitTripItem {
 	public double transferCrowflyDistance = 0.0;
 
 	public int numberOfTransfers = -1;
-	
+
 	public String routing = "";
 
 	public double firstWaitingTime = Double.NaN;

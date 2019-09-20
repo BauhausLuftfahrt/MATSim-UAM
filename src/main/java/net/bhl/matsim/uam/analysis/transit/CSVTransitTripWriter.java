@@ -7,10 +7,11 @@ import java.io.OutputStreamWriter;
 import java.util.Collection;
 
 /**
-* This class writes a CSV file containing information about trips performed by transit.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This class writes a CSV file containing information about trips performed by
+ * transit.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class CSVTransitTripWriter {
 	final private Collection<TransitTripItem> trips;
 	final private String delimiter;
@@ -48,13 +49,15 @@ public class CSVTransitTripWriter {
 	}
 
 	private String formatTrip(TransitTripItem trip) {
-		return String.join(delimiter, new String[] { trip.personId.toString(), String.valueOf(trip.personTripId),
-				String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
-				String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-				String.valueOf(trip.startTime), String.valueOf(trip.inVehicleTime), String.valueOf(trip.waitingTime),
-				String.valueOf(trip.transferTime), String.valueOf(trip.inVehicleDistance),
-				String.valueOf(trip.inVehicleCrowflyDistance), String.valueOf(trip.transferDistance),
-				String.valueOf(trip.transferCrowflyDistance), String.valueOf(trip.numberOfTransfers),
-				String.valueOf(trip.crowflyDistance), String.valueOf(trip.firstWaitingTime), String.valueOf(trip.routing) });
+		return String.join(delimiter,
+				new String[] { trip.personId.toString(), String.valueOf(trip.personTripId),
+						String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+						String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
+						String.valueOf(trip.startTime), String.valueOf(trip.inVehicleTime),
+						String.valueOf(trip.waitingTime), String.valueOf(trip.transferTime),
+						String.valueOf(trip.inVehicleDistance), String.valueOf(trip.inVehicleCrowflyDistance),
+						String.valueOf(trip.transferDistance), String.valueOf(trip.transferCrowflyDistance),
+						String.valueOf(trip.numberOfTransfers), String.valueOf(trip.crowflyDistance),
+						String.valueOf(trip.firstWaitingTime), String.valueOf(trip.routing) });
 	}
 }

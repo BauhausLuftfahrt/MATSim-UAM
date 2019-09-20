@@ -5,10 +5,10 @@ import org.matsim.api.core.v01.Id;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
-* This class stores information about a UAM Station.
-* 
-* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
-*/
+ * This class stores information about a UAM Station.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMStationItem {
 	public String name;
 	public Id<UAMStation> id;

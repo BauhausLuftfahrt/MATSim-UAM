@@ -156,15 +156,15 @@ public class RunCalculatePTTravelTimes {
 		int counter = 1;
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
-				log.info("Calculation completion: " + counter + "/" + trips.size() +
-						" (" + String.format("%.0f", (double) counter / trips.size() * 100)  + "%).");
+				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
+						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
 			try {
 				Link from = NetworkUtils.getNearestLink(network, trip.origin);
 				Link to = NetworkUtils.getNearestLink(network, trip.destination);
 				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, router);
 			} catch (NullPointerException e) {
-				log.warn("No travel time estimation could be made for trip #" + counter + " from " + trip.origin +
-						" to " + trip.destination + " at departure time " + trip.departureTime + "!");
+				log.warn("No travel time estimation could be made for trip #" + counter + " from " + trip.origin
+						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
 				failedTrips.add(trip);
 			}
 

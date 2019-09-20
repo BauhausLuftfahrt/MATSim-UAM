@@ -8,10 +8,10 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 
 /**
-* This class stores link information in a specific time.
-* 
-* @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
-*/
+ * This class stores link information in a specific time.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class LinkStatsItem {
 	public Id<Link> linkId;
 	public double distance;

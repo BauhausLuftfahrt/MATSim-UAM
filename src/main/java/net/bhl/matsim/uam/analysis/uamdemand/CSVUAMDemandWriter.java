@@ -8,23 +8,23 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
-* This class writes a CSV file containing UAMDemand data.
-* 
-* @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
-*/
+ * This class writes a CSV file containing UAMDemand data.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class CSVUAMDemandWriter {
 	final private HashSet<UAMDemandItem> uamData;
 	final private String delimiter;
-	
+
 	public CSVUAMDemandWriter(Collection<UAMDemandItem> uamData) {
 		this(uamData, ",");
 	}
-	
+
 	public CSVUAMDemandWriter(Collection<UAMDemandItem> uamData, String delimiter) {
 		this.uamData = new HashSet<UAMDemandItem>(uamData);
 		this.delimiter = delimiter;
 	}
-	
+
 	public void write(String outputPath) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
 		writer.write(formatHeader() + "\n");
@@ -39,23 +39,28 @@ public class CSVUAMDemandWriter {
 
 	private String formatHeader() {
 		return String.join(delimiter,
-				new String[] {"personId", "originCoordX", "originCoordY", "originStationCoordX", "originStationCoordY", "destinationStationCoordX",
-						 "destinationStationCoordY", "destinationCoordX", "destinationCoordY", "startTime", "arrivalAtStationTime", "takeOffTime", 
-						 "landingTime", "departureFromStationTime", "endTime", "vehicleId", "originStationId", "destinationStationId", "accessMode",
-						 "egressMode", "uamTrip"});
+				new String[] { "personId", "originCoordX", "originCoordY", "originStationCoordX", "originStationCoordY",
+						"destinationStationCoordX", "destinationStationCoordY", "destinationCoordX",
+						"destinationCoordY", "startTime", "arrivalAtStationTime", "takeOffTime", "landingTime",
+						"departureFromStationTime", "endTime", "vehicleId", "originStationId", "destinationStationId",
+						"accessMode", "egressMode", "uamTrip" });
 	}
-	
+
 	private String formatData(UAMDemandItem uamData) {
-		try {		return String.join(delimiter, new String[] { uamData.personId.toString(),
-				String.valueOf(uamData.origin.getX()), String.valueOf(uamData.origin.getY()),
-				String.valueOf(uamData.originStationCoord.getX()), String.valueOf(uamData.originStationCoord.getY()),
-				String.valueOf(uamData.destinationStationCoord.getX()), String.valueOf(uamData.destinationStationCoord.getY()),
-				String.valueOf(uamData.destination.getX()), String.valueOf(uamData.destination.getY()),
-				String.valueOf(uamData.startTime), String.valueOf(uamData.arrivalAtStationTime),String.valueOf(uamData.takeOffTime),
-				String.valueOf(uamData.landingTime), String.valueOf(uamData.departureFromStationTime),String.valueOf(uamData.endTime),
-				uamData.vehicleId.toString(), uamData.originStationId.toString(),
-				uamData.destinationStationId.toString(), uamData.accessMode.toString(), uamData.egressMode.toString(),
-				String.valueOf(uamData.uamTrip) });			
+		try {
+			return String.join(delimiter,
+					new String[] { uamData.personId.toString(), String.valueOf(uamData.origin.getX()),
+							String.valueOf(uamData.origin.getY()), String.valueOf(uamData.originStationCoord.getX()),
+							String.valueOf(uamData.originStationCoord.getY()),
+							String.valueOf(uamData.destinationStationCoord.getX()),
+							String.valueOf(uamData.destinationStationCoord.getY()),
+							String.valueOf(uamData.destination.getX()), String.valueOf(uamData.destination.getY()),
+							String.valueOf(uamData.startTime), String.valueOf(uamData.arrivalAtStationTime),
+							String.valueOf(uamData.takeOffTime), String.valueOf(uamData.landingTime),
+							String.valueOf(uamData.departureFromStationTime), String.valueOf(uamData.endTime),
+							uamData.vehicleId.toString(), uamData.originStationId.toString(),
+							uamData.destinationStationId.toString(), uamData.accessMode.toString(),
+							uamData.egressMode.toString(), String.valueOf(uamData.uamTrip) });
 		} catch (Exception NullPointerException) {
 		}
 		return "uamData could not be read";
