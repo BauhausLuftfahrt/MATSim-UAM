@@ -16,7 +16,7 @@ import com.google.inject.Inject;
  * This listener copies the input UAM Vehicle file into the output folder after
  * the simulation ends
  *
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 
 public class UAMShutdownListener implements ShutdownListener {

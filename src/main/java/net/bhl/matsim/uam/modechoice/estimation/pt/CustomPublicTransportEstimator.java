@@ -2,7 +2,6 @@ package net.bhl.matsim.uam.modechoice.estimation.pt;
 
 import java.util.List;
 
-import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
@@ -13,6 +12,12 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
 
+/**
+ * This class defines the estimator for Public Transport trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomPublicTransportEstimator implements ModalTripEstimator {
 	final private CustomPublicTransportPredictor predictor;
 	final private CustomModeChoiceParameters parameters;

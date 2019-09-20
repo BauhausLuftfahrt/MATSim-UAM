@@ -11,6 +11,12 @@ import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstrain
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.pt.CustomPublicTransportPrediction;
 
+/**
+ * This class ensures that trips under OnlyWalk constraint are not selected for pt trips
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class AvoidOnlyWalkConstraint extends AbstractTripConstraint {
 	@Override
 	public boolean validateAfterEstimation(ModeChoiceTrip trip, TripCandidate candidate,

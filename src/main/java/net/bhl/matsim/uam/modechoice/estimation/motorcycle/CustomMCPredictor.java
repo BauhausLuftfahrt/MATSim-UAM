@@ -15,6 +15,12 @@ import org.matsim.facilities.ActivityFacilities;
 
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 
+/**
+ * This class defines the predictor for Motorcycle trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomMCPredictor {
 	final private TripRouter router;
 	final private TravelDisutility travelDisutility;
@@ -29,14 +35,14 @@ public class CustomMCPredictor {
 
 	public CustomMCPrediction predict(ModeChoiceTrip trip) {
 		Trip tripInformation = trip.getTripInformation();
-		
-		LinkWrapperFacility originFacility = 
-				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getOriginActivity().getLinkId()));
-		LinkWrapperFacility destinationFacility = 
-				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getDestinationActivity().getLinkId()));
+
+		LinkWrapperFacility originFacility = new LinkWrapperFacility(
+				this.network.getLinks().get(tripInformation.getOriginActivity().getLinkId()));
+		LinkWrapperFacility destinationFacility = new LinkWrapperFacility(
+				this.network.getLinks().get(tripInformation.getDestinationActivity().getLinkId()));
 
 		List<? extends PlanElement> result = router.calcRoute("mc", originFacility, destinationFacility,
-			tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
+				tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
 
 		NetworkRoute route = (NetworkRoute) ((Leg) result.get(0)).getRoute();
 
@@ -48,10 +54,12 @@ public class CustomMCPredictor {
 		// Also, while the NetworkRoutingModule does not take the arrival link into
 		// account, it is simulated in the Netsim. Hence, to arrive at the correct
 		// estimate, we need to add the travel time for the arrival link.
-		//double arrivalAtLinkTime = trip.getTripInformation().getOriginActivity().getEndTime() + travelTime;
-		//Link arrivalLink = network.getLinks().get(route.getEndLinkId());
+		// double arrivalAtLinkTime =
+		// trip.getTripInformation().getOriginActivity().getEndTime() + travelTime;
+		// Link arrivalLink = network.getLinks().get(route.getEndLinkId());
 
-		//travelTime += travelDisutility.getLinkTravelDisutility(arrivalLink, arrivalAtLinkTime, trip.getPerson(), null);
+		// travelTime += travelDisutility.getLinkTravelDisutility(arrivalLink,
+		// arrivalAtLinkTime, trip.getPerson(), null);
 
 		return new CustomMCPrediction(route.getDistance(), travelTime, route);
 	}

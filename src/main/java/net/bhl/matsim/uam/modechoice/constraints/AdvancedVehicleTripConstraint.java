@@ -21,8 +21,7 @@ import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
  * the first tour. This was done in order to have easier implementation. If this
  * has an effect on the results is not clear.
  * 
- * @author Milos Balac <milos.balac@ivt.baug.ethz.ch>
- * @author Sebastian Hörl <sebastian.hoerl@ivt.baug.ethz.ch>
+ * @author balacmi (Milos Balac), sebhoerl (Sebastian Hörl)
  *
  */
 public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
@@ -30,13 +29,13 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 			Id<Link> homeLinkId) {
 		super(trips, constrainedModes, homeLinkId);
 	}
-	
+
 	private boolean modeWasEnforced;
 
 	@Override
 	public boolean validateBeforeEstimation(ModeChoiceTrip trip, String mode, List<String> previousModes) {
 		modeWasEnforced = false;
-		
+
 		if (super.validateBeforeEstimation(trip, mode, previousModes)) {
 			for (String constrainedMode : constrainedModes) {
 				Id<Link> currentVehicleLinkId = getCurrentVehicleLinkId(constrainedMode, previousModes);
@@ -61,9 +60,15 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 	public boolean getModeWasEnforced() {
 		return modeWasEnforced;
 	}
-	
+
 	/**
-	 * Checks if the agent will return to this location before going home
+	 * 
+	 */
+	/**
+	 * @param currentDepartureLinkId Current departure link
+	 * @param trip                   Trip
+	 * @return True if the agent will return to this location before going home,
+	 *         otherwise false.
 	 */
 	private boolean willReturnBeforeHome(Id<Link> currentDepartureLinkId, ModeChoiceTrip trip) {
 		int indexOfTrip = this.trips.indexOf(trip);

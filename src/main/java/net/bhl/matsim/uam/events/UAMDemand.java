@@ -2,7 +2,6 @@ package net.bhl.matsim.uam.events;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,8 +27,13 @@ import com.google.inject.Inject;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 
+/**
+ * Class that saves information about UAM trips for each agent.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEventHandler, ActivityStartEventHandler,
 		PersonEntersVehicleEventHandler {
 	@Inject
@@ -81,7 +85,8 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 			data.departureFromStationTime = event.getTime();
 			uamTrips.remove(event.getPersonId());
 
-		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk") || event.getLegMode().equals("pt")) {
+		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk")
+				|| event.getLegMode().equals("pt")) {
 
 			// we need to store the information about the pt trip
 			// in case this becomes an access or an egress uam trip
@@ -157,9 +162,10 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 			data.destinationStationLink = network.getLinks().get(event.getLinkId());
 			UAMStation station = this.manager.getStations()
 					.getNearestUAMStation(network.getLinks().get(event.getLinkId()));
-			data.destinationStationId = station.getId(); 
-			double deboardingTime = this.manager.getVehicles().get(this.personToVehicle.get(event.getPersonId())).getDeboardingTime();
-			data.landingTime = event.getTime() - deboardingTime; //#Landing time is when the vehicle touches the ground
+			data.destinationStationId = station.getId();
+			double deboardingTime = this.manager.getVehicles().get(this.personToVehicle.get(event.getPersonId()))
+					.getDeboardingTime();
+			data.landingTime = event.getTime() - deboardingTime; // #Landing time is when the vehicle touches the ground
 			data.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			data.uamTrip = true;
 		} else if (event.getLegMode().startsWith("egress_uam")) {
@@ -173,7 +179,8 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 		} else if (event.getLegMode().startsWith("access_uam")) {
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
 			data.arrivalAtStationTime = event.getTime();
-		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk") || (event.getLegMode().equals("pt")&&!scenario.getConfig().transit().isUseTransit())) {
+		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk")
+				|| (event.getLegMode().equals("pt") && !scenario.getConfig().transit().isUseTransit())) {
 			// we are still in the potential access or egress pt trip
 			PTData data = tempPTData.get(event.getPersonId());
 			data.endTime = event.getTime();

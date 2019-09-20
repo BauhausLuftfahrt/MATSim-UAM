@@ -13,6 +13,12 @@ import ch.ethz.matsim.mode_choice.framework.tour_based.constraints.TourConstrain
 import ch.ethz.matsim.mode_choice.framework.tour_based.estimation.TourCandidate;
 import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
 
+/**
+ * This class defines the constraint for vehicle modes on tour based models.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class VehicleTourConstraint implements TourConstraint {
 	final private Collection<String> constrainedModes;
 	final private List<ModeChoiceTrip> trips;
