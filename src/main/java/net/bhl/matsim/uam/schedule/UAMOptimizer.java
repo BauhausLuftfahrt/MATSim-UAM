@@ -20,10 +20,16 @@ import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 
+/**
+ * An optimizer for UAM vehicles schedule.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * 
+ */
 @Singleton
 public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBeforeSimStepListener {
 	private double now;
-	
+
 	private Dispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
@@ -41,8 +47,8 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 	@Override
 	public void nextTask(Vehicle vehicle) {
 		Schedule schedule = vehicle.getSchedule();
-		//this happens at the start of the simulation since
-		//the schedule has not started yet
+		// this happens at the start of the simulation since
+		// the schedule has not started yet
 		if (schedule.getStatus() != Schedule.ScheduleStatus.STARTED) {
 			schedule.nextTask();
 			return;
@@ -65,8 +71,8 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 		double startTime = now;
 
 		UAMTask indexTask;
-		//we have to adapt the times of the rest of the tasks
-		//in order to take into account any delays vehicle has experienced so far
+		// we have to adapt the times of the rest of the tasks
+		// in order to take into account any delays vehicle has experienced so far
 		while (index < tasks.size()) {
 			indexTask = (UAMTask) tasks.get(index);
 

@@ -9,10 +9,13 @@ import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
 
 import net.bhl.matsim.uam.passenger.UAMRequest;
 
-/** 
- *  This task represents the local drop-off of passenger at stations, it doesn't include the flying period.
+/**
+ * This task represents the local drop-off of passenger at stations, it doesn't
+ * include the flying period.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * 
  */
-
 public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 	private final Set<UAMRequest> requests = new HashSet<>();
 	private final double deboardingTime;
@@ -21,13 +24,15 @@ public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 		super(beginTime, endTime, link);
 		this.deboardingTime = deboardingTime;
 	}
-	
-	public UAMDropoffTask(double beginTime, double endTime, Link link, double deboardingTime, Collection<UAMRequest> requests) {
+
+	public UAMDropoffTask(double beginTime, double endTime, Link link, double deboardingTime,
+			Collection<UAMRequest> requests) {
 		super(beginTime, endTime, link);
 
 		this.requests.addAll(requests);
-		for (UAMRequest request : requests) request.setDropoffTask(this);
-		
+		for (UAMRequest request : requests)
+			request.setDropoffTask(this);
+
 		this.deboardingTime = deboardingTime;
 	}
 
@@ -46,7 +51,7 @@ public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 
 		this.requests.add(request);
 	}
-	
+
 	public double getDeboardingTime() {
 		return deboardingTime;
 	}

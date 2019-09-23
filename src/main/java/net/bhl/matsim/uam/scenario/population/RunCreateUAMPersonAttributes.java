@@ -11,7 +11,6 @@ import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Population;
-import org.matsim.api.core.v01.population.PopulationWriter;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
@@ -29,9 +28,18 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 
+/**
+ * This script generates a xml subpopulation attributes file containing the id
+ * of potential uam users based on a provided config file containing a search
+ * radius. If there is at least one station within reach, the user is considered
+ * a potential uam user.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class RunCreateUAMPersonAttributes {
 	public static void main(final String[] args) {
-		//cmd-line input: input-config
+		// cmd-line input: input-config
 		String inputConfig = args[0];
 
 		UAMConfigGroup uamConfigGroup = new UAMConfigGroup();
@@ -50,40 +58,39 @@ public class RunCreateUAMPersonAttributes {
 		filter.filter(networkUAM, modes);
 
 		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
-		uamReader.readFile(ConfigGroup.getInputFileURL(config.getContext(), uamConfigGroup.getUAM()).getPath().replace("%20", " "));
+		uamReader.readFile(ConfigGroup.getInputFileURL(config.getContext(), uamConfigGroup.getUAM()).getPath()
+				.replace("%20", " "));
 		final UAMStations uamStations = new UAMStations(uamReader.getStations(), network);
 
 		Population pop = scenario.getPopulation();
 		ObjectAttributes objattr = new ObjectAttributes();
 
 		// filter persons with activities outside the radius
-		personloop:
-			for (Person person : pop.getPersons().values()) {
-				for (PlanElement p : person.getSelectedPlan().getPlanElements()) {						
-					if (p instanceof Activity) {
+		personloop: for (Person person : pop.getPersons().values()) {
+			for (PlanElement p : person.getSelectedPlan().getPlanElements()) {
+				if (p instanceof Activity) {
 
-						Coord originCoord = ((Activity) p).getCoord();
+					Coord originCoord = ((Activity) p).getCoord();
 
-						Collection<UAMStation> stations = uamStations.spatialStations.getDisk(originCoord.getX(),
-								originCoord.getY(), uamConfigGroup.getSearchRadius());
+					Collection<UAMStation> stations = uamStations.spatialStations.getDisk(originCoord.getX(),
+							originCoord.getY(), uamConfigGroup.getSearchRadius());
 
-						if (!stations.isEmpty()) {
-							// at least one station within reach
-							objattr.putAttribute(person.getId().toString(), "subpopulation", "potential-uam");
-							continue personloop;
-						}
+					if (!stations.isEmpty()) {
+						// at least one station within reach
+						objattr.putAttribute(person.getId().toString(), "subpopulation", "potential-uam");
+						continue personloop;
 					}
 				}
-				// no UAM stations in reach
 			}
+			// no UAM stations in reach
+		}
 
 		int radius = (int) uamConfigGroup.getSearchRadius();
-		String rangeString = radius > 9999 ? "" + (radius/1000) + "km" : "" + radius + "m";
-		
+		String rangeString = radius > 9999 ? "" + (radius / 1000) + "km" : "" + radius + "m";
+
 		ObjectAttributesXmlWriter objwriter = new ObjectAttributesXmlWriter(objattr);
 		objwriter.writeFile(inputConfig.substring(0, inputConfig.lastIndexOf("\\")) + "\\"
-				+ config.plans().getInputFile().split(".xml")[0]
-				+ "_attributes_uam-" + rangeString + ".xml.gz");
+				+ config.plans().getInputFile().split(".xml")[0] + "_attributes_uam-" + rangeString + ".xml.gz");
 
 		System.out.println("done.");
 	}
