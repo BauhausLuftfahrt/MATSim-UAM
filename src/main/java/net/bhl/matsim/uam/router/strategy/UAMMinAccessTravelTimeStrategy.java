@@ -17,13 +17,14 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the
- * minimum travel travel to access to UAM Station and egress travel time from
- * UAM Station.
+ * minimum travel time to access to UAM Station and egress travel time from UAM
+ * Station.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinAccessTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
@@ -41,7 +42,7 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
 		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
 		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);
 		double minAccessTime = Double.POSITIVE_INFINITY;
-		
+
 		for (UAMStation stationOrigin : stationsOrigin) {
 			if (accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime() < minAccessTime) {
 				bestStationOrigin = stationOrigin;
@@ -82,7 +83,7 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
 				null, false);
 		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination,
 				bestStationOrigin, egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, false);
-		
+
 		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);
 	}
 

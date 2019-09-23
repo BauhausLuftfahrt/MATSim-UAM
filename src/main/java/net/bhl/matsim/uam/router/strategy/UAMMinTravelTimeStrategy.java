@@ -16,16 +16,18 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
- * This strategy is used to assign to the passenger the UAMRoute based on the minimum total travel time of the route.
+ * This strategy is used to assign to the passenger a UAMRoute based on the
+ * minimum total travel time of the route.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
-public class UAMMinTravelTimeStrategy implements UAMStrategy{
+public class UAMMinTravelTimeStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
-	
+
 	@Override
 	public UAMStrategyType getUAMStrategyType() {
 		return UAMStrategyType.MINTRAVELTIME;
@@ -37,9 +39,9 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
 		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
-		
-		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);	
-		//UAM flight time  + access and egress travel time
+
+		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);
+		// UAM flight time + access and egress travel time
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		double timeOfEgress = departureTime;
 		Set<String> modes = new HashSet<>();
@@ -49,16 +51,19 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 			for (UAMStation stationDestination : stationsDestination) {
 				if (stationOrigin == stationDestination)
 					continue;
-				//fly time between stations
+				// fly time between stations
 				double flyTime = strategyUtils.getFlyTime(stationOrigin, stationDestination);
-				//updates departureTime 
-				double currentDepartureTime = departureTime + accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime()+flyTime;
+				// updates departureTime
+				double currentDepartureTime = departureTime
+						+ accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime() + flyTime;
 				for (String mode : modes) {
-					//Calculates the time travel for the egress routes
-					double egressTravelTime = strategyUtils.estimateTime(false, toFacility, currentDepartureTime, stationDestination, mode);
-					//Calculates the minimum total time
-					double totalTime = accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime()+ flyTime + egressTravelTime;
-					if (totalTime < minTotalTime ) {
+					// Calculates the time travel for the egress routes
+					double egressTravelTime = strategyUtils.estimateTime(false, toFacility, currentDepartureTime,
+							stationDestination, mode);
+					// Calculates the minimum total time
+					double totalTime = accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime() + flyTime
+							+ egressTravelTime;
+					if (totalTime < minTotalTime) {
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
 						minTotalTime = totalTime;
@@ -67,14 +72,18 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 					}
 				}
 			}
-		}		
-		double egressDistance = strategyUtils.estimateDistance(false, toFacility, timeOfEgress, bestStationDestination, bestModeEgress);
-		//if the access/egress distance is less than walkDistance, then walk will be the uam access and egress mode
-		String bestModeAccess = strategyUtils.checkStationAccessDistance(true, accessRoutesData.get(bestStationOrigin.getId()).getAccessModeTime() 
-				,bestStationOrigin, null, accessRoutesData.get(bestStationOrigin.getId()).getDistance(), fromFacility, toFacility, departureTime, null, false);  
-		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination, bestStationOrigin,
-				egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, false);
-		
+		}
+		double egressDistance = strategyUtils.estimateDistance(false, toFacility, timeOfEgress, bestStationDestination,
+				bestModeEgress);
+		// if the access/egress distance is less than walkDistance, then walk will be
+		// the uam access and egress mode
+		String bestModeAccess = strategyUtils.checkStationAccessDistance(true,
+				accessRoutesData.get(bestStationOrigin.getId()).getAccessModeTime(), bestStationOrigin, null,
+				accessRoutesData.get(bestStationOrigin.getId()).getDistance(), fromFacility, toFacility, departureTime,
+				null, false);
+		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination,
+				bestStationOrigin, egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, false);
+
 		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);
 	}
 

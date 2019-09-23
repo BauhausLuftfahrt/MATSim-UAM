@@ -26,6 +26,12 @@ import com.google.inject.Singleton;
 import ch.ethz.matsim.baseline_scenario.traffic.BaselineLinkSpeedCalculator;
 import net.bhl.matsim.uam.modechoice.CustomCarDisutility;
 
+/**
+ * This class defines the handler for entering/leaving link events.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class FreeflowTravelTimeValidator implements LinkEnterEventHandler, LinkLeaveEventHandler,
 		VehicleLeavesTrafficEventHandler, VehicleEntersTrafficEventHandler {

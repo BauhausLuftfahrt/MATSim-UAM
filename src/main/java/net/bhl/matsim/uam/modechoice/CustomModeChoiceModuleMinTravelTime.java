@@ -81,11 +81,17 @@ import net.bhl.matsim.uam.modechoice.tracking.TravelTimeTracker;
 import net.bhl.matsim.uam.modechoice.tracking.TravelTimeTrackerListener;
 import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
 
-public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
+/**
+ * A MATSim Abstract Module for the classes used by the
+ * {@link MinTravelTimeModel}.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
+public class CustomModeChoiceModuleMinTravelTime extends AbstractModule {
 	private final CommandLine cmd;
 	private final List<String> vehicleModes = new LinkedList<>();
 	private final boolean isMinTravelTime;
-	
+
 	public CustomModeChoiceModuleMinTravelTime(CommandLine cmd, boolean isMinTravelTime) {
 		this.cmd = cmd;
 		this.isMinTravelTime = isMinTravelTime;
@@ -110,9 +116,9 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		// TODO: Probably can be completely kicked out soon
 		// addEventHandlerBinding().to(FreeflowTravelTimeValidator.class);
-		
+
 	}
-	
+
 	@Provides
 	@Singleton
 	public CustomModeChoiceParameters provideCustomModeChoiceParameters() throws ConfigurationException {
@@ -132,7 +138,7 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		return parameters;
 	}
-	
+
 	@Provides
 	@Singleton
 	public SubscriptionFinder provideSubscriptionFinder(Population population) {
@@ -147,7 +153,7 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 		new TransportModeNetworkFilter(fullNetwork).filter(roadNetwork, Collections.singleton("car"));
 		return roadNetwork;
 	}
-	
+
 	@Provides
 	@Singleton
 	public CustomCarDisutility.Factory provideCustomCarDisutilityFactory(UAMLinkSpeedCalculator speedCalculator) {
@@ -160,17 +166,15 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 			CustomModeChoiceParameters parameters, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, parameters, plcpc);
 	}
-	
-	
+
 	@Provides
 	public ModeChoiceModel provideModeChoiceModel(PlansCalcRouteConfigGroup routeConfig,
 			CustomModeChoiceParameters parameters, TripRouter router, SubscriptionFinder subscriptionFinder,
 			ActivityFacilities facilities, Network network, TravelTimeTracker travelTimeTracker,
 			@Named("car") TravelTime carTravelTime, @Named("car") TravelDisutilityFactory carTravelDisutilityFactory,
-			UAMManager uamManager, Scenario scenario,
-			TransitConfigGroup transitConfig,
-			UAMConfigGroup uamConfig, Map<String, TravelDisutilityFactory> travelDisutilityFactories,
-			Map<String, TravelTime> travelTimes, LeastCostPathCalculatorFactory lcpcf, @Named("car") Network networkCar,
+			UAMManager uamManager, Scenario scenario, TransitConfigGroup transitConfig, UAMConfigGroup uamConfig,
+			Map<String, TravelDisutilityFactory> travelDisutilityFactories, Map<String, TravelTime> travelTimes,
+			LeastCostPathCalculatorFactory lcpcf, @Named("car") Network networkCar,
 			@Named("uam") ParallelLeastCostPathCalculator plcpc, WaitingStationData waitingData,
 			UAMStationConnectionGraph stationConnectionutilities) throws ConfigurationException {
 		ModeAvailability modeAvailability = new CarModeAvailability(parameters.getModes());
@@ -180,14 +184,16 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		TeleportationPredictor teleportationPredictorWalk = new TeleportationPredictor(crowflyDistanceFactorWalk,
 				speedWalk);
-		CustomWalkEstimator walkEstimator = new CustomWalkEstimator(parameters, teleportationPredictorWalk, isMinTravelTime);
+		CustomWalkEstimator walkEstimator = new CustomWalkEstimator(parameters, teleportationPredictorWalk,
+				isMinTravelTime);
 
 		double crowflyDistanceFactorBike = routeConfig.getModeRoutingParams().get("bike").getBeelineDistanceFactor();
 		double speedBike = routeConfig.getModeRoutingParams().get("bike").getTeleportedModeSpeed();
 
 		TeleportationPredictor teleportationPredictorBike = new TeleportationPredictor(crowflyDistanceFactorBike,
 				speedBike);
-		CustomBikeEstimator bikeEstimator = new CustomBikeEstimator(parameters, teleportationPredictorBike, isMinTravelTime);
+		CustomBikeEstimator bikeEstimator = new CustomBikeEstimator(parameters, teleportationPredictorBike,
+				isMinTravelTime);
 
 		CustomPublicTransportPredictor publicTransportPredictor = new CustomPublicTransportPredictor(router, facilities,
 				scenario);
@@ -238,8 +244,8 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 		tourConstraintFactory
 				.addFactory(new TourConstraintFromTripConstraint.Factory(new CarPassangerTripConstraint.Factory()));
 
-		tourConstraintFactory
-				.addFactory(new TourConstraintFromTripConstraint.Factory(new UAMTripConstraint.Factory(uamManager, uamConfig)));
+		tourConstraintFactory.addFactory(
+				new TourConstraintFromTripConstraint.Factory(new UAMTripConstraint.Factory(uamManager, uamConfig)));
 
 		CompositeTripConstraintFactory tripConstraintFactory = new CompositeTripConstraintFactory();
 		tripConstraintFactory.addFactory((new AvoidOnlyWalkConstraint.Factory()));
@@ -270,7 +276,6 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		model = new MinTravelTimeModel(tourEstimator, modeAvailability, tourConstraintFactory, tourFinder,
 				tourSelectorFactory, modeChainGeneratorFactory, fallbackBehaviour);
-
 
 		if (cmd.hasOption("track-car-travel-times")) {
 			model = new TrackingModeChoiceModel(model, travelTimeTracker);

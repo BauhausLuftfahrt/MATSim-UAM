@@ -20,12 +20,14 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
- * This strategy is used to assign to the passenger the UAMRoute based on the minimum travel distance of the route.
+ * This strategy is used to assign to the passenger a UAMRoute based on the
+ * minimum travel distance of the route.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
-public class UAMMinDistanceStrategy implements UAMStrategy{
+public class UAMMinDistanceStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinDistanceStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
@@ -36,24 +38,24 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {		
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
 		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
 		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);
 		String bestModeEgress = TransportMode.walk;
-		
+
 		double timeOfEgress = departureTime;
 		Set<String> modes = new HashSet<>();
 		modes = strategyUtils.getModes();
-		//UAM Flight Distance + access and egress distance
+		// UAM Flight Distance + access and egress distance
 		double minTotalDistance = Double.POSITIVE_INFINITY;
 		for (UAMStation stationOrigin : stationsOrigin) {
 			for (UAMStation stationDestination : stationsDestination) {
 				if (stationOrigin == stationDestination)
 					continue;
-				//collects the distance between stations and stores it
+				// collects the distance between stations and stores it
 				Future<Path> uavPath = strategyUtils.getFlyDistance(stationOrigin.getLocationLink().getFromNode(),
 						stationDestination.getLocationLink().getToNode());
 				double flyDistance = 0;
@@ -64,34 +66,42 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
 				}
-				//fly time between stations
+				// fly time between stations
 				double flyTime = strategyUtils.getFlyTime(stationOrigin, stationDestination);
-				double accessTime = strategyUtils.estimateTime(true, fromFacility, departureTime, stationOrigin, accessRoutesData.get(stationOrigin.getId()).getAccessModeDistance());
-				//updates departureTime 
-				double currentDepartureTime = departureTime + accessTime+flyTime;
-				//Calculates the shortest path
+				double accessTime = strategyUtils.estimateTime(true, fromFacility, departureTime, stationOrigin,
+						accessRoutesData.get(stationOrigin.getId()).getAccessModeDistance());
+				// updates departureTime
+				double currentDepartureTime = departureTime + accessTime + flyTime;
+				// Calculates the shortest path
 				for (String mode : modes) {
-					//Calculates the distance for the egress routes using updated departureTime
-					double egressDistance = strategyUtils.estimateDistance(false, toFacility, currentDepartureTime, stationDestination, mode);
-					double totalDistance = accessRoutesData.get(stationOrigin.getId()).getDistance() + flyDistance + egressDistance;
-					if (totalDistance < minTotalDistance ) {
+					// Calculates the distance for the egress routes using updated departureTime
+					double egressDistance = strategyUtils.estimateDistance(false, toFacility, currentDepartureTime,
+							stationDestination, mode);
+					double totalDistance = accessRoutesData.get(stationOrigin.getId()).getDistance() + flyDistance
+							+ egressDistance;
+					if (totalDistance < minTotalDistance) {
 						minTotalDistance = totalDistance;
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
 						bestModeEgress = mode;
 						timeOfEgress = currentDepartureTime;
-					}		
-				}	
+					}
+				}
 			}
 		}
-		double egressDistance = strategyUtils.estimateDistance(false, toFacility, timeOfEgress, bestStationDestination, bestModeEgress);
-		//if the access/egress distance is less than walkDistance, then walk will be the uam access and egress mode, otherwise time is used to select the mode access/egress	
-		String bestModeAccess = strategyUtils.checkStationAccessDistance(true, accessRoutesData.get(bestStationOrigin.getId()).getAccessModeDistance() 
-				,bestStationOrigin, null, accessRoutesData.get(bestStationOrigin.getId()).getDistance(), fromFacility, toFacility, departureTime, null, true);  
-		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination, bestStationOrigin,
-				egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, true);			
-			
-		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);		
+		double egressDistance = strategyUtils.estimateDistance(false, toFacility, timeOfEgress, bestStationDestination,
+				bestModeEgress);
+		// if the access/egress distance is less than walkDistance, then walk will be
+		// the uam access and egress mode, otherwise time is used to select the mode
+		// access/egress
+		String bestModeAccess = strategyUtils.checkStationAccessDistance(true,
+				accessRoutesData.get(bestStationOrigin.getId()).getAccessModeDistance(), bestStationOrigin, null,
+				accessRoutesData.get(bestStationOrigin.getId()).getDistance(), fromFacility, toFacility, departureTime,
+				null, true);
+		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination,
+				bestStationOrigin, egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, true);
+
+		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);
 	}
-	
+
 }

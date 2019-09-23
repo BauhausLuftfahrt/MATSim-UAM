@@ -17,15 +17,16 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 import net.bhl.matsim.uam.router.strategy.UAMMinDistanceStrategy;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
 import net.bhl.matsim.uam.router.strategy.UAMStrategyUtils;
 
 /**
- * This class uses the strategy set in the config file to generate the routes for agents
-* @author Aitan Militao
-*  */
+ * This class uses the strategy selected in the config file to generate the
+ * routes for agents using UAM.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMStrategyRouter {
-	private final Scenario scenario; 
+	private final Scenario scenario;
 	private UAMConfigGroup uamConfig;
 	private UAMStations landingStations;
 	private ParallelLeastCostPathCalculator plcpc;
@@ -36,31 +37,30 @@ public class UAMStrategyRouter {
 	private CustomModeChoiceParameters parameters;
 	private static final Logger log = Logger.getLogger(UAMIntermodalRoutingModule.class);
 	private UAMStrategy strategy;
-	
-	public UAMStrategyRouter (
-			Scenario scenario, UAMConfigGroup uamConfig, CustomModeChoiceParameters parameters,
-			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, UAMStations landingStations,  Network carNetwork,
-			UAMStationConnectionGraph stationConnectionutilities) {
+
+	public UAMStrategyRouter(Scenario scenario, UAMConfigGroup uamConfig, CustomModeChoiceParameters parameters,
+			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, UAMStations landingStations,
+			Network carNetwork, UAMStationConnectionGraph stationConnectionutilities) {
 		this.scenario = scenario;
-		this.uamConfig = uamConfig;	
+		this.uamConfig = uamConfig;
 		this.parameters = parameters;
 		this.plcpc = plcpc;
 		this.plcpccar = plcpccar;
 		this.landingStations = landingStations;
 		this.carNetwork = carNetwork;
-		this.stationConnectionutilities = stationConnectionutilities;			
+		this.stationConnectionutilities = stationConnectionutilities;
 	}
-	
-	public UAMStrategyRouter (
-			TransitRouter transitRouter,
-			Scenario scenario, UAMConfigGroup uamConfig, CustomModeChoiceParameters parameters,
-			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, UAMStations landingStations,  Network carNetwork,
+
+	public UAMStrategyRouter(TransitRouter transitRouter, Scenario scenario, UAMConfigGroup uamConfig,
+			CustomModeChoiceParameters parameters, ParallelLeastCostPathCalculator plcpc,
+			LeastCostPathCalculator plcpccar, UAMStations landingStations, Network carNetwork,
 			UAMStationConnectionGraph stationConnectionutilities) {
 		this(scenario, uamConfig, parameters, plcpc, plcpccar, landingStations, carNetwork, stationConnectionutilities);
 		this.transitRouter = transitRouter;
 	}
-	
-	public boolean estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+
+	public boolean estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility,
+			double departureTime) {
 		try {
 			if (strategy == null)
 				this.setStrategy();
@@ -73,14 +73,17 @@ public class UAMStrategyRouter {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * This method instantiate the strategy according to the parameter set in the Config file. Any new strategy class created has to be added here.
-	 * @throws Exception 
+	 * This method instantiate the strategy according to the parameter set in the
+	 * Config file. Any new strategy class created has to be added here.
+	 * 
+	 * @throws Exception
 	 */
 	private void setStrategy() {
-		UAMStrategyUtils strategyUtils = new UAMStrategyUtils(this.landingStations, this.uamConfig, this.scenario, this.stationConnectionutilities,
-				  this.carNetwork, this.transitRouter, this.plcpc, this.plcpccar, this.parameters);
+		UAMStrategyUtils strategyUtils = new UAMStrategyUtils(this.landingStations, this.uamConfig, this.scenario,
+				this.stationConnectionutilities, this.carNetwork, this.transitRouter, this.plcpc, this.plcpccar,
+				this.parameters);
 		log.info("Setting UAM routing strategy to " + uamConfig.getUAMRoutingStrategy());
 		switch (uamConfig.getUAMRoutingStrategy()) {
 		case MAXUTILITY:

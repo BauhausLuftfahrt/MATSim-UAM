@@ -37,7 +37,7 @@ import net.bhl.matsim.uam.qsim.UAMSpeedModule;
  * The RunUAMScenario program start a MATSim run including Urban Air Mobility
  * capabilities.
  *
- * @author Milos Balac, Raoul Rothfeld
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  * @version 1.0
  * @since 2019-01-15
  */

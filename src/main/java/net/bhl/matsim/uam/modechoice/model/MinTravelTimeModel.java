@@ -1,5 +1,11 @@
 package net.bhl.matsim.uam.modechoice.model;
 
+/**
+ * This class provides a mode choice model that selects trips based on their travel time.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ *
+ */
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +32,7 @@ import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 
 public class MinTravelTimeModel implements ModeChoiceModel {
-	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
+	final private static Logger logger = Logger.getLogger(MinTravelTimeModel.class);
 
 	final private TourFinder tourFinder;
 	final private TourEstimator estimator;
@@ -69,7 +75,8 @@ public class MinTravelTimeModel implements ModeChoiceModel {
 					continue;
 				}
 
-				// Estimates the utility of a whole tour with given trips and modes with which they should be performed.
+				// Estimates the utility of a whole tour with given trips and modes with which
+				// they should be performed.
 				// utility = travel time for this model
 				TourCandidate candidate = estimator.estimateTour(tourModes, tourTrips, tourCandidates);
 

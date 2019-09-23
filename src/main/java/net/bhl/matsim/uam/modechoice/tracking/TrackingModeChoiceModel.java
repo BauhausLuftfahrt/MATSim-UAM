@@ -10,6 +10,12 @@ import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPrediction;
 
+/**
+ * This class provides a mode choice model that tracks car travel times.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class TrackingModeChoiceModel implements ModeChoiceModel {
 	final private ModeChoiceModel delegate;
 	final private TravelTimeTracker tracker;

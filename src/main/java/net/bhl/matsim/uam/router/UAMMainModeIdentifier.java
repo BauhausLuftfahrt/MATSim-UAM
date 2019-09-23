@@ -6,6 +6,12 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.router.MainModeIdentifier;
 
+/**
+ * This class identifies if a trip is using UAM or not.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMMainModeIdentifier implements MainModeIdentifier {
 	private final MainModeIdentifier defaultModeIdentifier;
 

@@ -16,7 +16,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMFleetData;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
@@ -27,6 +26,12 @@ import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
 
+/**
+ * A MATSim Abstract Module for classes used by Qsim for UAM simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMQsimModule extends AbstractModule {
 
 	// private final QSim qsim;

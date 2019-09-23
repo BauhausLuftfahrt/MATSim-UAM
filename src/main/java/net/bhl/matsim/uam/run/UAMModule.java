@@ -53,6 +53,12 @@ import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
 import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
 
+/**
+ * A MATSim Abstract Module for the classes used by the UAM simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMModule extends AbstractModule {
 
 	private UAMManager uamManager;
