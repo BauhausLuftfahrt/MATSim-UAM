@@ -6,6 +6,12 @@ import org.matsim.api.core.v01.population.Person;
 
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
+/**
+ * Class that stores information about a complete UAM trip, including access and
+ * egress legs.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMUtilitiesTrip {
 	public Id<Person> person;
 	public Id<Link> originLink;
@@ -38,7 +44,7 @@ public class UAMUtilitiesTrip {
 		UAMUtilitiesTrip other = (UAMUtilitiesTrip) o;
 		return this.toString().equals(other.toString());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();

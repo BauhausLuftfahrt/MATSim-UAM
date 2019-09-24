@@ -10,6 +10,12 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPrediction;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPredictor;
 
+/**
+ * This class defines the estimator for Taxi mode.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomTaxiEstimator implements ModalTripEstimator {
 	final private CustomCarPredictor predictor;
 	final private CustomModeChoiceParameters parameters;

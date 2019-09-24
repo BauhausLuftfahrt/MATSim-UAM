@@ -36,6 +36,14 @@ import org.matsim.core.utils.io.MatsimXmlWriter;
 import com.google.common.collect.Iterables;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 
+/**
+ * This script creates UAM-including MATSim network and corresponding
+ * uam-vehicles file, which are prerequisites for running a UAM-enabled MATSim
+ * simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class RunCreateUAMScenario {
 
 	static boolean use_z_values = false;
@@ -407,7 +415,7 @@ public class RunCreateUAMScenario {
 				for (Link link : path.get().links) {
 					if (link.getId().toString().contains(name_uam_vertical_link))
 						vtoldistance += link.getLength();
-					
+
 					else
 						cruisedistance += link.getLength();
 				}

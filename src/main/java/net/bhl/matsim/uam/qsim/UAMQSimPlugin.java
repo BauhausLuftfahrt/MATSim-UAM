@@ -18,6 +18,12 @@ import com.google.inject.Module;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
 
+/**
+ * This class provides Qsim resources to the UAMModule.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMQSimPlugin extends AbstractQSimPlugin {
 
 	public UAMQSimPlugin(Config config) {

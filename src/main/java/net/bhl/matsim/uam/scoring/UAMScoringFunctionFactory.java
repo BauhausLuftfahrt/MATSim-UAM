@@ -14,6 +14,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+/**
+ * Create new scoring functions for UAM mode.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	final private ScoringFunctionFactory standardFactory;
@@ -31,17 +37,20 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	public ScoringFunction createNewScoringFunction(Person person) {
 		SumScoringFunction sf = (SumScoringFunction) standardFactory.createNewScoringFunction(person);
 
-		
 		double marginalDisutilityOfDistance = 0.0;
 		double marginalUtilityOfTraveling = 0.0;
-		
-		//double marginalDisutilityOfDistance = params.getScoringParameters(person).marginalUtilityOfMoney
-		//		* params.getScoringParameters(person).modeParams.get("uam").monetaryDistanceCostRate;
-		//double marginalUtilityOfTraveling = params.getScoringParameters(person).modeParams
-		//		.get("uam").marginalUtilityOfTraveling_s;
 
-		//sf.addScoringFunction(
-		//		new UAMScoringFunction(person, marginalDisutilityOfDistance, marginalUtilityOfTraveling, this.network));
+		// double marginalDisutilityOfDistance =
+		// params.getScoringParameters(person).marginalUtilityOfMoney
+		// *
+		// params.getScoringParameters(person).modeParams.get("uam").monetaryDistanceCostRate;
+		// double marginalUtilityOfTraveling =
+		// params.getScoringParameters(person).modeParams
+		// .get("uam").marginalUtilityOfTraveling_s;
+
+		// sf.addScoringFunction(
+		// new UAMScoringFunction(person, marginalDisutilityOfDistance,
+		// marginalUtilityOfTraveling, this.network));
 
 		return sf;
 	}

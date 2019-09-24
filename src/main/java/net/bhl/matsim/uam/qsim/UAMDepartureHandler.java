@@ -19,8 +19,12 @@ import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 
 import com.google.inject.Inject;
 
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-
+/**
+ * This class defines the departure handler for UAM simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMDepartureHandler implements DepartureHandler {
 
 	@Inject
@@ -38,11 +42,20 @@ public class UAMDepartureHandler implements DepartureHandler {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
-				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);				
-				Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); //Gets the uav_interaction1 activity from the passenger plan (defined in the OptimizedUAMIntermodalRoutingModule)
+				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
+				Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); // Gets the
+																											// uav_interaction1
+																											// activity
+																											// from the
+																											// passenger
+																											// plan
+																											// (defined
+																											// in the
+																											// OptimizedUAMIntermodalRoutingModule)
 				passengerEngine.prebookTrip(now, (MobsimPassengerAgent) agent, leg.getRoute().getStartLinkId(),
-						leg.getRoute().getEndLinkId(),
-						now + uav_interaction1.getMaximumDuration() + (accessLeg.getTravelTime() <= 0 ? 1 : accessLeg.getTravelTime())); // added uav_interaction1.getMaximumDuration()
+						leg.getRoute().getEndLinkId(), now + uav_interaction1.getMaximumDuration()
+								+ (accessLeg.getTravelTime() <= 0 ? 1 : accessLeg.getTravelTime())); // added
+																										// uav_interaction1.getMaximumDuration()
 			} else if (agent.getMode().equals("transit_walk") || agent.getMode().equals("access_walk")) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
@@ -50,16 +63,27 @@ public class UAMDepartureHandler implements DepartureHandler {
 					if (!bookedTrips.contains(agent.getId())) {
 						double travelTime = getTravelTime(plan, planElementsIndex);
 						final Leg uamLeg = getUamLeg(plan, planElementsIndex);
-						Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); //Gets the uav_interaction1 activity from the passenger plan (defined in the OptimizedUAMIntermodalRoutingModule)
+						Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); // Gets
+																													// the
+																													// uav_interaction1
+																													// activity
+																													// from
+																													// the
+																													// passenger
+																													// plan
+																													// (defined
+																													// in
+																													// the
+																													// OptimizedUAMIntermodalRoutingModule)
 						passengerEngine.prebookTrip(now, (MobsimPassengerAgent) agent,
 								uamLeg.getRoute().getStartLinkId(), uamLeg.getRoute().getEndLinkId(),
-								now + uav_interaction1.getMaximumDuration() + (travelTime <= 0 ? 1 : travelTime)); // added uav_interaction1.getMaximumDuration()
+								now + uav_interaction1.getMaximumDuration() + (travelTime <= 0 ? 1 : travelTime)); // added
+																													// uav_interaction1.getMaximumDuration()
 						bookedTrips.add(agent.getId());
 					}
 				}
 
-			}
-			else if (agent.getMode().equals("uam"))
+			} else if (agent.getMode().equals("uam"))
 				bookedTrips.remove(agent.getId());
 		}
 

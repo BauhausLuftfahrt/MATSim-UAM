@@ -46,6 +46,12 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
 
+/**
+ * This class defines the predictor for UAM trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomUAMPredictor {
 	public static final String UAM_INTERACTION = "uam_interaction";
 	public static final String TELEPORTATION_LEG_MODE = "uam";
@@ -82,6 +88,10 @@ public class CustomUAMPredictor {
 		this.subscriptions = subscriptions;
 	}
 
+	/**
+	 * @param trip Mode choice trip
+	 * @return A UAMPrediction of a trip containing its utility and travel time.
+	 */
 	public CustomUAMPrediction predictTrip(ModeChoiceTrip trip) {
 		Trip tripInformation = trip.getTripInformation();
 
@@ -94,6 +104,13 @@ public class CustomUAMPredictor {
 		return new CustomUAMPrediction(UAMTrip.maxUtility, UAMTrip.minTravelTime);
 	}
 
+	/**
+	 * @param person        Person to perform the trip
+	 * @param fromLink      Origin link
+	 * @param toLink        Destination link
+	 * @param departureTime Trip departure time
+	 * @return A UAMTripData containing travel time and utility for the given route.
+	 */
 	private UAMTripData calcBestRoute(Person person, Link fromLink, Link toLink, double departureTime) {
 
 		Set<String> modes = new HashSet<>();
@@ -253,6 +270,15 @@ public class CustomUAMPredictor {
 		return new UAMTripData(maxUtility, minTravelTime);
 	}
 
+	/**
+	 * @param person  Person to perform the trip
+	 * @param access  True if it is an access leg, false if it is an egress leg
+	 * @param link    Origin link
+	 * @param time    Trip departure time
+	 * @param station UAM Station, leg destination if access, leg origin if egress
+	 * @param mode    Mode used
+	 * @return The utility of an access or egress leg to a UAM Station
+	 */
 	private double estimateUtilityWrapper(Person person, boolean access, Link link, double time, UAMStation station,
 			String mode) {
 		Coord destinationCoord;
@@ -370,6 +396,15 @@ public class CustomUAMPredictor {
 		return utility;
 	}
 
+	/**
+	 * @param mode              Mode used in the trip
+	 * @param traveltime        Trip travel time
+	 * @param distance          Trip distance
+	 * @param person            Person to perform the trip
+	 * @param croflyDistance_km Trip crowfly distance in km
+	 * @param destinationCoord  Coordinates of the destination
+	 * @return The utility of a trip
+	 */
 	private double estimateUtility(String mode, double traveltime, double distance, Person person,
 			double croflyDistance_km, Coord destinationCoord) {
 		if (mode.equals(TransportMode.walk)) {
@@ -450,6 +485,16 @@ public class CustomUAMPredictor {
 		return Double.NEGATIVE_INFINITY;
 	}
 
+	/**
+	 * @param fromLink               Origin link
+	 * @param toLink                 Destination link
+	 * @param departureTime          Trip departure time
+	 * @param accessMode             Mode used for access leg
+	 * @param bestOriginStation      Selected origin UAM Station
+	 * @param egressMode             Mode used for egress leg
+	 * @param bestDestinationStation Selected destination UAM Station
+	 * @return Travel time of a UAM trip including access and egress travel times.
+	 */
 	private double calcTraveltime(Link fromLink, Link toLink, double departureTime, String accessMode,
 			UAMStation bestOriginStation, String egressMode, UAMStation bestDestinationStation) {
 		double minTravelTime = Double.POSITIVE_INFINITY;

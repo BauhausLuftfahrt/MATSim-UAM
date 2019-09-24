@@ -4,8 +4,10 @@ import net.bhl.matsim.uam.run.RunUAMScenario;
 import org.matsim.run.gui.Gui;
 
 /**
+ * start a MATSim run including Urban Air Mobility capabilities using a
+ * Graphical user interface.
  * 
- * @author raoul.rothfeld
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 @Deprecated

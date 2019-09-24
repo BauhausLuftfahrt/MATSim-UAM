@@ -16,6 +16,12 @@ import org.matsim.api.core.v01.population.Person;
 
 import com.google.inject.Singleton;
 
+/**
+ * This class tracks the predicted travel times for car trips in the {@link TrackingModeChoiceModel}.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class TravelTimeTracker {
 	final private Map<Id<Person>, List<TrackedPrediction>> predictions = new HashMap<>();

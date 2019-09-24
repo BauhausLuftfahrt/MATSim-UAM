@@ -18,6 +18,12 @@ import com.google.inject.Singleton;
 
 import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
 
+/**
+ * This class provides Transit engine resources to the UAMModule.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMTransitPlugin extends AbstractQSimPlugin {
 	public UAMTransitPlugin(Config config) {
 		super(config);

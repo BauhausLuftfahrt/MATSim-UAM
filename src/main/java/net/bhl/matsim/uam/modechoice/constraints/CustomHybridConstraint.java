@@ -8,6 +8,13 @@ import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraint;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 
+/**
+ * This class is a hybrid constraint including the
+ * {@link AdvancedVehicleTripConstraint} and {@link ShortDistanceConstraint}.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomHybridConstraint extends AbstractTripConstraint {
 	final private AdvancedVehicleTripConstraint vehicleConstraint;
 	final private TripConstraint shortDistanceConstraint;

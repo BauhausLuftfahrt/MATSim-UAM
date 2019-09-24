@@ -10,6 +10,12 @@ import ch.ethz.matsim.mode_choice.prediction.TeleportationPrediction;
 import ch.ethz.matsim.mode_choice.prediction.TeleportationPredictor;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
+/**
+ * This class defines the estimator for walk trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomWalkEstimator implements ModalTripEstimator {
 	final private TeleportationPredictor predictor;
 	final private CustomModeChoiceParameters parameters;
@@ -20,8 +26,8 @@ public class CustomWalkEstimator implements ModalTripEstimator {
 		this.parameters = parameters;
 	}
 
-	public CustomWalkEstimator(CustomModeChoiceParameters parameters,
-			TeleportationPredictor predictor, boolean isMinTravelTime) {
+	public CustomWalkEstimator(CustomModeChoiceParameters parameters, TeleportationPredictor predictor,
+			boolean isMinTravelTime) {
 		this(parameters, predictor);
 		this.isMinTravelTime = isMinTravelTime;
 	}
@@ -30,14 +36,16 @@ public class CustomWalkEstimator implements ModalTripEstimator {
 	public TripCandidate estimateTrip(ModeChoiceTrip trip, List<TripCandidate> preceedingTrips) {
 		TeleportationPrediction prediction = predictor.predict(trip);
 		if (isMinTravelTime) {
-			return new TripCandidateWithPrediction(prediction.travelTime, "walk", prediction);  //In case of standard simulation, returns travel time instead of utility.
+			return new TripCandidateWithPrediction(prediction.travelTime, "walk", prediction); // In case of standard
+																								// simulation, returns
+																								// travel time instead
+																								// of utility.
 		}
 
 		double travelTime_min = prediction.travelTime / 60.0;
 
 		double utility = parameters.alphaWalk;
 		utility += parameters.betaTravelTimeWalk_min * travelTime_min;
-
 
 		return new TripCandidateWithPrediction(utility, "walk", prediction);
 	}

@@ -11,6 +11,12 @@ import org.matsim.contrib.dynagent.AbstractDynActivity;
 import org.matsim.contrib.dynagent.DynAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
 
+/**
+ * This class defines the pick up activity for the passenger and its properties.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMPassengerPickupActivity extends AbstractDynActivity implements PassengerPickupActivity {
 
 	private final PassengerEngine passengerEngine;

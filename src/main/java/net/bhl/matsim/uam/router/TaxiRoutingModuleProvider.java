@@ -18,6 +18,12 @@ import com.google.inject.name.Named;
 
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
+/**
+ * This class provides the routing module for Taxi mode.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class TaxiRoutingModuleProvider implements Provider<RoutingModule> {
 
 	@Inject

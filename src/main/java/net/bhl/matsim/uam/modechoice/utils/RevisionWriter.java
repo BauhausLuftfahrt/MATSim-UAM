@@ -17,6 +17,12 @@ import org.matsim.core.controler.listener.StartupListener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * This class searches for the current git revision being used and writes it down.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class RevisionWriter implements StartupListener {
 	final private static Logger logger = Logger.getLogger(RevisionWriter.class);

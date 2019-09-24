@@ -6,6 +6,13 @@ import java.io.IOException;
 import org.matsim.core.controler.events.ShutdownEvent;
 import org.matsim.core.controler.listener.ShutdownListener;
 
+/**
+ * A parallel least cost path calculator shutdown listener for shutdown
+ * notification in the end of a simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class ParallelLeastCostPathCalculatorShutdownListener implements ShutdownListener {
 	final private Closeable resource;
 

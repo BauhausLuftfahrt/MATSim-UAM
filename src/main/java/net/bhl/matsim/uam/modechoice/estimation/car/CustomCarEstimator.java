@@ -10,6 +10,12 @@ import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
+/**
+ * This class defines the estimator for car trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomCarEstimator implements ModalTripEstimator {
 	final private CustomCarPredictor predictor;
 	final private CustomModeChoiceParameters parameters;
@@ -29,12 +35,12 @@ public class CustomCarEstimator implements ModalTripEstimator {
 	@Override
 	public TripCandidate estimateTrip(ModeChoiceTrip trip, List<TripCandidate> preceedingTrips) {
 		CustomCarPrediction prediction = predictor.predict(trip);
-		
-		//In case of standard simulation, returns travel time instead of utility.
+
+		// In case of standard simulation, returns travel time instead of utility.
 		if (isMinTravelTime) {
 			return new TripCandidateWithPrediction(prediction.travelTime, "car", prediction);
 		}
-		
+
 		Person person = trip.getPerson();
 		double travelTime_min = prediction.travelTime / 60.0;
 		double distance_km = prediction.distance * 1e-3;
@@ -57,12 +63,12 @@ public class CustomCarEstimator implements ModalTripEstimator {
 		boolean innerParisOrigin = (boolean) (trip.getTripInformation().getOriginActivity().getAttributes()
 				.getAttribute("innerParis"));
 		boolean home = trip.getTripInformation().getDestinationActivity().getType().equals("home");
-		
+
 		utility += parameters.alphaCar;
 
 		utility += (parameters.betaTravelTimeCar_min
 				+ parameters.betaTravelTImeCarMale * (person.getAttributes().getAttribute("sex").equals("m") ? 1 : 0))
-				* ( travelTime_min + parameters.parkingSearchTimeCar_min);
+				* (travelTime_min + parameters.parkingSearchTimeCar_min);
 		utility += parameters.betaTravelTimeWalk_min * parameters.accessEgressWalkTimeCar_min;
 		utility += parameters.betaShortCar * distance_short;
 		if (!innerParisDes && !innerParisOrigin) {
@@ -70,8 +76,7 @@ public class CustomCarEstimator implements ModalTripEstimator {
 		}
 		if (!innerParisDes) {
 			utility += parameters.betaParking;
-		}
-		else if (residence == 1 && home)
+		} else if (residence == 1 && home)
 			utility += parameters.betaParking / 2.0;
 		if (innerParisDes && !home)
 			utility += parameters.betaParkingCity * (innerParisDes ? 1 : 0);

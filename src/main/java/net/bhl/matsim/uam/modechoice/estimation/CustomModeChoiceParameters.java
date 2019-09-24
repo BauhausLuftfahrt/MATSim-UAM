@@ -9,6 +9,12 @@ import org.apache.log4j.Logger;
 
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
 
+/**
+ * This class stores and provides the parameters used by the mode choice models.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomModeChoiceParameters {
 	private static List<String> MODES = Arrays.asList("car", "pt", "bike", "walk", "car_passenger", "uam");
 	private static List<String> CACHED_MODES = Arrays.asList("car", "pt", "bike", "walk", "uam");

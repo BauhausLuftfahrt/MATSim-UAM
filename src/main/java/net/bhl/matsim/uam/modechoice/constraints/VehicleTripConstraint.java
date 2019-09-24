@@ -12,6 +12,12 @@ import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstrain
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
 
+/**
+ * This class defines the constraint for vehicle modes on trip based models.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class VehicleTripConstraint extends AbstractTripConstraint {
 	final protected Collection<String> constrainedModes;
 	final protected List<ModeChoiceTrip> trips;

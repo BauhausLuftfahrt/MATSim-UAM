@@ -13,6 +13,12 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
+/**
+ * This class defines the constraint for UAM trips and its properties.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMTripConstraint extends AbstractTripConstraint {
 	final private UAMManager manager;
 	final private UAMConfigGroup uamConfig;

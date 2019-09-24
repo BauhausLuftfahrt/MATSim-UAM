@@ -10,6 +10,12 @@ import org.matsim.core.population.PersonUtils;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
 
+/**
+ * This class is used to filter trips according to the person attribute of
+ * "having license" for the car mode.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class LicenseModeAvailability extends DefaultModeAvailability {
 	final private String CAR_MODE = "car";
 
@@ -17,7 +23,7 @@ public class LicenseModeAvailability extends DefaultModeAvailability {
 		super(modes);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public Collection<String> getAvailableModes(List<ModeChoiceTrip> trips) {
 		if (trips.size() > 0) {

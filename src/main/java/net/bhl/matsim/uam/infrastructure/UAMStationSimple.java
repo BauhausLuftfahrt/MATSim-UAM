@@ -4,8 +4,9 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 
 /**
+ * This class defines the UAM Station and its properties.
  * 
- * @author balacm
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 public class UAMStationSimple implements UAMStation {
@@ -38,7 +39,7 @@ public class UAMStationSimple implements UAMStation {
 		this.postFlightTime = postFlightTime;
 		this.defaultWaitTime = defaultWaitTime;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;

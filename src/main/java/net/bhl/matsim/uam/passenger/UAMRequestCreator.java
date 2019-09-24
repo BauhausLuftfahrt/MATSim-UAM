@@ -13,6 +13,12 @@ import com.google.inject.Inject;
 
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 
+/**
+ * This class creates a UAM request. 
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMRequestCreator implements PassengerRequestCreator{
 
 	@Inject List<Dispatcher> dispatchers;

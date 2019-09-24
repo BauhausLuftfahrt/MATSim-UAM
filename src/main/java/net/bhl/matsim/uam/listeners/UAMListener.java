@@ -13,7 +13,6 @@ import org.matsim.core.utils.io.IOUtils;
 
 import com.google.inject.Inject;
 
-import net.bhl.matsim.uam.data.UAMRoutes;
 import net.bhl.matsim.uam.events.UAMData;
 import net.bhl.matsim.uam.events.UAMDemand;
 import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
@@ -23,7 +22,7 @@ import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
 /**
  * This class provides output for the uam usage.
  * 
- * @author balacm
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 public class UAMListener implements IterationEndsListener{

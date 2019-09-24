@@ -18,6 +18,12 @@ import org.matsim.core.controler.listener.IterationEndsListener;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * This class provides output for the {@link TrackingModeChoiceModel} usage.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class TravelTimeTrackerListener
 		implements IterationEndsListener, PersonDepartureEventHandler, PersonArrivalEventHandler {

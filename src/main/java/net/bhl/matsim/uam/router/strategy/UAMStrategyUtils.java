@@ -39,9 +39,9 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 
 /**
- * This class provides the methods used for different UAMStrategies
+ * This class provides the methods used for different UAMStrategies.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyUtils {
 	private final Scenario scenario;
@@ -153,6 +153,12 @@ public class UAMStrategyUtils {
 		return bestMode;
 	}
 
+	/**
+	 * @param distance    Access or egress distance to/from a UAM Station
+	 * @param currentMode mode used for the leg
+	 * @return The mode to be used for access/egress leg based on the minimum
+	 *         walking distance.
+	 */
 	String checkStationAccessMinDistance(double distance, String currentMode) {
 		if (distance <= uamConfig.getWalkDistance()) {
 			return TransportMode.walk;
@@ -161,6 +167,15 @@ public class UAMStrategyUtils {
 		}
 	}
 
+	/**
+	 * @param access   A boolean flag to check if it is an access leg to a UAM
+	 *                 Station or an egress leg from a UAM Station
+	 * @param facility Origin or Destination facility
+	 * @param time     Trip departure time
+	 * @param station  Origin or Destination UAM Station
+	 * @param mode     Mode used for the trip leg
+	 * @return The trip leg distance
+	 */
 	double estimateDistance(boolean access, Facility<?> facility, double time, UAMStation station, String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;

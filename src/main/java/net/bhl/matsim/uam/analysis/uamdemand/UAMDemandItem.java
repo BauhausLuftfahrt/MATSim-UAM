@@ -6,6 +6,11 @@ import org.matsim.api.core.v01.population.Person;
 
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
+/**
+ * This class stores information about a UAM trip.
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMDemandItem {
 	public Id<Person> personId;
 	public Coord origin;
@@ -24,6 +29,7 @@ public class UAMDemandItem {
 	public String accessMode;
 	public String egressMode;
 	public boolean uamTrip;
+
 	public UAMDemandItem(Id<Person> personId, Coord origin, Coord originStationCoord, Coord destinationStationCoord,
 			Coord destination, Id<UAMStation> originStationId, Id<UAMStation> destinationStationId, double startTime,
 			double arrivalAtStationTime, double takeOffTime, double landingTime, double departureFromStationTime,
@@ -47,13 +53,13 @@ public class UAMDemandItem {
 		this.egressMode = egressMode;
 		this.uamTrip = uamTrip;
 	}
-	
+
 	public void setOriginStationId(Id<UAMStation> originStationId) {
 		this.originStationId = originStationId;
 	}
+
 	public void setTakeOffTime(double takeOffTime) {
 		this.takeOffTime = takeOffTime;
 	}
 
-	
 }
