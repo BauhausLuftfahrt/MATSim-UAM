@@ -236,16 +236,14 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			e.printStackTrace();
 		}
 		routeUAV.setDistance(distance); // adds distance to the route, so it appears in the output plans file
-		routeUAV.setTravelTime(this.stationConnectionutilities.getTravelTime(uamRoute.bestOriginStation.getId(),
-				uamRoute.bestDestinationStation.getId())); // sets the travel time for the route, so it appears in the
-															// output plans file
-		uavLeg.setTravelTime(this.stationConnectionutilities.getTravelTime(uamRoute.bestOriginStation.getId(),
-				uamRoute.bestDestinationStation.getId())); // sets the travel time for the leg, so it appears in the
-															// output plans file
+
+		double travelTime = this.stationConnectionutilities.getTravelTime(uamRoute.bestOriginStation.getId(),
+				uamRoute.bestDestinationStation.getId());
+		routeUAV.setTravelTime(travelTime); // sets the travel time for the route, so it appears in output plans
+		uavLeg.setTravelTime(travelTime); // sets the travel time for the leg, so it appears in output plans
 
 		trip.add(uavLeg);
-		currentTime += this.stationConnectionutilities.getTravelTime(uamRoute.bestOriginStation.getId(),
-				uamRoute.bestDestinationStation.getId());
+		currentTime += travelTime;
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 									// station
