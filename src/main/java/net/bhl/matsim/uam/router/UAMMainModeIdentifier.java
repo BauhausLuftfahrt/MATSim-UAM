@@ -19,7 +19,7 @@ public class UAMMainModeIdentifier implements MainModeIdentifier {
 			if ( pe instanceof Leg && (((Leg) pe).getMode().equals( UAMIntermodalRoutingModule.TELEPORTATION_UAM_LEG_MODE ) 
 					|| ((Leg)pe).getMode().equals(UAMIntermodalRoutingModule.UAM_ACCESS_WALK) 
 					|| ((Leg)pe).getMode().equals(UAMIntermodalRoutingModule.UAM_EGRESS_WALK)
-					|| ((Leg)pe).getMode().equals(UAMIntermodalRoutingModule.UAM_ACCESS_WALK) 
+					|| ((Leg)pe).getMode().equals(UAMIntermodalRoutingModule.UAM_ACCESS_BIKE)
 					|| ((Leg)pe).getMode().equals(UAMIntermodalRoutingModule.UAM_EGRESS_BIKE)))  {
 				return UAMIntermodalRoutingModule.TELEPORTATION_UAM_LEG_MODE;
 			}
