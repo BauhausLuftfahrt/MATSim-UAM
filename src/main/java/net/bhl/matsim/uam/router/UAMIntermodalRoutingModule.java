@@ -59,6 +59,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	private final int counterLimit = 10;
 	private int counterWarningWaitingTimeSlot = 0;
 	private int counterWarningWaitingTimeNull = 0;
+	private int counterWarningConvertedToWalk = 0;
 
 	private final Scenario scenario;
 	private LeastCostPathCalculator plcpccar;
@@ -112,8 +113,14 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		if (!uamRoutes.contains(person.getId(), departureTime)) {
 			boolean success = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
 			if (!success) {
-				log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
-						+ " could be calculated. Trip has been converted to walk.");
+				if (counterWarningConvertedToWalk < counterLimit)
+					log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
+							+ " could be calculated. Trip has been converted to walk.");
+
+				if (counterWarningConvertedToWalk == counterLimit - 1)
+					log.warn("No more UAM prediction warnings will be reported.");
+
+				counterWarningConvertedToWalk++;
 				Leg l = createTeleportationLeg(routeFactory, populationFactory,
 						network.getLinks().get(fromFacility.getLinkId()),
 						network.getLinks().get(toFacility.getLinkId()), TransportMode.walk, TransportMode.walk);
