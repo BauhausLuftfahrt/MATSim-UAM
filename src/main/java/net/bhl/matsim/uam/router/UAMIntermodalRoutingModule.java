@@ -56,6 +56,10 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 	public static final String UAM_INTERACTION = "uam_interaction";
 
+	private final int counterLimit = 10;
+	private int counterWarningWaitingTimeSlot = 0;
+	private int counterWarningWaitingTimeNull = 0;
+
 	private final Scenario scenario;
 	private LeastCostPathCalculator plcpccar;
 	private ParallelLeastCostPathCalculator plcpc;
@@ -183,14 +187,26 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 					.getWaitingTimes()[index];
 			currentTime += waitTime;
 		} catch (IndexOutOfBoundsException e) {
-			log.warn("UAM waiting time requestes for non-existent time slot. Using default value of "
-					+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
-					+ uamRoute.bestOriginStation.getId().toString());
+			if (counterWarningWaitingTimeSlot < counterLimit)
+				log.warn("UAM waiting time requests for non-existent time slot. Using default value of "
+						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
+						+ uamRoute.bestOriginStation.getId().toString());
+
+			if (counterWarningWaitingTimeSlot == counterLimit - 1)
+				log.warn("No more waiting time warnings will be reported.");
+
+			counterWarningWaitingTimeSlot++;
 			currentTime += uamRoute.bestOriginStation.getDefaultWaitTime(); // Added wait time of Origin Station
 		} catch (NullPointerException e) {
-			log.warn("UAM waiting time not available. Using default value of "
-					+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
-					+ uamRoute.bestOriginStation.getId().toString());
+			if (counterWarningWaitingTimeNull < counterLimit)
+				log.warn("UAM waiting time not available. Using default value of "
+						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
+						+ uamRoute.bestOriginStation.getId().toString());
+
+			if (counterWarningWaitingTimeNull == counterLimit - 1)
+				log.warn("No more waiting time warnings will be reported.");
+
+			counterWarningWaitingTimeNull++;
 			currentTime += uamRoute.bestOriginStation.getDefaultWaitTime(); // Added wait time of Origin Station
 		}
 
