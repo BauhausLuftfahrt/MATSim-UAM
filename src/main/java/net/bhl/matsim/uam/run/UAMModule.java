@@ -141,6 +141,7 @@ public class UAMModule extends AbstractModule {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(network,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 		} else {
+			// TODO CHECK if this is really UAM only network
 			return DefaultParallelLeastCostPathCalculator.create(paralelRouters, new DijkstraFactory(), network,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime);
 		}
