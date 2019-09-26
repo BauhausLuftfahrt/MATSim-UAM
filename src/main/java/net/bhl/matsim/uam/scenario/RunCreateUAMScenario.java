@@ -64,7 +64,7 @@ public class RunCreateUAMScenario {
 	static double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	static double default_link_capacity = 999999.9;
-	static double default_link_freespeed = 999999.9;
+	static double default_link_freespeed = 300;
 
 	static double NO_LENGTH = -1;
 
