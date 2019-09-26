@@ -26,7 +26,7 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 
 	@Override
 	public double getMaximumVelocity(QVehicle vehicle, Link link, double time) {
-
+		// TODO make use of link attribute (if exist && attr == vertical, then ...)
 		if (link.getId().toString().startsWith("uam_vl")) {
 			return Math.min(link.getFreespeed(), this.mapVehicleVerticalSpeeds.get(vehicle.getId().toString()));
 
