@@ -16,6 +16,7 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 
 	public UAMLinkSpeedCalculator(Map<String, Double> mapVehicleVerticalSpeeds,
 			Map<String, Double> mapVehicleHorizontalSpeeds, LinkSpeedCalculator delegate, double crossingPenalty) {
+		// TODO use mapping of vehicle types instead of vehicles themselves!
 		this.mapVehicleVerticalSpeeds = mapVehicleVerticalSpeeds;
 		this.mapVehicleHorizontalSpeeds = mapVehicleHorizontalSpeeds;
 
