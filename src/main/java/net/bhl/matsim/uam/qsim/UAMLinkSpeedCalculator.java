@@ -39,23 +39,23 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 			// Non-flight link
 		}
 
-		delegate.getMaximumVelocity(vehicle, link, time);
+		return delegate.getMaximumVelocity(vehicle, link, time);
 
-// TODO can this be removed?
+		// TODO can this be removed?
 
-//		boolean isMajor = true;
-//
-//		for (Link other : link.getToNode().getInLinks().values()) {
-//			if (other.getCapacity() >= link.getCapacity())
-//				isMajor = false;
-//		}
-//
-//		if (isMajor || link.getToNode().getInLinks().size() == 1) {
-//			return delegate.getMaximumVelocity(vehicle, link, time);
-//		} else {
-//			double travelTime = link.getLength() / ;
-//			travelTime += crossingPenalty;
-//			return link.getLength() / travelTime;
-//		}
+		//		boolean isMajor = true;
+		//
+		//		for (Link other : link.getToNode().getInLinks().values()) {
+		//			if (other.getCapacity() >= link.getCapacity())
+		//				isMajor = false;
+		//		}
+		//
+		//		if (isMajor || link.getToNode().getInLinks().size() == 1) {
+		//			return delegate.getMaximumVelocity(vehicle, link, time);
+		//		} else {
+		//			double travelTime = link.getLength() / ;
+		//			travelTime += crossingPenalty;
+		//			return link.getLength() / travelTime;
+		//		}
 	}
 }
