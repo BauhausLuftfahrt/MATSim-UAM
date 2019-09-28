@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
@@ -122,7 +123,7 @@ public class RunUAMScenario {
 
 		filter = new TransportModeNetworkFilter(network);
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		Network networkCar = NetworkUtils.createNetwork();
 		filter.filter(networkCar, modesCar);
 
