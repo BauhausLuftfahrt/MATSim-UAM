@@ -46,7 +46,6 @@ public class RunUAMScenario {
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
-	private static double delay;
 	private static Config config;
 	private static Controler controler;
 	private static Scenario scenario;
@@ -73,10 +72,6 @@ public class RunUAMScenario {
 				path = cmd.getOption("config-path").get();
 			else
 				path = "./config.xml";
-
-			delay = 3.0;
-			if (cmd.hasOption("delay-intersection"))
-				delay = Double.parseDouble(cmd.getOptionStrict("delay-intersection"));
 
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -153,7 +148,7 @@ public class RunUAMScenario {
 		}
 		controler.addOverridingModule(new CustomModule());
 		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar));
-		controler.addOverridingModule(new UAMSpeedModule(delay, uamReader.getMapVehicleVerticalSpeeds(),
+		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
 

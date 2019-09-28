@@ -177,10 +177,9 @@ public class RunCalculateUAMTravelTimes {
 			}
 		});
 
-		double delay = 3.0;
 		DefaultLinkSpeedCalculator delegate = new DefaultLinkSpeedCalculator();
 		UAMLinkSpeedCalculator speedCalculator = new UAMLinkSpeedCalculator(uamReader.getMapVehicleVerticalSpeeds(),
-				uamReader.getMapVehicleHorizontalSpeeds(), delegate, delay);
+				uamReader.getMapVehicleHorizontalSpeeds(), delegate);
 		CustomCarDisutility customCarDisutility = new CustomCarDisutility(speedCalculator, travelTime);
 		LeastCostPathCalculatorFactory pathCalculatorFactory = injector
 				.getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
