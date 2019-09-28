@@ -3,12 +3,12 @@ package net.bhl.matsim.uam.data;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMFlightSegments;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.scenario.RunCreateUAMScenario;
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 
 import java.util.HashMap;
@@ -65,7 +65,9 @@ public class UAMStationConnectionGraph {
                 for (Link link : links) {
                     distance += link.getLength();
 
-                    if (!link.getId().toString().startsWith(RunCreateUAMScenario.name_uam_horizontal_link))
+                    String flightSegment = (String) link.getAttributes().getAttribute(UAMFlightSegments.ATTRIBUTE);
+
+                    if (flightSegment.equals(UAMFlightSegments.VERTICAL))
                         travelTime += link.getLength() / verticalSpeed;
                     else
                         travelTime += link.getLength() / horizontalSpeed;
