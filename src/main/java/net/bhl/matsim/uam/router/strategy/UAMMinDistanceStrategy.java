@@ -2,20 +2,15 @@ package net.bhl.matsim.uam.router.strategy;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.facilities.Facility;
 
-import net.bhl.matsim.uam.data.UAMAccessRouteData;
+import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
@@ -40,8 +35,8 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
-		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
-		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);
+		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
+		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
 		String bestModeEgress = TransportMode.walk;
 
 		Set<String> modes = strategyUtils.getModes();
@@ -52,26 +47,20 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 				if (stationOrigin == stationDestination)
 					continue;
 				//collects the distance between stations and stores it
-				Future<Path> uavPath = strategyUtils.getFlyDistance(stationOrigin.getLocationLink().getFromNode(),
-						stationDestination.getLocationLink().getToNode());
-				double flyDistance = 0;
-				try {
-					for (Link link : uavPath.get().links) {
-						flyDistance += link.getLength();
-					}
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
+				double flyDistance = strategyUtils.getFlightDistance(stationOrigin, stationDestination);
+
 				//fly time between stations
-				double flyTime = strategyUtils.getFlyTime(stationOrigin, stationDestination);
-				double accessTime = strategyUtils.estimateTime(true, fromFacility, departureTime, stationOrigin, accessRoutesData.get(stationOrigin.getId()).getAccessModeDistance());
+				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
+				double accessTime = strategyUtils.estimateAccessLeg(true, fromFacility, departureTime,
+						stationOrigin, accessRoutesData.get(stationOrigin.getId()).getShortestDistanceMode()).travelTime;
 				//updates departureTime 
 				double currentDepartureTime = departureTime + accessTime+flyTime;
 				//Calculates the shortest path
 				for (String mode : modes) {
 					//Calculates the distance for the egress routes using updated departureTime
-					double egressDistance = strategyUtils.estimateDistance(false, toFacility, currentDepartureTime, stationDestination, mode);
-					double totalDistance = accessRoutesData.get(stationOrigin.getId()).getDistance() + flyDistance + egressDistance;
+					double egressDistance = strategyUtils.estimateAccessLeg(false, toFacility,
+							currentDepartureTime, stationDestination, mode).distance;
+					double totalDistance = accessRoutesData.get(stationOrigin.getId()).getShortestAccessDistance() + flyDistance + egressDistance;
 					if (totalDistance < minTotalDistance ) {
 						minTotalDistance = totalDistance;
 						bestStationOrigin = stationOrigin;
@@ -82,7 +71,7 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 			}
 		}
 			
-		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getAccessModeDistance(), bestStationOrigin,
+		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getShortestDistanceMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}
 	

@@ -72,7 +72,6 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 
 	@Override
 	public RoutingModule get() {
-		Set<String> modes = uamConfig.getAvailableAccessModes();
 		TravelTime travelTime = travelTimes.get(TransportMode.car);
 
 		TravelDisutility travelDisutility = travelDisutilityFactories.get(TransportMode.car)
@@ -80,13 +79,12 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 
 		LeastCostPathCalculator pathCalculator = lcpcf.createPathCalculator(networkCar, travelDisutility, travelTime);
 
-		// returns the OptimizedUAMIntermodalRoutingModule containing or not transit routing modules
 		if (scenario.getConfig().transit().isUseTransit()) {
-			return new UAMIntermodalRoutingModule(scenario, uamManager.getStations(), modes, plcpc, pathCalculator,
+			return new UAMCachedIntermodalRoutingModule(scenario, uamManager.getStations(), plcpc, pathCalculator,
 					networkCar, transitRouter, uamConfig, transitConfig, transitRouting, parameters, waitingData,
 					stationConnectionutilities, subscriptionFinder);
 		} else {
-			return new UAMIntermodalRoutingModule(scenario, uamManager.getStations(), modes, plcpc, pathCalculator,
+			return new UAMCachedIntermodalRoutingModule(scenario, uamManager.getStations(), plcpc, pathCalculator,
 					networkCar, uamConfig, transitConfig, parameters, waitingData, stationConnectionutilities,
 					subscriptionFinder);
 		}

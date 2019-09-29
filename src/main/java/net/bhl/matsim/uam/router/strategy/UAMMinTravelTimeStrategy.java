@@ -1,6 +1,6 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import net.bhl.matsim.uam.data.UAMAccessRouteData;
+import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
@@ -34,9 +34,9 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
-		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
+		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
 		
-		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);	
+		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
 		//UAM flight time  + access and egress travel time
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		Set<String> modes = strategyUtils.getModes();
@@ -46,14 +46,15 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 				if (stationOrigin == stationDestination)
 					continue;
 				//fly time between stations
-				double flyTime = strategyUtils.getFlyTime(stationOrigin, stationDestination);
+				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
 				//updates departureTime 
-				double currentDepartureTime = departureTime + accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime()+flyTime;
+				double currentDepartureTime = departureTime + accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime;
 				for (String mode : modes) {
 					//Calculates the time travel for the egress routes
-					double egressTravelTime = strategyUtils.estimateTime(false, toFacility, currentDepartureTime, stationDestination, mode);
+					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility,
+							currentDepartureTime, stationDestination, mode).travelTime;
 					//Calculates the minimum total time
-					double totalTime = accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime()+ flyTime + egressTravelTime;
+					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime()+ flyTime + egressTravelTime;
 					if (totalTime < minTotalTime ) {
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
@@ -64,7 +65,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 			}
 		}		
 
-		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getAccessModeTime(), bestStationOrigin,
+		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}
 

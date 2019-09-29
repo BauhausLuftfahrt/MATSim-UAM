@@ -1,6 +1,6 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import net.bhl.matsim.uam.data.UAMAccessRouteData;
+import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
@@ -36,14 +36,14 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
         UAMStation bestStationOrigin = null, bestStationDestination = null;
         Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
         Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
-        Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = strategyUtils.getAccessRouteData(true,
+        Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = strategyUtils.getAccessOptions(true,
                 stationsOrigin, fromFacility, departureTime);
         double minAccessTime = Double.POSITIVE_INFINITY;
 
         for (UAMStation stationOrigin : stationsOrigin) {
-            if (accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime() < minAccessTime) {
+            if (accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() < minAccessTime) {
                 bestStationOrigin = stationOrigin;
-                minAccessTime = accessRoutesData.get(stationOrigin.getId()).getAccessTravelTime();
+                minAccessTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime();
             }
         }
         // egress trips
@@ -54,13 +54,13 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
             if (bestStationOrigin == stationDestination)
                 continue;
             // fly time between stations
-            double flyTime = strategyUtils.getFlyTime(bestStationOrigin, stationDestination);
+            double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
             // updates departureTime
             double currentDepartureTime = departureTime
-                    + accessRoutesData.get(bestStationOrigin.getId()).getAccessTravelTime() + flyTime;
+                    + accessRoutesData.get(bestStationOrigin.getId()).getFastestAccessTime() + flyTime;
             for (String mode : modes) {
-                double egressTravelTime = strategyUtils.estimateTime(false, toFacility, currentDepartureTime,
-                        stationDestination, mode);
+                double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
+                        stationDestination, mode).travelTime;
                 if (egressTravelTime < minEgressTime) {
                     bestStationDestination = stationDestination;
                     minEgressTime = egressTravelTime;
@@ -69,7 +69,7 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
             }
         }
 
-        return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getAccessModeTime(), bestStationOrigin,
+        return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
                 bestStationDestination, bestModeEgress);
     }
 

@@ -9,7 +9,7 @@ public class UAMFlightLeg {
     public final double distance;
     public final List<Link> links;
 
-    UAMFlightLeg(double travelTime, double distance, List<Link> links) {
+    public UAMFlightLeg(double travelTime, double distance, List<Link> links) {
         this.travelTime = travelTime;
         this.distance = distance;
         this.links = links;

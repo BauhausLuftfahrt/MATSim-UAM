@@ -60,11 +60,13 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
 		for (UAMStation stationDestination : stationsDestination) {
 			if (bestStationOrigin == stationDestination)
 				continue;
-			double flyTime = strategyUtils.getFlyTime(bestStationOrigin, stationDestination);
+			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
 			//updated departureTime 				
-			double currentDepartureTime = departureTime + strategyUtils.estimateTime(true, fromFacility, departureTime, bestStationOrigin, bestModeAccess)+flyTime;
+			double currentDepartureTime = departureTime + strategyUtils.estimateAccessLeg(true, fromFacility,
+					departureTime, bestStationOrigin, bestModeAccess).travelTime + flyTime;
 			for (String mode : modes) {
-				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility, currentDepartureTime, stationDestination, mode);
+				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility,
+						currentDepartureTime, stationDestination, mode);
 				if (egressUtility > bestUtilityEgress) {
 					bestUtilityEgress = egressUtility;
 					bestModeEgress = mode;
@@ -73,7 +75,8 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
 
 				if (strategyUtils.getParameters().storeUAMUtilities != 0) {
 					UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
-							stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), false, egressUtility, mode, departureTime));
+							stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(),
+							false, egressUtility, mode, departureTime));
 				}
 			}
 		}

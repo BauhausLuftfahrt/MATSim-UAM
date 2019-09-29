@@ -97,8 +97,7 @@ public class UAMMaxUtilityStrategy implements UAMStrategy{
 				double income;
 				if (person.getAttributes().getAttribute("income") != null) {
 					income = (double) person.getAttributes().getAttribute("income");
-				}
-				else {
+				} else {
 					income = strategyUtils.getParameters().averageIncome;
 				}				
 				double distance = CoordUtils.calcEuclideanDistance(stationDestination.getLocationLink().getCoord(),
@@ -107,9 +106,9 @@ public class UAMMaxUtilityStrategy implements UAMStrategy{
 						* distance * 1e-3;
 				stationPair.uamIncomeUtility = uamIncomeUtility;								
 				//fly time between stations
-				double flyTime = strategyUtils.getFlyTime(stationOrigin, stationDestination);				
+				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
 				double utilityBeforeEgress = accessUtility + uamWaitUtility + uamFlightUtility + uamIncomeUtility;
-				double timeToAccess = strategyUtils.estimateTime(true, fromFacility, departureTime, stationOrigin, accessModeMap.get(stationOrigin.getId()));
+				double timeToAccess = strategyUtils.estimateAccessLeg(true, fromFacility, departureTime, stationOrigin, accessModeMap.get(stationOrigin.getId())).travelTime;
 				//time of egress
 				double currentTimeBeforeEgress = timeToAccess + flyTime;
 				stationPair.currentTimeBeforeEgress = currentTimeBeforeEgress;							

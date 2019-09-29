@@ -5,8 +5,8 @@
 
 	<module name="uam" >
 		<param name="inputUAMFile" value="uam.xml" />
-		<param name="availableAccessModes" value="walk" />
-		<param name="parallelRouters" value="8" />
+		<param name="availableAccessModes" value="walk,car,bike" />
+		<param name="parallelRouters" value="4" />
 		<param name="searchRadius" value="5050" />
 		<param name="walkDistance" value="500" />
 		<param name="routingStrategy" value="mintraveltime" />
@@ -16,7 +16,7 @@
 	
 	<module name="global" >
 		<param name="coordinateSystem" value="Atlantis" />
-		<param name="numberOfThreads" value="24" />
+		<param name="numberOfThreads" value="4" />
 		<param name="randomSeed" value="4711" />
 	</module>
 
@@ -38,10 +38,10 @@
 	</module>
 
 	<module name="qsim">
-		<param name="endTime" value="30:00:00" />
-		<param name="numberOfThreads" value="24" />
+		<param name="endTime" value="16:00:00" />
+		<param name="numberOfThreads" value="4" />
 		<param name="flowCapacityFactor" value="0.1" />
-		<param name="storageCapacityFactor" value="0.10" />
+		<param name="storageCapacityFactor" value="0.1" />
 		<param name="mainMode" value="car,access_uam_car,egress_uam_car"/>
 	</module>
 
@@ -146,15 +146,11 @@
 	<module name="strategy">
 		<param name="maxAgentPlanMemorySize" value="1" /> <!-- 0 means unlimited -->
 
-		<param name="ModuleProbability_1" value="0.70" />
+		<param name="ModuleProbability_1" value="0.7" />
 		<param name="Module_1" value="KeepLastSelected" />
 
-		<param name="ModuleProbability_2" value="1000.05" />
-		<param name="Module_2" value="custom" />
-		<param name="ModuleDisableAfterIteration_2" value="40" />
-
-	
-		
+		<param name="ModuleProbability_2" value="0.3" />
+		<param name="Module_2" value="custom" />	
 	</module>
 
   <module name="linkStats" >
