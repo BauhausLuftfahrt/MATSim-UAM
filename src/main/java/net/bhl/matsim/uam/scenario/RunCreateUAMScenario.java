@@ -67,7 +67,7 @@ public class RunCreateUAMScenario {
 	private static double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	private static double default_link_capacity = 120; // vehicles per hour
-	private static double default_link_freespeed = 90; // in m/s
+	private static double max_link_freespeed = 90; // in m/s
 
 	private static double NO_LENGTH = -1;
 
@@ -95,7 +95,7 @@ public class RunCreateUAMScenario {
 			detour_factor = Double.parseDouble(args[j++]);
 
 		if (withSpeed)
-			default_link_freespeed = Double.parseDouble(args[j++]);
+			max_link_freespeed = Double.parseDouble(args[j++]);
 
 		if (withVehicles)
 			vehicleInput = folder + "\\" + args[j++];
@@ -341,7 +341,7 @@ public class RunCreateUAMScenario {
 	}
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes) throws Exception {
-		addLink(network, from, to, modes, default_link_capacity, default_link_freespeed);
+		addLink(network, from, to, modes, default_link_capacity, max_link_freespeed);
 	}
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes, double capacity,
@@ -388,7 +388,7 @@ public class RunCreateUAMScenario {
 
 		Link link = network.getFactory().createLink(id, fromNode, toNode);
 		link.setLength(length);
-		link.setFreespeed(freespeed);
+		link.setFreespeed(Math.min(freespeed, max_link_freespeed));
 		link.setCapacity(capacity);
 		link.setNumberOfLanes(permlanes);
 		link.setAllowedModes(modes);
