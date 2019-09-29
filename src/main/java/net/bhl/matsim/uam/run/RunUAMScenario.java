@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
@@ -46,7 +47,6 @@ public class RunUAMScenario {
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
-	private static double delay;
 	private static Config config;
 	private static Controler controler;
 	private static Scenario scenario;
@@ -73,10 +73,6 @@ public class RunUAMScenario {
 				path = cmd.getOption("config-path").get();
 			else
 				path = "./config.xml";
-
-			delay = 3.0;
-			if (cmd.hasOption("delay-intersection"))
-				delay = Double.parseDouble(cmd.getOptionStrict("delay-intersection"));
 
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -127,7 +123,7 @@ public class RunUAMScenario {
 
 		filter = new TransportModeNetworkFilter(network);
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		Network networkCar = NetworkUtils.createNetwork();
 		filter.filter(networkCar, modesCar);
 
@@ -153,7 +149,7 @@ public class RunUAMScenario {
 		}
 		controler.addOverridingModule(new CustomModule());
 		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar));
-		controler.addOverridingModule(new UAMSpeedModule(delay, uamReader.getMapVehicleVerticalSpeeds(),
+		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
 

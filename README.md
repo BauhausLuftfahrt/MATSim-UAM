@@ -32,6 +32,10 @@ List of all current features provided by MATSim-UAM with the version of feature 
 ## Versions and Change Log
 
 ### v1.1
+Input/output:
+- UAM-enabled MATSim networks are required to provide an flight attribute indicating every flight links' flight segment (e.g. vertical or horizontal). **No backwards compatibility of input files.**
+
+Logging:
 - Limited waiting time and failed UAM routing warnings to ten occurrences
 
 ### v1

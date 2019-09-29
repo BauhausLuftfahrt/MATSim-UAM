@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.bhl.matsim.uam.data.*;
+import net.bhl.matsim.uam.data.UAMFlightLeg;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -33,10 +35,6 @@ import org.matsim.pt.config.TransitConfigGroup;
 import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.data.UAMRoutes;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
-import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
 import net.bhl.matsim.uam.events.UAMUtilitiesData;
@@ -47,8 +45,6 @@ import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFind
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
 
 public class CustomUAMPredictor {
-	public static final String UAM_INTERACTION = "uam_interaction";
-	public static final String TELEPORTATION_LEG_MODE = "uam";
 
 	private static final Logger log = Logger.getLogger(CustomUAMPredictor.class);
 
@@ -196,8 +192,14 @@ public class CustomUAMPredictor {
 				tripUtility += uamWaitUtility;
 
 				// uam flight
-				double uamFlightUtility = this.stationConnectionutilities.getUtility(stationOrigin.getId(),
+				UAMFlightLeg leg = this.stationConnectionutilities.getFlightLeg(stationOrigin.getId(),
 						stationDestination.getId());
+
+				double uamFlightUtility = parameters.alphaUAM;
+				uamFlightUtility += parameters.betaTravelTimeUAM_min * leg.travelTime / 60.0;
+				uamFlightUtility += parameters.betaWaitUAM_min *
+						(stationOrigin.getPreFlightTime() + stationDestination.getPostFlightTime()) / 60.0;
+
 				utilities.uamFlightUtility = uamFlightUtility;
 				tripUtility += uamFlightUtility;
 
@@ -494,8 +496,8 @@ public class CustomUAMPredictor {
 			break;
 		}
 		// UAM flight time
-		minTravelTime += this.stationConnectionutilities.getTravelTime(bestOriginStation.getId(),
-				bestDestinationStation.getId());
+		minTravelTime += this.stationConnectionutilities.getFlightLeg(bestOriginStation.getId(),
+				bestDestinationStation.getId()).travelTime;
 		// Egress TravelTime
 		Link egressStationLink = bestDestinationStation.getLocationLink();
 		Link destinationLink = toLink;

@@ -16,13 +16,11 @@ public class UAMSpeedModule extends AbstractModule {
 
 	final private Map<String, Double> mapVehicleVerticalSpeeds;
 	final private Map<String, Double> mapVehicleHorizontalSpeeds;
-	final private double crossingPenalty;
 
-	public UAMSpeedModule(double crossingPenalty, Map<String, Double> mapVehicleVerticalSpeeds,
+	public UAMSpeedModule(Map<String, Double> mapVehicleVerticalSpeeds,
 			Map<String, Double> mapVehicleHorizontalSpeeds) {
 		this.mapVehicleVerticalSpeeds = mapVehicleVerticalSpeeds;
 		this.mapVehicleHorizontalSpeeds = mapVehicleHorizontalSpeeds;
-		this.crossingPenalty = crossingPenalty;
 	}
 
 	@Override
@@ -43,8 +41,6 @@ public class UAMSpeedModule extends AbstractModule {
 	@Singleton
 	public UAMLinkSpeedCalculator provideUAMLinkSpeedCalculator() {
 		DefaultLinkSpeedCalculator delegate = new DefaultLinkSpeedCalculator();
-		return new UAMLinkSpeedCalculator(mapVehicleVerticalSpeeds, mapVehicleHorizontalSpeeds, delegate,
-				crossingPenalty);
+		return new UAMLinkSpeedCalculator(mapVehicleVerticalSpeeds, mapVehicleHorizontalSpeeds, delegate);
 	}
-
 }

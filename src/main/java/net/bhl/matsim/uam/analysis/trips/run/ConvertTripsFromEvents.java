@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
@@ -35,7 +36,7 @@ public class ConvertTripsFromEvents {
 
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
-				UAMIntermodalRoutingModule.UAM_INTERACTION);
+				UAMModes.UAM_INTERACTION);
 
 		HomeActivityTypes homeActivityTypes = new BasicHomeActivityTypes();
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());

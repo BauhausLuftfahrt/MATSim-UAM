@@ -1,51 +1,36 @@
 package net.bhl.matsim.uam.router;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
+import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
+import ch.ethz.matsim.baseline_scenario.transit.routing.BaselineTransitRoutingModule;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.*;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
+import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.api.core.v01.population.PopulationFactory;
-import org.matsim.api.core.v01.population.Route;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.population.routes.NetworkRoute;
 import org.matsim.core.population.routes.RouteFactories;
-import org.matsim.core.router.CompositeStageActivityTypes;
-import org.matsim.core.router.LinkWrapperFacility;
-import org.matsim.core.router.RoutingModule;
-import org.matsim.core.router.StageActivityTypes;
-import org.matsim.core.router.StageActivityTypesImpl;
+import org.matsim.core.router.*;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.config.TransitConfigGroup;
 import org.matsim.pt.router.TransitRouter;
-import org.matsim.vehicles.Vehicle;
 
-import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
-import ch.ethz.matsim.baseline_scenario.transit.routing.BaselineTransitRoutingModule;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
-import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-@Deprecated
-public class UAMIntermodalRoutingModule implements RoutingModule {
+public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 	private final int counterLimit = 10;
 	private int counterWarningWaitingTimeSlot = 0;
@@ -54,41 +39,41 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 	private final Scenario scenario;
 	private LeastCostPathCalculator plcpccar;
-	private ParallelLeastCostPathCalculator plcpc;
 	private Network carNetwork;
 	private BaselineTransitRoutingModule transitRouterDelegate;
 	private WaitingStationData waitingData;
-	private UAMStationConnectionGraph stationConnectionutilities;
+	private UAMStationConnectionGraph stationConnections;
 	private UAMStrategyRouter strategyRouter;
-	private static final Logger log = Logger.getLogger(UAMIntermodalRoutingModule.class);
+	private static final Logger log = Logger.getLogger(UAMCachedIntermodalRoutingModule.class);
 
 	// constructor used in case of simulating PT
-	public UAMIntermodalRoutingModule(Scenario scenario, UAMStations landingStations, Set<String> modes,
-			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
-			TransitRouter transitRouter, UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup,
-			BaselineTransitRoutingModule transitRouterDelegate, CustomModeChoiceParameters parameters,
-			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities, SubscriptionFinder subscriptions) {
-		this(scenario, landingStations, modes, plcpc, plcpccar, carNetwork, uamConfig, transitConfigGroup, parameters,
-				waitingData, stationConnectionutilities, subscriptions);
+	public UAMCachedIntermodalRoutingModule(Scenario scenario, UAMStations landingStations,
+											ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar,
+											Network carNetwork, TransitRouter transitRouter, UAMConfigGroup uamConfig,
+											TransitConfigGroup transitConfigGroup,
+											BaselineTransitRoutingModule transitRouterDelegate,
+											CustomModeChoiceParameters parameters, WaitingStationData waitingData,
+											UAMStationConnectionGraph stationConnections, SubscriptionFinder subscriptions) {
+		this(scenario, landingStations, plcpc, plcpccar, carNetwork, uamConfig, transitConfigGroup, parameters,
+				waitingData, stationConnections, subscriptions);
 		this.transitRouterDelegate = transitRouterDelegate;
 		this.strategyRouter = new UAMStrategyRouter(transitRouter, scenario, uamConfig, parameters, plcpc, plcpccar,
-				landingStations, carNetwork, stationConnectionutilities);
+				landingStations, carNetwork, stationConnections);
 
 	}
 
-	public UAMIntermodalRoutingModule(Scenario scenario, UAMStations landingStations, Set<String> modes,
-			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
-			UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, CustomModeChoiceParameters parameters,
-			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities, SubscriptionFinder subscriptions) {
+	public UAMCachedIntermodalRoutingModule(Scenario scenario, UAMStations landingStations,
+											ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
+											UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, CustomModeChoiceParameters parameters,
+											WaitingStationData waitingData, UAMStationConnectionGraph stationConnections, SubscriptionFinder subscriptions) {
 		this.scenario = scenario;
 		this.plcpccar = plcpccar;
 		this.carNetwork = carNetwork;
 		this.waitingData = waitingData;
-		this.stationConnectionutilities = stationConnectionutilities;
-		this.plcpc = plcpc;
+		this.stationConnections = stationConnections;
 
 		this.strategyRouter = new UAMStrategyRouter(scenario, uamConfig, parameters, plcpc, plcpccar, landingStations,
-				carNetwork, stationConnectionutilities);
+				carNetwork, stationConnections);
 	}
 
 	@Override
@@ -132,9 +117,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 				accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
 			Link accessDestinationLink = carNetwork.getLinks()
 					.get(uamRoute.bestOriginStation.getLocationLink().getId());
-			String mode = "access_uam_car";
-			Leg carLeg = createCarLeg(accessOriginLink, accessDestinationLink, departureTime, person, routeFactory,
-					populationFactory, mode);
+			Leg carLeg = createCarLeg(UAMModes.UAM_ACCESS + TransportMode.car, accessOriginLink,
+					accessDestinationLink, departureTime, person, routeFactory, populationFactory);
 			currentTime += carLeg.getTravelTime();
 			trip.add(carLeg);
 			break;
@@ -160,7 +144,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		default:
 			Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
 					network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-					uamRoute.accessMode, "access_uam_" + uamRoute.accessMode);
+					uamRoute.accessMode, UAMModes.UAM_ACCESS + uamRoute.accessMode);
 			currentTime += uavAccessLeg.getTravelTime();
 			trip.add(uavAccessLeg);
 		}
@@ -178,8 +162,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		currentTime += uamRoute.bestOriginStation.getPreFlightTime(); // Still have to figure out why this doesn't
 																		// affect events
 
-		// TODO REWORK
 		try {
+			// TODO REWORK
 			int index = (int) Math.floor(departureTime / 1800.0);
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
 					.getWaitingTimes()[index];
@@ -209,41 +193,12 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		}
 
 		/* uam leg */
-		Route routeUAV = routeFactory.createRoute(Route.class, uamRoute.bestOriginStation.getLocationLink().getId(),
-				uamRoute.bestDestinationStation.getLocationLink().getId());
-
-		final Leg uavLeg = populationFactory.createLeg(UAMModes.UAM_MODE);
-		uavLeg.setRoute(routeUAV);
-
-		// Add information on future path for plan output files
-		Future<Path> uavPath = plcpc.calcLeastCostPath(uamRoute.bestOriginStation.getLocationLink().getFromNode(),
-				uamRoute.bestDestinationStation.getLocationLink().getToNode(), 0.0, null, null);
-		double distance = 0;
-		StringBuilder routeDescr = new StringBuilder();
-		try {
-			boolean first = true;
-			for (Link link : uavPath.get().links) {
-				distance += link.getLength();
-
-				if (!first)
-					routeDescr.append(" ");
-				first = false;
-
-				routeDescr.append(link.getId());
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		routeUAV.setDistance(distance); // adds distance to the route, so it appears in the output plans file
-		routeUAV.setRouteDescription(routeDescr.toString());
-
-		UAMFlightLeg flightLeg = this.stationConnectionutilities.getFlightLeg(uamRoute.bestOriginStation.getId(),
+		// Retrieve pre-calculated UAM leg
+		UAMFlightLeg cachedLeg = this.stationConnections.getFlightLeg(uamRoute.bestOriginStation.getId(),
 				uamRoute.bestDestinationStation.getId());
-		routeUAV.setTravelTime(flightLeg.travelTime); // sets the travel time for the route, so it appears in output plans
-		uavLeg.setTravelTime(flightLeg.travelTime); // sets the travel time for the leg, so it appears in output plans
-
-		trip.add(uavLeg);
-		currentTime += flightLeg.travelTime;
+		trip.add(createUAMLeg(uamRoute.bestOriginStation.getLocationLink(),
+				uamRoute.bestDestinationStation.getLocationLink(), cachedLeg, routeFactory, populationFactory));
+		currentTime += cachedLeg.travelTime;
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 									// station
@@ -272,8 +227,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			Link egressOriginLink = carNetwork.getLinks()
 					.get(uamRoute.bestDestinationStation.getLocationLink().getId());
 
-			Leg carLeg = createCarLeg(egressOriginLink, egressDestinationLink, currentTime, person, routeFactory,
-					populationFactory, "egress_uam_car");
+			Leg carLeg = createCarLeg(UAMModes.UAM_EGRESS + TransportMode.car, egressOriginLink,
+					egressDestinationLink, currentTime, person, routeFactory, populationFactory);
 			trip.add(carLeg);
 			break;
 		case TransportMode.pt:
@@ -294,7 +249,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		default:
 			Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
 					uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
-					uamRoute.egressMode, "egress_uam_" + uamRoute.egressMode);
+					uamRoute.egressMode, UAMModes.UAM_EGRESS + uamRoute.egressMode);
 			trip.add(uavEgressLeg);
 		}
 
@@ -318,29 +273,43 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		return teleportationleg;
 	}
 
-	private Leg createCarLeg(Link originLink, Link destinationLink, double departureTime, Person person,
-			RouteFactories routeFactory, PopulationFactory populationFactory, String mode) {
+	private Leg createUAMLeg(Link originLink, Link destinationLink, UAMFlightLeg flightLeg,
+							 RouteFactories routeFactory, PopulationFactory populationFactory) {
+		return createNetworkLeg(UAMModes.UAM_MODE, originLink, destinationLink, flightLeg.links, routeFactory,
+				populationFactory, flightLeg.travelTime, flightLeg.distance);
+	}
+
+	private Leg createCarLeg(String mode, Link originLink, Link destinationLink, double departureTime, Person person,
+							 RouteFactories routeFactory, PopulationFactory populationFactory) {
 		Path path = plcpccar.calcLeastCostPath(originLink.getToNode(), destinationLink.getFromNode(), departureTime,
 				person, null);
 
-		NetworkRoute carRoute = routeFactory.createRoute(NetworkRoute.class, originLink.getId(),
-				destinationLink.getId());
-		carRoute.setLinkIds(originLink.getId(), NetworkUtils.getLinkIds(path.links), destinationLink.getId());
-		carRoute.setTravelTime(path.travelTime);
+		double distance = 0;
+		for (Link link : path.links)
+			distance += link.getLength();
 
-		carRoute.setVehicleId(Id.create((person.getId().toString()), Vehicle.class));
+		return createNetworkLeg(mode, originLink, destinationLink, path.links, routeFactory,
+				populationFactory, path.travelTime, distance);
+	}
 
-		Leg carLeg = populationFactory.createLeg(mode);
-		carLeg.setTravelTime(path.travelTime);
-		carLeg.setRoute(carRoute);
-		return carLeg;
+	private Leg createNetworkLeg(String mode, Link originLink, Link destinationLink, List<Link> links,
+								 RouteFactories routeFactory, PopulationFactory populationFactory, double travelTime,
+								 double distance) {
+		NetworkRoute route = routeFactory.createRoute(NetworkRoute.class, originLink.getId(), destinationLink.getId());
+		route.setLinkIds(originLink.getId(), NetworkUtils.getLinkIds(links), destinationLink.getId());
+		route.setTravelTime(travelTime);
+		route.setDistance(distance);
+
+		Leg leg = populationFactory.createLeg(mode);
+		leg.setTravelTime(travelTime);
+		leg.setRoute(route);
+		return leg;
 	}
 
 	@Override
 	public StageActivityTypes getStageActivityTypes() {
 		final CompositeStageActivityTypes stageTypes = new CompositeStageActivityTypes();
-		stageTypes.addActivityTypes(new StageActivityTypesImpl("uam_interaction"));
+		stageTypes.addActivityTypes(new StageActivityTypesImpl(UAMModes.UAM_INTERACTION));
 		return stageTypes;
 	}
-
 }

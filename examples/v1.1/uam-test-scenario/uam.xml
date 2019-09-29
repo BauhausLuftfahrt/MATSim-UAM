@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE uam SYSTEM "src/main/resources/dtd/uam.dtd">
+
+<uam>
+	<stations>
+		<station id="00" name="station_00" landingcap="99999" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_00_ga-uam_st_00_fa"/>
+		<station id="01" name="station_01" landingcap="99999" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_01_ga-uam_st_01_fa"/>
+		<station id="04" name="station_04" landingcap="99999" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_04_ga-uam_st_04_fa"/>
+		<station id="05" name="station_05" landingcap="99999" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_05_ga-uam_st_05_fa"/>
+	</stations>
+	<vehicleTypes>
+		<vehicleType id="VEHTYPE1" capacity="1" cruisespeed="33.33333" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
+		<vehicleType id="VEHTYPE2" capacity="2" cruisespeed="22.22222" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
+	</vehicleTypes>
+	<vehicles>
+		<vehicle id="uam_vh_00-0" type="VEHTYPE1" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_00-1" type="VEHTYPE1" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_01-0" type="VEHTYPE1" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_01-1" type="VEHTYPE1" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_04-0" type="VEHTYPE1" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_04-1" type="VEHTYPE1" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_05-0" type="VEHTYPE1" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_05-1" type="VEHTYPE1" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_00-0" type="VEHTYPE2" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_00-1" type="VEHTYPE2" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_01-0" type="VEHTYPE2" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_01-1" type="VEHTYPE2" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_04-0" type="VEHTYPE2" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_04-1" type="VEHTYPE2" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_05-0" type="VEHTYPE2" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="uam_vh_05-1" type="VEHTYPE2" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
+	</vehicles>
+</uam>

@@ -10,6 +10,8 @@ import org.matsim.api.core.v01.population.Person;
  * Storage class for UAM leg chains (routes) of access mode, origin and destination stations, and egress mode
  * @author Raoul
  *
+ * TODO rework, with faster internal workings than massive HashMap!
+ *
  */
 public class UAMRoutes {
 	
@@ -18,7 +20,7 @@ public class UAMRoutes {
     private static UAMRoutes instance;
     
     private UAMRoutes() {
-    	routes = new HashMap<String, UAMRoute>();
+    	routes = new HashMap<>();
     }
     
     public static synchronized UAMRoutes getInstance() {

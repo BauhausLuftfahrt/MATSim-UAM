@@ -1,21 +1,22 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import ch.sbb.matsim.routing.pt.raptor.*;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.modechoice.CustomCarDisutility;
+import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
+import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.router.strategy.*;
+import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
@@ -30,39 +31,14 @@ import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.AStarLandmarksFactory;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.LinkWrapperFacility;
-import org.matsim.core.router.util.LeastCostPathCalculator;
-import org.matsim.core.router.util.LeastCostPathCalculatorFactory;
-import org.matsim.core.router.util.TravelDisutility;
-import org.matsim.core.router.util.TravelDisutilityUtils;
-import org.matsim.core.router.util.TravelTime;
+import org.matsim.core.router.util.*;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.Facility;
 
-import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
-import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorIntermodalAccessEgress;
-import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorParametersForPerson;
-import ch.sbb.matsim.routing.pt.raptor.LeastCostRaptorRouteSelector;
-import ch.sbb.matsim.routing.pt.raptor.RaptorStaticConfig;
-import ch.sbb.matsim.routing.pt.raptor.RaptorUtils;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorData;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.modechoice.CustomCarDisutility;
-import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
-import net.bhl.matsim.uam.router.strategy.UAMMinAccessDistanceStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMMinAccessTravelTimeStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMMinDistanceStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMMinTravelTimeStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMStrategy;
-import net.bhl.matsim.uam.router.strategy.UAMStrategyUtils;
-import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
+import java.io.*;
+import java.util.*;
 
 /**
  * This script generates csv file containing estimated travel times by UAM for
@@ -80,7 +56,7 @@ public class RunCalculateUAMTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name*");
+				"ARGS: base-network.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins");
 		System.out.println("(* required)");
 
 		// READ THE INPUTS
@@ -93,6 +69,10 @@ public class RunCalculateUAMTravelTimes {
 		String tripsInput = args[j++];
 		String strategyName = args[j++];
 		String outputPath = args[j++];
+
+		double processTime = 0;
+		if (args.length == j + 1)
+			processTime = Double.parseDouble(args[j]) * 60;
 
 		// READ NETWORK
 		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
@@ -109,29 +89,28 @@ public class RunCalculateUAMTravelTimes {
 		config.planCalcScore().setUtilityOfLineSwitch(-0.17);
 		config.transitRouter().setExtensionRadius(500);
 
-		PlanCalcScoreConfigGroup.ModeParams accessWalk = new PlanCalcScoreConfigGroup.ModeParams("access_walk");
+		PlanCalcScoreConfigGroup.ModeParams accessWalk = new PlanCalcScoreConfigGroup.ModeParams(TransportMode.access_walk);
 		accessWalk.setMarginalUtilityOfTraveling(-4.0);
 		config.planCalcScore().addModeParams(accessWalk);
-		PlanCalcScoreConfigGroup.ModeParams egressWalk = new PlanCalcScoreConfigGroup.ModeParams("egress_walk");
+		PlanCalcScoreConfigGroup.ModeParams egressWalk = new PlanCalcScoreConfigGroup.ModeParams(TransportMode.egress_walk);
 		egressWalk.setMarginalUtilityOfTraveling(-4.0);
 		config.planCalcScore().addModeParams(egressWalk);
 
-		config.planCalcScore().getOrCreateModeParams("pt").setMarginalUtilityOfTraveling(-1.32);
-		config.planCalcScore().getOrCreateModeParams("walk").setMarginalUtilityOfTraveling(-6.46);
+		config.planCalcScore().getOrCreateModeParams(TransportMode.pt).setMarginalUtilityOfTraveling(-1.32);
+		config.planCalcScore().getOrCreateModeParams(TransportMode.walk).setMarginalUtilityOfTraveling(-6.46);
 		config.transit().setUseTransit(true);
 
 		// setting walk and bike teleportation parameters equal to the test scenario
-		config.plansCalcRoute().getModeRoutingParams().get("walk").setTeleportedModeSpeed(1.2);
-		config.plansCalcRoute().getModeRoutingParams().get("walk").setBeelineDistanceFactor(1.3);
-		config.plansCalcRoute().getModeRoutingParams().get("bike").setTeleportedModeSpeed(3.1);
-		config.plansCalcRoute().getModeRoutingParams().get("bike").setBeelineDistanceFactor(1.4);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setTeleportedModeSpeed(1.2);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setBeelineDistanceFactor(1.3);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setTeleportedModeSpeed(3.1);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setBeelineDistanceFactor(1.4);
 
 		// set available modes
-		((UAMConfigGroup) config.getModules().get("uam")).setAvailableAccessModes("car,walk,pt,bike");
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setAvailableAccessModes("car,walk,pt,bike");
 
-		((UAMConfigGroup) config.getModules().get("uam")).setSearchRadius("999999999999999"); // Small search radius
-																								// returns no possible
-																								// stations
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setSearchRadius("999999999999999");
+
 		// Build scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
@@ -140,12 +119,12 @@ public class RunCalculateUAMTravelTimes {
 		// CREATE CAR/UAM NETWORK
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add("uam");
+		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 		Network networkCar = NetworkUtils.createNetwork();
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);
 
 		// LEAST COST Parallel PATH CALCULATOR - uam
@@ -177,10 +156,9 @@ public class RunCalculateUAMTravelTimes {
 			}
 		});
 
-		double delay = 3.0;
 		DefaultLinkSpeedCalculator delegate = new DefaultLinkSpeedCalculator();
 		UAMLinkSpeedCalculator speedCalculator = new UAMLinkSpeedCalculator(uamReader.getMapVehicleVerticalSpeeds(),
-				uamReader.getMapVehicleHorizontalSpeeds(), delegate, delay);
+				uamReader.getMapVehicleHorizontalSpeeds(), delegate);
 		CustomCarDisutility customCarDisutility = new CustomCarDisutility(speedCalculator, travelTime);
 		LeastCostPathCalculatorFactory pathCalculatorFactory = injector
 				.getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
@@ -204,8 +182,8 @@ public class RunCalculateUAMTravelTimes {
 		// Create StrategyUtils
 		// Using default parameters from the uamConfig group : walkDistance, etc.
 		UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
-				(UAMConfigGroup) config.getModules().get("uam"), scenario, stationConnectionutilities, networkCar,
-				transitRouter, pathCalculator, plcpccar, null);
+				(UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,
+				networkCar, transitRouter, pathCalculator, plcpccar, null);
 		UAMStrategy strategy = null;
 		switch (UAMStrategyType.valueOf(strategyName.toUpperCase())) {
 		case MINTRAVELTIME:
@@ -222,12 +200,12 @@ public class RunCalculateUAMTravelTimes {
 			break;
 		default:
 			log.warn("Strategy not available, please provide an available strategy.");
-			break;
+			System.exit(-1);
 		}
 
 		// READ TRIPS INPUT
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(tripsInput)));
-		String line = null;
+		String line;
 		List<String> header = null;
 
 		List<TripItem> trips = new ArrayList<>();
@@ -250,13 +228,14 @@ public class RunCalculateUAMTravelTimes {
 				trip.origin = originCood;
 				trip.destination = destinationCoord;
 				trip.departureTime = departureTime;
+				trip.processTime = processTime;
 
 				trips.add(trip);
 			}
 		}
 		reader.close();
 
-		// Calculate traveltimes
+		// Calculate travel times
 		log.info("Calculating travel times...");
 		int counter = 1;
 		for (TripItem trip : trips) {
@@ -267,22 +246,23 @@ public class RunCalculateUAMTravelTimes {
 			Link to = NetworkUtils.getNearestLink(network, trip.destination);
 			Facility<?> fromFacility = new LinkWrapperFacility(from);
 			Facility<?> toFacility = new LinkWrapperFacility(to);
+
 			UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
-			trip.travelTime = strategyUtils.getTotalTravelTime(fromFacility, toFacility, trip.departureTime, uamRoute)
-					.get(0);
-			trip.accessTime = strategyUtils.getTotalTravelTime(fromFacility, toFacility, trip.departureTime, uamRoute)
-					.get(1);
-			trip.flyTime = strategyUtils.getTotalTravelTime(fromFacility, toFacility, trip.departureTime, uamRoute)
-					.get(2);
-			trip.egressTime = strategyUtils.getTotalTravelTime(fromFacility, toFacility, trip.departureTime, uamRoute)
-					.get(3);
+
+			trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
+					uamRoute.bestOriginStation, uamRoute.accessMode);
+			trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
+			trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
+					uamRoute.bestDestinationStation, uamRoute.egressMode);
+
+			trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
 			counter++;
 		}
 
 		pathCalculator.close();
 
 		// Writes output file
-		log.info("Writing travelTimes file...");
+		log.info("Writing travel times file...");
 		write(outputPath, trips);
 		log.info("...done.");
 
@@ -297,8 +277,8 @@ public class RunCalculateUAMTravelTimes {
 					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
-							String.valueOf(trip.accessTime), String.valueOf(trip.flyTime),
-							String.valueOf(trip.egressTime) })
+							String.valueOf(trip.accessTime), String.valueOf(trip.flightTime),
+							String.valueOf(trip.egressTime), String.valueOf(trip.processTime) })
 					+ "\n");
 		}
 
@@ -308,19 +288,19 @@ public class RunCalculateUAMTravelTimes {
 
 	private static String formatHeader() {
 		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time", "accessTime", "flyTime", "egressTime" });
+				"departure_time", "travel_time", "access_time", "flight_time", "egress_time", "process_time" });
 	}
 
-	public static class TripItem {
+	static class TripItem {
 		public Coord origin;
 		public Coord destination;
 		public double departureTime;
 		public double travelTime;
 		public double distance;
 		public double accessTime;
-		public double flyTime;
+		public double flightTime;
 		public double egressTime;
-
+		public double processTime;
 	}
 
 }
