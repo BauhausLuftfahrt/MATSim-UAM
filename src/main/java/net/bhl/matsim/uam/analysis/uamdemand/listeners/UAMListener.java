@@ -37,7 +37,7 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 /**
  * A listener that retrieves information from UAMtrip events.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMListener implements ActivityStartEventHandler, PersonDepartureEventHandler, PersonArrivalEventHandler,
 		PersonEntersVehicleEventHandler {

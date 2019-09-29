@@ -85,7 +85,7 @@ import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
  * A MATSim Abstract Module for the classes used by the
  * {@link MinTravelTimeModel}.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class CustomModeChoiceModuleMinTravelTime extends AbstractModule {
 	private final CommandLine cmd;

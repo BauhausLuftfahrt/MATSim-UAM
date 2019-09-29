@@ -50,7 +50,7 @@ import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
  * -Network file; -Events file; -Trips file; -output file; -output
  * networkEventsChangeFile;
  *
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
 public class RunCalculateCarTravelTimes {

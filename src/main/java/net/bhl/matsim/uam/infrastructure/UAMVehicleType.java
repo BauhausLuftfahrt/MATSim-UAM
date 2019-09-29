@@ -5,7 +5,7 @@ import org.matsim.api.core.v01.Id;
 /**
  * This class defines the VTOL vehicle type and its properties.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
 public class UAMVehicleType {

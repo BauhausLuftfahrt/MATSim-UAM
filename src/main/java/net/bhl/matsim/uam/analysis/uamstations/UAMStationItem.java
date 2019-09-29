@@ -7,7 +7,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 /**
  * This class stores information about a UAM Station.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStationItem {
 	public String name;

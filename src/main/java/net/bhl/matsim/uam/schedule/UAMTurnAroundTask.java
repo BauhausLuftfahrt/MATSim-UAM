@@ -13,7 +13,7 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
  * This task mirrors <code>UAMStayTask</code> in order to make the vehicle
  * unavailable for other trips after landing.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  * 
  */
 public class UAMTurnAroundTask extends StayTaskImpl implements UAMTask {

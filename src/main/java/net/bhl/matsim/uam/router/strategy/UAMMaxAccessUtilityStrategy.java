@@ -18,7 +18,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
  * This strategy is used to assign to the passenger the UAMRoute based on the
  * access and egress legs utilities to/from UAM Stations in a UAM trip.
  * 
- * @author Aitanm (Aitan Milit�o), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;

@@ -24,7 +24,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;;
  * This strategy is used to assign to the passenger the UAMRoute based on the
  * maximum total utility of the route.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMaxUtilityStrategy implements UAMStrategy{
 	private UAMStrategyUtils strategyUtils;

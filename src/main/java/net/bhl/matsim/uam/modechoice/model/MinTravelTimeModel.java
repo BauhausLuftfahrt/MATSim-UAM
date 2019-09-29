@@ -3,7 +3,7 @@ package net.bhl.matsim.uam.modechoice.model;
 /**
  * This class provides a mode choice model that selects trips based on their travel time.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  *
  */
 import java.util.ArrayList;

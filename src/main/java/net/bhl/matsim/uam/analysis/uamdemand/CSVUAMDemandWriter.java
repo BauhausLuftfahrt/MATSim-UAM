@@ -10,7 +10,7 @@ import java.util.HashSet;
 /**
  * This class writes a CSV file containing UAMDemand data.
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class CSVUAMDemandWriter {
 	final private HashSet<UAMDemandItem> uamData;

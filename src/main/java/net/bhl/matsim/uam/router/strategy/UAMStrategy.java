@@ -9,7 +9,7 @@ import net.bhl.matsim.uam.data.UAMRoute;
  * Defines classes responsible to generate a UAMRoute based on a specific
  * criteria (strategy).
  * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public interface UAMStrategy {
 	public static enum UAMStrategyType {

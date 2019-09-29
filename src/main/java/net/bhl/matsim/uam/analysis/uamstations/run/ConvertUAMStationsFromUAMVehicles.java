@@ -32,7 +32,7 @@ import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
  * Stations. Necessary inputs are in the following order: -Network file; -UAM
  * Vehicles file -output file;
  *
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
 public class ConvertUAMStationsFromUAMVehicles {

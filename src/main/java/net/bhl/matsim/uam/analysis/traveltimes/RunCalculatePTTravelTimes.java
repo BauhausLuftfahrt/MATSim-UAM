@@ -42,7 +42,7 @@ import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorData;
  * -Network file; -Transit Schedule file; -Transit Vehicles file; -Trips file;
  * -output file;
  *
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
 public class RunCalculatePTTravelTimes {
