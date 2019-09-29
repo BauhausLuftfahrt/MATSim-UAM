@@ -39,7 +39,7 @@ import net.bhl.matsim.uam.qsim.UAMSpeedModule;
  * capabilities.
  *
  * @author Milos Balac, Raoul Rothfeld
- * @version 1.0
+ * @version 1.1
  * @since 2019-01-15
  */
 public class RunUAMScenario {
