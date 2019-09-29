@@ -3,7 +3,7 @@ package net.bhl.matsim.uam.data;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMFlightSegments;
+import net.bhl.matsim.uam.router.UAMFlightSegments;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import org.apache.log4j.Logger;
@@ -19,13 +19,7 @@ import java.util.concurrent.Future;
 
 public class UAMStationConnectionGraph {
 
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> utilities;
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> travelTimes;
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, Double>> distances;
-    private Map<Id<UAMStation>, Map<Id<UAMStation>, List<Link>>> links;
-
-    // TODO this class should store the distance each pair of stations for each vehicle, e.g.:
-    //private Map<Map<Id<UAMStation>, Id<UAMStation>>, Map<Id<UAMVehicle>, Double>> travelTimes;
+    private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;
 
     final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
 
@@ -33,10 +27,7 @@ public class UAMStationConnectionGraph {
                                      @Named("uam") ParallelLeastCostPathCalculator plcpc) {
         log.info("Calculating travel times and distances between all UAM stations.");
 
-        utilities = new HashMap<>();
-        travelTimes = new HashMap<>();
-        distances = new HashMap<>();
-        links = new HashMap<>();
+        legs = new HashMap<>();
 
         //TODO for now it assumes there only being one singular UAM vehicle type, enhancing this would be part of future work
         double horizontalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getCruiseSpeed();
@@ -67,41 +58,33 @@ public class UAMStationConnectionGraph {
 
                     String flightSegment = (String) link.getAttributes().getAttribute(UAMFlightSegments.ATTRIBUTE);
 
+                    if (flightSegment.equals(UAMFlightSegments.HORIZONTAL))
+                        travelTime += link.getLength() / horizontalSpeed;
+
                     if (flightSegment.equals(UAMFlightSegments.VERTICAL))
                         travelTime += link.getLength() / verticalSpeed;
-                    else
-                        travelTime += link.getLength() / horizontalSpeed;
                 }
 
                 if (parameters != null)
                     utility = estimateUtilityUAM(travelTime, distance, parameters, uamStationOrigin, uamStationDestination);
 
-                if (travelTimes.containsKey(uamStationOrigin.getId())) {
-                    this.utilities.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), utility);
-                    this.travelTimes.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), travelTime);
-                    this.distances.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), distance);
-                    this.links.get(uamStationOrigin.getId()).put(uamStationDestination.getId(), links);
+                if (legs.containsKey(uamStationOrigin.getId())) {
+                    this.legs.get(uamStationOrigin.getId()).put(uamStationDestination.getId(),
+                            new UAMFlightLeg(travelTime, distance, utility, links));
                 } else {
-                    Map<Id<UAMStation>, Double> newEntry = new HashMap<>();
-                    newEntry.put(uamStationDestination.getId(), utility);
-                    this.utilities.put(uamStationOrigin.getId(), newEntry);
-
-                    Map<Id<UAMStation>, Double> newEntryTT = new HashMap<>();
-                    newEntryTT.put(uamStationDestination.getId(), travelTime);
-                    this.travelTimes.put(uamStationOrigin.getId(), newEntryTT);
-
-                    Map<Id<UAMStation>, Double> newEntryD = new HashMap<>();
-                    newEntryD.put(uamStationDestination.getId(), distance);
-                    this.distances.put(uamStationOrigin.getId(), newEntryD);
-
-                    Map<Id<UAMStation>, List<Link>> newEntryL = new HashMap<>();
-                    newEntryL.put(uamStationDestination.getId(), links);
-                    this.links.put(uamStationOrigin.getId(), newEntryL);
+                    Map<Id<UAMStation>, UAMFlightLeg> newEntry = new HashMap<>();
+                    newEntry.put(uamStationDestination.getId(), new UAMFlightLeg(travelTime, distance, utility, links));
+                    this.legs.put(uamStationOrigin.getId(), newEntry);
                 }
             }
         }
     }
 
+    public UAMFlightLeg getFlightLeg(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
+        return this.legs.get(originStation).get(destinationStation);
+    }
+
+    // TODO remove all utility from this class
     private double estimateUtilityUAM(double travelTime, double distance, CustomModeChoiceParameters parameters,
                                       UAMStation stationOrigin, UAMStation stationDestination) {
 
@@ -116,17 +99,4 @@ public class UAMStationConnectionGraph {
 
         return utility;
     }
-
-    public double getUtility(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.utilities.get(originStation).get(destinationStation);
-    }
-
-    public double getTravelTime(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.travelTimes.get(originStation).get(destinationStation);
-    }
-
-    public double getDistance(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
-        return this.distances.get(originStation).get(destinationStation);
-    }
-
 }
