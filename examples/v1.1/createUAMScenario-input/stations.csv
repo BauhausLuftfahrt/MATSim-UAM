@@ -1,0 +1,5 @@
+station_id,station_name,station_landing_cap,station_x,station_y,station_z,vtol_z,road_access_capacity,road_access_freespeed,station_capacity,station_freespeed,flight_access_capacity,flight_access_freespeed,station_preflighttime,station_postflighttime,station_defaultwaittime
+00,station_00,99999,6020,500,0,600,99999,100,99999,100,99999,100,600,120,0
+01,station_01,99999,6020,-500,0,600,99999,100,99999,100,99999,100,600,120,0
+04,station_04,99999,14020,500,0,600,99999,100,99999,100,99999,100,600,120,0
+05,station_05,99999,14020,-500,0,600,99999,100,99999,100,99999,100,600,120,0

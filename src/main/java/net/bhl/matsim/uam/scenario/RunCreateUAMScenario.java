@@ -450,6 +450,7 @@ public class RunCreateUAMScenario {
 
         Id<Link> id;
         boolean vertical = false;
+        boolean flightLink = true;
         String f = from.toString();
         String t = to.toString();
 
@@ -457,6 +458,7 @@ public class RunCreateUAMScenario {
                 || (f.endsWith(name_uam_station_flight_access) && t.endsWith(name_uam_station_ground_access))) {
             // station link
             id = Id.createLinkId(name_uam_station_link + from + "-" + to);
+            vertical = true;
         } else if ((f.endsWith(name_uam_station_flight_level) && t.endsWith(name_uam_station_flight_level))) {
             // flight level link (horizontal/cruise)
             id = Id.createLinkId(name_uam_horizontal_link + from + "-" + to);
@@ -469,6 +471,7 @@ public class RunCreateUAMScenario {
                 || (!f.endsWith(name_uam_station_ground_access) && t.endsWith(name_uam_station_ground_access))) {
             // ground access link
             id = Id.createLinkId(name_uam_ground_link + from + "-" + to);
+            flightLink = false;
         } else
             throw new Exception("Unknown UAM link type.");
 
@@ -485,8 +488,8 @@ public class RunCreateUAMScenario {
 
         if (vertical)
         	link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.VERTICAL);
-        else
-			link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.VERTICAL);
+        else if (flightLink)
+			link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.HORIZONTAL);
 
         try {
             network.addLink(link);
