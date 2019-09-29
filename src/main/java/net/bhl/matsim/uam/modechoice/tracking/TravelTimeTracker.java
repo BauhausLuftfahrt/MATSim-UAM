@@ -1,11 +1,20 @@
 package net.bhl.matsim.uam.modechoice.tracking;
 
-import com.google.inject.Singleton;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 
-import java.io.*;
-import java.util.*;
+import com.google.inject.Singleton;
 
 @Singleton
 public class TravelTimeTracker {
@@ -40,7 +49,7 @@ public class TravelTimeTracker {
 	public void write(File outputFile) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
 
-		writer.write(String.join(";", new String[]{ //
+		writer.write(String.join(";", new String[] { //
 				"person_id", //
 				"car_trip_id", //
 				"predicted_trip_travel_time", //
@@ -60,7 +69,7 @@ public class TravelTimeTracker {
 				TrackedPrediction prediction = predictionList.get(i);
 				double observation = i < observationList.size() ? observationList.get(i) : Double.NaN;
 
-				writer.write(String.join(";", new String[]{ //
+				writer.write(String.join(";", new String[] { //
 						personId.toString(), //
 						String.valueOf(i), //
 						String.valueOf(prediction.tripTravelTime), //

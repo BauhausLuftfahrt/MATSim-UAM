@@ -1,20 +1,21 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
-import net.bhl.matsim.uam.events.UAMUtilitiesData;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
+import net.bhl.matsim.uam.events.UAMUtilitiesData;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 
-public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
+public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
 	private UAMStrategyUtils strategyUtils;
 
 	public UAMMaxAccessUtilityStrategy(UAMStrategyUtils strategyUtils) {
@@ -32,7 +33,7 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 		Set<String> modes = new HashSet<>();
 		modes = strategyUtils.getModes();
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
-		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
+		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);		
 		//Access utility
 		UAMStation bestStationOrigin = null;
 		String bestModeAccess = TransportMode.walk;

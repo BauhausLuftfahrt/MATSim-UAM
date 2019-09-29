@@ -1,14 +1,16 @@
 package net.bhl.matsim.uam.analysis.transit.readers;
 
-import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
-import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEventMapper;
-import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
-import net.bhl.matsim.uam.analysis.transit.listeners.TransitTripListener;
+import java.util.Collection;
+
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.EventsReaderXMLv1;
 import org.matsim.core.events.EventsUtils;
 
-import java.util.Collection;
+import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
+import net.bhl.matsim.uam.analysis.transit.listeners.TransitTripListener;
+
+import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
+import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEventMapper;
 
 public class EventsTransitTripReader {
 	final private TransitTripListener tripListener;

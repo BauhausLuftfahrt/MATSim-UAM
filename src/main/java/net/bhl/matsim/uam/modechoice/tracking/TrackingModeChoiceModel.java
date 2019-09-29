@@ -1,14 +1,14 @@
 package net.bhl.matsim.uam.modechoice.tracking;
 
+import java.util.List;
+import java.util.Random;
+
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceResult;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPrediction;
-
-import java.util.List;
-import java.util.Random;
 
 public class TrackingModeChoiceModel implements ModeChoiceModel {
 	final private ModeChoiceModel delegate;

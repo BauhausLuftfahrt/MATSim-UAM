@@ -4,11 +4,11 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
  * This class is used to store data from access/egress legs to/from UAMStations
- *
+ * 
  * @author Aitan Militao
  */
 public class UAMAccessOptions {
-	private double accessDistance;
+	private double accessDistance;  
 	private double accessTravelTime;
 	private String accessBestModeDistance;
 	private String accessBestModeTime;
@@ -42,6 +42,6 @@ public class UAMAccessOptions {
 	public UAMStation getStation() {
 		return station;
 	}
-
-
+	
+	
 }

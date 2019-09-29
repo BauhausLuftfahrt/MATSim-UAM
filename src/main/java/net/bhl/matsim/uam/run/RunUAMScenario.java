@@ -1,18 +1,8 @@
 package net.bhl.matsim.uam.run;
 
-import ch.ethz.matsim.baseline_scenario.config.CommandLine;
-import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
-import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
-import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
-import net.bhl.matsim.uam.qsim.UAMSpeedModule;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -28,8 +18,21 @@ import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.PtConstants;
 
-import java.util.HashSet;
-import java.util.Set;
+import ch.ethz.matsim.baseline_scenario.config.CommandLine;
+import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
+import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+
+import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
+
+import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
+import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 
 /**
  * The RunUAMScenario program start a MATSim run including Urban Air Mobility
@@ -41,13 +44,13 @@ import java.util.Set;
  */
 public class RunUAMScenario {
 
-	private final static boolean useMinTravelTimeModeChoice = true;
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
 	private static Config config;
 	private static Controler controler;
 	private static Scenario scenario;
+	private final static boolean useMinTravelTimeModeChoice = true;
 
 	public static void main(String[] args) {
 		parseArguments(args);

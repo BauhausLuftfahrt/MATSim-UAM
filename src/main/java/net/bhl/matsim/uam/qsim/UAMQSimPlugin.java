@@ -1,8 +1,9 @@
 package net.bhl.matsim.uam.qsim;
 
-import com.google.inject.Module;
-import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
-import net.bhl.matsim.uam.schedule.UAMOptimizer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSource;
 import org.matsim.core.config.Config;
@@ -12,9 +13,10 @@ import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import com.google.inject.Module;
+
+import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
+import net.bhl.matsim.uam.schedule.UAMOptimizer;
 
 public class UAMQSimPlugin extends AbstractQSimPlugin {
 

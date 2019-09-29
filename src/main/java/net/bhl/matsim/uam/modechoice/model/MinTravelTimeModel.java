@@ -1,5 +1,15 @@
 package net.bhl.matsim.uam.modechoice.model;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.population.Person;
+
 import ch.ethz.matsim.mode_choice.framework.ModeAvailability;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceModel;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceResult;
@@ -14,11 +24,6 @@ import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelector;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
-import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.population.Person;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class MinTravelTimeModel implements ModeChoiceModel {
 	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
@@ -32,9 +37,9 @@ public class MinTravelTimeModel implements ModeChoiceModel {
 	final private FallbackBehaviour fallbackBehaviour;
 
 	public MinTravelTimeModel(TourEstimator estimator, ModeAvailability modeAvailability,
-							  TourConstraintFactory constraintFactory, TourFinder tourFinder,
-							  UtilitySelectorFactory<TourCandidate> selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
-							  FallbackBehaviour fallbackBehaviour) {
+			TourConstraintFactory constraintFactory, TourFinder tourFinder,
+			UtilitySelectorFactory<TourCandidate> selectorFactory, ModeChainGeneratorFactory modeChainGeneratorFactory,
+			FallbackBehaviour fallbackBehaviour) {
 		this.estimator = estimator;
 		this.modeAvailability = modeAvailability;
 		this.constraintFactory = constraintFactory;
@@ -117,7 +122,7 @@ public class MinTravelTimeModel implements ModeChoiceModel {
 	}
 
 	private TourCandidate handleInitialChoiceFallback(List<ModeChoiceTrip> tourTrips,
-													  List<TourCandidate> tourCandidates) {
+			List<TourCandidate> tourCandidates) {
 		logger.warn(buildFallbackMessage(tourTrips.get(0).getPerson(), "Using fallback."));
 
 		List<String> initialModes = tourTrips.stream().map(ModeChoiceTrip::getInitialMode).collect(Collectors.toList());

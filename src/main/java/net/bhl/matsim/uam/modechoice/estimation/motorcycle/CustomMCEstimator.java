@@ -1,12 +1,12 @@
 package net.bhl.matsim.uam.modechoice.estimation.motorcycle;
 
+import java.util.List;
+
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-
-import java.util.List;
 
 
 public class CustomMCEstimator implements ModalTripEstimator {
@@ -26,7 +26,7 @@ public class CustomMCEstimator implements ModalTripEstimator {
 
 		double cost = parameters.distanceCostCar_km * distance_km;
 		double income = 0.0;
-
+		
 		if (trip.getPerson().getAttributes().getAttribute("income") != null)
 			income = (double) trip.getPerson().getAttributes().getAttribute("income");
 		else

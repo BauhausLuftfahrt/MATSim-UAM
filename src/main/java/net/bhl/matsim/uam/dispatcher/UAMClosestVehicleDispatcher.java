@@ -1,13 +1,9 @@
 package net.bhl.matsim.uam.dispatcher;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.passenger.UAMRequest;
-import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
-import net.bhl.matsim.uam.schedule.UAMStayTask;
-import net.bhl.matsim.uam.schedule.UAMTask;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -18,12 +14,19 @@ import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.passenger.UAMRequest;
+import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
+import net.bhl.matsim.uam.schedule.UAMStayTask;
+import net.bhl.matsim.uam.schedule.UAMTask;
 /**
+ * 
  * @author balacm
+ *
  */
 @Singleton
 public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener {
@@ -40,24 +43,24 @@ public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener 
 	public UAMClosestVehicleDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network) {
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
-
+		
 
 		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minx,
-		// miny,
-		// maxx,
-		// maxy
+																					// miny,
+																					// maxx,
+																					// maxy
 
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
 		for (Vehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
-
-			Id<UAMStation> stationId = ((UAMVehicle) veh).getInitialStationId();
+			
+			Id<UAMStation> stationId = ((UAMVehicle)veh).getInitialStationId();
 			UAMStation uamStation = uamManager.getStations().getUAMStations().get(stationId);
 			Link linkStation = uamStation.getLocationLink();
 			Coord coord = linkStation.getCoord();
-
-			this.availableVehiclesTree.put(coord.getX(), coord.getY(), (UAMVehicle) veh);
+			
+			this.availableVehiclesTree.put(coord.getX(), coord.getY(), (UAMVehicle)veh);
 		}
 	}
 
@@ -77,14 +80,16 @@ public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener 
 		UAMTask task = (UAMTask) vehicle.getSchedule().getCurrentTask();
 		if (task.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
 			availableVehicles.add(vehicle);
-			Coord coord = ((UAMStayTask) task).getLink().getCoord();
+			Coord coord = ((UAMStayTask)task).getLink().getCoord();
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), vehicle);
 		}
 	}
 
 	/**
-	 * @param now current time
-	 *            <p>
+	 * 
+	 * @param now
+	 *            current time
+	 * 
 	 *            Method that dispatches a first vehicle in the Queue - no
 	 *            optimization.
 	 */

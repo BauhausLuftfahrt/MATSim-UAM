@@ -3,28 +3,28 @@ package net.bhl.matsim.uam.events;
 public class WaitingData {
 
 	//30min bins
-	double[] cumWaitingTimes = new double[60];
-
+	double[] cumWaitingTimes = new double[60]; 
+	
 	int[] count = new int[60];
-
+	
 	private double defaultWaitTime = 0.0;
-
+	
 	public WaitingData(double defaultWaitTime) {
 		this.defaultWaitTime = defaultWaitTime;
 	}
-
-	public void addWaitingTime(double waitingTime, double arrivalTime) {
+	
+	public void addWaitingTime (double waitingTime, double arrivalTime) {
 		// TODO avoid literal (30 = 30:00:00 simulation end)
 		if (arrivalTime < 30 * 3600.0) {
-			int index = (int) Math.floor(arrivalTime / 1800.0);
-
+			int index = (int)Math.floor(arrivalTime /  1800.0);
+		
 			cumWaitingTimes[index] += waitingTime;
 			count[index]++;
 		}
 	}
-
+	
 	public double[] getWaitingTimes() {
-
+		
 		double[] waitingTimes = new double[60];
 		for (int i = 0; i < 60; i++) {
 			if (count[i] != 0)
@@ -32,9 +32,9 @@ public class WaitingData {
 			else
 				waitingTimes[i] = defaultWaitTime;
 		}
-
-
+		
+		
 		return waitingTimes;
 	}
-
+	
 }

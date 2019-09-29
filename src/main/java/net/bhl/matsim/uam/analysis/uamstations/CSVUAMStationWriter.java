@@ -33,16 +33,16 @@ public class CSVUAMStationWriter {
 	}
 
 	private String formatHeader() {
-		return String.join(delimiter, new String[]{"name", "id", "landingcap", "preflighttime", "postflighttime",
-				"defaultwaittime", "link"});
+		return String.join(delimiter, new String[] { "name", "id", "landingcap", "preflighttime", "postflighttime",
+				"defaultwaittime", "link" });
 	}
 
 	private String formatData(UAMStationItem station) {
 		try {
 			return String.join(delimiter,
-					new String[]{station.name, station.id.toString(), String.valueOf(station.landingcap),
+					new String[] { station.name, station.id.toString(), String.valueOf(station.landingcap),
 							String.valueOf(station.preflighttime), String.valueOf(station.postflighttime),
-							String.valueOf(station.defaultwaittime), station.link});
+							String.valueOf(station.defaultwaittime), station.link });
 		} catch (Exception NullPointerException) {
 		}
 		return "uamData could not be read";

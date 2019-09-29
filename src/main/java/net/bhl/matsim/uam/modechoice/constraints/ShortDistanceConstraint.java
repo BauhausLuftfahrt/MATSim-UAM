@@ -1,13 +1,14 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import ch.ethz.matsim.mode_choice.constraints.AbstractTripConstraint;
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
+import java.util.Collection;
+import java.util.List;
+
 import org.matsim.api.core.v01.Coord;
 import org.matsim.core.utils.geometry.CoordUtils;
 
-import java.util.Collection;
-import java.util.List;
+import ch.ethz.matsim.mode_choice.constraints.AbstractTripConstraint;
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 
 public class ShortDistanceConstraint extends AbstractTripConstraint {
 	final public static double DEFAULT_SHORT_DISTANCE = 0.0;

@@ -1,11 +1,11 @@
 package net.bhl.matsim.uam.router.strategy;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import net.bhl.matsim.uam.data.UAMFlightLeg;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
-import net.bhl.matsim.uam.events.UAMUtilitiesData;
-import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
@@ -14,19 +14,20 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
+import net.bhl.matsim.uam.events.UAMUtilitiesData;
+import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
+import net.bhl.matsim.uam.infrastructure.UAMStation;;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the maximum total utility of the route.
- *
+ * 
  * @author Aitan Militao
  */
-public class UAMMaxUtilityStrategy implements UAMStrategy {
-	private final CustomModeChoiceParameters parameters;
+public class UAMMaxUtilityStrategy implements UAMStrategy{
 	private UAMStrategyUtils strategyUtils;
+	private final CustomModeChoiceParameters parameters;
 
 	public UAMMaxUtilityStrategy(UAMStrategyUtils strategyUtils, CustomModeChoiceParameters parameters) {
 		this.strategyUtils = strategyUtils;
@@ -65,13 +66,13 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 			}
 			accessUtilityMap.put(stationOrigin.getId(), bestUtility);
 			accessModeMap.put(stationOrigin.getId(), bestMode);
-		}
-
+		}		
+		
 		Map<UAMStationPairs, Double> stationPairsUtility = new HashMap<>();
 		for (UAMStation stationOrigin : stationsOrigin) {
-			for (UAMStation stationDestination : stationsDestination) {
+			for (UAMStation stationDestination : stationsDestination) {	
 				if (stationOrigin == stationDestination)
-					continue;
+					continue;			
 				UAMStationPairs stationPair = new UAMStationPairs(stationOrigin, stationDestination);
 				// access
 				double accessUtility = accessUtilityMap.get(stationOrigin.getId());
@@ -98,19 +99,19 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 					income = (double) person.getAttributes().getAttribute("income");
 				} else {
 					income = strategyUtils.getParameters().averageIncome;
-				}
+				}				
 				double distance = CoordUtils.calcEuclideanDistance(stationDestination.getLocationLink().getCoord(),
 						stationOrigin.getLocationLink().getCoord());
 				double uamIncomeUtility = strategyUtils.getParameters().betaCost(distance * 1e-3, income) * strategyUtils.getParameters().distanceCostUAM_km
 						* distance * 1e-3;
-				stationPair.uamIncomeUtility = uamIncomeUtility;
+				stationPair.uamIncomeUtility = uamIncomeUtility;								
 				//fly time between stations
 				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
 				double utilityBeforeEgress = accessUtility + uamWaitUtility + uamFlightUtility + uamIncomeUtility;
 				double timeToAccess = strategyUtils.estimateAccessLeg(true, fromFacility, departureTime, stationOrigin, accessModeMap.get(stationOrigin.getId())).travelTime;
 				//time of egress
 				double currentTimeBeforeEgress = timeToAccess + flyTime;
-				stationPair.currentTimeBeforeEgress = currentTimeBeforeEgress;
+				stationPair.currentTimeBeforeEgress = currentTimeBeforeEgress;							
 				stationPairsUtility.put(stationPair, utilityBeforeEgress);
 			}
 		}
@@ -133,11 +134,11 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 			utilities.uamFlightUtility = uamStationPair.uamFlightUtility;
 			utilities.uamIncomeUtility = uamStationPair.uamIncomeUtility;
 			// egress
-			double tripUtilityBeforeEgress = stationPairsUtility.get(uamStationPair);
+			double tripUtilityBeforeEgress = stationPairsUtility.get(uamStationPair);		
 			double currentDepartureTime = departureTime + uamStationPair.currentTimeBeforeEgress;
 			for (String mode : modes) {
 				double tripUtility = tripUtilityBeforeEgress;
-				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility, currentDepartureTime, uamStationPair.stationDestination, mode);
+				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility, currentDepartureTime, uamStationPair.stationDestination, mode);					
 				utilities.egressUtility = egressUtility;
 				tripUtility += egressUtility;
 				utilities.totalUtility = tripUtility;
@@ -153,12 +154,12 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 					maxUtility = tripUtility;
 					bestModeEgress = mode;
 				}
-			}
-		}
+			}			
+		}		
 
 		return new UAMRoute(accessModeMap.get(bestStationOrigin.getId()), bestStationOrigin, bestStationDestination, bestModeEgress);
 	}
-
+		
 	class UAMStationPairs {
 		UAMStation stationOrigin;
 		UAMStation stationDestination;
@@ -166,7 +167,7 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 		double uamFlightUtility;
 		double uamIncomeUtility;
 		double currentTimeBeforeEgress;
-
+		
 		public UAMStationPairs(UAMStation stationOrigin, UAMStation stationDestination) {
 			this.stationOrigin = stationOrigin;
 			this.stationDestination = stationDestination;

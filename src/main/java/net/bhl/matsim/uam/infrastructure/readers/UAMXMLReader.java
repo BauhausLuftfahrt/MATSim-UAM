@@ -1,9 +1,10 @@
 package net.bhl.matsim.uam.infrastructure.readers;
 
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import org.jfree.util.Log;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -15,13 +16,15 @@ import org.matsim.core.utils.io.MatsimXmlParser;
 import org.matsim.core.utils.misc.Time;
 import org.xml.sax.Attributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
 
 /**
+ * 
  * @author raoul.rothfeld
+ *
  */
 public class UAMXMLReader extends MatsimXmlParser {
 

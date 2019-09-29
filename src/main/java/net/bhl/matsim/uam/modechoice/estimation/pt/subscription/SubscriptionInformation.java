@@ -5,6 +5,6 @@ public class SubscriptionInformation {
 
 	public SubscriptionInformation(boolean hasSubscription) {
 		this.hasSubscription = hasSubscription;
-
+		
 	}
 }

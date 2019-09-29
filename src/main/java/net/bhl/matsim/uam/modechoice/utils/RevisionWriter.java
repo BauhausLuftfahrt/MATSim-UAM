@@ -1,13 +1,21 @@
 package net.bhl.matsim.uam.modechoice.utils;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import org.apache.log4j.Logger;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.controler.events.StartupEvent;
 import org.matsim.core.controler.listener.StartupListener;
 
-import java.io.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class RevisionWriter implements StartupListener {

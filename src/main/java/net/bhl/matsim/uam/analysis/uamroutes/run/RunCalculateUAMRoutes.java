@@ -27,71 +27,71 @@ import java.util.Map;
 
 public class RunCalculateUAMRoutes {
 
-	static final private String delimiter = ",";
-	static private Map<Id<UAMStation>, UAMStation> stations;
-	static private UAMStationConnectionGraph uamSCG;
+    static private Map<Id<UAMStation>, UAMStation> stations;
+    static private UAMStationConnectionGraph uamSCG;
+    static final private String delimiter = ",";
 
-	static public void main(String[] args) throws IOException {
-		// PROVIDE: NETWORK UAMVEHICLES OUTFILE-NAME
-		extract(args[0], args[1], args[2]);
-		System.out.println("done.");
-	}
+    static public void main(String[] args) throws IOException {
+        // PROVIDE: NETWORK UAMVEHICLES OUTFILE-NAME
+        extract(args[0], args[1], args[2]);
+        System.out.println("done.");
+    }
 
-	static public void extract(String networkString, String uamVehicles, String outfile) throws IOException {
-		Config config = ConfigUtils.createConfig();
-		config.network().setInputFile(networkString);
-		Network network = NetworkUtils.createNetwork();
-		new MatsimNetworkReader(network).readFile(networkString);
+    static public void extract(String networkString, String uamVehicles, String outfile) throws IOException {
+        Config config = ConfigUtils.createConfig();
+        config.network().setInputFile(networkString);
+        Network network = NetworkUtils.createNetwork();
+        new MatsimNetworkReader(network).readFile(networkString);
 
-		UAMXMLReader uamReader = new UAMXMLReader(network);
-		uamReader.readFile(uamVehicles);
+        UAMXMLReader uamReader = new UAMXMLReader(network);
+        uamReader.readFile(uamVehicles);
 
-		stations = uamReader.getStations();
-		uamSCG = calculateRoutes(network, uamReader);
-		write(outfile);
-	}
+        stations = uamReader.getStations();
+        uamSCG = calculateRoutes(network, uamReader);
+        write(outfile);
+    }
 
-	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
-		TravelTime tt = new FreeSpeedTravelTime();
-		TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
-				ConfigUtils.createConfig().planCalcScore());
+    static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
+        TravelTime tt = new FreeSpeedTravelTime();
+        TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
+                ConfigUtils.createConfig().planCalcScore());
 
-		UAMManager uamManager = new UAMManager(network);
-		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-		uamManager.setVehicles(uamReader.getVehicles());
+        UAMManager uamManager = new UAMManager(network);
+        uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+        uamManager.setVehicles(uamReader.getVehicles());
+        
+        return new UAMStationConnectionGraph(uamManager, null,
+                DefaultParallelLeastCostPathCalculator.create(
+                        Runtime.getRuntime().availableProcessors(),
+                        new DijkstraFactory(),
+                        network, td, tt));
+    }
 
-		return new UAMStationConnectionGraph(uamManager, null,
-				DefaultParallelLeastCostPathCalculator.create(
-						Runtime.getRuntime().availableProcessors(),
-						new DijkstraFactory(),
-						network, td, tt));
-	}
+    private static void write(String outputPath) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
+        writer.write(formatHeader() + "\n");
 
-	private static void write(String outputPath) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
-		writer.write(formatHeader() + "\n");
+        for (UAMStation stationFrom : stations.values()) {
+            for (UAMStation stationTo : stations.values()) {
+                if (stationFrom.equals(stationTo))
+                    continue;
 
-		for (UAMStation stationFrom : stations.values()) {
-			for (UAMStation stationTo : stations.values()) {
-				if (stationFrom.equals(stationTo))
-					continue;
+                UAMFlightLeg leg = uamSCG.getFlightLeg(stationFrom.getId(), stationTo.getId());
 
-				UAMFlightLeg leg = uamSCG.getFlightLeg(stationFrom.getId(), stationTo.getId());
+                writer.write(String.join(delimiter, new String[] {
+                        String.valueOf(stationFrom.getId()),
+                        String.valueOf(stationTo.getId()),
+                        String.valueOf(leg.travelTime),
+                        leg.distance + "\n"}));
+            }
+        }
 
-				writer.write(String.join(delimiter, new String[]{
-						String.valueOf(stationFrom.getId()),
-						String.valueOf(stationTo.getId()),
-						String.valueOf(leg.travelTime),
-						leg.distance + "\n"}));
-			}
-		}
+        writer.flush();
+        writer.close();
+    }
 
-		writer.flush();
-		writer.close();
-	}
-
-	private static String formatHeader() {
-		return String.join(delimiter,
-				new String[]{"station_from", "station_to", "travel_time_s", "travel_distance_m"});
-	}
+    private static String formatHeader() {
+        return String.join(delimiter,
+                new String[] { "station_from", "station_to", "travel_time_s", "travel_distance_m"});
+    }
 }

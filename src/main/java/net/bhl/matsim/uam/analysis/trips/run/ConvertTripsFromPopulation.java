@@ -1,11 +1,8 @@
 package net.bhl.matsim.uam.analysis.trips.run;
 
-import net.bhl.matsim.uam.analysis.trips.CSVTripWriter;
-import net.bhl.matsim.uam.analysis.trips.TripItem;
-import net.bhl.matsim.uam.analysis.trips.readers.PopulationTripReader;
-import net.bhl.matsim.uam.analysis.trips.utils.BasicHomeActivityTypes;
-import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
-import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
+import java.io.IOException;
+import java.util.Collection;
+
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
@@ -16,8 +13,13 @@ import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.pt.PtConstants;
 
-import java.io.IOException;
-import java.util.Collection;
+import net.bhl.matsim.uam.analysis.trips.CSVTripWriter;
+import net.bhl.matsim.uam.analysis.trips.TripItem;
+import net.bhl.matsim.uam.analysis.trips.readers.PopulationTripReader;
+import net.bhl.matsim.uam.analysis.trips.utils.BasicHomeActivityTypes;
+import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
+import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
+import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 
 public class ConvertTripsFromPopulation {
 	static public void main(String[] args) throws IOException {

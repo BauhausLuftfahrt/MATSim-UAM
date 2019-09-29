@@ -1,6 +1,10 @@
 package net.bhl.matsim.uam.analysis.trips.listeners;
 
-import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.LinkEnterEvent;
@@ -10,10 +14,7 @@ import org.matsim.api.core.v01.events.handler.LinkLeaveEventHandler;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.vehicles.Vehicle;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
 
 public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEventHandler {
 	final private Map<Id<Vehicle>, List<DeckGLTripItem>> deckGLTrips;
@@ -24,14 +25,14 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 	public DeckGLTripListener(Network network) {
 		this(network, 0, Long.MAX_VALUE);
 	}
-
+	
 	public DeckGLTripListener(Network network, long minTime, long maxTime) {
 		this.deckGLTrips = new HashMap<Id<Vehicle>, List<DeckGLTripItem>>();
 		this.network = network;
 		this.minTime = minTime;
 		this.maxTime = maxTime;
 	}
-
+	
 	public Map<Id<Vehicle>, List<DeckGLTripItem>> getDeckGLTripItems() {
 		return deckGLTrips;
 	}
@@ -44,15 +45,15 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 	@Override
 	public void handleEvent(LinkEnterEvent event) {
 		long time = (long) event.getTime();
-
+		
 		if (minTime <= time && time <= maxTime) {
 			List<DeckGLTripItem> trips = deckGLTrips.get(event.getVehicleId());
-
+			
 			if (trips == null) {
 				trips = new LinkedList<DeckGLTripItem>();
 				deckGLTrips.put(event.getVehicleId(), trips);
 			}
-
+				
 			Coord location = network.getLinks().get(event.getLinkId()).getFromNode().getCoord();
 			trips.add(new DeckGLTripItem(location, time, minTime));
 		}
@@ -61,15 +62,15 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 	@Override
 	public void handleEvent(LinkLeaveEvent event) {
 		long time = (long) event.getTime();
-
+		
 		if (minTime <= time && time <= maxTime) {
 			List<DeckGLTripItem> trips = deckGLTrips.get(event.getVehicleId());
-
+			
 			if (trips == null) {
 				trips = new LinkedList<DeckGLTripItem>();
 				deckGLTrips.put(event.getVehicleId(), trips);
 			}
-
+				
 			Coord location = network.getLinks().get(event.getLinkId()).getToNode().getCoord();
 			trips.add(new DeckGLTripItem(location, time, minTime));
 		}

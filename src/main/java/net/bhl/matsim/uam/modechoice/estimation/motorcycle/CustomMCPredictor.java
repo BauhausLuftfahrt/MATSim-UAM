@@ -1,6 +1,8 @@
 package net.bhl.matsim.uam.modechoice.estimation.motorcycle;
 
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import java.util.List;
+
+import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
@@ -11,7 +13,7 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.facilities.ActivityFacilities;
 
-import java.util.List;
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 
 public class CustomMCPredictor {
 	final private TripRouter router;
@@ -19,7 +21,7 @@ public class CustomMCPredictor {
 	final private Network network;
 
 	public CustomMCPredictor(TripRouter router, ActivityFacilities facilities, TravelDisutility travelDisutility,
-							 Network network) {
+			Network network) {
 		this.router = router;
 		this.travelDisutility = travelDisutility;
 		this.network = network;
@@ -27,14 +29,14 @@ public class CustomMCPredictor {
 
 	public CustomMCPrediction predict(ModeChoiceTrip trip) {
 		Trip tripInformation = trip.getTripInformation();
-
-		LinkWrapperFacility originFacility =
+		
+		LinkWrapperFacility originFacility = 
 				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getOriginActivity().getLinkId()));
-		LinkWrapperFacility destinationFacility =
+		LinkWrapperFacility destinationFacility = 
 				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getDestinationActivity().getLinkId()));
 
 		List<? extends PlanElement> result = router.calcRoute("mc", originFacility, destinationFacility,
-				tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
+			tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
 
 		NetworkRoute route = (NetworkRoute) ((Leg) result.get(0)).getRoute();
 

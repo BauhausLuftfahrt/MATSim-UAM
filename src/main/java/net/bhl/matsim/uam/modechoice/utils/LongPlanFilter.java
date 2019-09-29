@@ -1,12 +1,12 @@
 package net.bhl.matsim.uam.modechoice.utils;
 
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.TripStructureUtils;
-
-import java.util.Iterator;
 
 public class LongPlanFilter {
 	final private Logger logger = Logger.getLogger(LongPlanFilter.class);

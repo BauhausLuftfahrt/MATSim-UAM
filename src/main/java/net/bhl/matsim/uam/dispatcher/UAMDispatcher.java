@@ -1,15 +1,17 @@
 package net.bhl.matsim.uam.dispatcher;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.matsim.contrib.dvrp.data.Vehicle;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMTask;
-import org.matsim.contrib.dvrp.data.Vehicle;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 @Singleton
 public class UAMDispatcher implements Dispatcher {
@@ -40,7 +42,7 @@ public class UAMDispatcher implements Dispatcher {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see net.bhl.matsim.uam.dispatcher.Dispatcher#onRequestSubmitted(net.bhl.
 	 * matsim.uam.passanger.UAMRequest)
 	 */
@@ -52,7 +54,7 @@ public class UAMDispatcher implements Dispatcher {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * net.bhl.matsim.uam.dispatcher.Dispatcher#onNextTaskStarted(net.bhl.matsim
 	 * .uam.infrastructure.UAMVehicle)
@@ -66,8 +68,10 @@ public class UAMDispatcher implements Dispatcher {
 	}
 
 	/**
-	 * @param now current time
-	 *            <p>
+	 * 
+	 * @param now
+	 *            current time
+	 * 
 	 *            Method that dispatches a first vehicle in the Queue - no
 	 *            optimization.
 	 */

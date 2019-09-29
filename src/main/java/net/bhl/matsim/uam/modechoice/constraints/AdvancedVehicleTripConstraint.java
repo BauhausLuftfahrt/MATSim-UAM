@@ -1,15 +1,17 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
-import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
-import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
-
 import java.util.Collection;
 import java.util.List;
 
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
+import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
+
 /**
+ * 
  * This class ensures that the vehicle needs to be returned home if it was taken
  * in the first place. However, it must be noted that if the person start a tour
  * with a certain vehicle it needs to bring it back at the end of the tour. This
@@ -18,22 +20,23 @@ import java.util.List;
  * take a car back home. The agent will be forced to being the car back home in
  * the first tour. This was done in order to have easier implementation. If this
  * has an effect on the results is not clear.
- *
+ * 
  * @author Milos Balac <milos.balac@ivt.baug.ethz.ch>
  * @author Sebastian Hörl <sebastian.hoerl@ivt.baug.ethz.ch>
+ *
  */
 public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
-	private boolean modeWasEnforced;
-
 	public AdvancedVehicleTripConstraint(List<ModeChoiceTrip> trips, Collection<String> constrainedModes,
-										 Id<Link> homeLinkId) {
+			Id<Link> homeLinkId) {
 		super(trips, constrainedModes, homeLinkId);
 	}
+	
+	private boolean modeWasEnforced;
 
 	@Override
 	public boolean validateBeforeEstimation(ModeChoiceTrip trip, String mode, List<String> previousModes) {
 		modeWasEnforced = false;
-
+		
 		if (super.validateBeforeEstimation(trip, mode, previousModes)) {
 			for (String constrainedMode : constrainedModes) {
 				Id<Link> currentVehicleLinkId = getCurrentVehicleLinkId(constrainedMode, previousModes);
@@ -58,7 +61,7 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 	public boolean getModeWasEnforced() {
 		return modeWasEnforced;
 	}
-
+	
 	/**
 	 * Checks if the agent will return to this location before going home
 	 */
@@ -89,7 +92,7 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 
 		@Override
 		public AdvancedVehicleTripConstraint createConstraint(List<ModeChoiceTrip> trips,
-															  Collection<String> availableModes) {
+				Collection<String> availableModes) {
 			Id<Link> homeLinkId = VehicleLocationUtils.getHomeLinkId(trips);
 			return new AdvancedVehicleTripConstraint(trips, constrainedModes, homeLinkId);
 		}

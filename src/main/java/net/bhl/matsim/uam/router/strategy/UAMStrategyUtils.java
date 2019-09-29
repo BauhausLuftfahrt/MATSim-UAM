@@ -30,11 +30,10 @@ import java.util.*;
 
 /**
  * This class provides the methods used for different UAMStrategies
- *
+ * 
  * @author Aitan Militao, RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyUtils {
-	private static final Logger log = Logger.getLogger(UAMIntermodalRoutingModule.class);
 	private final Scenario scenario;
 	private UAMStations landingStations;
 	private UAMConfigGroup uamConfig;
@@ -44,11 +43,12 @@ public class UAMStrategyUtils {
 	private ParallelLeastCostPathCalculator plcpc;
 	private LeastCostPathCalculator plcpccar;
 	private CustomModeChoiceParameters parameters;
+	private static final Logger log = Logger.getLogger(UAMIntermodalRoutingModule.class);
 
 	public UAMStrategyUtils(UAMStations landingStations, UAMConfigGroup uamConfig, Scenario scenario,
-							UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
-							ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar,
-							CustomModeChoiceParameters parameters) {
+			UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
+			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar,
+			CustomModeChoiceParameters parameters) {
 		this.landingStations = landingStations;
 		this.uamConfig = uamConfig;
 		this.scenario = scenario;
@@ -62,8 +62,8 @@ public class UAMStrategyUtils {
 
 	/**
 	 * @return the list of possible UAMStations accessible from/to a specific
-	 * location (facility) based in the searchRadius parameter defined in
-	 * the config file.
+	 *         location (facility) based in the searchRadius parameter defined in
+	 *         the config file.
 	 */
 	Collection<UAMStation> getPossibleStations(Facility<?> facility) {
 		return landingStations.spatialStations.getDisk(facility.getCoord().getX(), facility.getCoord().getY(),
@@ -171,7 +171,7 @@ public class UAMStrategyUtils {
 	}
 
 	double estimateUtilityWrapper(Person person, boolean access, Facility<?> facility, double time, UAMStation station,
-								  String mode) {
+			String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;
 		if (access) {
@@ -183,35 +183,35 @@ public class UAMStrategyUtils {
 		}
 
 		switch (mode) {
-			case TransportMode.taxi:
-			case TransportMode.car:
-				if (carNetwork.getLinks().get(from.getId()) != null)
-					from = carNetwork.getLinks().get(from.getId());
-				else
-					from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
+		case TransportMode.taxi:
+		case TransportMode.car:
+			if (carNetwork.getLinks().get(from.getId()) != null)
+				from = carNetwork.getLinks().get(from.getId());
+			else
+				from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
 
-				if (carNetwork.getLinks().get(to.getId()) != null)
-					to = carNetwork.getLinks().get(to.getId());
-				else
-					to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
+			if (carNetwork.getLinks().get(to.getId()) != null)
+				to = carNetwork.getLinks().get(to.getId());
+			else
+				to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
-				Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, person, null);
-				double distance = 0.0;
-				for (Link l : path.links) {
-					distance += l.getLength();
-				}
-				return estimateUtility(mode, path.travelTime, distance, person);
-			case TransportMode.pt:
-				if (uamConfig.getPtSimulation()) {
-					List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
-							time, person);
-					if (legs.size() > 1)
-						return estimateUtility(legs, person);
-					return Double.NEGATIVE_INFINITY;
-				}
-			default:
-				UAMAccessLeg beelineAccessLeg = getBeelineAccessLeg(facility, station, mode);
-				return estimateUtility(mode, beelineAccessLeg.travelTime, beelineAccessLeg.distance, person);
+			Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, person, null);
+			double distance = 0.0;
+			for (Link l : path.links) {
+				distance += l.getLength();
+			}
+			return estimateUtility(mode, path.travelTime, distance, person);
+		case TransportMode.pt:
+			if (uamConfig.getPtSimulation()) {
+				List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
+						time, person);
+				if (legs.size() > 1)
+					return estimateUtility(legs, person);
+				return Double.NEGATIVE_INFINITY;
+			}
+		default:
+			UAMAccessLeg beelineAccessLeg = getBeelineAccessLeg(facility, station, mode);
+			return estimateUtility(mode, beelineAccessLeg.travelTime, beelineAccessLeg.distance, person);
 		}
 	}
 

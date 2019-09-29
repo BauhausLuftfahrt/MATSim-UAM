@@ -2,7 +2,13 @@ package net.bhl.matsim.uam.scenario.network;
 
 // Adjusted from RunCreateNetworkSHP.java by matsim-code-examples
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.geotools.referencing.CRS;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -19,7 +25,7 @@ import org.matsim.core.utils.gis.ShapeFileWriter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.util.*;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class RunNetworkToSHP {
 
@@ -27,7 +33,7 @@ public class RunNetworkToSHP {
 
 		System.out.println("ARGS: input.xml EPSG:00000 allowed-modes*");
 		System.out.println("(* optional)");
-
+		
 		Config config = ConfigUtils.createConfig();
 		config.network().setInputFile(args[0]);
 		Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -51,7 +57,7 @@ public class RunNetworkToSHP {
 			e.printStackTrace();
 			System.exit(1);
 		}
-
+		
 
 		Collection<SimpleFeature> features = new ArrayList<SimpleFeature>();
 		PolylineFeatureFactory linkFactory = new PolylineFeatureFactory.Builder().
@@ -71,18 +77,18 @@ public class RunNetworkToSHP {
 			Coordinate fromNodeCoordinate = new Coordinate(link.getFromNode().getCoord().getX(), link.getFromNode().getCoord().getY());
 			Coordinate toNodeCoordinate = new Coordinate(link.getToNode().getCoord().getX(), link.getToNode().getCoord().getY());
 			Coordinate linkCoordinate = new Coordinate(link.getCoord().getX(), link.getCoord().getY());
-			SimpleFeature ft = linkFactory.createPolyline(new Coordinate[]{fromNodeCoordinate, linkCoordinate, toNodeCoordinate},
-					new Object[]{link.getId().toString(),
+			SimpleFeature ft = linkFactory.createPolyline(new Coordinate [] {fromNodeCoordinate, linkCoordinate, toNodeCoordinate},
+					new Object [] {link.getId().toString(),
 							link.getFromNode().getId().toString(),
 							link.getToNode().getId().toString(),
 							link.getLength(),
-							NetworkUtils.getType(link),
+							NetworkUtils.getType(((Link)link)),
 							link.getCapacity(),
 							link.getFreespeed(),
 							link.getAllowedModes()},
 					null);
 			features.add(ft);
-		}
+		}   
 		ShapeFileWriter.writeGeometries(features, args[0] + "_links.shp");
 
 		features = new ArrayList<SimpleFeature>();
@@ -94,7 +100,7 @@ public class RunNetworkToSHP {
 
 		for (Node node : network.getNodes().values()) {
 			SimpleFeature ft = nodeFactory.createPoint(node.getCoord(),
-					new Object[]{node.getId().toString()},
+					new Object[] {node.getId().toString()},
 					null);
 			features.add(ft);
 		}

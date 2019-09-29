@@ -1,6 +1,20 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
@@ -19,18 +33,15 @@ import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.network.io.NetworkChangeEventsWriter;
 import org.matsim.core.router.DijkstraFactory;
-import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelDisutilityUtils;
 import org.matsim.core.router.util.TravelTime;
+import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 import org.matsim.core.utils.misc.Time;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 
 /**
  * This script generates csv file containing estimated travel times by CAR for
@@ -135,7 +146,7 @@ public class RunCalculateCarTravelTimes {
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
 				log.info("Calculation completion: " + counter + "/" + trips.size() +
-						" (" + String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
+						" (" + String.format("%.0f", (double) counter / trips.size() * 100)  + "%).");
 			try {
 				Link from = NetworkUtils.getNearestLink(network, trip.origin);
 				Link to = NetworkUtils.getNearestLink(network, trip.destination);
@@ -160,7 +171,7 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-											 DefaultParallelLeastCostPathCalculator pathCalculator) throws InterruptedException, ExecutionException {
+			DefaultParallelLeastCostPathCalculator pathCalculator) throws InterruptedException, ExecutionException {
 		if (carNetwork.getLinks().get(from.getId()) != null)
 			from = carNetwork.getLinks().get(from.getId());
 		else
@@ -185,9 +196,9 @@ public class RunCalculateCarTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime) })
 					+ "\n");
 		}
 
@@ -196,12 +207,20 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time"});
+		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
+				"departure_time", "travel_time" });
+	}
+
+	public static class TripItem {
+		public Coord origin;
+		public Coord destination;
+		public double departureTime;
+		public double travelTime;
+
 	}
 
 	public static TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
-																		  TravelTimeCalculatorConfigGroup group) {
+			TravelTimeCalculatorConfigGroup group) {
 		EventsManager manager = EventsUtils.createEventsManager();
 		TravelTimeCalculator tcc = TravelTimeCalculator.create(network, group);
 		manager.addHandler(tcc);
@@ -210,7 +229,7 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	public static List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
-																	 Double endTime, Double timeStep, Double MinFreeSpeed) {
+			Double endTime, Double timeStep, Double MinFreeSpeed) {
 		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
 		for (Link l : network.getLinks().values()) {
 
@@ -241,13 +260,5 @@ public class RunCalculateCarTravelTimes {
 			}
 		}
 		return networkChangeEvents;
-	}
-
-	public static class TripItem {
-		public Coord origin;
-		public Coord destination;
-		public double departureTime;
-		public double travelTime;
-
 	}
 }

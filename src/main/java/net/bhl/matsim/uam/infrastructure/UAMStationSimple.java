@@ -4,7 +4,9 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 
 /**
+ * 
  * @author balacm
+ *
  */
 public class UAMStationSimple implements UAMStation {
 
@@ -20,13 +22,13 @@ public class UAMStationSimple implements UAMStation {
 	private final double defaultWaitTime;
 
 	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
-							double defaultWaitTime, Link locationLink, Id<UAMStation> id) {
+			double defaultWaitTime, Link locationLink, Id<UAMStation> id) {
 		this(landingCapacity, parkingCapacity, preFlightTime, postFlightTime, defaultWaitTime, locationLink, id,
 				id.toString());
 	}
 
 	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
-							double defaultWaitTime, Link locationLink, Id<UAMStation> id, String name) {
+			double defaultWaitTime, Link locationLink, Id<UAMStation> id, String name) {
 		this.landingCapacity = landingCapacity;
 		this.parkingCapacity = parkingCapacity;
 		this.locationLink = locationLink;
@@ -36,7 +38,7 @@ public class UAMStationSimple implements UAMStation {
 		this.postFlightTime = postFlightTime;
 		this.defaultWaitTime = defaultWaitTime;
 	}
-
+	
 	@Override
 	public String getName() {
 		return name;

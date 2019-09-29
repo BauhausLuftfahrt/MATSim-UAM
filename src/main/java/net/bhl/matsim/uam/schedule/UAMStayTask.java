@@ -1,32 +1,35 @@
 package net.bhl.matsim.uam.schedule;
 
-import net.bhl.matsim.uam.passenger.UAMRequest;
+import java.util.Collection;
+
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
 
-import java.util.Collection;
-
-/**
- * During this task the UAM Vehicle is idle.
+import net.bhl.matsim.uam.passenger.UAMRequest;
+/** 
+ *    During this task the UAM Vehicle is idle.
  */
-public class UAMStayTask extends StayTaskImpl implements UAMTask {
-	public UAMStayTask(double beginTime, double endTime, Link link, String name) {
-		super(beginTime, endTime, link, name);
-	}
+public class UAMStayTask extends StayTaskImpl implements UAMTask{
+    public UAMStayTask(double beginTime, double endTime, Link link, String name)
+    {
+        super(beginTime, endTime, link, name);
+    }
 
-	public UAMStayTask(double beginTime, double endTime, Link link) {
-		this(beginTime, endTime, link, "AVStay");
-	}
+    public UAMStayTask(double beginTime, double endTime, Link link)
+    {
+        this(beginTime, endTime, link, "AVStay");
+    }
 
-	@Override
-	protected String commonToString() {
-		return "[" + getUAMTaskType().toString() + "]" + super.commonToString();
-	}
+    @Override
+    protected String commonToString()
+    {
+        return "[" + getUAMTaskType().toString() + "]" + super.commonToString();
+    }
 
-	@Override
-	public UAMTaskType getUAMTaskType() {
-		return UAMTaskType.STAY;
-	}
+    @Override
+    public UAMTaskType getUAMTaskType() {
+        return UAMTaskType.STAY;
+    }
 
 	@Override
 	public Collection<UAMRequest> getRequests() {
@@ -35,6 +38,6 @@ public class UAMStayTask extends StayTaskImpl implements UAMTask {
 
 	@Override
 	public void addRequest(UAMRequest request) {
-
+		
 	}
 }

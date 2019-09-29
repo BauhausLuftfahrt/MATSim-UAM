@@ -15,16 +15,15 @@ import java.util.Set;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the minimum total travel time of the route.
- *
+ * 
  * @author Aitan Militao
  */
-public class UAMMinTravelTimeStrategy implements UAMStrategy {
+public class UAMMinTravelTimeStrategy implements UAMStrategy{
 	private UAMStrategyUtils strategyUtils;
-
 	public UAMMinTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
-
+	
 	@Override
 	public UAMStrategyType getUAMStrategyType() {
 		return UAMStrategyType.MINTRAVELTIME;
@@ -36,7 +35,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
 		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
-
+		
 		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
 		//UAM flight time  + access and egress travel time
 		double minTotalTime = Double.POSITIVE_INFINITY;
@@ -55,8 +54,8 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility,
 							currentDepartureTime, stationDestination, mode).travelTime;
 					//Calculates the minimum total time
-					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime + egressTravelTime;
-					if (totalTime < minTotalTime) {
+					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime()+ flyTime + egressTravelTime;
+					if (totalTime < minTotalTime ) {
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
 						minTotalTime = totalTime;
@@ -64,7 +63,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 					}
 				}
 			}
-		}
+		}		
 
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);

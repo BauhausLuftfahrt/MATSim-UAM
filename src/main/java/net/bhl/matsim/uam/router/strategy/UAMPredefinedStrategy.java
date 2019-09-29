@@ -1,7 +1,8 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.Collection;
+import java.util.List;
+
 import net.bhl.matsim.uam.router.UAMModes;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
@@ -9,17 +10,18 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.facilities.Facility;
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 
-import java.util.Collection;
-import java.util.List;
-
-public class UAMPredefinedStrategy implements UAMStrategy {
+public class UAMPredefinedStrategy implements UAMStrategy{
+	private UAMStrategyUtils strategyUtils;
+	private static final Logger log = Logger.getLogger(UAMPredefinedStrategy.class);
+	
 	public static final String ACCESS_MODE = "accessMode";
 	public static final String ORIG_STATION = "originStation";
 	public static final String DEST_STATION = "destinationStation";
 	public static final String EGRESS_MODE = "egressMode";
-	private static final Logger log = Logger.getLogger(UAMPredefinedStrategy.class);
-	private UAMStrategyUtils strategyUtils;
 
 	public UAMPredefinedStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
@@ -32,14 +34,14 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 
 	@Override
 	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
-		Leg l = null;
+		Leg l = null;		
 		List<PlanElement> elements = person.getSelectedPlan().getPlanElements();
 		for (int i = 0; i < elements.size() - 2; i += 2) {
 			Activity endingActivity = (Activity) elements.get(i);
-
+			
 			if (endingActivity.getType().equals(UAMModes.UAM_INTERACTION))
 				continue;
-
+					
 			if (endingActivity.getEndTime() == departureTime) {
 				l = (Leg) elements.get(i + 1);
 				break;
@@ -54,7 +56,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 
 		if (accessMode == null || egressMode == null)
 			reportMissingMode(person);
-
+		
 		String definedOriginStation = (String) l.getAttributes().getAttribute(ORIG_STATION);
 		String definedDestinationStation = (String) l.getAttributes().getAttribute(DEST_STATION);
 		UAMStation originStation = null, destinationStation = null;
@@ -65,7 +67,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 				break;
 			}
 		}
-
+		
 		Collection<UAMStation> destinationStations = strategyUtils.getPossibleStations(toFacility);
 		for (UAMStation station : destinationStations) {
 			if (station.getId().toString().equals(definedDestinationStation)) {
@@ -73,14 +75,14 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 				break;
 			}
 		}
-
+		
 		if (originStation == null)
 			reportMissingStation(person, definedOriginStation, originStations);
-
+		
 		if (destinationStation == null)
 			reportMissingStation(person, definedDestinationStation, destinationStations);
 
-		return new UAMRoute(accessMode, originStation, destinationStation, egressMode);
+		return new UAMRoute(accessMode, originStation, destinationStation, egressMode);		
 	}
 
 	private void reportMissingLeg(Person person) {

@@ -15,16 +15,16 @@ public class RunUAMVehicleFileHelper {
 
 		FileOutputStream fos = new FileOutputStream(fout);
 		OutputStreamWriter osw = new OutputStreamWriter(fos);
-
+	 
 		for (String station : stations) {
 			for (int i = 0; i < vehiclesPerStation; i++) {
 				osw.write("		<vehicle id=\"uam_vh_" + station + "-" + i + "\" capacity=\"1\" starttime=\"00:00:00\" endtime=\"30:00:00\" cruisespeed=\"33.3333\" verticalspeed=\"10\" initialstation=\"" + station + "\" />\n");
 			}
 		}
-
+	 
 		osw.close();
-
-		System.out.println("done.");
+		
+		System.out.println("done.");		
 	}
 
 }

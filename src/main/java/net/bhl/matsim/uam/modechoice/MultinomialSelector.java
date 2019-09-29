@@ -1,11 +1,15 @@
 package net.bhl.matsim.uam.modechoice;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilityCandidate;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelector;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class MultinomialSelector<T extends UtilityCandidate> implements UtilitySelector<T> {
 	final private List<T> candidates = new LinkedList<>();

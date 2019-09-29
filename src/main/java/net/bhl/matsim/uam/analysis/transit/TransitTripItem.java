@@ -25,7 +25,7 @@ public class TransitTripItem {
 	public double transferCrowflyDistance = 0.0;
 
 	public int numberOfTransfers = -1;
-
+	
 	public String routing = "";
 
 	public double firstWaitingTime = Double.NaN;

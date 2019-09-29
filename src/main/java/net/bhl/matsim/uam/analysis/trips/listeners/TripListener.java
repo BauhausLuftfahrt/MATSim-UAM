@@ -1,10 +1,26 @@
 package net.bhl.matsim.uam.analysis.trips.listeners;
 
-import net.bhl.matsim.uam.analysis.trips.TripItem;
-import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.events.*;
-import org.matsim.api.core.v01.events.handler.*;
+import org.matsim.api.core.v01.events.ActivityEndEvent;
+import org.matsim.api.core.v01.events.ActivityStartEvent;
+import org.matsim.api.core.v01.events.LinkEnterEvent;
+import org.matsim.api.core.v01.events.PersonDepartureEvent;
+import org.matsim.api.core.v01.events.PersonEntersVehicleEvent;
+import org.matsim.api.core.v01.events.PersonLeavesVehicleEvent;
+import org.matsim.api.core.v01.events.PersonStuckEvent;
+import org.matsim.api.core.v01.events.handler.ActivityEndEventHandler;
+import org.matsim.api.core.v01.events.handler.ActivityStartEventHandler;
+import org.matsim.api.core.v01.events.handler.LinkEnterEventHandler;
+import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
+import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
+import org.matsim.api.core.v01.events.handler.PersonLeavesVehicleEventHandler;
+import org.matsim.api.core.v01.events.handler.PersonStuckEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
@@ -18,7 +34,8 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.vehicles.Vehicle;
 
-import java.util.*;
+import net.bhl.matsim.uam.analysis.trips.TripItem;
+import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 
 public class TripListener implements ActivityStartEventHandler, ActivityEndEventHandler, PersonDepartureEventHandler,
 		PersonEntersVehicleEventHandler, PersonLeavesVehicleEventHandler, LinkEnterEventHandler,
@@ -36,7 +53,7 @@ public class TripListener implements ActivityStartEventHandler, ActivityEndEvent
 	final private Map<Id<Person>, Integer> tripIndex = new HashMap<>();
 
 	public TripListener(Network network, StageActivityTypes stageActivityTypes, HomeActivityTypes homeActivityTypes,
-						MainModeIdentifier mainModeIdentifier, Collection<String> networkRouteModes) {
+			MainModeIdentifier mainModeIdentifier, Collection<String> networkRouteModes) {
 		this.network = network;
 		this.stageActivityTypes = stageActivityTypes;
 		this.homeActivityTypes = homeActivityTypes;
@@ -152,9 +169,9 @@ public class TripListener implements ActivityStartEventHandler, ActivityEndEvent
 	}
 
 	private double getNetworkDistance(TripListenerItem trip) {
-
+		
 		// TODO RAOUL CHECK FOR HOW UAM IS DONE HERE
-
+		
 		if (networkRouteModes.contains(mainModeIdentifier.identifyMainMode(trip.elements))) {
 			double distance = 0.0;
 

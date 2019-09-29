@@ -1,7 +1,8 @@
 package net.bhl.matsim.uam.analysis.transit.listeners;
 
-import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
 import org.matsim.api.core.v01.Coord;
+
+import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
 
 public class TransitTripListenerItem extends TransitTripItem {
 	public String mode = "unknown";

@@ -1,9 +1,12 @@
 package net.bhl.matsim.uam.events;
 
-import com.google.inject.Inject;
-import net.bhl.matsim.uam.data.WaitingStationData;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -20,25 +23,28 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.vehicles.Vehicle;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.inject.Inject;
+
+import net.bhl.matsim.uam.data.WaitingStationData;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 
 public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEventHandler, ActivityStartEventHandler,
 		PersonEntersVehicleEventHandler {
-	Map<Id<Person>, ArrayList<UAMData>> demand = new ConcurrentHashMap<>();
-	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
-	Map<Id<Person>, Boolean> uamTrips = new ConcurrentHashMap<>();
-	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
-	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 	@Inject
 	private Scenario scenario;
 	@Inject
 	private UAMManager manager;
 	@Inject
 	private WaitingStationData waitingData;
+
+	Map<Id<Person>, ArrayList<UAMData>> demand = new ConcurrentHashMap<>();
+	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
+
+	Map<Id<Person>, Boolean> uamTrips = new ConcurrentHashMap<>();
+	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
+	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 
 	@Override
 	public void reset(int iteration) {
@@ -151,7 +157,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 			data.destinationStationLink = network.getLinks().get(event.getLinkId());
 			UAMStation station = this.manager.getStations()
 					.getNearestUAMStation(network.getLinks().get(event.getLinkId()));
-			data.destinationStationId = station.getId();
+			data.destinationStationId = station.getId(); 
 			double deboardingTime = this.manager.getVehicles().get(this.personToVehicle.get(event.getPersonId())).getDeboardingTime();
 			data.landingTime = event.getTime() - deboardingTime; //#Landing time is when the vehicle touches the ground
 			data.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
@@ -167,7 +173,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 		} else if (event.getLegMode().startsWith("access_uam")) {
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
 			data.arrivalAtStationTime = event.getTime();
-		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk") || (event.getLegMode().equals("pt") && !scenario.getConfig().transit().isUseTransit())) {
+		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk") || (event.getLegMode().equals("pt")&&!scenario.getConfig().transit().isUseTransit())) {
 			// we are still in the potential access or egress pt trip
 			PTData data = tempPTData.get(event.getPersonId());
 			data.endTime = event.getTime();

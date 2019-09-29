@@ -1,15 +1,16 @@
 package net.bhl.matsim.uam.listeners;
 
-import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.apache.log4j.Logger;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.controler.events.ShutdownEvent;
 import org.matsim.core.controler.listener.ShutdownListener;
 import org.matsim.core.utils.io.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.google.inject.Inject;
 
 /**
  * This listener copies the input UAM Vehicle file into the output folder after
@@ -19,9 +20,9 @@ import java.io.OutputStream;
  */
 
 public class UAMShutdownListener implements ShutdownListener {
-	private static final Logger log = Logger.getLogger(UAMListener.class);
 	@Inject
 	private OutputDirectoryHierarchy controlerIO;
+	private static final Logger log = Logger.getLogger(UAMListener.class);
 
 	@Override
 	public void notifyShutdown(ShutdownEvent event) {
