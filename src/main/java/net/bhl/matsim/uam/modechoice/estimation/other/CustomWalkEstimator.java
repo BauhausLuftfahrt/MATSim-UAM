@@ -1,7 +1,5 @@
 package net.bhl.matsim.uam.modechoice.estimation.other;
 
-import java.util.List;
-
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
@@ -9,6 +7,8 @@ import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import ch.ethz.matsim.mode_choice.prediction.TeleportationPrediction;
 import ch.ethz.matsim.mode_choice.prediction.TeleportationPredictor;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+
+import java.util.List;
 
 public class CustomWalkEstimator implements ModalTripEstimator {
 	final private TeleportationPredictor predictor;
@@ -21,7 +21,7 @@ public class CustomWalkEstimator implements ModalTripEstimator {
 	}
 
 	public CustomWalkEstimator(CustomModeChoiceParameters parameters,
-			TeleportationPredictor predictor, boolean isMinTravelTime) {
+							   TeleportationPredictor predictor, boolean isMinTravelTime) {
 		this(parameters, predictor);
 		this.isMinTravelTime = isMinTravelTime;
 	}

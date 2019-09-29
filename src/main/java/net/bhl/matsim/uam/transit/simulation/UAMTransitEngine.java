@@ -1,9 +1,9 @@
 package net.bhl.matsim.uam.transit.simulation;
 
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
-
+import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
+import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
+import com.google.inject.Singleton;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.events.PersonStuckEvent;
@@ -22,61 +22,22 @@ import org.matsim.pt.transitSchedule.api.TransitRoute;
 import org.matsim.pt.transitSchedule.api.TransitRouteStop;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 
-import com.google.inject.Singleton;
-
-import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
-import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 @Singleton
 public class UAMTransitEngine implements DepartureHandler, MobsimEngine {
 	final private TransitSchedule transitSchedule;
 	final private DepartureFinder departureFinder;
-	private InternalInterface internalInterface;
 	final private EventsManager eventsManager;
 	final private AgentCounter agentCounter;
-
 	final private PriorityQueue<AgentDeparture> departures = new PriorityQueue<>();
 	final private PriorityQueue<AgentArrival> arrivals = new PriorityQueue<>();
-
-	private class AgentDeparture implements Comparable<AgentDeparture> {
-		final public MobsimAgent agent;
-		final public double departureTime;
-		final public Id<Link> departureLinkId;
-
-		public AgentDeparture(MobsimAgent agent, double departureTime, Id<Link> departureLinkId) {
-			this.agent = agent;
-			this.departureTime = departureTime;
-			this.departureLinkId = departureLinkId;
-		}
-
-		@Override
-		public int compareTo(AgentDeparture other) {
-			return Double.compare(departureTime, other.departureTime);
-		}
-	}
-
-	private class AgentArrival implements Comparable<AgentArrival> {
-		final public MobsimAgent agent;
-		final public double arrivalTime;
-		final public Id<Link> arrivalLinkId;
-		final public PublicTransitEvent event;
-
-		public AgentArrival(MobsimAgent agent, double arrivalTime, Id<Link> arrivalLinkId, PublicTransitEvent event) {
-			this.agent = agent;
-			this.arrivalTime = arrivalTime;
-			this.arrivalLinkId = arrivalLinkId;
-			this.event = event;
-		}
-
-		@Override
-		public int compareTo(AgentArrival other) {
-			return Double.compare(arrivalTime, other.arrivalTime);
-		}
-	}
+	private InternalInterface internalInterface;
 
 	public UAMTransitEngine(EventsManager eventsManager, TransitSchedule transitSchedule,
-			DepartureFinder departureFinder, AgentCounter agentCounter) {
+							DepartureFinder departureFinder, AgentCounter agentCounter) {
 		this.eventsManager = eventsManager;
 		this.transitSchedule = transitSchedule;
 		this.departureFinder = departureFinder;
@@ -174,5 +135,41 @@ public class UAMTransitEngine implements DepartureHandler, MobsimEngine {
 	@Override
 	public void setInternalInterface(InternalInterface internalInterface) {
 		this.internalInterface = internalInterface;
+	}
+
+	private class AgentDeparture implements Comparable<AgentDeparture> {
+		final public MobsimAgent agent;
+		final public double departureTime;
+		final public Id<Link> departureLinkId;
+
+		public AgentDeparture(MobsimAgent agent, double departureTime, Id<Link> departureLinkId) {
+			this.agent = agent;
+			this.departureTime = departureTime;
+			this.departureLinkId = departureLinkId;
+		}
+
+		@Override
+		public int compareTo(AgentDeparture other) {
+			return Double.compare(departureTime, other.departureTime);
+		}
+	}
+
+	private class AgentArrival implements Comparable<AgentArrival> {
+		final public MobsimAgent agent;
+		final public double arrivalTime;
+		final public Id<Link> arrivalLinkId;
+		final public PublicTransitEvent event;
+
+		public AgentArrival(MobsimAgent agent, double arrivalTime, Id<Link> arrivalLinkId, PublicTransitEvent event) {
+			this.agent = agent;
+			this.arrivalTime = arrivalTime;
+			this.arrivalLinkId = arrivalLinkId;
+			this.event = event;
+		}
+
+		@Override
+		public int compareTo(AgentArrival other) {
+			return Double.compare(arrivalTime, other.arrivalTime);
+		}
 	}
 }

@@ -1,20 +1,18 @@
 package net.bhl.matsim.uam.data;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.bhl.matsim.uam.schedule.UAMStayTask;
 import org.matsim.contrib.dvrp.data.Vehicle;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.core.controler.events.BeforeMobsimEvent;
 import org.matsim.core.controler.listener.BeforeMobsimListener;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import net.bhl.matsim.uam.schedule.UAMStayTask;
 /**
- * Class that loads the UAM vehicle data. 
+ * Class that loads the UAM vehicle data.
  * Initially all vehicles are in the Stay mode at their initial stations.
- * 
- * @author balacm
  *
+ * @author balacm
  */
 @Singleton
 public class UAMLoader implements BeforeMobsimListener {

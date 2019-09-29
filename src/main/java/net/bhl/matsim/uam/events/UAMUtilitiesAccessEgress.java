@@ -1,10 +1,9 @@
 package net.bhl.matsim.uam.events;
 
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
-
-import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 public class UAMUtilitiesAccessEgress {
 	private Id<Person> person;
@@ -16,7 +15,7 @@ public class UAMUtilitiesAccessEgress {
 	private double time;
 
 	public UAMUtilitiesAccessEgress(Id<Person> person, Id<UAMStation> station, Id<Link> link, boolean access,
-			double utility, String mode, double time) {
+									double utility, String mode, double time) {
 		this.person = person;
 		this.station = station;
 		this.link = link;
@@ -37,7 +36,7 @@ public class UAMUtilitiesAccessEgress {
 		UAMUtilitiesAccessEgress other = (UAMUtilitiesAccessEgress) o;
 		return this.toString().equals(other.toString());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();

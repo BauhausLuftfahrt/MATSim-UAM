@@ -1,15 +1,9 @@
 package net.bhl.matsim.uam.qsim;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.inject.Inject;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
@@ -17,16 +11,14 @@ import org.matsim.core.mobsim.framework.PlanAgent;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UAMDepartureHandler implements DepartureHandler {
 
+	Set<Id<Person>> bookedTrips = new HashSet<>();
 	@Inject
 	private PassengerEngine passengerEngine;
-
-	Set<Id<Person>> bookedTrips = new HashSet<>();
 
 	@Override
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
@@ -38,7 +30,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
-				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);				
+				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
 				Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); //Gets the uav_interaction1 activity from the passenger plan (defined in the OptimizedUAMIntermodalRoutingModule)
 				passengerEngine.prebookTrip(now, (MobsimPassengerAgent) agent, leg.getRoute().getStartLinkId(),
 						leg.getRoute().getEndLinkId(),
@@ -58,8 +50,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 					}
 				}
 
-			}
-			else if (agent.getMode().equals("uam"))
+			} else if (agent.getMode().equals("uam"))
 				bookedTrips.remove(agent.getId());
 		}
 

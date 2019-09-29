@@ -1,8 +1,7 @@
 package net.bhl.matsim.uam.modechoice.estimation.pt;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -14,14 +13,14 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.ActivityFacilities;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomPublicTransportPredictor {
 	final private TripRouter router;
 	final private Network network;
 	private Scenario scenario;
-	
+
 	public CustomPublicTransportPredictor(TripRouter router, ActivityFacilities facilities, Scenario scenario) {
 		this.router = router;
 		this.scenario = scenario;
@@ -29,7 +28,7 @@ public class CustomPublicTransportPredictor {
 	}
 
 	public CustomPublicTransportPrediction predict(ModeChoiceTrip trip) {
-		Trip tripInformation = trip.getTripInformation();		
+		Trip tripInformation = trip.getTripInformation();
 
 		LinkWrapperFacility newOriginFacility = new LinkWrapperFacility(
 				network.getLinks().get(tripInformation.getOriginActivity().getLinkId()));
@@ -56,7 +55,7 @@ public class CustomPublicTransportPredictor {
 
 		for (Leg leg : legs) {
 			if (leg.getMode().equals("pt")) {
-				if(scenario.getConfig().transit().isUseTransit()) {
+				if (scenario.getConfig().transit().isUseTransit()) {
 					numberOfTransfers++;
 
 					EnrichedTransitRoute route = (EnrichedTransitRoute) leg.getRoute();
@@ -76,10 +75,10 @@ public class CustomPublicTransportPredictor {
 					double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute")).getBeelineDistanceFactors().get(TransportMode.pt);
 					double distance = CoordUtils.calcEuclideanDistance((tripInformation.getOriginActivity().getCoord()), tripInformation.getDestinationActivity().getCoord());
 					inVehicleDistance += distance * distanceFactor;
-				
+
 					double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute")).getTeleportedModeSpeeds().get(TransportMode.pt);
-				
-					inVehicleTime += inVehicleDistance / speed;	
+
+					inVehicleTime += inVehicleDistance / speed;
 					isOnlyWalk = false;
 				}
 

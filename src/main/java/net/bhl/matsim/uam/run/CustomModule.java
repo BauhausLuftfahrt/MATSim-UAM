@@ -1,12 +1,10 @@
 package net.bhl.matsim.uam.run;
 
-import org.matsim.core.controler.AbstractModule;
-
 import net.bhl.matsim.uam.router.TaxiRoutingModuleProvider;
+import org.matsim.core.controler.AbstractModule;
 
 public class CustomModule extends AbstractModule {
 
-	
 
 	@Override
 	public void install() {

@@ -1,35 +1,5 @@
 package net.bhl.matsim.uam.modechoice;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.TransportMode;
-import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Population;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
-import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.TripRouter;
-import org.matsim.core.router.costcalculators.TravelDisutilityFactory;
-import org.matsim.core.router.util.LeastCostPathCalculator;
-import org.matsim.core.router.util.LeastCostPathCalculatorFactory;
-import org.matsim.core.router.util.TravelDisutility;
-import org.matsim.core.router.util.TravelTime;
-import org.matsim.facilities.ActivityFacilities;
-import org.matsim.pt.config.TransitConfigGroup;
-
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.ethz.matsim.baseline_scenario.config.CommandLine;
 import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
@@ -52,18 +22,14 @@ import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 import ch.ethz.matsim.mode_choice.prediction.TeleportationPredictor;
 import ch.ethz.matsim.mode_choice.replanning.ModeChoiceModelStrategy;
 import ch.ethz.matsim.mode_choice.replanning.NonSelectedPlanSelector;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.modechoice.constraints.AdvancedVehicleTripConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.AvoidOnlyWalkConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.CarPassangerTripConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.CustomHybridConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.ShortDistanceConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.UAMTripConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.VehicleTourConstraint;
-import net.bhl.matsim.uam.modechoice.constraints.VehicleTripConstraint;
+import net.bhl.matsim.uam.modechoice.constraints.*;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarEstimator;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPredictor;
@@ -80,12 +46,31 @@ import net.bhl.matsim.uam.modechoice.tracking.TrackingModeChoiceModel;
 import net.bhl.matsim.uam.modechoice.tracking.TravelTimeTracker;
 import net.bhl.matsim.uam.modechoice.tracking.TravelTimeTrackerListener;
 import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
+import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.population.Population;
+import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
+import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
+import org.matsim.core.router.TripRouter;
+import org.matsim.core.router.costcalculators.TravelDisutilityFactory;
+import org.matsim.core.router.util.LeastCostPathCalculator;
+import org.matsim.core.router.util.LeastCostPathCalculatorFactory;
+import org.matsim.core.router.util.TravelDisutility;
+import org.matsim.core.router.util.TravelTime;
+import org.matsim.facilities.ActivityFacilities;
+import org.matsim.pt.config.TransitConfigGroup;
 
-public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class CustomModeChoiceModuleMinTravelTime extends AbstractModule {
 	private final CommandLine cmd;
 	private final List<String> vehicleModes = new LinkedList<>();
 	private final boolean isMinTravelTime;
-	
+
 	public CustomModeChoiceModuleMinTravelTime(CommandLine cmd, boolean isMinTravelTime) {
 		this.cmd = cmd;
 		this.isMinTravelTime = isMinTravelTime;
@@ -110,9 +95,9 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		// TODO: Probably can be completely kicked out soon
 		// addEventHandlerBinding().to(FreeflowTravelTimeValidator.class);
-		
+
 	}
-	
+
 	@Provides
 	@Singleton
 	public CustomModeChoiceParameters provideCustomModeChoiceParameters() throws ConfigurationException {
@@ -132,7 +117,7 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 
 		return parameters;
 	}
-	
+
 	@Provides
 	@Singleton
 	public SubscriptionFinder provideSubscriptionFinder(Population population) {
@@ -147,7 +132,7 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 		new TransportModeNetworkFilter(fullNetwork).filter(roadNetwork, Collections.singleton("car"));
 		return roadNetwork;
 	}
-	
+
 	@Provides
 	@Singleton
 	public CustomCarDisutility.Factory provideCustomCarDisutilityFactory(UAMLinkSpeedCalculator speedCalculator) {
@@ -157,22 +142,22 @@ public class CustomModeChoiceModuleMinTravelTime extends AbstractModule{
 	@Provides
 	@Singleton
 	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager,
-			CustomModeChoiceParameters parameters, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
+																	  CustomModeChoiceParameters parameters, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, parameters, plcpc);
 	}
-	
-	
+
+
 	@Provides
 	public ModeChoiceModel provideModeChoiceModel(PlansCalcRouteConfigGroup routeConfig,
-			CustomModeChoiceParameters parameters, TripRouter router, SubscriptionFinder subscriptionFinder,
-			ActivityFacilities facilities, Network network, TravelTimeTracker travelTimeTracker,
-			@Named("car") TravelTime carTravelTime, @Named("car") TravelDisutilityFactory carTravelDisutilityFactory,
-			UAMManager uamManager, Scenario scenario,
-			TransitConfigGroup transitConfig,
-			UAMConfigGroup uamConfig, Map<String, TravelDisutilityFactory> travelDisutilityFactories,
-			Map<String, TravelTime> travelTimes, LeastCostPathCalculatorFactory lcpcf, @Named("car") Network networkCar,
-			@Named("uam") ParallelLeastCostPathCalculator plcpc, WaitingStationData waitingData,
-			UAMStationConnectionGraph stationConnectionutilities) throws ConfigurationException {
+												  CustomModeChoiceParameters parameters, TripRouter router, SubscriptionFinder subscriptionFinder,
+												  ActivityFacilities facilities, Network network, TravelTimeTracker travelTimeTracker,
+												  @Named("car") TravelTime carTravelTime, @Named("car") TravelDisutilityFactory carTravelDisutilityFactory,
+												  UAMManager uamManager, Scenario scenario,
+												  TransitConfigGroup transitConfig,
+												  UAMConfigGroup uamConfig, Map<String, TravelDisutilityFactory> travelDisutilityFactories,
+												  Map<String, TravelTime> travelTimes, LeastCostPathCalculatorFactory lcpcf, @Named("car") Network networkCar,
+												  @Named("uam") ParallelLeastCostPathCalculator plcpc, WaitingStationData waitingData,
+												  UAMStationConnectionGraph stationConnectionutilities) throws ConfigurationException {
 		ModeAvailability modeAvailability = new CarModeAvailability(parameters.getModes());
 
 		double crowflyDistanceFactorWalk = routeConfig.getModeRoutingParams().get("walk").getBeelineDistanceFactor();

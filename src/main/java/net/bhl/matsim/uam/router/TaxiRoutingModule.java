@@ -1,17 +1,9 @@
 package net.bhl.matsim.uam.router;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.api.core.v01.population.PopulationFactory;
-import org.matsim.api.core.v01.population.Route;
-import org.matsim.core.population.routes.NetworkRoute;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.core.population.routes.RouteFactories;
 import org.matsim.core.router.CompositeStageActivityTypes;
 import org.matsim.core.router.RoutingModule;
@@ -19,6 +11,9 @@ import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.facilities.Facility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TaxiRoutingModule implements RoutingModule {
 
@@ -35,9 +30,9 @@ public class TaxiRoutingModule implements RoutingModule {
 
 	@Override
 	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
-			Person person) {
+												 Person person) {
 		PopulationFactory populationFactory = scenario.getPopulation().getFactory();
-		RouteFactories routeFactory = ((PopulationFactory) populationFactory).getRouteFactories();
+		RouteFactories routeFactory = populationFactory.getRouteFactories();
 		final List<PlanElement> trip = new ArrayList<PlanElement>();
 
 		Link originLink = this.carNetwork.getLinks().get(fromFacility.getLinkId());

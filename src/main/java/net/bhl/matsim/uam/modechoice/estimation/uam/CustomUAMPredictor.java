@@ -1,15 +1,17 @@
 package net.bhl.matsim.uam.modechoice.estimation.uam;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.*;
-import net.bhl.matsim.uam.data.UAMFlightLeg;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
+import net.bhl.matsim.uam.events.UAMUtilitiesData;
+import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
+import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -32,17 +34,8 @@ import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.config.TransitConfigGroup;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
-import net.bhl.matsim.uam.events.UAMUtilitiesData;
-import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CustomUAMPredictor {
 
@@ -55,16 +48,16 @@ public class CustomUAMPredictor {
 	private final Set<String> availableModes;
 	private final Network carNetwork;
 	private final TripRouter tripRouter;
-	private LeastCostPathCalculator plcpccar;
 	private final CustomModeChoiceParameters parameters;
+	private LeastCostPathCalculator plcpccar;
 	private UAMStationConnectionGraph stationConnectionutilities;
 	private SubscriptionFinder subscriptions;
 
 	public CustomUAMPredictor(UAMManager manager, Scenario scenario, WaitingStationData waitingData,
-			UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, Set<String> availableModes,
-			Network carNetwork, LeastCostPathCalculator plcpccar, TripRouter transitRouter,
-			CustomModeChoiceParameters parameters, UAMStationConnectionGraph stationConnectionutilities,
-			SubscriptionFinder subscriptions) {
+							  UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, Set<String> availableModes,
+							  Network carNetwork, LeastCostPathCalculator plcpccar, TripRouter transitRouter,
+							  CustomModeChoiceParameters parameters, UAMStationConnectionGraph stationConnectionutilities,
+							  SubscriptionFinder subscriptions) {
 		this.manager = manager;
 		this.scenario = scenario;
 		this.waitingData = waitingData;
@@ -256,7 +249,7 @@ public class CustomUAMPredictor {
 	}
 
 	private double estimateUtilityWrapper(Person person, boolean access, Link link, double time, UAMStation station,
-			String mode) {
+										  String mode) {
 		Coord destinationCoord;
 		Link from, to;
 		if (access) {
@@ -270,59 +263,59 @@ public class CustomUAMPredictor {
 		}
 
 		switch (mode) {
-		case TransportMode.car:
-			List<? extends PlanElement> result = tripRouter.calcRoute(TransportMode.car, new LinkWrapperFacility(from),
-					new LinkWrapperFacility(to), time, person);
+			case TransportMode.car:
+				List<? extends PlanElement> result = tripRouter.calcRoute(TransportMode.car, new LinkWrapperFacility(from),
+						new LinkWrapperFacility(to), time, person);
 
-			NetworkRoute route = (NetworkRoute) ((Leg) result.get(0)).getRoute();
+				NetworkRoute route = (NetworkRoute) ((Leg) result.get(0)).getRoute();
 
-			return estimateUtility(mode, route.getTravelTime(), route.getDistance(), person,
-					CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
-					destinationCoord);
-		case TransportMode.taxi:
-			// TODO just copy of car, rework into actual taxi
-			List<? extends PlanElement> resultTaxi = tripRouter.calcRoute(TransportMode.car,
-					new LinkWrapperFacility(from), new LinkWrapperFacility(to), time, person);
+				return estimateUtility(mode, route.getTravelTime(), route.getDistance(), person,
+						CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
+						destinationCoord);
+			case TransportMode.taxi:
+				// TODO just copy of car, rework into actual taxi
+				List<? extends PlanElement> resultTaxi = tripRouter.calcRoute(TransportMode.car,
+						new LinkWrapperFacility(from), new LinkWrapperFacility(to), time, person);
 
-			NetworkRoute routeTaxi = (NetworkRoute) ((Leg) resultTaxi.get(0)).getRoute();
-			return estimateUtility(mode, routeTaxi.getTravelTime(), routeTaxi.getDistance(), person,
-					CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
-					destinationCoord);
-		case TransportMode.pt:
-			if (uamConfig.getPtSimulation()) {
-				List<Leg> legs = tripRouter
-						.calcRoute(TransportMode.pt, new LinkWrapperFacility(from), new LinkWrapperFacility(to), time,
-								person)
-						.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
+				NetworkRoute routeTaxi = (NetworkRoute) ((Leg) resultTaxi.get(0)).getRoute();
+				return estimateUtility(mode, routeTaxi.getTravelTime(), routeTaxi.getDistance(), person,
+						CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
+						destinationCoord);
+			case TransportMode.pt:
+				if (uamConfig.getPtSimulation()) {
+					List<Leg> legs = tripRouter
+							.calcRoute(TransportMode.pt, new LinkWrapperFacility(from), new LinkWrapperFacility(to), time,
+									person)
+							.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
 
-				if (legs.size() > 1)
-					return estiamteUtility(legs, person,
-							CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()));
-				return Double.NEGATIVE_INFINITY;
-			} else {
+					if (legs.size() > 1)
+						return estiamteUtility(legs, person,
+								CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()));
+					return Double.NEGATIVE_INFINITY;
+				} else {
+					double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
+							.getTeleportedModeSpeeds().get(mode);
+					double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules()
+							.get("planscalcroute")).getBeelineDistanceFactors().get(mode);
+					double distance = CoordUtils.calcEuclideanDistance(link.getCoord(),
+							station.getLocationLink().getCoord());
+					double travelDistance = distance * distanceFactor;
+					double travelTime = travelDistance / speed;
+					return estimateUtility(mode, travelTime, travelDistance, person,
+							CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
+							destinationCoord);
+				}
+
+			default:
 				double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 						.getTeleportedModeSpeeds().get(mode);
 				double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules()
 						.get("planscalcroute")).getBeelineDistanceFactors().get(mode);
-				double distance = CoordUtils.calcEuclideanDistance(link.getCoord(),
-						station.getLocationLink().getCoord());
-				double travelDistance = distance * distanceFactor;
+				double egressDist = CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord());
+
+				double travelDistance = egressDist * distanceFactor;
 				double travelTime = travelDistance / speed;
-				return estimateUtility(mode, travelTime, travelDistance, person,
-						CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord()),
-						destinationCoord);
-			}
-
-		default:
-			double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
-					.getTeleportedModeSpeeds().get(mode);
-			double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules()
-					.get("planscalcroute")).getBeelineDistanceFactors().get(mode);
-			double egressDist = CoordUtils.calcEuclideanDistance(link.getCoord(), station.getLocationLink().getCoord());
-
-			double travelDistance = egressDist * distanceFactor;
-			double travelTime = travelDistance / speed;
-			return estimateUtility(mode, travelTime, travelDistance, person, egressDist * 1e-03, destinationCoord);
+				return estimateUtility(mode, travelTime, travelDistance, person, egressDist * 1e-03, destinationCoord);
 		}
 	}
 
@@ -337,7 +330,7 @@ public class CustomUAMPredictor {
 				utility += leg.getTravelTime() * parameters.betaAccessEgressTimePublicTransport_min / 60.0;
 			else {
 				transfers++;
-				utility += ((EnrichedTransitRoute) leg.getRoute()).getTravelTime()
+				utility += leg.getRoute().getTravelTime()
 						* parameters.betaInVehicleTimePublicTransport_min / 60.0;
 				utility += ((EnrichedTransitRoute) leg.getRoute()).getWaitingTime() / 60.0
 						+ parameters.betaTransferTimePublicTransport_min;
@@ -373,7 +366,7 @@ public class CustomUAMPredictor {
 	}
 
 	private double estimateUtility(String mode, double traveltime, double distance, Person person,
-			double croflyDistance_km, Coord destinationCoord) {
+								   double croflyDistance_km, Coord destinationCoord) {
 		if (mode.equals(TransportMode.walk)) {
 			return parameters.alphaWalk + parameters.betaTravelTimeWalk_min * traveltime / 60.0;
 		} else if (mode.equals(TransportMode.car)) {
@@ -403,7 +396,7 @@ public class CustomUAMPredictor {
 
 			utility += parameters.alphaCar
 					+ (parameters.betaTravelTimeCar_min + parameters.betaTravelTImeCarMale * sex)
-							* (traveltime / 60.0 + parameters.parkingSearchTimeCar_min)
+					* (traveltime / 60.0 + parameters.parkingSearchTimeCar_min)
 					+ betaCost * parameters.distanceCostCar_km * distance_km + parameters.betaUAMTransfer;
 //			utility += parameters.betaParking * (outsideParis ? 1 : 0);
 
@@ -453,47 +446,47 @@ public class CustomUAMPredictor {
 	}
 
 	private double calcTraveltime(Link fromLink, Link toLink, double departureTime, String accessMode,
-			UAMStation bestOriginStation, String egressMode, UAMStation bestDestinationStation) {
+								  UAMStation bestOriginStation, String egressMode, UAMStation bestDestinationStation) {
 		double minTravelTime = Double.POSITIVE_INFINITY;
 		// Access travel Time
 		Link accessStationLink = bestOriginStation.getLocationLink();
 		Link originLink = fromLink;
 		switch (accessMode) {
-		case TransportMode.car:
-			if (carNetwork.getLinks().get(originLink.getId()) != null)
-				originLink = carNetwork.getLinks().get(originLink.getId());
-			else
-				originLink = NetworkUtils.getNearestLinkExactly(carNetwork, originLink.getCoord());
+			case TransportMode.car:
+				if (carNetwork.getLinks().get(originLink.getId()) != null)
+					originLink = carNetwork.getLinks().get(originLink.getId());
+				else
+					originLink = NetworkUtils.getNearestLinkExactly(carNetwork, originLink.getCoord());
 
-			if (carNetwork.getLinks().get(accessStationLink.getId()) != null)
-				accessStationLink = carNetwork.getLinks().get(accessStationLink.getId());
-			else
-				accessStationLink = NetworkUtils.getNearestLinkExactly(carNetwork, accessStationLink.getCoord());
-			Path path = plcpccar.calcLeastCostPath(originLink.getFromNode(), accessStationLink.getToNode(),
-					departureTime, null, null);
+				if (carNetwork.getLinks().get(accessStationLink.getId()) != null)
+					accessStationLink = carNetwork.getLinks().get(accessStationLink.getId());
+				else
+					accessStationLink = NetworkUtils.getNearestLinkExactly(carNetwork, accessStationLink.getCoord());
+				Path path = plcpccar.calcLeastCostPath(originLink.getFromNode(), accessStationLink.getToNode(),
+						departureTime, null, null);
 
-			minTravelTime = path.travelTime;
-			break;
-		case TransportMode.pt:
-			if (uamConfig.getPtSimulation()) {
-				List<Leg> legs = tripRouter
-						.calcRoute(TransportMode.pt, new LinkWrapperFacility(originLink),
-								new LinkWrapperFacility(accessStationLink), departureTime, null)
-						.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
-				double timeByPt = 0.0;
-				for (Leg leg : legs) {
-					timeByPt += leg.getTravelTime();
+				minTravelTime = path.travelTime;
+				break;
+			case TransportMode.pt:
+				if (uamConfig.getPtSimulation()) {
+					List<Leg> legs = tripRouter
+							.calcRoute(TransportMode.pt, new LinkWrapperFacility(originLink),
+									new LinkWrapperFacility(accessStationLink), departureTime, null)
+							.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
+					double timeByPt = 0.0;
+					for (Leg leg : legs) {
+						timeByPt += leg.getTravelTime();
+					}
+					minTravelTime = timeByPt;
+				} else {
+					minTravelTime = estimateBeeLineTravelTime(accessMode, new LinkWrapperFacility(originLink),
+							bestOriginStation);
 				}
-				minTravelTime = timeByPt;
-			} else {
+				break;
+			default:
 				minTravelTime = estimateBeeLineTravelTime(accessMode, new LinkWrapperFacility(originLink),
 						bestOriginStation);
-			}
-			break;
-		default:
-			minTravelTime = estimateBeeLineTravelTime(accessMode, new LinkWrapperFacility(originLink),
-					bestOriginStation);
-			break;
+				break;
 		}
 		// UAM flight time
 		minTravelTime += this.stationConnectionutilities.getFlightLeg(bestOriginStation.getId(),
@@ -502,41 +495,41 @@ public class CustomUAMPredictor {
 		Link egressStationLink = bestDestinationStation.getLocationLink();
 		Link destinationLink = toLink;
 		switch (egressMode) {
-		case TransportMode.car:
-			if (carNetwork.getLinks().get(egressStationLink.getId()) != null)
-				egressStationLink = carNetwork.getLinks().get(egressStationLink.getId());
-			else
-				egressStationLink = NetworkUtils.getNearestLinkExactly(carNetwork, egressStationLink.getCoord());
+			case TransportMode.car:
+				if (carNetwork.getLinks().get(egressStationLink.getId()) != null)
+					egressStationLink = carNetwork.getLinks().get(egressStationLink.getId());
+				else
+					egressStationLink = NetworkUtils.getNearestLinkExactly(carNetwork, egressStationLink.getCoord());
 
-			if (carNetwork.getLinks().get(destinationLink.getId()) != null)
-				destinationLink = carNetwork.getLinks().get(destinationLink.getId());
-			else
-				destinationLink = NetworkUtils.getNearestLinkExactly(carNetwork, destinationLink.getCoord());
-			Path path = plcpccar.calcLeastCostPath(egressStationLink.getFromNode(), destinationLink.getToNode(),
-					departureTime + minTravelTime, null, null); // departureTime is updated
+				if (carNetwork.getLinks().get(destinationLink.getId()) != null)
+					destinationLink = carNetwork.getLinks().get(destinationLink.getId());
+				else
+					destinationLink = NetworkUtils.getNearestLinkExactly(carNetwork, destinationLink.getCoord());
+				Path path = plcpccar.calcLeastCostPath(egressStationLink.getFromNode(), destinationLink.getToNode(),
+						departureTime + minTravelTime, null, null); // departureTime is updated
 
-			minTravelTime += path.travelTime;
-			break;
-		case TransportMode.pt:
-			if (uamConfig.getPtSimulation()) {
-				List<Leg> legs = tripRouter
-						.calcRoute(TransportMode.pt, new LinkWrapperFacility(egressStationLink),
-								new LinkWrapperFacility(destinationLink), departureTime, null)
-						.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
-				double timeByPt = 0.0;
-				for (Leg leg : legs) {
-					timeByPt += leg.getTravelTime();
+				minTravelTime += path.travelTime;
+				break;
+			case TransportMode.pt:
+				if (uamConfig.getPtSimulation()) {
+					List<Leg> legs = tripRouter
+							.calcRoute(TransportMode.pt, new LinkWrapperFacility(egressStationLink),
+									new LinkWrapperFacility(destinationLink), departureTime, null)
+							.stream().filter(Leg.class::isInstance).map(Leg.class::cast).collect(Collectors.toList());
+					double timeByPt = 0.0;
+					for (Leg leg : legs) {
+						timeByPt += leg.getTravelTime();
+					}
+					minTravelTime += timeByPt;
+				} else {
+					minTravelTime += estimateBeeLineTravelTime(egressMode, new LinkWrapperFacility(egressStationLink),
+							bestDestinationStation);
 				}
-				minTravelTime += timeByPt;
-			} else {
+				break;
+			default:
 				minTravelTime += estimateBeeLineTravelTime(egressMode, new LinkWrapperFacility(egressStationLink),
 						bestDestinationStation);
-			}
-			break;
-		default:
-			minTravelTime += estimateBeeLineTravelTime(egressMode, new LinkWrapperFacility(egressStationLink),
-					bestDestinationStation);
-			break;
+				break;
 		}
 
 		return minTravelTime;

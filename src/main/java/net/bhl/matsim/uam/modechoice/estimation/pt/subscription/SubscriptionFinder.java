@@ -13,9 +13,9 @@ public class SubscriptionFinder {
 	public SubscriptionInformation getSubscriptions(Person person) {
 		boolean hasSubscription = false;
 		if (person.getAttributes().getAttribute("ptSubscription") != null)
-		hasSubscription = (boolean) person.getAttributes().getAttribute("ptSubscription");
+			hasSubscription = (boolean) person.getAttributes().getAttribute("ptSubscription");
 
-	
+
 		return new SubscriptionInformation(hasSubscription);
 	}
 }

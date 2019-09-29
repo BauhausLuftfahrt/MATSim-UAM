@@ -1,25 +1,25 @@
 package net.bhl.matsim.uam.modechoice;
 
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.framework.utils.DefaultModeChainGenerator;
+import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
+import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
+import org.matsim.core.router.TripStructureUtils.Trip;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.matsim.core.router.TripStructureUtils.Trip;
-
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.framework.utils.DefaultModeChainGenerator;
-import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
-import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
-
 public class CustomModeChainGenerator implements ModeChainGenerator {
+	static public Object lock = new Object();
 	final private ModeChainGenerator delegate;
 	final private List<Integer> variableIndices;
 	final private List<String> initialModes;
 
 	public CustomModeChainGenerator(ModeChainGenerator delegate, List<Integer> variableIndices,
-			List<String> initialModes) {
+									List<String> initialModes) {
 		this.variableIndices = variableIndices;
 		this.delegate = delegate;
 		this.initialModes = initialModes;
@@ -29,8 +29,6 @@ public class CustomModeChainGenerator implements ModeChainGenerator {
 	public boolean hasNext() {
 		return delegate.hasNext();
 	}
-
-	static public Object lock = new Object();
 
 	@Override
 	public List<String> next() {

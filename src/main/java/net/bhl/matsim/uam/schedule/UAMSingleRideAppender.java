@@ -1,11 +1,12 @@
 package net.bhl.matsim.uam.schedule;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
+import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
 import org.matsim.contrib.dvrp.schedule.Schedule;
@@ -14,17 +15,14 @@ import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelTime;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.passenger.UAMRequest;
-
-/** 
- *  This class adds tasks for each vehicle schedule based on the requests
+/**
+ * This class adds tasks for each vehicle schedule based on the requests
  */
 
 
@@ -32,7 +30,7 @@ public class UAMSingleRideAppender {
 	@Inject
 	@Named("uam")
 	private ParallelLeastCostPathCalculator router;
-	
+
 	@Inject
 	@Named("uam")
 	private TravelTime travelTime;
@@ -40,28 +38,9 @@ public class UAMSingleRideAppender {
 	private List<AppendTask> tasks = new LinkedList<>();
 	private UAMStations landingStations;
 
-	private class AppendTask { 
-		final public UAMRequest request;
-		final public UAMVehicle vehicle;
-
-		final public Future<Path> pickup;
-		final public Future<Path> dropoff;
-
-		final public double time;
-
-		public AppendTask(UAMRequest request, UAMVehicle vehicle, double time, Future<Path> pickup,
-				Future<Path> dropoff) {
-			this.request = request;
-			this.vehicle = vehicle;
-			this.pickup = pickup;
-			this.dropoff = dropoff;
-			this.time = time;
-		}
-	}
-
 	// Generates the paths for pickup and drop-off and create a new AppendTask containing this information. The new AppendTask is added to the AppendTask list.
 	// There is a difference between an AppendTask and a Task that implements the Task interface.
-	public void schedule(UAMRequest request, UAMVehicle vehicle, double now) { 
+	public void schedule(UAMRequest request, UAMVehicle vehicle, double now) {
 		Schedule schedule = vehicle.getSchedule();
 		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); //selects the last task in the schedule and create a stayTask with it
 
@@ -74,7 +53,7 @@ public class UAMSingleRideAppender {
 	}
 
 	// Uses the AppendTasks from the list containing the paths to generate the Tasks (Tasks that implements the Task interface) and add them in order to the vehicle schedule
-	public void schedule(AppendTask task, Path plainPickupPath, Path plainDropoffPath) { 
+	public void schedule(AppendTask task, Path plainPickupPath, Path plainDropoffPath) {
 		UAMRequest request = task.request;
 		UAMVehicle vehicle = task.vehicle;
 		double now = task.time;
@@ -90,7 +69,7 @@ public class UAMSingleRideAppender {
 		} else {
 			startTime = stayTask.getBeginTime();
 		}
-		
+
 		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(),
 				startTime, plainPickupPath, travelTime);
@@ -98,46 +77,46 @@ public class UAMSingleRideAppender {
 				pickupPath.getArrivalTime() + vehicle.getBoardingTime(), plainDropoffPath, travelTime);  //departure time = arrival time + boarding time
 
 		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
-		UAMPickupTask pickupTask = new UAMPickupTask(pickupPath.getArrivalTime(), // Vehicle picks up the passenger at the station 
+		UAMPickupTask pickupTask = new UAMPickupTask(pickupPath.getArrivalTime(), // Vehicle picks up the passenger at the station
 				pickupPath.getArrivalTime() + vehicle.getBoardingTime(),  // end time = arrival time + boarding time
-				request.getFromLink(), vehicle.getBoardingTime(),Arrays.asList(request));
-		
+				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
+
 		UAMFlyTask dropoffDriveTask = new UAMFlyTask(dropoffPath, Arrays.asList(request)); // Vehicle flies to drop off the passenger
-		UAMDropoffTask dropoffTask = new UAMDropoffTask(dropoffPath.getArrivalTime(), // Vehicle drops off the passenger at the station 
+		UAMDropoffTask dropoffTask = new UAMDropoffTask(dropoffPath.getArrivalTime(), // Vehicle drops off the passenger at the station
 				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime(),     // Dropoff task lasts according to the Deboarding time selected.
-				request.getToLink(), vehicle.getDeboardingTime(),Arrays.asList(request));
-		
+				request.getToLink(), vehicle.getDeboardingTime(), Arrays.asList(request));
+
 		UAMTurnAroundTask turnAroundTask = new UAMTurnAroundTask(dropoffPath.getArrivalTime() + vehicle.getDeboardingTime(), //Vehicle has a TurnAround time after DropOff task
 				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime() + vehicle.getTurnAroundTime(),
 				request.getToLink(), Arrays.asList(request));
-		
+
 		if (stayTask.getStatus() == Task.TaskStatus.STARTED) { // Confused by this and the previous check on line 83
 			stayTask.setEndTime(startTime);
 		} else {
 			schedule.removeLastTask();
 		}
-		
-		//ADD HERE A CHECK IF THE VEHICLE IS TRAVELING FROM THE SAME STATION 
-		schedule.addTask(pickupDriveTask);		
+
+		//ADD HERE A CHECK IF THE VEHICLE IS TRAVELING FROM THE SAME STATION
+		schedule.addTask(pickupDriveTask);
 		schedule.addTask(pickupTask);
 		schedule.addTask(dropoffDriveTask);
 		schedule.addTask(dropoffTask);
-		schedule.addTask(turnAroundTask); 	
-	
+		schedule.addTask(turnAroundTask);
 
-	    double distance = 0.0;
+
+		double distance = 0.0;
 		for (int i = 0; i < dropoffPath.getLinkCount(); i++) {
 			distance += dropoffPath.getLink(i).getLength();
 		}
 
-		
+
 		request.setDistance(distance);
 
-		if (turnAroundTask.getEndTime() < scheduleEndTime) { 
-			schedule.addTask(new UAMStayTask(turnAroundTask.getEndTime(), scheduleEndTime, turnAroundTask.getLink()));  
-			/* 
-			If TurnAround task ends before the scheduleEndTime, a new StayTask is created and added, beginning at the end of TurnAround Task and 
-			ending at scheduleEndTime. Why(What is the case that this would happen?)?? 
+		if (turnAroundTask.getEndTime() < scheduleEndTime) {
+			schedule.addTask(new UAMStayTask(turnAroundTask.getEndTime(), scheduleEndTime, turnAroundTask.getLink()));
+			/*
+			If TurnAround task ends before the scheduleEndTime, a new StayTask is created and added, beginning at the end of TurnAround Task and
+			ending at scheduleEndTime. Why(What is the case that this would happen?)??
 			*/
 		}
 	}
@@ -160,9 +139,9 @@ public class UAMSingleRideAppender {
 
 		/*
 		 * Iterator<AppendTask> iterator = tasks.iterator();
-		 * 
+		 *
 		 * while (iterator.hasNext()) { AppendTask task = iterator.r();
-		 * 
+		 *
 		 * if (task.pickup.isDone() && task.dropoff.isDone()) { schedule(task);
 		 * iterator.remove(); } }
 		 */
@@ -170,5 +149,24 @@ public class UAMSingleRideAppender {
 
 	public void setLandingStations(UAMStations landingStations) {
 		this.landingStations = landingStations;
+	}
+
+	private class AppendTask {
+		final public UAMRequest request;
+		final public UAMVehicle vehicle;
+
+		final public Future<Path> pickup;
+		final public Future<Path> dropoff;
+
+		final public double time;
+
+		public AppendTask(UAMRequest request, UAMVehicle vehicle, double time, Future<Path> pickup,
+						  Future<Path> dropoff) {
+			this.request = request;
+			this.vehicle = vehicle;
+			this.pickup = pickup;
+			this.dropoff = dropoff;
+			this.time = time;
+		}
 	}
 }

@@ -1,17 +1,16 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
-import org.matsim.core.router.TripStructureUtils.Trip;
-
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.tour_based.constraints.TourConstraint;
 import ch.ethz.matsim.mode_choice.framework.tour_based.constraints.TourConstraintFactory;
 import ch.ethz.matsim.mode_choice.framework.tour_based.estimation.TourCandidate;
 import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.core.router.TripStructureUtils.Trip;
+
+import java.util.Collection;
+import java.util.List;
 
 public class VehicleTourConstraintAirport implements TourConstraint {
 	final private Collection<String> constrainedModes;

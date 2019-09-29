@@ -1,5 +1,8 @@
 package net.bhl.matsim.uam.scoring;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
@@ -9,10 +12,6 @@ import org.matsim.core.scoring.SumScoringFunction;
 import org.matsim.core.scoring.functions.CharyparNagelScoringFunctionFactory;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.core.scoring.functions.SubpopulationScoringParameters;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 @Singleton
 public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
@@ -31,10 +30,10 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	public ScoringFunction createNewScoringFunction(Person person) {
 		SumScoringFunction sf = (SumScoringFunction) standardFactory.createNewScoringFunction(person);
 
-		
+
 		double marginalDisutilityOfDistance = 0.0;
 		double marginalUtilityOfTraveling = 0.0;
-		
+
 		//double marginalDisutilityOfDistance = params.getScoringParameters(person).marginalUtilityOfMoney
 		//		* params.getScoringParameters(person).modeParams.get("uam").monetaryDistanceCostRate;
 		//double marginalUtilityOfTraveling = params.getScoringParameters(person).modeParams

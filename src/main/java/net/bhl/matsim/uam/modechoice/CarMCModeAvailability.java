@@ -1,13 +1,12 @@
 package net.bhl.matsim.uam.modechoice;
 
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
+import org.matsim.api.core.v01.population.Person;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-import org.matsim.api.core.v01.population.Person;
-
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
 
 public class CarMCModeAvailability extends DefaultModeAvailability {
 	final private String CAR_MODE = "car";

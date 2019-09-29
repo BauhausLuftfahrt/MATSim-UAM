@@ -1,5 +1,7 @@
 /**
- * 
+ * @author balacm
+ * <p>
+ * This package contains the readers for the stations and vehiciles files.
  */
 /**
  * @author balacm

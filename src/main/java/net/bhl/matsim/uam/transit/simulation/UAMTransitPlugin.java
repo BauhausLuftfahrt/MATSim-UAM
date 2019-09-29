@@ -1,8 +1,10 @@
 package net.bhl.matsim.uam.transit.simulation;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
@@ -11,12 +13,8 @@ import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
 import org.matsim.pt.transitSchedule.api.TransitSchedule;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-
-import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
+import java.util.Collection;
+import java.util.Collections;
 
 public class UAMTransitPlugin extends AbstractQSimPlugin {
 	public UAMTransitPlugin(Config config) {
@@ -33,7 +31,7 @@ public class UAMTransitPlugin extends AbstractQSimPlugin {
 			@Provides
 			@Singleton
 			public UAMTransitEngine provideBaselineTransitEngine(EventsManager eventsManager,
-					TransitSchedule transitSchedule, DepartureFinder departureFinder, QSim qsim) {
+																 TransitSchedule transitSchedule, DepartureFinder departureFinder, QSim qsim) {
 				return new UAMTransitEngine(eventsManager, transitSchedule, departureFinder, qsim.getAgentCounter());
 			}
 		});

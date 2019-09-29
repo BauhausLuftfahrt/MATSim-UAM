@@ -1,22 +1,21 @@
 package net.bhl.matsim.uam.scoring;
 
+import net.bhl.matsim.uam.passenger.UAMRequest;
+import net.bhl.matsim.uam.schedule.UAMTransitEvent;
 import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.scoring.SumScoringFunction;
 
-import net.bhl.matsim.uam.passenger.UAMRequest;
-import net.bhl.matsim.uam.schedule.UAMTransitEvent;
-
 public class UAMScoringFunction implements SumScoringFunction.ArbitraryEventScoring {
 
 	boolean uamTrip = false;
-	private Person person;
 	double score = 0.0;
+	private Person person;
 	private double marginalDisutilityOfDistance;
 
 	public UAMScoringFunction(Person person, double marginalDisutilityOfDistance, double marginalUtilityOfTraveling,
-			Network network) {
+							  Network network) {
 		this.person = person;
 		this.marginalDisutilityOfDistance = marginalDisutilityOfDistance;
 	}
@@ -45,7 +44,7 @@ public class UAMScoringFunction implements SumScoringFunction.ArbitraryEventScor
 
 	private void scoreUAMLeg(double distance) {
 		this.score += distance * this.marginalDisutilityOfDistance;
-		
+
 	}
 
 }

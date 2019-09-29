@@ -1,6 +1,5 @@
 package net.bhl.matsim.uam.infrastructure;
 
-import java.util.Map;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -8,12 +7,14 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
+import java.util.Map;
+
 public class UAMStations {
 	public Map<Id<UAMStation>, UAMStation> stations; // TODO can this be private
 	public QuadTree<UAMStation> spatialStations; // TODO can this be private
-	
+
 	public UAMStations(Map<Id<UAMStation>, UAMStation> stations, Network network) {
-		
+
 		this.stations = stations;
 		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minx, miny, maxx, maxy
 
@@ -27,14 +28,14 @@ public class UAMStations {
 
 	public Map<Id<UAMStation>, UAMStation> getUAMStations() {
 		return stations;
-	}	
-	
+	}
+
 	public UAMStation getNearestUAMStation(Link link) {
 		return spatialStations.getClosest(link.getCoord().getX(), link.getCoord().getY());
 	}
-	
+
 	public UAMStation getNearesUAMStation(Coord coord) {
 		return spatialStations.getClosest(coord.getX(), coord.getY());
 	}
-	
+
 }

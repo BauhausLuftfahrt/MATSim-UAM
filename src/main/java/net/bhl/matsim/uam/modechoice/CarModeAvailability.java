@@ -1,14 +1,13 @@
 package net.bhl.matsim.uam.modechoice;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.population.PersonUtils;
 
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 public class CarModeAvailability extends DefaultModeAvailability {
 
@@ -30,20 +29,20 @@ public class CarModeAvailability extends DefaultModeAvailability {
 			if (!PersonUtils.hasLicense(person)) {
 				modes.remove("car");
 			}
-			
+
 			if (person.getAttributes().getAttribute("carAvailability") != null) {
-				if (person.getAttributes().getAttribute("carAvailability").equals("none") ||person.getAttributes().getAttribute("carAvailability").equals("never")) {
+				if (person.getAttributes().getAttribute("carAvailability").equals("none") || person.getAttributes().getAttribute("carAvailability").equals("never")) {
 					modes.remove("car");
 				}
 			}
-			
+
 			if (person.getAttributes().getAttribute("bikeAvailability") != null) {
 				if (person.getAttributes().getAttribute("bikeAvailability").equals("none")) {
 					modes.remove("bike");
 				}
 			}
-			
-			
+
+
 			return modes;
 		}
 
