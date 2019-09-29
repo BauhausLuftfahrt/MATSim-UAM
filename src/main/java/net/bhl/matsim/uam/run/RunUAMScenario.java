@@ -1,9 +1,20 @@
 package net.bhl.matsim.uam.run;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import ch.ethz.matsim.baseline_scenario.config.CommandLine;
+import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
+import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
+import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
+import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
@@ -17,40 +28,26 @@ import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.PtConstants;
 
-import ch.ethz.matsim.baseline_scenario.config.CommandLine;
-import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
-import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-
-import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
-
-import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
-import net.bhl.matsim.uam.qsim.UAMSpeedModule;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The RunUAMScenario program start a MATSim run including Urban Air Mobility
  * capabilities.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * @version 1.0
+ * @version 1.1
  * @since 2019-01-15
  */
 public class RunUAMScenario {
 
+	private final static boolean useMinTravelTimeModeChoice = true;
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
-	private static double delay;
 	private static Config config;
 	private static Controler controler;
 	private static Scenario scenario;
-	private final static boolean useMinTravelTimeModeChoice = true;
 
 	public static void main(String[] args) {
 		parseArguments(args);
@@ -73,10 +70,6 @@ public class RunUAMScenario {
 				path = cmd.getOption("config-path").get();
 			else
 				path = "./config.xml";
-
-			delay = 3.0;
-			if (cmd.hasOption("delay-intersection"))
-				delay = Double.parseDouble(cmd.getOptionStrict("delay-intersection"));
 
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -127,7 +120,7 @@ public class RunUAMScenario {
 
 		filter = new TransportModeNetworkFilter(network);
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		Network networkCar = NetworkUtils.createNetwork();
 		filter.filter(networkCar, modesCar);
 
@@ -153,7 +146,7 @@ public class RunUAMScenario {
 		}
 		controler.addOverridingModule(new CustomModule());
 		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar));
-		controler.addOverridingModule(new UAMSpeedModule(delay, uamReader.getMapVehicleVerticalSpeeds(),
+		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
 

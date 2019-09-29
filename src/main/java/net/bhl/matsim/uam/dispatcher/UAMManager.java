@@ -1,10 +1,8 @@
 package net.bhl.matsim.uam.dispatcher;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -16,25 +14,25 @@ import org.matsim.core.controler.listener.IterationStartsListener;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A class that stores information about UAM infrastructure and manages its
  * changes.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMManager implements IterationStartsListener {
 
-	private Set<UAMVehicle> availableVehicles = new HashSet<>();
 	public QuadTree<UAMVehicle> mapAvailableVehicles;
-	private Map<Id<Vehicle>, Id<UAMStation>> vehicleLocations = new HashMap<>();;
+	private Set<UAMVehicle> availableVehicles = new HashSet<>();
+	private Map<Id<Vehicle>, Id<UAMStation>> vehicleLocations = new HashMap<>();
+
 	private UAMStations stations;
-//	private Set<UAMVehicle> vehicles;
-	private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<Id<Vehicle>, UAMVehicle>(); // added
+	private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<>();
 	private Map<Id<UAMStation>, StationOccupancy> availablespaceStations = new HashMap<>();
 	private QuadTree<UAMStation> stationsWithFreeLandingSpace;
 
@@ -47,12 +45,12 @@ public class UAMManager implements IterationStartsListener {
 		this.network = network;
 	}
 
-	public void setStations(UAMStations stations) {
-		this.stations = stations;
-	}
-
 	public UAMStations getStations() {
 		return stations;
+	}
+
+	public void setStations(UAMStations stations) {
+		this.stations = stations;
 	}
 
 	public Map<Id<Vehicle>, UAMVehicle> getVehicles() {
@@ -64,28 +62,20 @@ public class UAMManager implements IterationStartsListener {
 	}
 
 	/**
-	 * @param vehicle UAM Vehicle
-	 * @param station UAM Station
-	 * 
-	 *                Adds a vehicle, after it lands, to the available vehicles.
+	 * Adds a vehicle, after it lands, to the available vehicles.
 	 */
 	public synchronized void addVehicle(UAMVehicle vehicle, UAMStation station) {
 
 		Coord coord = station.getLocationLink().getCoord();
 		if (!this.availableVehicles.add(vehicle))
-			throw new RuntimeException(
-					"The system is in incosistent state! \n " + "Trying to add a vehicle but it is already there!");
+			throw new RuntimeException("The system is in incosistent state! \n "
+					+ "Trying to add a vehicle but it is already there!");
 		this.mapAvailableVehicles.put(coord.getX(), coord.getY(), vehicle);
 		this.vehicleLocations.put(vehicle.getId(), station.getId());
 
 	}
 
-	/**
-	 * @param vehicle UAM Vehicle
-	 * @param ls      UAM Station
-	 * 
-	 *                Removes a vehicle from the station, after departure.
-	 */
+
 	public synchronized void removeVehicle(UAMVehicle vehicle, UAMStation ls) {
 		if (!ls.getId().equals(this.vehicleLocations.get(vehicle.getId())))
 
@@ -99,10 +89,6 @@ public class UAMManager implements IterationStartsListener {
 
 	}
 
-	/**
-	 * @param coord Coordinate location
-	 * @return The closest UAM Vehicle based on the given Coordinate location.
-	 */
 	public synchronized UAMVehicle getClosestAvailableVehicle(Coord coord) {
 		return this.mapAvailableVehicles.getClosest(coord.getX(), coord.getY());
 
@@ -139,15 +125,8 @@ public class UAMManager implements IterationStartsListener {
 		return mappedLS.get(this.vehicleLocations.get(vehicle.getId()));
 	}
 
-	private class StationOccupancy {
-
-		int landingSpace;
-		// int parkingSpace;
-	}
-
 	/**
 	 * Initialize all datasets.
-	 * 
 	 */
 	@Override
 	public void notifyIterationStarts(IterationStartsEvent event) {
@@ -166,12 +145,13 @@ public class UAMManager implements IterationStartsListener {
 
 			StationOccupancy so = new StationOccupancy();
 			so.landingSpace = ls.getLandingCapacity();
-			// so.parkingSpace = ls.getParkingCapacity();
+			//so.parkingSpace = ls.getParkingCapacity();
 
 			availablespaceStations.put(ls.getId(), so);
 			stationsWithFreeLandingSpace.put(ls.getLocationLink().getCoord().getX(),
 					ls.getLocationLink().getCoord().getY(), ls);
 		}
+
 
 		for (UAMVehicle vehicle : vehicles.values()) {
 			UAMStation station = this.stations.getUAMStations().get((vehicle).getInitialStationId());
@@ -180,8 +160,9 @@ public class UAMManager implements IterationStartsListener {
 				this.stationsWithFreeLandingSpace.remove(station.getLocationLink().getCoord().getX(),
 						station.getLocationLink().getCoord().getY(), station);
 			else if (availablespaceStations.get(station.getId()).landingSpace < 0)
-				throw new RuntimeException("The system is an incosistent state! \n "
-						+ "Trying to add a vehicle on a station where there is no more space left! Check your input configuration!");
+				throw new RuntimeException("The system is in an inconsistent state! \n "
+						+ "Trying to add a vehicle on a station where there is no more space left!"
+						+ "Check your input configuration!");
 
 			this.vehicleLocations.put(vehicle.getId(), station.getId());
 			this.availableVehicles.add(vehicle);
@@ -205,4 +186,9 @@ public class UAMManager implements IterationStartsListener {
 
 	}
 
+	private class StationOccupancy {
+
+		int landingSpace;
+		//int parkingSpace;
+	}
 }

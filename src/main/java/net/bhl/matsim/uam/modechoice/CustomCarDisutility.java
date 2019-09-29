@@ -14,7 +14,7 @@ import org.matsim.vehicles.VehicleUtils;
 
 /**
  * This class provides disutility to travel on links by mode car.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomCarDisutility implements TravelDisutility {

@@ -1,12 +1,7 @@
 package net.bhl.matsim.uam.analysis.traffic.run;
 
-import java.io.IOException;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
+import net.bhl.matsim.uam.analysis.traffic.CSVLinkStatsWriter;
+import net.bhl.matsim.uam.analysis.traffic.LinkStatsItem;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -17,15 +12,18 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 
-import net.bhl.matsim.uam.analysis.traffic.CSVLinkStatsWriter;
-import net.bhl.matsim.uam.analysis.traffic.LinkStatsItem;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * This script generates a csv file containing the average speed per link per
  * hour of the input network from an output simulation events file. trips
  * performed from an events output file. Necessary inputs are in the following
  * order: -Network file; -Events file; -output file;
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConvertLinkStatsFromEvents {

@@ -6,26 +6,41 @@ This extension enhances MATSim (see the project's [Website](https://www.matsim.o
 ## Installation and Usage
 See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md).
 
-Add to pom.xml:
+Add the following to your maven pom.xml under `repositories`:
 ```xml
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
-        ...
-
+```
+And the following to you maven pom.xml under `dependencies` for the latest version under active development:
+```xml
         <dependency>
             <groupId>com.github.BauhausLuftfahrt</groupId>
             <artifactId>MATSim-UAM</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
 ```
+Older versions can be used by replacing the version text with any of the listed tags on [GitHub MATSim-UAM tags](https://github.com/BauhausLuftfahrt/MATSim-UAM/tags).
+
+## Features
+List of all current features provided by MATSim-UAM with the version of feature introduction in parentheses.
+
+- List of Features: //TODO Aitan
+    - Example 1 (v1)
+    - Example 2 (v1.1)
 
 ## Versions and Change Log
 
+### v1.1
+Input/output:
+- UAM-enabled MATSim networks are required to provide an flight attribute indicating every flight links' flight segment (e.g. vertical or horizontal). **No backwards compatibility of input files.**
+
+Logging:
+- Limited waiting time and failed UAM routing warnings to ten occurrences
+
 ### v1
-- Features: //TODO
+- Publication of first open source MATSim-UAM version
 
 ## Publications
 The following list provides a reverse-chronological overview of publications related to or based on or related to the UAM-Extension:

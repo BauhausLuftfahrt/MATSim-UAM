@@ -4,16 +4,12 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * This class writes a CSV file containing information of links for different
  * times.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CSVLinkStatsWriter {
@@ -53,7 +49,7 @@ public class CSVLinkStatsWriter {
 		}
 
 		for (Integer timeHead : timeHeaders) {
-			header.add("avgspeed_ms_at_H" + (int) (timeHead / 3600) + "M" + (int) ((timeHead % 3600) / 60));
+			header.add("avgspeed_ms_at_H" + (timeHead / 3600) + "M" + ((timeHead % 3600) / 60));
 		}
 
 		return String.join(delimiter, header);

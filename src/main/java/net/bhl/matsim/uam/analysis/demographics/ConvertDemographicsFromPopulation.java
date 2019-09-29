@@ -1,18 +1,5 @@
 package net.bhl.matsim.uam.analysis.demographics;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.population.Person;
@@ -22,12 +9,18 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.households.Household;
 import org.matsim.households.HouseholdsReaderV10;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.*;
+
 /**
  * This script Creates a demographics file by reading through and gathering
  * socio-demographic attributes from each person object in an existing
  * population (or plan) file. Necessary inputs are in the following order:
  * -plans file; -households file; -output file
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConvertDemographicsFromPopulation {
@@ -108,7 +101,7 @@ public class ConvertDemographicsFromPopulation {
 			if (first) {
 				first = false;
 
-				for (Iterator<String> it = columnList.iterator(); it.hasNext();) {
+				for (Iterator<String> it = columnList.iterator(); it.hasNext(); ) {
 					writer.write(it.next());
 
 					if (it.hasNext())
@@ -118,7 +111,7 @@ public class ConvertDemographicsFromPopulation {
 				}
 			}
 
-			for (Iterator<String> it = columnList.iterator(); it.hasNext();) {
+			for (Iterator<String> it = columnList.iterator(); it.hasNext(); ) {
 				String key = it.next();
 				if (personAttrMap.containsKey(key))
 					writer.write(personAttrMap.get(key));

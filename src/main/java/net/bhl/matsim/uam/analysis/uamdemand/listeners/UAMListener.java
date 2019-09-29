@@ -1,13 +1,10 @@
 package net.bhl.matsim.uam.analysis.uamdemand.listeners;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
+import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
@@ -28,16 +25,13 @@ import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.vehicles.Vehicle;
 
-import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A listener that retrieves information from UAMtrip events.
- * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ *
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMListener implements ActivityStartEventHandler, PersonDepartureEventHandler, PersonArrivalEventHandler,
 		PersonEntersVehicleEventHandler {
@@ -45,16 +39,16 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 	final private Network network;
 	final private Collection<UAMDemandItem> uamData = new LinkedList<>();
 	final private Map<Id<Person>, UAMListenerItem> ongoing = new HashMap<>();
+	final private UAMStations uamStations;
+	final private Map<Id<org.matsim.contrib.dvrp.data.Vehicle>, UAMVehicle> vehicles;
 	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
 	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
 	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 	UAMXMLReader uamReader;
-	final private UAMStations uamStations;
-	final private Map<Id<org.matsim.contrib.dvrp.data.Vehicle>, UAMVehicle> vehicles;
 	TransportModeNetworkFilter filter;
 
 	public UAMListener(Network network, String uamConfigFile, StageActivityTypes stageActivityTypes,
-			MainModeIdentifier mainModeIdentifier, Collection<String> networkRouteModes) {
+					   MainModeIdentifier mainModeIdentifier, Collection<String> networkRouteModes) {
 		this.network = network;
 		this.stageActivityTypes = stageActivityTypes;
 		Set<String> modes = new HashSet<>();
@@ -95,13 +89,13 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 			}
 		} else if (event.getLegMode().equals("uam")) {
 			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord(); // get the coord from the
-																								// link
+			// link
 			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId())); // uses
-																												// the
-																												// link
-																												// to
-																												// get
-																												// station
+			// the
+			// link
+			// to
+			// get
+			// station
 			if (tempPTData.containsKey(event.getPersonId())) {
 				// if there was pt information we need to add it
 				// to the UAMData object
@@ -145,7 +139,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 			uamData.destinationStationId = station.getId();
 			double deboardingTime = vehicles.get(this.personToVehicle.get(event.getPersonId())).getDeboardingTime();
 			uamData.landingTime = event.getTime() - deboardingTime; // #Landing time is when the vehicle touches the
-																	// ground
+			// ground
 			uamData.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			uamData.uamTrip = true;
 		} else if (event.getLegMode().startsWith("egress_uam")) {

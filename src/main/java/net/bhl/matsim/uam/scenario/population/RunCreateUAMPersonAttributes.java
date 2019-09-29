@@ -1,9 +1,11 @@
 package net.bhl.matsim.uam.scenario.population;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMStations;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
@@ -21,21 +23,17 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.utils.objectattributes.ObjectAttributes;
 import org.matsim.utils.objectattributes.ObjectAttributesXmlWriter;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This script generates a xml subpopulation attributes file containing the id
  * of potential uam users based on a provided config file containing a search
  * radius. If there is at least one station within reach, the user is considered
  * a potential uam user.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RunCreateUAMPersonAttributes {
 	public static void main(final String[] args) {
@@ -66,7 +64,8 @@ public class RunCreateUAMPersonAttributes {
 		ObjectAttributes objattr = new ObjectAttributes();
 
 		// filter persons with activities outside the radius
-		personloop: for (Person person : pop.getPersons().values()) {
+		personloop:
+		for (Person person : pop.getPersons().values()) {
 			for (PlanElement p : person.getSelectedPlan().getPlanElements()) {
 				if (p instanceof Activity) {
 

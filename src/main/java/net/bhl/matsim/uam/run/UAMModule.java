@@ -1,9 +1,28 @@
 package net.bhl.matsim.uam.run;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
+import ch.ethz.matsim.av.plcpc.SerialLeastCostPathCalculator;
+import com.google.inject.Key;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.data.UAMFleetData;
+import net.bhl.matsim.uam.data.UAMLoader;
+import net.bhl.matsim.uam.data.WaitingStationData;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.events.UAMDemand;
+import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
 import net.bhl.matsim.uam.listeners.UAMListener;
+import net.bhl.matsim.uam.listeners.UAMShutdownListener;
+import net.bhl.matsim.uam.qsim.UAMQSimPlugin;
+import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
+import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
+import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
+import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.data.Vehicle;
@@ -27,37 +46,13 @@ import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.vehicles.VehicleType;
 import org.matsim.vehicles.VehicleUtils;
 
-import com.google.inject.Key;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import com.google.inject.name.Names;
-
-import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
-import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
-import ch.ethz.matsim.av.plcpc.SerialLeastCostPathCalculator;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.data.UAMLoader;
-import net.bhl.matsim.uam.data.WaitingStationData;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.events.UAMDemand;
-
-import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
-import net.bhl.matsim.uam.listeners.UAMShutdownListener;
-
-import net.bhl.matsim.uam.qsim.UAMQSimPlugin;
-import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
-import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
-import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
-import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
-import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A MATSim Abstract Module for the classes used by the UAM simulation.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMModule extends AbstractModule {
 
@@ -101,7 +96,7 @@ public class UAMModule extends AbstractModule {
 		// addEventHandlerBinding().to(UAMEventHandler.class);
 
 		// we need to bind our router for the uam trips
-		addRoutingModuleBinding(UAMIntermodalRoutingModule.TELEPORTATION_UAM_LEG_MODE)
+		addRoutingModuleBinding(UAMModes.UAM_MODE)
 				.toProvider(UAMRoutingModuleProvider.class);
 
 		// we still need to provide a way to identify our trips
@@ -140,13 +135,14 @@ public class UAMModule extends AbstractModule {
 	@Singleton
 	@Named("uam")
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-			@Named("uam") Network network, @Named("uam") TravelTime travelTime) {
+																				   @Named("uam") Network network, @Named("uam") TravelTime travelTime) {
 		// TODO: make this parameterized
 		int paralelRouters = uamConfig.getParallelRouters();
 		if (1 == paralelRouters) {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(network,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 		} else {
+			// TODO CHECK if this is really UAM only network
 			return DefaultParallelLeastCostPathCalculator.create(paralelRouters, new DijkstraFactory(), network,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime);
 		}

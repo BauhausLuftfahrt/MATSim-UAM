@@ -1,27 +1,18 @@
 package net.bhl.matsim.uam.modechoice.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.apache.log4j.Logger;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.controler.events.StartupEvent;
 import org.matsim.core.controler.listener.StartupListener;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.*;
 
 /**
  * This class searches for the current git revision being used and writes it down.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
 public class RevisionWriter implements StartupListener {

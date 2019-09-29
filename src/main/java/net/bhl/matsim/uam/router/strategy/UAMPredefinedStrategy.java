@@ -1,32 +1,31 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import java.util.Collection;
-import java.util.List;
-
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.facilities.Facility;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This strategy is used to assign to the passenger a UAMRoute based on a
  * pre-defined route from the plans.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ * @author RRothfeld (Raoul Rothfeld)
  */
 public class UAMPredefinedStrategy implements UAMStrategy {
-	private UAMStrategyUtils strategyUtils;
-	private static final Logger log = Logger.getLogger(UAMPredefinedStrategy.class);
-
 	public static final String ACCESS_MODE = "accessMode";
 	public static final String ORIG_STATION = "originStation";
 	public static final String DEST_STATION = "destinationStation";
 	public static final String EGRESS_MODE = "egressMode";
+	private static final Logger log = Logger.getLogger(UAMPredefinedStrategy.class);
+	private UAMStrategyUtils strategyUtils;
 
 	public UAMPredefinedStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
@@ -44,7 +43,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 		for (int i = 0; i < elements.size() - 2; i += 2) {
 			Activity endingActivity = (Activity) elements.get(i);
 
-			if (endingActivity.getType().equals(UAMIntermodalRoutingModule.UAM_INTERACTION))
+			if (endingActivity.getType().equals(UAMModes.UAM_INTERACTION))
 				continue;
 
 			if (endingActivity.getEndTime() == departureTime) {

@@ -2,9 +2,8 @@ package net.bhl.matsim.uam.modechoice.estimation;
 
 /**
  * This class provides the costs for public transport.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class PublicTransportCostStructure {
 	public double distanceCost_km(double crowflyDistance_km) {

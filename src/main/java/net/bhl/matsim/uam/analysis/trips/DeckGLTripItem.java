@@ -1,22 +1,18 @@
 package net.bhl.matsim.uam.analysis.trips;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.matsim.api.core.v01.Coord;
-import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.utils.geometry.geotools.MGC;
-import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 /**
  * This class stores information about a trip for deck.gl format.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class DeckGLTripItem {

@@ -1,15 +1,14 @@
 package net.bhl.matsim.uam.events;
 
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-
 /**
  * A class that stores information about an access or egress leg to a UAM
  * station.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMUtilitiesAccessEgress {
@@ -22,7 +21,7 @@ public class UAMUtilitiesAccessEgress {
 	private double time;
 
 	public UAMUtilitiesAccessEgress(Id<Person> person, Id<UAMStation> station, Id<Link> link, boolean access,
-			double utility, String mode, double time) {
+									double utility, String mode, double time) {
 		this.person = person;
 		this.station = station;
 		this.link = link;

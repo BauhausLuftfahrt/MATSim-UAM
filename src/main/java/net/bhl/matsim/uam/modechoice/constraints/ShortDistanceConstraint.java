@@ -1,21 +1,19 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.matsim.api.core.v01.Coord;
-import org.matsim.core.utils.geometry.CoordUtils;
-
 import ch.ethz.matsim.mode_choice.constraints.AbstractTripConstraint;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
+import org.matsim.api.core.v01.Coord;
+import org.matsim.core.utils.geometry.CoordUtils;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This class ensures that the trip as a distance higher than a pre-defined
  * short distance.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ShortDistanceConstraint extends AbstractTripConstraint {
 	final public static double DEFAULT_SHORT_DISTANCE = 0.0;

@@ -1,10 +1,6 @@
 package net.bhl.matsim.uam.analysis.trips.listeners;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.LinkEnterEvent;
@@ -14,12 +10,15 @@ import org.matsim.api.core.v01.events.handler.LinkLeaveEventHandler;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.vehicles.Vehicle;
 
-import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A listener that retrieves information from trip events and stores in
  * <{@link DeckGLTripItem} format.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEventHandler {

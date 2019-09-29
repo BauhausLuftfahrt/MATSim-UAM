@@ -1,7 +1,5 @@
 package net.bhl.matsim.uam.modechoice.estimation.taxi;
 
-import java.util.List;
-
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
@@ -10,11 +8,12 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPrediction;
 import net.bhl.matsim.uam.modechoice.estimation.car.CustomCarPredictor;
 
+import java.util.List;
+
 /**
  * This class defines the estimator for Taxi mode.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomTaxiEstimator implements ModalTripEstimator {
 	final private CustomCarPredictor predictor;

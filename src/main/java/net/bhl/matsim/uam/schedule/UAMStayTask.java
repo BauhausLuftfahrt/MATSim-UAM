@@ -1,17 +1,15 @@
 package net.bhl.matsim.uam.schedule;
 
-import java.util.Collection;
-
+import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
 
-import net.bhl.matsim.uam.passenger.UAMRequest;
+import java.util.Collection;
 
 /**
  * During this task the UAM Vehicle is idle.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * 
  */
 public class UAMStayTask extends StayTaskImpl implements UAMTask {
 	public UAMStayTask(double beginTime, double endTime, Link link, String name) {

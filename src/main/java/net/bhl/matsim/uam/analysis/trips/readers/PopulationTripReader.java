@@ -1,9 +1,7 @@
 package net.bhl.matsim.uam.analysis.trips.readers;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
+import net.bhl.matsim.uam.analysis.trips.TripItem;
+import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
@@ -21,12 +19,13 @@ import org.matsim.core.router.TripStructureUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.geometry.CoordUtils;
 
-import net.bhl.matsim.uam.analysis.trips.TripItem;
-import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A reader for trips based on a population file (plans file).
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class PopulationTripReader {
@@ -36,7 +35,7 @@ public class PopulationTripReader {
 	final private MainModeIdentifier mainModeIdentifier;
 
 	public PopulationTripReader(Network network, StageActivityTypes stageActivityTypes,
-			HomeActivityTypes homeActivityTypes, MainModeIdentifier mainModeIdentifier) {
+								HomeActivityTypes homeActivityTypes, MainModeIdentifier mainModeIdentifier) {
 		this.network = network;
 		this.stageActivityTypes = stageActivityTypes;
 		this.homeActivityTypes = homeActivityTypes;

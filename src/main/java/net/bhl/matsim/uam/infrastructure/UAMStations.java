@@ -1,6 +1,5 @@
 package net.bhl.matsim.uam.infrastructure;
 
-import java.util.Map;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -8,11 +7,12 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
+import java.util.Map;
+
 /**
  * Class to map stations and its locations in the network.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStations {
 	public Map<Id<UAMStation>, UAMStation> stations; // TODO can this be private

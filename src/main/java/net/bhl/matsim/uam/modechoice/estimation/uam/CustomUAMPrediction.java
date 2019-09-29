@@ -2,9 +2,8 @@ package net.bhl.matsim.uam.modechoice.estimation.uam;
 
 /**
  * This class stores information about a UAM trip prediction.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomUAMPrediction {
 

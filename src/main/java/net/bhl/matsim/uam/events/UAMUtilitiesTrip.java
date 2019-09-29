@@ -1,15 +1,14 @@
 package net.bhl.matsim.uam.events;
 
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-
 /**
  * Class that stores information about a complete UAM trip, including access and
  * egress legs.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMUtilitiesTrip {

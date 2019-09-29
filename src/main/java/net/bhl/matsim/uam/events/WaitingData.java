@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.events;
 
 /**
  * Class that store waiting times of a UAM station.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class WaitingData {

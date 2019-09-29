@@ -1,9 +1,8 @@
 package net.bhl.matsim.uam.qsim;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
+import com.google.inject.Module;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
+import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSource;
 import org.matsim.core.config.Config;
@@ -13,16 +12,14 @@ import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
 
-import com.google.inject.Module;
-
-import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
-import net.bhl.matsim.uam.schedule.UAMOptimizer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * This class provides Qsim resources to the UAMModule.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMQSimPlugin extends AbstractQSimPlugin {
 

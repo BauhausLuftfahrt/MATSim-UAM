@@ -1,5 +1,9 @@
 package net.bhl.matsim.uam.events;
 
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.events.PersonArrivalEvent;
 import org.matsim.api.core.v01.events.PersonDepartureEvent;
@@ -8,17 +12,10 @@ import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-
 /**
  * Class that handles arrival and departure events.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMEventHandler implements PersonDepartureEventHandler, PersonArrivalEventHandler {
 

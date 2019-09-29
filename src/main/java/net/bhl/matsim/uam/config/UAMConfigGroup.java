@@ -1,40 +1,35 @@
 package net.bhl.matsim.uam.config;
 
+import net.bhl.matsim.uam.router.strategy.UAMStrategy;
+import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
+import org.apache.log4j.Logger;
+import org.matsim.core.config.ReflectiveConfigGroup;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.matsim.core.config.ReflectiveConfigGroup;
-
-import net.bhl.matsim.uam.router.strategy.UAMStrategy;
 //import net.bhl.matsim.uam.router.UAMStrategyRouter.UAMStrategyType;
-import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
 
 /**
  * Config group for the UAM. This class sets the parameters required for UAM
  * simulation. Its parameters can be set in the config file, under the uam
  * module.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMConfigGroup extends ReflectiveConfigGroup {
 	public static final String GROUP_NAME = "uam";
-
+	// teleportation
+	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 	private String inputUAMFile;
 	private Set<String> availableAccessModes;
-
 	private UAMStrategyType routingStrategy = UAMStrategyType.MAXACCESSUTILITY;
-
 	private int parallelRouters = 2;
 	private double searchRadius = 5000; // maximum crow fly distance to origin/destination stations
+	// the uam access and egress mode, otherwise the fastest (car or pt)
 	private double walkDistance = 500; // if the access/egress distance is less than walkDistance, then walk will be
-										// the uam access and egress mode, otherwise the fastest (car or pt)
-
 	private boolean ptSimulation = true; // selects whether public transport will be simulated or performed by
-											// teleportation
-	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 
 	public UAMConfigGroup() {
 		super(GROUP_NAME);
@@ -86,9 +81,9 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 		return this.searchRadius;
 	}
 
-	@StringSetter("walkDistance")
-	public void setWalkDistance(final String walkDistance) {
-		this.walkDistance = Double.parseDouble(walkDistance);
+	@StringSetter("searchRadius")
+	public void setSearchRadius(final String searchRadius) {
+		this.searchRadius = Double.parseDouble(searchRadius);
 	}
 
 	@StringGetter("walkDistance")
@@ -96,9 +91,9 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 		return this.walkDistance;
 	}
 
-	@StringSetter("searchRadius")
-	public void setSearchRadius(final String searchRadius) {
-		this.searchRadius = Double.parseDouble(searchRadius);
+	@StringSetter("walkDistance")
+	public void setWalkDistance(final String walkDistance) {
+		this.walkDistance = Double.parseDouble(walkDistance);
 	}
 
 	@StringGetter("ptSimulation")

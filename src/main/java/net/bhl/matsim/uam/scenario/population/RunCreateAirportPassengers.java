@@ -1,28 +1,12 @@
 package net.bhl.matsim.uam.scenario.population;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
-
-//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
-
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.api.core.v01.population.Population;
-import org.matsim.api.core.v01.population.PopulationFactory;
-import org.matsim.api.core.v01.population.PopulationWriter;
-import org.matsim.api.core.v01.population.Route;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -32,14 +16,14 @@ import org.matsim.households.Households;
 import org.matsim.households.HouseholdsWriterV10;
 import org.matsim.households.Income;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+import java.util.*;
+
+//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
 
 /**
  * This script creates a population file for Airport passengers.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Deprecated
 public class RunCreateAirportPassengers {
@@ -52,6 +36,92 @@ public class RunCreateAirportPassengers {
 	private static int oldestAge = 75;
 
 	private static String currency = "CHF";
+
+	private static Household createHousehold(String id, Households households, double max, double min, Person p) {
+		Household h = households.getFactory().createHousehold(Id.create(id + "HH", Household.class));
+		Income inc = households.getFactory().createIncome(
+				new Random().nextInt((int) ((max - (min + ((max - min) / 2)) + 1) + min)), Income.IncomePeriod.month);
+		inc.setCurrency(currency);
+		h.setIncome(inc);
+		h.getMemberIds().add(p.getId());
+
+		h.getAttributes().putAttribute("numberOfCars",
+				p.getAttributes().getAttribute("carAvailability") == "all" ? 1 : 0);
+		h.getAttributes().putAttribute("carAvailability", p.getAttributes().getAttribute("carAvailability"));
+		h.getAttributes().putAttribute("bikeAvailability", p.getAttributes().getAttribute("bikeAvailability"));
+		h.getAttributes().putAttribute("residenceZoneCategory", 2); // TODO
+
+		return h;
+	}
+
+	private static Person createPerson(String id, PopulationFactory factory, Home home, Airport airport,
+									   Boolean departing) {
+		Person p = factory.createPerson(Id.createPersonId(id));
+
+		Plan plan = factory.createPlan();
+
+		double time = ((new Random().nextInt((latestHour - earliestHour) + 1) + earliestHour) * 3600)
+				+ (new Random().nextInt(3599));
+
+		Activity firstAct;
+		if (departing) {
+			firstAct = factory.createActivityFromCoord("home", home.coord);
+			firstAct.setLinkId(home.link);
+			firstAct.setEndTime(time);
+		} else {
+			firstAct = factory.createActivityFromCoord("work", airport.coord);
+			firstAct.setLinkId(airport.link);
+			firstAct.setEndTime(time);
+		}
+
+		Activity scndAct;
+		if (!departing) {
+			scndAct = factory.createActivityFromCoord("home", home.coord);
+			scndAct.setLinkId(home.link);
+			scndAct.setStartTime(time + 3600);
+		} else {
+			scndAct = factory.createActivityFromCoord("work", airport.coord);
+			scndAct.setLinkId(airport.link);
+			scndAct.setStartTime(time + 3600);
+		}
+
+		Leg l = factory.createLeg("walk");
+		l.setDepartureTime(time);
+		l.setTravelTime(3600);
+
+		Route r = factory.getRouteFactories().createRoute(Route.class, firstAct.getLinkId(), scndAct.getLinkId());
+		r.setTravelTime(3600);
+		r.setDistance(CoordUtils.calcEuclideanDistance(firstAct.getCoord(), scndAct.getCoord()));
+		l.setRoute(r);
+
+		plan.addActivity(firstAct);
+		plan.addLeg(l);
+		plan.addActivity(scndAct);
+		p.addPlan(plan);
+		p.setSelectedPlan(plan);
+
+		// attributes
+		p.getAttributes().putAttribute("age", new Random().nextInt((oldestAge - earliestAge) + 1) + earliestAge);
+		p.getAttributes().putAttribute("employed", new Random().nextBoolean());
+		p.getAttributes().putAttribute("ptSubscription", new Random().nextBoolean());
+		p.getAttributes().putAttribute("sex", new Random().nextBoolean() ? "m" : "f");
+		p.getAttributes().putAttribute("bikeAvailability", "none");
+		p.getAttributes().putAttribute("income", 4500.0); // TODO
+		p.getAttributes().putAttribute("isPassenger", false);
+		p.getAttributes().putAttribute("residence", 2); // TODO
+
+		Double rand = new Random().nextDouble();
+		Double airportAccessCar = 0.3;
+		p.getAttributes().putAttribute("hasLicense", rand < airportAccessCar ? "yes" : "no");
+		p.getAttributes().putAttribute("carAvailability", rand < airportAccessCar ? "all" : "none");
+
+		return p;
+	}
+
+	public static void main(final String[] args) {
+		RunCreateAirportPassengers app = new RunCreateAirportPassengers();
+		app.run(args);
+	}
 
 	void run(final String[] args) {
 		// ARGS: population* households percent
@@ -72,7 +142,7 @@ public class RunCreateAirportPassengers {
 //				"CDG",
 //				(int) Math.max(1, Math.round(89819 * popPrct)), // departing
 //				(int) Math.max(1, Math.round(89772 * popPrct)))); // arriving
-//		
+//
 //		airports.add(new Airport(Id.create("352822", Link.class),
 //				new Coord(653070.361381401, 6847964.98858385),
 //				"ORY",
@@ -94,7 +164,7 @@ public class RunCreateAirportPassengers {
 //		"CGK",
 //		(int) Math.max(1, Math.round(86323 * popPrct)), // departing per day
 //		(int) Math.max(1, Math.round(86323 * popPrct)))); // arriving per day
-//		
+//
 //		airports.add(new Airport(Id.create("602678", Link.class),
 //		new Coord(3554288.905, 208004.207),
 //		"HLP",
@@ -184,92 +254,6 @@ public class RunCreateAirportPassengers {
 		}
 
 		System.out.println("done.");
-	}
-
-	private static Household createHousehold(String id, Households households, double max, double min, Person p) {
-		Household h = households.getFactory().createHousehold(Id.create(id + "HH", Household.class));
-		Income inc = households.getFactory().createIncome(
-				new Random().nextInt((int) ((max - (min + ((max - min) / 2)) + 1) + min)), Income.IncomePeriod.month);
-		inc.setCurrency(currency);
-		h.setIncome(inc);
-		h.getMemberIds().add(p.getId());
-
-		h.getAttributes().putAttribute("numberOfCars",
-				p.getAttributes().getAttribute("carAvailability") == "all" ? 1 : 0);
-		h.getAttributes().putAttribute("carAvailability", p.getAttributes().getAttribute("carAvailability"));
-		h.getAttributes().putAttribute("bikeAvailability", p.getAttributes().getAttribute("bikeAvailability"));
-		h.getAttributes().putAttribute("residenceZoneCategory", 2); // TODO
-
-		return h;
-	}
-
-	private static Person createPerson(String id, PopulationFactory factory, Home home, Airport airport,
-			Boolean departing) {
-		Person p = factory.createPerson(Id.createPersonId(id));
-
-		Plan plan = factory.createPlan();
-
-		double time = ((new Random().nextInt((latestHour - earliestHour) + 1) + earliestHour) * 3600)
-				+ (new Random().nextInt(3599));
-
-		Activity firstAct;
-		if (departing) {
-			firstAct = factory.createActivityFromCoord("home", home.coord);
-			firstAct.setLinkId(home.link);
-			firstAct.setEndTime(time);
-		} else {
-			firstAct = factory.createActivityFromCoord("work", airport.coord);
-			firstAct.setLinkId(airport.link);
-			firstAct.setEndTime(time);
-		}
-
-		Activity scndAct;
-		if (!departing) {
-			scndAct = factory.createActivityFromCoord("home", home.coord);
-			scndAct.setLinkId(home.link);
-			scndAct.setStartTime(time + 3600);
-		} else {
-			scndAct = factory.createActivityFromCoord("work", airport.coord);
-			scndAct.setLinkId(airport.link);
-			scndAct.setStartTime(time + 3600);
-		}
-
-		Leg l = factory.createLeg("walk");
-		l.setDepartureTime(time);
-		l.setTravelTime(3600);
-
-		Route r = factory.getRouteFactories().createRoute(Route.class, firstAct.getLinkId(), scndAct.getLinkId());
-		r.setTravelTime(3600);
-		r.setDistance(CoordUtils.calcEuclideanDistance(firstAct.getCoord(), scndAct.getCoord()));
-		l.setRoute(r);
-
-		plan.addActivity(firstAct);
-		plan.addLeg(l);
-		plan.addActivity(scndAct);
-		p.addPlan(plan);
-		p.setSelectedPlan(plan);
-
-		// attributes
-		p.getAttributes().putAttribute("age", new Random().nextInt((oldestAge - earliestAge) + 1) + earliestAge);
-		p.getAttributes().putAttribute("employed", new Random().nextBoolean());
-		p.getAttributes().putAttribute("ptSubscription", new Random().nextBoolean());
-		p.getAttributes().putAttribute("sex", new Random().nextBoolean() ? "m" : "f");
-		p.getAttributes().putAttribute("bikeAvailability", "none");
-		p.getAttributes().putAttribute("income", 4500.0); // TODO
-		p.getAttributes().putAttribute("isPassenger", false);
-		p.getAttributes().putAttribute("residence", 2); // TODO
-
-		Double rand = new Random().nextDouble();
-		Double airportAccessCar = 0.3;
-		p.getAttributes().putAttribute("hasLicense", rand < airportAccessCar ? "yes" : "no");
-		p.getAttributes().putAttribute("carAvailability", rand < airportAccessCar ? "all" : "none");
-
-		return p;
-	}
-
-	public static void main(final String[] args) {
-		RunCreateAirportPassengers app = new RunCreateAirportPassengers();
-		app.run(args);
 	}
 
 	private class Location {

@@ -10,14 +10,13 @@ import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 
 /**
  * This class provides a PlanBasedModel.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class PlanBasedModel extends TourBasedModel {
 	public PlanBasedModel(TourEstimator estimator, ModeAvailability modeAvailability,
-			TourConstraintFactory constraintFactory, UtilitySelectorFactory<TourCandidate> selectorFactory,
-			ModeChainGeneratorFactory modeChainGeneratorFactory, FallbackBehaviour fallbackBehaviour) {
+						  TourConstraintFactory constraintFactory, UtilitySelectorFactory<TourCandidate> selectorFactory,
+						  ModeChainGeneratorFactory modeChainGeneratorFactory, FallbackBehaviour fallbackBehaviour) {
 		super(estimator, modeAvailability, constraintFactory, new PlanTourFinder(), selectorFactory,
 				modeChainGeneratorFactory, fallbackBehaviour);
 	}

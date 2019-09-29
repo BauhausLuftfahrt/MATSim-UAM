@@ -1,20 +1,18 @@
 package net.bhl.matsim.uam.schedule;
 
+import net.bhl.matsim.uam.passenger.UAMRequest;
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.schedule.StayTaskImpl;
-
-import net.bhl.matsim.uam.passenger.UAMRequest;
-
 /**
  * This task represents the local drop-off of passenger at stations, it doesn't
  * include the flying period.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * 
  */
 public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 	private final Set<UAMRequest> requests = new HashSet<>();
@@ -26,7 +24,7 @@ public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 	}
 
 	public UAMDropoffTask(double beginTime, double endTime, Link link, double deboardingTime,
-			Collection<UAMRequest> requests) {
+						  Collection<UAMRequest> requests) {
 		super(beginTime, endTime, link);
 
 		this.requests.addAll(requests);

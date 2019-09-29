@@ -1,20 +1,12 @@
 package net.bhl.matsim.uam.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * This script converts QGIS geojson file from OSM buildings to deck.gl-readable
  * buildings input file.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RunConvertDeckGLBuildings {
 	static public void main(String[] args) throws IOException {

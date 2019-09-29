@@ -1,7 +1,9 @@
 package net.bhl.matsim.uam.router;
 
-import java.util.Map;
-
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.name.Named;
+import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -12,26 +14,22 @@ import org.matsim.core.router.util.LeastCostPathCalculatorFactory;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelTime;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.name.Named;
-
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import java.util.Map;
 
 /**
  * This class provides the routing module for Taxi mode.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class TaxiRoutingModuleProvider implements Provider<RoutingModule> {
 
 	@Inject
-	private Scenario scenario;
-	
-	@Inject
 	@Named("car")
 	Network networkCar;
+	@Inject
+	CustomModeChoiceParameters parameters;
+	@Inject
+	private Scenario scenario;
 	@Inject
 	private LeastCostPathCalculatorFactory lcpcf;
 	@Inject
@@ -39,12 +37,6 @@ public class TaxiRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject
 	private Map<String, TravelDisutilityFactory> travelDisutilityFactories;
 
-
-	
-	@Inject
-	CustomModeChoiceParameters parameters;
-
-	
 	@Override
 	public RoutingModule get() {
 		TravelTime travelTime = travelTimes.get(TransportMode.car);
@@ -53,9 +45,9 @@ public class TaxiRoutingModuleProvider implements Provider<RoutingModule> {
 				.createTravelDisutility(travelTime);
 
 		LeastCostPathCalculator pathCalculator = lcpcf.createPathCalculator(networkCar, travelDisutility, travelTime);
-		
+
 		return new TaxiRoutingModule(scenario, pathCalculator, networkCar);
-		
+
 		//return new UAMIntermodalRoutingModule(this.scenario, this.uamManager.getStations(), modes, this.plcpc,
 		//		pathCalculator, networkCar, transitRouter, transitWalkRouter, uamConfig, transitConfig, transitRouting,
 		//		parameters, waitingData);

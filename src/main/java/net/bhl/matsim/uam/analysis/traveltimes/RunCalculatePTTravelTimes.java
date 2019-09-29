@@ -1,17 +1,6 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import java.io.BufferedReader;
-
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import ch.sbb.matsim.routing.pt.raptor.*;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
@@ -27,13 +16,10 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.pt.router.TransitRouter;
 
-import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorIntermodalAccessEgress;
-import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorParametersForPerson;
-import ch.sbb.matsim.routing.pt.raptor.LeastCostRaptorRouteSelector;
-import ch.sbb.matsim.routing.pt.raptor.RaptorStaticConfig;
-import ch.sbb.matsim.routing.pt.raptor.RaptorUtils;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorData;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This script generates csv file containing estimated travel times by Pt for
@@ -42,7 +28,7 @@ import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorData;
  * -Network file; -Transit Schedule file; -Transit Vehicles file; -Trips file;
  * -output file;
  *
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
 public class RunCalculatePTTravelTimes {
@@ -99,7 +85,7 @@ public class RunCalculatePTTravelTimes {
 		 * TransitRouterConfig transitConfig= new TransitRouterConfig(
 		 * config.planCalcScore(), config.plansCalcRoute(), config.transitRouter(),
 		 * config.vspExperimental());
-		 * 
+		 *
 		 * TransitRouterImpl TransitRouterImpl = new TransitRouterImpl(transitConfig,
 		 * scenario.getTransitSchedule());
 		 */
@@ -199,9 +185,9 @@ public class RunCalculatePTTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime) })
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
 					+ "\n");
 		}
 
@@ -210,8 +196,8 @@ public class RunCalculatePTTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time" });
+		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
+				"departure_time", "travel_time"});
 	}
 
 	public static class TripItem {

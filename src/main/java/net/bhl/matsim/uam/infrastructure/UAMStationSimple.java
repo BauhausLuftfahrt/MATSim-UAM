@@ -5,9 +5,8 @@ import org.matsim.api.core.v01.network.Link;
 
 /**
  * This class defines the UAM Station and its properties.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStationSimple implements UAMStation {
 
@@ -23,13 +22,13 @@ public class UAMStationSimple implements UAMStation {
 	private final double defaultWaitTime;
 
 	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
-			double defaultWaitTime, Link locationLink, Id<UAMStation> id) {
+							double defaultWaitTime, Link locationLink, Id<UAMStation> id) {
 		this(landingCapacity, parkingCapacity, preFlightTime, postFlightTime, defaultWaitTime, locationLink, id,
 				id.toString());
 	}
 
 	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
-			double defaultWaitTime, Link locationLink, Id<UAMStation> id, String name) {
+							double defaultWaitTime, Link locationLink, Id<UAMStation> id, String name) {
 		this.landingCapacity = landingCapacity;
 		this.parkingCapacity = parkingCapacity;
 		this.locationLink = locationLink;

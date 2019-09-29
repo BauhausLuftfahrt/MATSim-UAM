@@ -1,15 +1,9 @@
 package net.bhl.matsim.uam.qsim;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.inject.Inject;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.api.core.v01.population.*;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
@@ -17,20 +11,19 @@ import org.matsim.core.mobsim.framework.PlanAgent;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 
-import com.google.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class defines the departure handler for UAM simulation.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMDepartureHandler implements DepartureHandler {
 
+	Set<Id<Person>> bookedTrips = new HashSet<>();
 	@Inject
 	private PassengerEngine passengerEngine;
-
-	Set<Id<Person>> bookedTrips = new HashSet<>();
 
 	@Override
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
@@ -44,18 +37,18 @@ public class UAMDepartureHandler implements DepartureHandler {
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
 				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
 				Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); // Gets the
-																											// uav_interaction1
-																											// activity
-																											// from the
-																											// passenger
-																											// plan
-																											// (defined
-																											// in the
-																											// OptimizedUAMIntermodalRoutingModule)
+				// uav_interaction1
+				// activity
+				// from the
+				// passenger
+				// plan
+				// (defined
+				// in the
+				// OptimizedUAMIntermodalRoutingModule)
 				passengerEngine.prebookTrip(now, (MobsimPassengerAgent) agent, leg.getRoute().getStartLinkId(),
 						leg.getRoute().getEndLinkId(), now + uav_interaction1.getMaximumDuration()
 								+ (accessLeg.getTravelTime() <= 0 ? 1 : accessLeg.getTravelTime())); // added
-																										// uav_interaction1.getMaximumDuration()
+				// uav_interaction1.getMaximumDuration()
 			} else if (agent.getMode().equals("transit_walk") || agent.getMode().equals("access_walk")) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
@@ -64,21 +57,21 @@ public class UAMDepartureHandler implements DepartureHandler {
 						double travelTime = getTravelTime(plan, planElementsIndex);
 						final Leg uamLeg = getUamLeg(plan, planElementsIndex);
 						Activity uav_interaction1 = (Activity) plan.getPlanElements().get(planElementsIndex + 1); // Gets
-																													// the
-																													// uav_interaction1
-																													// activity
-																													// from
-																													// the
-																													// passenger
-																													// plan
-																													// (defined
-																													// in
-																													// the
-																													// OptimizedUAMIntermodalRoutingModule)
+						// the
+						// uav_interaction1
+						// activity
+						// from
+						// the
+						// passenger
+						// plan
+						// (defined
+						// in
+						// the
+						// OptimizedUAMIntermodalRoutingModule)
 						passengerEngine.prebookTrip(now, (MobsimPassengerAgent) agent,
 								uamLeg.getRoute().getStartLinkId(), uamLeg.getRoute().getEndLinkId(),
 								now + uav_interaction1.getMaximumDuration() + (travelTime <= 0 ? 1 : travelTime)); // added
-																													// uav_interaction1.getMaximumDuration()
+						// uav_interaction1.getMaximumDuration()
 						bookedTrips.add(agent.getId());
 					}
 				}

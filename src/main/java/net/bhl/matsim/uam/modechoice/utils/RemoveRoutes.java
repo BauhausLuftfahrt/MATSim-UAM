@@ -13,9 +13,8 @@ import org.matsim.pt.PtConstants;
 /**
  * This class simplifies the population plans by using
  * {@link TripsToLegsAlgorithm} class.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RemoveRoutes {
 	public void run(Population population) {

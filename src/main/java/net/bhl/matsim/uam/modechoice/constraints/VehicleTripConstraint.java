@@ -1,22 +1,20 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
-
 import ch.ethz.matsim.mode_choice.constraints.AbstractTripConstraint;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraint;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This class defines the constraint for vehicle modes on trip based models.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class VehicleTripConstraint extends AbstractTripConstraint {
 	final protected Collection<String> constrainedModes;

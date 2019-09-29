@@ -1,40 +1,34 @@
 package net.bhl.matsim.uam.listeners;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.events.*;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.controler.events.IterationEndsEvent;
 import org.matsim.core.controler.listener.IterationEndsListener;
 import org.matsim.core.utils.io.IOUtils;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.events.UAMData;
-import net.bhl.matsim.uam.events.UAMDemand;
-import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
-import net.bhl.matsim.uam.events.UAMUtilitiesData;
-import net.bhl.matsim.uam.events.UAMUtilitiesTrip;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * This class provides output for the uam usage.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMListener implements IterationEndsListener{
+public class UAMListener implements IterationEndsListener {
 
-	@Inject UAMDemand uamDemand;
-	
+	@Inject
+	UAMDemand uamDemand;
+
 	@Override
 	public void notifyIterationEnds(IterationEndsEvent event) {
 		// UAMDemand
 		Map<Id<Person>, ArrayList<UAMData>> data = this.uamDemand.getDemand();
 		BufferedWriter writer = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamdemand.csv"));
-		
+
 		try {
 			writer.write("peronId,originCoordX,originCoordY,originStationCoordX,originStationCoordY,destinationStationCoordX,"
 					+ "destinationStationCoordY,destinationCoordX,destinationCoordY,startTime,arrivalAtStationTime,takeOffTime,"
@@ -42,24 +36,24 @@ public class UAMListener implements IterationEndsListener{
 					+ "egressMode,uamTrip");
 			writer.newLine();
 			for (Id<Person> personId : data.keySet()) {
-				
+
 				for (UAMData d : data.get(personId)) {
 					writer.write(personId.toString() + ",");
 					writer.write(d.toString());
 					writer.newLine();
-					
+
 				}
 			}
-			writer.close();	
-			
+			writer.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-				
+
 		// UAMUtilitiesData
 		if (!UAMUtilitiesData.tripOptions.isEmpty()) {
 			BufferedWriter writerTrip = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamTripUtilities.csv"));
-			
+
 			try {
 				boolean first = true;
 				for (UAMUtilitiesTrip trip : UAMUtilitiesData.tripOptions) {
@@ -85,7 +79,7 @@ public class UAMListener implements IterationEndsListener{
 
 		if (!UAMUtilitiesData.accessEgressOptions.isEmpty()) {
 			BufferedWriter writerOption = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamAccessUtilities.csv"));
-			
+
 			try {
 				boolean first = true;
 				for (UAMUtilitiesAccessEgress option : UAMUtilitiesData.accessEgressOptions) {
@@ -96,8 +90,8 @@ public class UAMListener implements IterationEndsListener{
 					writerOption.newLine();
 					writerOption.write(option.toString());
 				}
-				
-				
+
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {

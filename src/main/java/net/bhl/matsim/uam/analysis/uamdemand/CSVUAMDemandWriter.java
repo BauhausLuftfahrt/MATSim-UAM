@@ -9,8 +9,8 @@ import java.util.HashSet;
 
 /**
  * This class writes a CSV file containing UAMDemand data.
- * 
- * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ *
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class CSVUAMDemandWriter {
 	final private HashSet<UAMDemandItem> uamData;
@@ -39,17 +39,17 @@ public class CSVUAMDemandWriter {
 
 	private String formatHeader() {
 		return String.join(delimiter,
-				new String[] { "personId", "originCoordX", "originCoordY", "originStationCoordX", "originStationCoordY",
+				new String[]{"personId", "originCoordX", "originCoordY", "originStationCoordX", "originStationCoordY",
 						"destinationStationCoordX", "destinationStationCoordY", "destinationCoordX",
 						"destinationCoordY", "startTime", "arrivalAtStationTime", "takeOffTime", "landingTime",
 						"departureFromStationTime", "endTime", "vehicleId", "originStationId", "destinationStationId",
-						"accessMode", "egressMode", "uamTrip" });
+						"accessMode", "egressMode", "uamTrip"});
 	}
 
 	private String formatData(UAMDemandItem uamData) {
 		try {
 			return String.join(delimiter,
-					new String[] { uamData.personId.toString(), String.valueOf(uamData.origin.getX()),
+					new String[]{uamData.personId.toString(), String.valueOf(uamData.origin.getX()),
 							String.valueOf(uamData.origin.getY()), String.valueOf(uamData.originStationCoord.getX()),
 							String.valueOf(uamData.originStationCoord.getY()),
 							String.valueOf(uamData.destinationStationCoord.getX()),
@@ -58,9 +58,9 @@ public class CSVUAMDemandWriter {
 							String.valueOf(uamData.startTime), String.valueOf(uamData.arrivalAtStationTime),
 							String.valueOf(uamData.takeOffTime), String.valueOf(uamData.landingTime),
 							String.valueOf(uamData.departureFromStationTime), String.valueOf(uamData.endTime),
-							uamData.vehicleId.toString(), uamData.originStationId.toString(),
-							uamData.destinationStationId.toString(), uamData.accessMode.toString(),
-							uamData.egressMode.toString(), String.valueOf(uamData.uamTrip) });
+							uamData.vehicleId, uamData.originStationId.toString(),
+							uamData.destinationStationId.toString(), uamData.accessMode,
+							uamData.egressMode, String.valueOf(uamData.uamTrip)});
 		} catch (Exception NullPointerException) {
 		}
 		return "uamData could not be read";

@@ -1,19 +1,18 @@
 package net.bhl.matsim.uam.modechoice;
 
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
+import org.matsim.api.core.v01.population.Person;
+import org.matsim.core.population.PersonUtils;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.population.PersonUtils;
-
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
-import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
-
 /**
  * This class is used to filter trips according to the person attribute of
  * "having license" for the car mode.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class LicenseModeAvailability extends DefaultModeAvailability {

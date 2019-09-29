@@ -3,10 +3,9 @@ package net.bhl.matsim.uam.data;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
- * Class that stores information about a UAM route. 
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * Class that stores information about a UAM route.
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMRoute {
 	public String accessMode;

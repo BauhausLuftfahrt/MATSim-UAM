@@ -1,18 +1,17 @@
 package net.bhl.matsim.uam.scenario.utils;
 
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
-import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigGroup;
 
 /**
  * This class adds UAM parameters to the Config file.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConfigAddUAMParameters {
 	public static void addUAMParameters(Config config, String inputUAMFile, String modes, int threads, int searchRadius,
-			int walkDistance, UAMStrategy.UAMStrategyType routingStrategy, boolean ptSimulation) {
+										int walkDistance, UAMStrategy.UAMStrategyType routingStrategy, boolean ptSimulation) {
 		config.getModules().get("uam").addParam("inputUAMFile", inputUAMFile);
 		config.getModules().get("uam").addParam("availableAccessModes", modes);
 		config.getModules().get("uam").addParam("parallelRouters", "" + threads);
@@ -31,8 +30,8 @@ public class ConfigAddUAMParameters {
 		config.getModules().get("planCalcScore").addParameterSet(uamInteractionParam);
 
 		// UAM planCalcScore modes
-		String[] modeScores = { "uam", "access_uam_walk", "egress_uam_walk", "access_uam_car", "egress_uam_car",
-				"access_uam_bike", "egress_uam_bike" };
+		String[] modeScores = {"uam", "access_uam_walk", "egress_uam_walk", "access_uam_car", "egress_uam_car",
+				"access_uam_bike", "egress_uam_bike"};
 		for (String modeScore : modeScores) {
 			ConfigGroup modeParam = config.getModules().get("planCalcScore").createParameterSet("modeParams");
 			modeParam.addParam("mode", modeScore);

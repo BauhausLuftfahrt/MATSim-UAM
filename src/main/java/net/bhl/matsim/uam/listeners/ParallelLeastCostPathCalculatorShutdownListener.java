@@ -1,17 +1,16 @@
 package net.bhl.matsim.uam.listeners;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import org.matsim.core.controler.events.ShutdownEvent;
 import org.matsim.core.controler.listener.ShutdownListener;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * A parallel least cost path calculator shutdown listener for shutdown
  * notification in the end of a simulation.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ParallelLeastCostPathCalculatorShutdownListener implements ShutdownListener {
 	final private Closeable resource;

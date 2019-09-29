@@ -8,9 +8,8 @@ import java.io.OutputStreamWriter;
 /**
  * This script generates a text file containing UAM Station and UAM Vehicles
  * information.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Deprecated
 public class RunUAMVehicleFileHelper {
@@ -18,7 +17,7 @@ public class RunUAMVehicleFileHelper {
 	public static void main(final String[] args) throws IOException {
 		File fout = new File("C:\\Users\\Raoul\\Downloads\\5000.txt");
 		int vehiclesPerStation = 5000;
-		String[] stations = { "11", "12", "13", "14", "15", "16", "21", "22", "23" };
+		String[] stations = {"11", "12", "13", "14", "15", "16", "21", "22", "23"};
 
 		FileOutputStream fos = new FileOutputStream(fout);
 		OutputStreamWriter osw = new OutputStreamWriter(fos);

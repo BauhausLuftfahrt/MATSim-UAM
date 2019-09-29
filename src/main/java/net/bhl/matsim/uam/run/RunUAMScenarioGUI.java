@@ -1,14 +1,12 @@
 package net.bhl.matsim.uam.run;
 
-import net.bhl.matsim.uam.run.RunUAMScenario;
 import org.matsim.run.gui.Gui;
 
 /**
  * start a MATSim run including Urban Air Mobility capabilities using a
  * Graphical user interface.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Deprecated
 public class RunUAMScenarioGUI {

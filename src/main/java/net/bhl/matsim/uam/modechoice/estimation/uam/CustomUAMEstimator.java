@@ -1,18 +1,17 @@
 package net.bhl.matsim.uam.modechoice.estimation.uam;
 
-import java.util.List;
-
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
+import java.util.List;
+
 /**
  * This class defines the estimator for UAM trips.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomUAMEstimator implements ModalTripEstimator {
 	final private CustomUAMPredictor predictor;
@@ -25,7 +24,7 @@ public class CustomUAMEstimator implements ModalTripEstimator {
 	}
 
 	public CustomUAMEstimator(CustomModeChoiceParameters parameters, CustomUAMPredictor predictor,
-			boolean isMinTravelTime) {
+							  boolean isMinTravelTime) {
 		this(parameters, predictor);
 		this.isMinTravelTime = isMinTravelTime;
 	}

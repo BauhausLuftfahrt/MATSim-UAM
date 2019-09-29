@@ -1,22 +1,20 @@
 package net.bhl.matsim.uam.modechoice.utils;
 
-import java.util.List;
-
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.router.TripStructureUtils.Trip;
 
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import java.util.List;
 
 /**
  * This class provides methods regarding vehicle location in a trip.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class VehicleLocationUtils {
 	final private static Id<Link> outsideLinkId = Id.createLinkId("outside");
-	
+
 	static public Id<Link> getOriginLinkId(Trip trip) {
 		if (trip.getOriginActivity().getType().equals("outside")) {
 			return outsideLinkId;
