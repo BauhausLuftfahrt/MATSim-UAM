@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import net.bhl.matsim.uam.data.*;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -38,10 +39,6 @@ import org.matsim.vehicles.Vehicle;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.ethz.matsim.baseline_scenario.transit.routing.BaselineTransitRoutingModule;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.data.UAMRoutes;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
-import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
@@ -221,22 +218,31 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		Future<Path> uavPath = plcpc.calcLeastCostPath(uamRoute.bestOriginStation.getLocationLink().getFromNode(),
 				uamRoute.bestDestinationStation.getLocationLink().getToNode(), 0.0, null, null);
 		double distance = 0;
+		StringBuilder routeDescr = new StringBuilder();
 		try {
+			boolean first = true;
 			for (Link link : uavPath.get().links) {
 				distance += link.getLength();
+
+				if (!first)
+					routeDescr.append(" ");
+				first = false;
+
+				routeDescr.append(link.getId());
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 		routeUAV.setDistance(distance); // adds distance to the route, so it appears in the output plans file
+		routeUAV.setRouteDescription(routeDescr.toString());
 
-		double travelTime = this.stationConnectionutilities.getTravelTime(uamRoute.bestOriginStation.getId(),
+		UAMFlightLeg flightLeg = this.stationConnectionutilities.getFlightLeg(uamRoute.bestOriginStation.getId(),
 				uamRoute.bestDestinationStation.getId());
-		routeUAV.setTravelTime(travelTime); // sets the travel time for the route, so it appears in output plans
-		uavLeg.setTravelTime(travelTime); // sets the travel time for the leg, so it appears in output plans
+		routeUAV.setTravelTime(flightLeg.travelTime); // sets the travel time for the route, so it appears in output plans
+		uavLeg.setTravelTime(flightLeg.travelTime); // sets the travel time for the leg, so it appears in output plans
 
 		trip.add(uavLeg);
-		currentTime += travelTime;
+		currentTime += flightLeg.travelTime;
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 									// station
