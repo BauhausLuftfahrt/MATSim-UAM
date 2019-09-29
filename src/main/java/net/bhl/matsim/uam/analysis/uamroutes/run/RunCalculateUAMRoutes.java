@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.analysis.uamroutes.run;
 
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import net.bhl.matsim.uam.data.UAMFlightLeg;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
@@ -11,11 +12,8 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.router.DijkstraFactory;
-import org.matsim.core.router.FastAStarLandmarksFactory;
-import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelDisutilityUtils;
 import org.matsim.core.router.util.TravelTime;
@@ -25,9 +23,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class RunCalculateUAMRoutes {
 
@@ -80,12 +76,13 @@ public class RunCalculateUAMRoutes {
                 if (stationFrom.equals(stationTo))
                     continue;
 
+                UAMFlightLeg leg = uamSCG.getFlightLeg(stationFrom.getId(), stationTo.getId());
+
                 writer.write(String.join(delimiter, new String[] {
                         String.valueOf(stationFrom.getId()),
                         String.valueOf(stationTo.getId()),
-                        String.valueOf(uamSCG.getTravelTime(stationFrom.getId(), stationTo.getId())),
-                        String.valueOf(uamSCG.getDistance(stationFrom.getId(), stationTo.getId())),
-                        uamSCG.getUtility(stationFrom.getId(), stationTo.getId()) + "\n"}));
+                        String.valueOf(leg.travelTime),
+                        leg.distance + "\n"}));
             }
         }
 
@@ -95,6 +92,6 @@ public class RunCalculateUAMRoutes {
 
     private static String formatHeader() {
         return String.join(delimiter,
-                new String[] { "station_from", "station_to", "travel_time_s", "travel_distance_m", "travel_utility"});
+                new String[] { "station_from", "station_to", "travel_time_s", "travel_distance_m"});
     }
 }

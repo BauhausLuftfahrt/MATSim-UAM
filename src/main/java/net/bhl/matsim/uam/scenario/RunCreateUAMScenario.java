@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.bhl.matsim.uam.router.UAMFlightSegments;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -55,7 +56,7 @@ public class RunCreateUAMScenario {
 
     private static String name_uam_dtd = "src/main/resources/dtd/uam.dtd";
 
-    private static String mode_uam = "uam";
+    private static String mode_uam = UAMModes.UAM_MODE;
     private static String mode_car = TransportMode.car;
 
     private static double min_link_length = 1;

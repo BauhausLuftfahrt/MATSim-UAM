@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.qsim;
 
 import java.util.Map;
 
-import net.bhl.matsim.uam.infrastructure.UAMFlightSegments;
+import net.bhl.matsim.uam.router.UAMFlightSegments;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QVehicle;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.LinkSpeedCalculator;

@@ -43,10 +43,8 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 		Map<Id<UAMStation>, UAMAccessRouteData> accessRoutesData = new HashMap<>();
 		accessRoutesData = strategyUtils.getAccessRouteData(true, stationsOrigin, fromFacility, departureTime);
 		String bestModeEgress = TransportMode.walk;
-		
-		double timeOfEgress = departureTime;
-		Set<String> modes = new HashSet<>();
-		modes = strategyUtils.getModes();
+
+		Set<String> modes = strategyUtils.getModes();
 		//UAM Flight Distance + access and egress distance
 		double minTotalDistance = Double.POSITIVE_INFINITY;
 		for (UAMStation stationOrigin : stationsOrigin) {
@@ -79,19 +77,13 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
 						bestModeEgress = mode;
-						timeOfEgress = currentDepartureTime;
-					}		
+					}
 				}	
 			}
 		}
-		double egressDistance = strategyUtils.estimateDistance(false, toFacility, timeOfEgress, bestStationDestination, bestModeEgress);
-		//if the access/egress distance is less than walkDistance, then walk will be the uam access and egress mode, otherwise time is used to select the mode access/egress	
-		String bestModeAccess = strategyUtils.checkStationAccessDistance(true, accessRoutesData.get(bestStationOrigin.getId()).getAccessModeDistance() 
-				,bestStationOrigin, null, accessRoutesData.get(bestStationOrigin.getId()).getDistance(), fromFacility, toFacility, departureTime, null, true);  
-		bestModeEgress = strategyUtils.checkStationAccessDistance(false, bestModeEgress, bestStationDestination, bestStationOrigin,
-				egressDistance, toFacility, fromFacility, departureTime, bestModeAccess, true);			
 			
-		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);		
+		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getAccessModeDistance(), bestStationOrigin,
+				bestStationDestination, bestModeEgress);
 	}
 	
 }

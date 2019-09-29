@@ -41,13 +41,13 @@ import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 /**
  * This class provides the methods used for different UAMStrategies
  * 
- * @author Aitan Militao
+ * @author Aitan Militao, RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyUtils {
 	private final Scenario scenario;
 	private UAMStations landingStations;
 	private UAMConfigGroup uamConfig;
-	private UAMStationConnectionGraph stationConnectionutilities;
+	private UAMStationConnectionGraph stationConnections;
 	private Network carNetwork;
 	private TransitRouter transitRouter;
 	private ParallelLeastCostPathCalculator plcpc;
@@ -56,13 +56,13 @@ public class UAMStrategyUtils {
 	private static final Logger log = Logger.getLogger(UAMIntermodalRoutingModule.class);
 
 	public UAMStrategyUtils(UAMStations landingStations, UAMConfigGroup uamConfig, Scenario scenario,
-			UAMStationConnectionGraph stationConnectionutilities, Network carNetwork, TransitRouter transitRouter,
+			UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
 			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar,
 			CustomModeChoiceParameters parameters) {
 		this.landingStations = landingStations;
 		this.uamConfig = uamConfig;
 		this.scenario = scenario;
-		this.stationConnectionutilities = stationConnectionutilities;
+		this.stationConnections = stationConnections;
 		this.carNetwork = carNetwork;
 		this.transitRouter = transitRouter;
 		this.plcpc = plcpc;
@@ -96,69 +96,30 @@ public class UAMStrategyUtils {
 		Map<Id<UAMStation>, UAMAccessRouteData> accessRouteData = new HashMap<>();
 		String bestModeDistance = TransportMode.walk;
 		String bestModeTime = TransportMode.walk;
+
 		for (UAMStation station : stations) {
 			double minDistance = Double.POSITIVE_INFINITY;
 			double minAccessTime = Double.POSITIVE_INFINITY;
+
 			for (String mode : modes) {
+				// TODO routing is done twice here, once for getting time and then to get distance, reduce to one
 				double travelTime = estimateTime(access, facility, departureTime, station, mode);
 				double distance = estimateDistance(access, facility, departureTime, station, mode);
 
-				if (distance < minDistance) {
+				if (distance < minDistance && distance > uamConfig.getWalkDistance()) {
 					minDistance = distance;
 					bestModeDistance = mode;
 				}
-				if (travelTime < minAccessTime) {
+				if (travelTime < minAccessTime && distance > uamConfig.getWalkDistance()) {
 					minAccessTime = travelTime;
 					bestModeTime = mode;
 				}
 			}
-			UAMAccessRouteData accessRoute = new UAMAccessRouteData(minDistance, minAccessTime, bestModeDistance,
-					bestModeTime, station);
-			accessRouteData.put(station.getId(), accessRoute);
+
+			accessRouteData.put(station.getId(),
+					new UAMAccessRouteData(minDistance, minAccessTime, bestModeDistance, bestModeTime, station));
 		}
 		return accessRouteData;
-	}
-
-	/**
-	 * Compares access/egress distance to the minimum walking distance set in the
-	 * config file. For distance based strategy it also selects the access/egress
-	 * modes based on minimum travel time.
-	 * 
-	 * @return updated mode for access/egress routes
-	 */
-	String checkStationAccessDistance(boolean access, String currentMode, UAMStation station, UAMStation originStation,
-			double distance, Facility<?> facility, Facility<?> originFacility, double departureTime, String accessMode,
-			boolean distanceStrategy) {
-		Set<String> modes = new HashSet<>();
-		modes.addAll(uamConfig.getAvailableAccessModes());
-		String bestMode = currentMode;
-		double currentDepartureTime = departureTime;
-		if (!access && distanceStrategy) {
-			double flyTime = this.stationConnectionutilities.getTravelTime(originStation.getId(), station.getId());
-			currentDepartureTime += estimateTime(true, originFacility, departureTime, originStation, accessMode)
-					+ flyTime;
-		}
-		if (distance <= uamConfig.getWalkDistance()) {
-			return TransportMode.walk;
-		} else if (distanceStrategy) {
-			double minAccessTime = Double.POSITIVE_INFINITY;
-			for (String mode : modes) {
-				double travelTime = estimateTime(access, facility, currentDepartureTime, station, mode);
-				if (travelTime < minAccessTime) {
-					bestMode = mode;
-					minAccessTime = travelTime;
-				}
-			}
-		}
-		return bestMode;
-	}
-
-	String checkStationAccessMinDistance(double distance, String currentMode) {
-		if (distance <= uamConfig.getWalkDistance()) {
-			return TransportMode.walk;
-		} else {
-			return currentMode;
-		}
 	}
 
 	double estimateDistance(boolean access, Facility<?> facility, double time, UAMStation station, String mode) {
@@ -200,11 +161,8 @@ public class UAMStrategyUtils {
 					distanceByPt += leg.getRoute().getDistance();
 				}
 				return distanceByPt;
-			} else {
-				return estimateBeeLineDistance(mode, facility, station);
 			}
 		default:
-
 			return estimateBeeLineDistance(mode, facility, station);
 		}
 	}
@@ -255,10 +213,7 @@ public class UAMStrategyUtils {
 					timeByPt += leg.getTravelTime();
 				}
 				return timeByPt;
-			} else {
-				return estimateBeeLineTravelTime(mode, facility, station);
 			}
-
 		default:
 			return estimateBeeLineTravelTime(mode, facility, station);
 		}
@@ -308,7 +263,7 @@ public class UAMStrategyUtils {
 				List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
 						time, person);
 				if (legs.size() > 1)
-					return estiamteUtility(legs, person);
+					return estimateUtility(legs, person);
 				return Double.NEGATIVE_INFINITY;
 			} else {
 				double travelDistance = estimateBeeLineDistance(mode, facility, station);
@@ -391,7 +346,7 @@ public class UAMStrategyUtils {
 		return Double.NEGATIVE_INFINITY;
 	}
 
-	private double estiamteUtility(List<Leg> legs, Person person) {
+	private double estimateUtility(List<Leg> legs, Person person) {
 		double distance = 0.0;
 		double utility = 0.0;
 		int transfers = -1;
@@ -425,11 +380,12 @@ public class UAMStrategyUtils {
 	}
 
 	Future<Path> getFlyDistance(Node fromNode, Node toNode) {
+		// TODO in case of caching not implemented
 		return plcpc.calcLeastCostPath(fromNode, toNode, 0.0, null, null);
 	}
 
 	double getFlyTime(UAMStation stationOrigin, UAMStation stationDestination) {
-		return this.stationConnectionutilities.getTravelTime(stationOrigin.getId(), stationDestination.getId());
+		return this.stationConnections.getFlightLeg(stationOrigin.getId(), stationDestination.getId()).travelTime;
 	}
 
 	Network getNetwork() {
@@ -444,8 +400,8 @@ public class UAMStrategyUtils {
 		return parameters;
 	}
 
-	public UAMStationConnectionGraph getStationConnectionutilities() {
-		return stationConnectionutilities;
+	public UAMStationConnectionGraph getStationConnections() {
+		return stationConnections;
 	}
 
 	public List<Double> getTotalTravelTime(Facility<?> fromFacility, Facility<?> toFacility, Double departureTime,

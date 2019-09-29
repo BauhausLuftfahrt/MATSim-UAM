@@ -38,13 +38,11 @@ public class UAMStationConnectionGraph {
                 if (uamStationOrigin == uamStationDestination)
                     continue;
 
-                // TODO when reworking the router, rework this as well!
                 Future<Path> path = plcpc.calcLeastCostPath(uamStationOrigin.getLocationLink().getFromNode(),
                         uamStationDestination.getLocationLink().getToNode(), 0.0, null, null);
 
                 double distance = 0;
                 double travelTime = 0;
-                double utility = 0;
                 List<Link> links = null;
 
                 try {
@@ -65,15 +63,12 @@ public class UAMStationConnectionGraph {
                         travelTime += link.getLength() / verticalSpeed;
                 }
 
-                if (parameters != null)
-                    utility = estimateUtilityUAM(travelTime, distance, parameters, uamStationOrigin, uamStationDestination);
-
                 if (legs.containsKey(uamStationOrigin.getId())) {
                     this.legs.get(uamStationOrigin.getId()).put(uamStationDestination.getId(),
-                            new UAMFlightLeg(travelTime, distance, utility, links));
+                            new UAMFlightLeg(travelTime, distance, links));
                 } else {
                     Map<Id<UAMStation>, UAMFlightLeg> newEntry = new HashMap<>();
-                    newEntry.put(uamStationDestination.getId(), new UAMFlightLeg(travelTime, distance, utility, links));
+                    newEntry.put(uamStationDestination.getId(), new UAMFlightLeg(travelTime, distance, links));
                     this.legs.put(uamStationOrigin.getId(), newEntry);
                 }
             }
@@ -82,21 +77,5 @@ public class UAMStationConnectionGraph {
 
     public UAMFlightLeg getFlightLeg(Id<UAMStation> originStation, Id<UAMStation> destinationStation) {
         return this.legs.get(originStation).get(destinationStation);
-    }
-
-    // TODO remove all utility from this class
-    private double estimateUtilityUAM(double travelTime, double distance, CustomModeChoiceParameters parameters,
-                                      UAMStation stationOrigin, UAMStation stationDestination) {
-
-        double utility = 0.0;
-
-        utility += parameters.alphaUAM;
-        utility += parameters.betaTravelTimeUAM_min * travelTime / 60.0;
-        utility += parameters.betaWaitUAM_min *
-                (stationOrigin.getPreFlightTime() + stationDestination.getPostFlightTime()) / 60.0;
-        // utility += parameters.betaCost(distance * 1e-3, parameters.averageIncome) *
-        // parameters.distanceCostUAM_km * distance * 1e-3;
-
-        return utility;
     }
 }
