@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.bhl.matsim.uam.listeners.UAMListener;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.data.Vehicle;
@@ -95,7 +96,7 @@ public class UAMModule extends AbstractModule {
 		// addEventHandlerBinding().to(UAMEventHandler.class);
 
 		// we need to bind our router for the uam trips
-		addRoutingModuleBinding(UAMIntermodalRoutingModule.TELEPORTATION_UAM_LEG_MODE)
+		addRoutingModuleBinding(UAMModes.UAM_MODE)
 				.toProvider(UAMRoutingModuleProvider.class);
 
 		// we still need to provide a way to identify our trips

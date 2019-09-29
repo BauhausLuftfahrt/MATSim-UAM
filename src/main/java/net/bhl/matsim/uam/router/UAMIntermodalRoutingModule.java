@@ -48,13 +48,6 @@ import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFind
 import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
 
 public class UAMIntermodalRoutingModule implements RoutingModule {
-	public static final String TELEPORTATION_UAM_LEG_MODE = "uam";
-	public static final String UAM_ACCESS_WALK = "access_uam_walk";
-	public static final String UAM_EGRESS_WALK = "egress_uam_walk";
-	public static final String UAM_ACCESS_BIKE = "access_uam_bike";
-	public static final String UAM_EGRESS_BIKE = "egress_uam_bike";
-
-	public static final String UAM_INTERACTION = "uam_interaction";
 
 	private final int counterLimit = 10;
 	private int counterWarningWaitingTimeSlot = 0;
@@ -175,7 +168,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		}
 
 		/* origin station */
-		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAM_INTERACTION,
+		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
 				uamRoute.bestOriginStation.getLocationLink().getId());
 		uav_interaction1.setMaximumDuration(uamRoute.bestOriginStation.getPreFlightTime()); // Changes the value for the
 																							// duration of UAM
@@ -221,7 +214,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		Route routeUAV = routeFactory.createRoute(Route.class, uamRoute.bestOriginStation.getLocationLink().getId(),
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 
-		final Leg uavLeg = populationFactory.createLeg(TELEPORTATION_UAM_LEG_MODE);
+		final Leg uavLeg = populationFactory.createLeg(UAMModes.UAM_MODE);
 		uavLeg.setRoute(routeUAV);
 
 		// Add information on future path for plan output files
@@ -247,7 +240,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 									// station
-		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAM_INTERACTION,
+		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 		uav_interaction2.setMaximumDuration(uamRoute.bestDestinationStation.getPostFlightTime()); // Changes the value
 																									// for the duration

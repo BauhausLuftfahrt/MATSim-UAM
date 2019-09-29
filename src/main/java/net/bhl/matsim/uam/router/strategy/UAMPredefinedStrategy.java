@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.router.strategy;
 import java.util.Collection;
 import java.util.List;
 
+import net.bhl.matsim.uam.router.UAMModes;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Leg;
@@ -38,7 +39,7 @@ public class UAMPredefinedStrategy implements UAMStrategy{
 		for (int i = 0; i < elements.size() - 2; i += 2) {
 			Activity endingActivity = (Activity) elements.get(i);
 			
-			if (endingActivity.getType().equals(UAMIntermodalRoutingModule.UAM_INTERACTION))
+			if (endingActivity.getType().equals(UAMModes.UAM_INTERACTION))
 				continue;
 					
 			if (endingActivity.getEndTime() == departureTime) {
