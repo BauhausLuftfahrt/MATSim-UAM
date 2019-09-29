@@ -48,7 +48,7 @@ import java.util.*;
  * -strategy name(minTraveltime, minDistance, minAccessTravelTime,
  * minAccessDistance) -output file; ;
  *
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 
 public class RunCalculateUAMTravelTimes {

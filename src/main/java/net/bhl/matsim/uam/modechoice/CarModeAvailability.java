@@ -10,6 +10,12 @@ import org.matsim.core.population.PersonUtils;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.mode_availability.DefaultModeAvailability;
 
+/**
+ * This class is used to filter trips according to the person availability of
+ * car and bike modes.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class CarModeAvailability extends DefaultModeAvailability {
 
 	public CarModeAvailability(Collection<String> modes) {

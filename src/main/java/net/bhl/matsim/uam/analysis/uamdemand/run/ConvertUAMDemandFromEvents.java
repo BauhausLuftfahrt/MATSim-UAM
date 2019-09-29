@@ -23,14 +23,11 @@ import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 
 /**
- * This script generates a UAMDemand csv file containing UAMDemand data. 
- * Necessary inputs are in the following order: 
- * -Network file;
- * -Events file;
- * -UAMConfig file;
- * -output file;
+ * This script generates a UAMDemand csv file containing UAMDemand data.
+ * Necessary inputs are in the following order: -Network file; -Events file;
+ * -UAMConfig file; -output file;
  *
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 
 public class ConvertUAMDemandFromEvents {
@@ -39,19 +36,20 @@ public class ConvertUAMDemandFromEvents {
 		extract(args[0], args[1], args[2], args[3]);
 		System.out.println("done.");
 	}
-	
+
 	static public void extract(String network, String events, String uamVehicles, String outfile) throws IOException {
 		Network netw = NetworkUtils.createNetwork();
 		new MatsimNetworkReader(netw).readFile(network);
-				
+
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
 				UAMModes.UAM_INTERACTION);
 
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());
-		Collection<String> networkRouteModes = Arrays.asList("car", "uam", "access_uam_car", "egress_uam_car"); 
-		
-		UAMListener uamListener = new UAMListener(netw, uamVehicles, stageActivityTypes, mainModeIdentifier,	networkRouteModes);
+		Collection<String> networkRouteModes = Arrays.asList("car", "uam", "access_uam_car", "egress_uam_car");
+
+		UAMListener uamListener = new UAMListener(netw, uamVehicles, stageActivityTypes, mainModeIdentifier,
+				networkRouteModes);
 		Collection<UAMDemandItem> uamData = new EventsUAMReader(uamListener).readUAMData(events);
 
 		new CSVUAMDemandWriter(uamData).write(outfile);

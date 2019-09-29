@@ -13,6 +13,12 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMTask;
 
+/**
+ * UAM Dispatcher that selects the first vehicle in the queue.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class UAMDispatcher implements Dispatcher {
 
@@ -69,8 +75,7 @@ public class UAMDispatcher implements Dispatcher {
 
 	/**
 	 * 
-	 * @param now
-	 *            current time
+	 * @param now current time
 	 * 
 	 *            Method that dispatches a first vehicle in the Queue - no
 	 *            optimization.

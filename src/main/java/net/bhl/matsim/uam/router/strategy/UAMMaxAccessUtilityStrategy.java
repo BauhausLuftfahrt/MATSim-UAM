@@ -14,8 +14,13 @@ import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
 import net.bhl.matsim.uam.events.UAMUtilitiesData;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
-
-public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
+/**
+ * This strategy is used to assign to the passenger the UAMRoute based on the
+ * access and egress legs utilities to/from UAM Stations in a UAM trip.
+ * 
+ * @author Aitanm (Aitan Milit�o), RRothfeld (Raoul Rothfeld)
+ */
+public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
 
 	public UAMMaxAccessUtilityStrategy(UAMStrategyUtils strategyUtils) {
@@ -33,14 +38,15 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
 		Set<String> modes = new HashSet<>();
 		modes = strategyUtils.getModes();
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
-		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);		
-		//Access utility
+		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
+		// Access utility
 		UAMStation bestStationOrigin = null;
 		String bestModeAccess = TransportMode.walk;
 		double bestUtilityAccess = Double.NEGATIVE_INFINITY;
 		for (UAMStation stationOrigin : stationsOrigin) {
 			for (String mode : modes) {
-				double accessUtility = strategyUtils.estimateUtilityWrapper(person, true, fromFacility, departureTime, stationOrigin, mode);
+				double accessUtility = strategyUtils.estimateUtilityWrapper(person, true, fromFacility, departureTime,
+						stationOrigin, mode);
 				if (accessUtility > bestUtilityAccess) {
 					bestUtilityAccess = accessUtility;
 					bestModeAccess = mode;
@@ -49,21 +55,24 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy{
 
 				if (strategyUtils.getParameters().storeUAMUtilities != 0) {
 					UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
-							stationOrigin.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), true, accessUtility, mode, departureTime));
+							stationOrigin.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), true,
+							accessUtility, mode, departureTime));
 				}
 			}
 		}
-		//Egress utility
+		// Egress utility
 		UAMStation bestStationDestination = null;
 		String bestModeEgress = TransportMode.walk;
 		double bestUtilityEgress = Double.NEGATIVE_INFINITY;
 		for (UAMStation stationDestination : stationsDestination) {
 			if (bestStationOrigin == stationDestination)
 				continue;
+
 			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
 			//updated departureTime 				
 			double currentDepartureTime = departureTime + strategyUtils.estimateAccessLeg(true, fromFacility,
 					departureTime, bestStationOrigin, bestModeAccess).travelTime + flyTime;
+
 			for (String mode : modes) {
 				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility,
 						currentDepartureTime, stationDestination, mode);

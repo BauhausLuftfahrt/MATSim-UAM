@@ -12,6 +12,11 @@ import org.matsim.vehicles.Vehicle;
 import org.matsim.vehicles.VehicleImpl;
 import org.matsim.vehicles.VehicleUtils;
 
+/**
+ * This class provides disutility to travel on links by mode car.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class CustomCarDisutility implements TravelDisutility {
 	final private static QVehicle qVehicle = new QVehicle(
 			new VehicleImpl(Id.createVehicleId("calculation"), VehicleUtils.getDefaultVehicleType()));

@@ -6,8 +6,11 @@ import org.matsim.facilities.Facility;
 import net.bhl.matsim.uam.data.UAMRoute;
 
 /**
-* @author Aitan Militao
-*  */
+ * Defines classes responsible to generate a UAMRoute based on a specific
+ * criteria (strategy).
+ * 
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
+ */
 public interface UAMStrategy {
 	public static enum UAMStrategyType {
 		MAXUTILITY, MAXACCESSUTILITY, MINTRAVELTIME, MINACCESSTRAVELTIME, MINDISTANCE, MINACCESSDISTANCE, PREDEFINED;

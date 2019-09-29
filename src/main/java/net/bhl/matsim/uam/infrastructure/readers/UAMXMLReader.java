@@ -22,8 +22,10 @@ import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
 
 /**
+ * This class reads reads the UAM xml file containing the parameters for UAM
+ * simulation.
  * 
- * @author raoul.rothfeld
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 public class UAMXMLReader extends MatsimXmlParser {

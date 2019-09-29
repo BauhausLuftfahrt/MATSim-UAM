@@ -9,6 +9,12 @@ import org.matsim.contrib.dvrp.schedule.StayTask;
 import org.matsim.contrib.dvrp.vrpagent.VrpActivity;
 import org.matsim.contrib.dynagent.DynAgent;
 
+/**
+ * This class defines the drop off activity for the passenger and its properties.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMPassengerDropoffActivity extends VrpActivity {
     private final PassengerEngine passengerEngine;
     private final DynAgent driver;

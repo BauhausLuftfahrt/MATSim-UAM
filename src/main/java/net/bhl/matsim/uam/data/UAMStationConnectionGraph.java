@@ -17,6 +17,13 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/**
+ * Class that stores information about UAMStations, such as distances, travel
+ * times and utilities between stations.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMStationConnectionGraph {
 
     private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;

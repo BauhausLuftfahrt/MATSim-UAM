@@ -14,22 +14,17 @@ import java.util.Set;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the
- * minimum travel travel to access to UAM Station and egress travel time from
- * UAM Station.
- *
- * @author Aitan Militao
+ * minimum travel time to access to UAM Station and egress travel time from UAM
+ * Station.
+ * 
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
-    private UAMStrategyUtils strategyUtils;
+	private UAMStrategyUtils strategyUtils;
 
-    public UAMMinAccessTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
-        this.strategyUtils = strategyUtils;
-    }
-
-    @Override
-    public UAMStrategyType getUAMStrategyType() {
-        return UAMStrategyType.MINACCESSTRAVELTIME;
-    }
+	public UAMMinAccessTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
+		this.strategyUtils = strategyUtils;
+	}
 
     @Override
     public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
@@ -72,5 +67,4 @@ public class UAMMinAccessTravelTimeStrategy implements UAMStrategy {
         return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
                 bestStationDestination, bestModeEgress);
     }
-
 }

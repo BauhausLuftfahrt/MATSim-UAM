@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.geotools.referencing.CRS;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -27,13 +26,19 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+/**
+ * This script generates a shape file of a given network in MATSim format.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class RunNetworkToSHP {
 
 	public static void main(String[] args) throws Exception {
 
 		System.out.println("ARGS: input.xml EPSG:00000 allowed-modes*");
 		System.out.println("(* optional)");
-		
+
 		Config config = ConfigUtils.createConfig();
 		config.network().setInputFile(args[0]);
 		Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -57,51 +62,36 @@ public class RunNetworkToSHP {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
 
 		Collection<SimpleFeature> features = new ArrayList<SimpleFeature>();
-		PolylineFeatureFactory linkFactory = new PolylineFeatureFactory.Builder().
-				setCrs(crs).
-				setName("link").
-				addAttribute("ID", String.class).
-				addAttribute("fromID", String.class).
-				addAttribute("toID", String.class).
-				addAttribute("length", Double.class).
-				addAttribute("type", String.class).
-				addAttribute("capacity", Double.class).
-				addAttribute("freespeed", Double.class).
-				addAttribute("modes", String.class).
-				create();
+		PolylineFeatureFactory linkFactory = new PolylineFeatureFactory.Builder().setCrs(crs).setName("link")
+				.addAttribute("ID", String.class).addAttribute("fromID", String.class)
+				.addAttribute("toID", String.class).addAttribute("length", Double.class)
+				.addAttribute("type", String.class).addAttribute("capacity", Double.class)
+				.addAttribute("freespeed", Double.class).addAttribute("modes", String.class).create();
 
 		for (Link link : network.getLinks().values()) {
-			Coordinate fromNodeCoordinate = new Coordinate(link.getFromNode().getCoord().getX(), link.getFromNode().getCoord().getY());
-			Coordinate toNodeCoordinate = new Coordinate(link.getToNode().getCoord().getX(), link.getToNode().getCoord().getY());
+			Coordinate fromNodeCoordinate = new Coordinate(link.getFromNode().getCoord().getX(),
+					link.getFromNode().getCoord().getY());
+			Coordinate toNodeCoordinate = new Coordinate(link.getToNode().getCoord().getX(),
+					link.getToNode().getCoord().getY());
 			Coordinate linkCoordinate = new Coordinate(link.getCoord().getX(), link.getCoord().getY());
-			SimpleFeature ft = linkFactory.createPolyline(new Coordinate [] {fromNodeCoordinate, linkCoordinate, toNodeCoordinate},
-					new Object [] {link.getId().toString(),
-							link.getFromNode().getId().toString(),
-							link.getToNode().getId().toString(),
-							link.getLength(),
-							NetworkUtils.getType(((Link)link)),
-							link.getCapacity(),
-							link.getFreespeed(),
-							link.getAllowedModes()},
+			SimpleFeature ft = linkFactory.createPolyline(
+					new Coordinate[] { fromNodeCoordinate, linkCoordinate, toNodeCoordinate },
+					new Object[] { link.getId().toString(), link.getFromNode().getId().toString(),
+							link.getToNode().getId().toString(), link.getLength(), NetworkUtils.getType(((Link) link)),
+							link.getCapacity(), link.getFreespeed(), link.getAllowedModes() },
 					null);
 			features.add(ft);
-		}   
+		}
 		ShapeFileWriter.writeGeometries(features, args[0] + "_links.shp");
 
 		features = new ArrayList<SimpleFeature>();
-		PointFeatureFactory nodeFactory = new PointFeatureFactory.Builder().
-				setCrs(crs).
-				setName("nodes").
-				addAttribute("ID", String.class).
-				create();
+		PointFeatureFactory nodeFactory = new PointFeatureFactory.Builder().setCrs(crs).setName("nodes")
+				.addAttribute("ID", String.class).create();
 
 		for (Node node : network.getNodes().values()) {
-			SimpleFeature ft = nodeFactory.createPoint(node.getCoord(),
-					new Object[] {node.getId().toString()},
-					null);
+			SimpleFeature ft = nodeFactory.createPoint(node.getCoord(), new Object[] { node.getId().toString() }, null);
 			features.add(ft);
 		}
 		ShapeFileWriter.writeGeometries(features, args[0] + "_nodes.shp");

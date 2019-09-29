@@ -20,15 +20,21 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 
+/**
+ * A class that stores information about UAM infrastructure and manages its
+ * changes.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMManager implements IterationStartsListener {
 
     private Set<UAMVehicle> availableVehicles = new HashSet<>();
     public QuadTree<UAMVehicle> mapAvailableVehicles;
     private Map<Id<Vehicle>, Id<UAMStation>> vehicleLocations = new HashMap<>();
-    ;
+
     private UAMStations stations;
-    //	private Set<UAMVehicle> vehicles;
-    private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<Id<Vehicle>, UAMVehicle>(); //added
+    private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<>();
     private Map<Id<UAMStation>, StationOccupancy> availablespaceStations = new HashMap<>();
     private QuadTree<UAMStation> stationsWithFreeLandingSpace;
 
@@ -187,5 +193,4 @@ public class UAMManager implements IterationStartsListener {
         this.stationPersonmap.put(personId, destStation);
 
     }
-
 }

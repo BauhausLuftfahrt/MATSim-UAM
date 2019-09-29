@@ -12,6 +12,13 @@ import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.DefaultLink
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+/**
+ * A MATSim Abstract Module for classes used by UAM simulation regarding link
+ * speeds in the simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMSpeedModule extends AbstractModule {
 
 	final private Map<String, Double> mapVehicleVerticalSpeeds;

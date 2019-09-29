@@ -29,9 +29,9 @@ import org.matsim.pt.router.TransitRouter;
 import java.util.*;
 
 /**
- * This class provides the methods used for different UAMStrategies
- * 
- * @author Aitan Militao, RRothfeld (Raoul Rothfeld)
+ * This class provides the methods used for different UAMStrategies.
+ *
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyUtils {
 	private final Scenario scenario;

@@ -15,12 +15,14 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
- * This strategy is used to assign to the passenger the UAMRoute based on the minimum travel distance of the route.
+ * This strategy is used to assign to the passenger a UAMRoute based on the
+ * minimum travel distance of the route.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
-public class UAMMinDistanceStrategy implements UAMStrategy{
+public class UAMMinDistanceStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinDistanceStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
@@ -31,7 +33,7 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {		
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
@@ -74,5 +76,4 @@ public class UAMMinDistanceStrategy implements UAMStrategy{
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getShortestDistanceMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}
-	
 }

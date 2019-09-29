@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+/**
+ * This class writes a CSV file containing information of links for different
+ * times.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class CSVLinkStatsWriter {
 	final private Collection<LinkStatsItem> links;
 	final private String delimiter;
@@ -38,7 +44,7 @@ public class CSVLinkStatsWriter {
 		header.add("link_id");
 		header.add("length_m");
 		header.add("freespeed_ms");
-		
+
 		timeHeaders = new TreeSet<Integer>();
 		for (LinkStatsItem link : links) {
 			for (Integer i : link.timeDependantSpeed.keySet()) {
@@ -47,7 +53,7 @@ public class CSVLinkStatsWriter {
 		}
 
 		for (Integer timeHead : timeHeaders) {
-			header.add("avgspeed_ms_at_H" + (int) (timeHead/ 3600) + "M" + (int) ((timeHead % 3600) / 60));
+			header.add("avgspeed_ms_at_H" + (int) (timeHead / 3600) + "M" + (int) ((timeHead % 3600) / 60));
 		}
 
 		return String.join(delimiter, header);
@@ -58,7 +64,7 @@ public class CSVLinkStatsWriter {
 		row.add(link.linkId.toString());
 		row.add(String.valueOf(link.distance));
 		row.add(String.valueOf(link.freeSpeed));
-		
+
 		for (Integer timeHead : timeHeaders) {
 			if (link.timeDependantSpeed.containsKey(timeHead))
 				row.add(String.valueOf(link.timeDependantSpeed.get(timeHead)));

@@ -8,6 +8,12 @@ import ch.ethz.matsim.mode_choice.framework.tour_based.estimation.TourEstimator;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 
+/**
+ * This class provides a PlanBasedModel.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class PlanBasedModel extends TourBasedModel {
 	public PlanBasedModel(TourEstimator estimator, ModeAvailability modeAvailability,
 			TourConstraintFactory constraintFactory, UtilitySelectorFactory<TourCandidate> selectorFactory,

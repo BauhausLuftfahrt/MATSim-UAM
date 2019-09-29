@@ -14,12 +14,19 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 
+/**
+ * This script adds specified mode(s) to an existing network if other specified
+ * mode(s) is (are) present.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class RunAddModeToNetwork {
-	
+
 	private static final String searchMode = "car";
 	private static final String addedMode = "car_passenger";
 
-	public static void main(String[] args) throws Exception {		
+	public static void main(String[] args) throws Exception {
 		Config config = ConfigUtils.createConfig();
 		config.network().setInputFile(args[0]);
 		Scenario scenario = ScenarioUtils.loadScenario(config);
@@ -33,7 +40,7 @@ public class RunAddModeToNetwork {
 				l.setAllowedModes(modes);
 			}
 		}
-		
+
 		new NetworkWriter(network).write(args[0]);
 		System.out.println("done.");
 	}

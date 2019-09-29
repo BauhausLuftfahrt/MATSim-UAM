@@ -8,6 +8,13 @@ import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.TripStructureUtils;
 
+/**
+ * This class filter the input plans based on the number of long trips that a
+ * person has.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class LongPlanFilter {
 	final private Logger logger = Logger.getLogger(LongPlanFilter.class);
 	final private long maximumNumberOfTrips;

@@ -25,6 +25,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 
+/**
+ * This script generates a CSV file containing the distance, travel time and
+ * utility between UAM stations. Necessary inputs are in the following order:
+ * -Network file; -UAMVehicles file; -output file;
+ *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class RunCalculateUAMRoutes {
 
     static private Map<Id<UAMStation>, UAMStation> stations;

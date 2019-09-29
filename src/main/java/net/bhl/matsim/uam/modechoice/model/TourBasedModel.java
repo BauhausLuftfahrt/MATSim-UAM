@@ -25,6 +25,12 @@ import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 
+/**
+ * This class defines the TourBasedModel for mode choice based on utility.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class TourBasedModel implements ModeChoiceModel {
 	final private static Logger logger = Logger.getLogger(TourBasedModel.class);
 

@@ -13,6 +13,12 @@ import ch.ethz.matsim.mode_choice.framework.utils.DefaultModeChainGenerator;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGenerator;
 import ch.ethz.matsim.mode_choice.framework.utils.ModeChainGeneratorFactory;
 
+/**
+ * This class defines the mode chain generator that provides different mode
+ * options for trips
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class CustomModeChainGenerator implements ModeChainGenerator {
 	final private ModeChainGenerator delegate;
 	final private List<Integer> variableIndices;

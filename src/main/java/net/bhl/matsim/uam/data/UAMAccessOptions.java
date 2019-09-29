@@ -3,9 +3,9 @@ package net.bhl.matsim.uam.data;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
 /**
- * This class is used to store data from access/egress legs to/from UAMStations
+ * This class is used to store data from access/egress legs to/from UAMStations.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militão), RRothfeld (Raoul Rothfeld)
  */
 public class UAMAccessOptions {
 	private double accessDistance;  

@@ -11,6 +11,11 @@ import ch.ethz.matsim.mode_choice.framework.utilities.UtilityCandidate;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelector;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
 
+/**
+ * This class selects trip candidates for the mode choice models.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class MultinomialSelector<T extends UtilityCandidate> implements UtilitySelector<T> {
 	final private List<T> candidates = new LinkedList<>();
 	final private double utilityCutoff;

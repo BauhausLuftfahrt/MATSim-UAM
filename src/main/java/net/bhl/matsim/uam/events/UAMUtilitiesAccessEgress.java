@@ -6,6 +6,12 @@ import org.matsim.api.core.v01.population.Person;
 
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 
+/**
+ * A class that stores information about an access or egress leg to a UAM
+ * station.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMUtilitiesAccessEgress {
 	private Id<Person> person;
 	private Id<UAMStation> station;
@@ -37,7 +43,7 @@ public class UAMUtilitiesAccessEgress {
 		UAMUtilitiesAccessEgress other = (UAMUtilitiesAccessEgress) o;
 		return this.toString().equals(other.toString());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.toString().hashCode();

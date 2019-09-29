@@ -11,6 +11,11 @@ import org.matsim.api.core.v01.population.PlanElement;
 
 import net.bhl.matsim.uam.analysis.trips.TripItem;
 
+/**
+ * This class stores information about a trip performed.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class TripListenerItem extends TripItem {
 	public List<PlanElement> elements = new LinkedList<>();
 	public List<Id<Link>> route = new LinkedList<>();

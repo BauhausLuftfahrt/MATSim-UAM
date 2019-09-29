@@ -28,6 +28,12 @@ import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
 import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.zurich.cutter.utils.DepartureFinder;
 
+/**
+ * Transit engine for UAM trips that uses pt for access or egress legs.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Singleton
 public class UAMTransitEngine implements DepartureHandler, MobsimEngine {
 	final private TransitSchedule transitSchedule;

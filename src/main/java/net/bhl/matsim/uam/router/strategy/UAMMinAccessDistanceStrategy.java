@@ -13,12 +13,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This strategy is used to assign to the passenger the UAMRoute based on the minimum travel distance of access to UAM Station and egress from UAM Station.
+ * This strategy is used to assign to the passenger a UAMRoute based on the
+ * minimum travel distance of access to UAM Station and egress from UAM Station.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
-public class UAMMinAccessDistanceStrategy implements UAMStrategy{
+public class UAMMinAccessDistanceStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinAccessDistanceStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
@@ -43,13 +45,15 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy{
 				minAccessDistance = accessRoutesData.get(stationOrigin.getId()).getShortestAccessDistance();
 			}
 		}
+
 		//egress trips
 		String bestModeEgress = TransportMode.walk;
 		Set<String> modes = strategyUtils.getModes();
 		double minEgressDistance = Double.POSITIVE_INFINITY;
-		for (UAMStation stationDestination : stationsDestination) {		
+		for (UAMStation stationDestination : stationsDestination) {
 			if (bestStationOrigin == stationDestination)
 				continue;
+
 			//fly time between stations
 			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
 			//updates departureTime 
@@ -58,6 +62,7 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy{
 				//Calculates the distance for the egress routes using updated departureTime
 				double egressDistance = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
 						stationDestination, mode).distance;
+
 				if (egressDistance < minEgressDistance) {
 					bestStationDestination = stationDestination;
 					minEgressDistance = egressDistance;
@@ -69,5 +74,4 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy{
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getShortestDistanceMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}
-		
 }

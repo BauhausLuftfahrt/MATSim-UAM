@@ -7,6 +7,12 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QVehicle;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.LinkSpeedCalculator;
 
+/**
+ * This class defines the LinkSpeedCalculator for UAM simulation.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 
 	final private Map<String, Double> mapVehicleVerticalSpeeds;

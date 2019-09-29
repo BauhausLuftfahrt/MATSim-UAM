@@ -10,7 +10,6 @@ import org.matsim.contrib.dynagent.DynAgent;
 
 import com.google.inject.Inject;
 
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
@@ -18,12 +17,12 @@ import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
 import net.bhl.matsim.uam.schedule.UAMTask;
 import net.bhl.matsim.uam.schedule.UAMTurnAroundTask;
+
 /**
+ * Class that is responsible for creating DynAction activities depending on the
+ * task of the vehicle.
  * 
- * Class that is responsible for creating DynAction activities
- * depending on the task of the vehicle.
- * 
- * @author balacm
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  */
 public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {

@@ -11,6 +11,12 @@ import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 
+/**
+ * This class defines the UAM Request and its properties.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMRequest implements PassengerRequest {
 
 	final private Link originLink;

@@ -2,7 +2,6 @@ package net.bhl.matsim.uam.modechoice.estimation.car;
 
 import java.util.List;
 
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
@@ -15,6 +14,12 @@ import org.matsim.facilities.ActivityFacilities;
 
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 
+/**
+ * This class defines the predictor for car trips.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CustomCarPredictor {
 	final private TripRouter router;
 	final private TravelDisutility travelDisutility;

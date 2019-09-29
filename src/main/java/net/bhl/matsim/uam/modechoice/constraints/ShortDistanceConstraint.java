@@ -10,6 +10,13 @@ import ch.ethz.matsim.mode_choice.constraints.AbstractTripConstraint;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 
+/**
+ * This class ensures that the trip as a distance higher than a pre-defined
+ * short distance.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class ShortDistanceConstraint extends AbstractTripConstraint {
 	final public static double DEFAULT_SHORT_DISTANCE = 0.0;
 	final private double shortDistance;

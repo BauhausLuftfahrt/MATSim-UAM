@@ -8,6 +8,12 @@ import org.matsim.core.scoring.SumScoringFunction;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.UAMTransitEvent;
 
+/**
+ * Scoring function for UAM events.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class UAMScoringFunction implements SumScoringFunction.ArbitraryEventScoring {
 
 	boolean uamTrip = false;
@@ -45,7 +51,7 @@ public class UAMScoringFunction implements SumScoringFunction.ArbitraryEventScor
 
 	private void scoreUAMLeg(double distance) {
 		this.score += distance * this.marginalDisutilityOfDistance;
-		
+
 	}
 
 }

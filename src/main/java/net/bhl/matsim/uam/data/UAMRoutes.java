@@ -8,7 +8,8 @@ import org.matsim.api.core.v01.population.Person;
 
 /**
  * Storage class for UAM leg chains (routes) of access mode, origin and destination stations, and egress mode
- * @author Raoul
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
  * TODO rework, with faster internal workings than massive HashMap!
  *

@@ -14,6 +14,14 @@ import org.matsim.core.scenario.ScenarioUtils;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
 
+/**
+ * This script generates a new population file based on a given population file
+ * and a percentage. The new population file is a fraction of the original
+ * population file based on the percentage value provided.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class RunSamplePopulation {
 	void run(final String[] args) {
 		String inputPopFilename = null;
@@ -28,7 +36,7 @@ public class RunSamplePopulation {
 				inputPopFilename = args[0];
 				outputPopFilename = args[1];
 				percentage = Double.parseDouble(args[2]);
-				
+
 				if (args.length == 4) {
 					netFilename = args[3];
 				}
@@ -39,29 +47,29 @@ public class RunSamplePopulation {
 		config.plans().setInputFile(inputPopFilename);
 		if (args.length == 4)
 			config.network().setInputFile(netFilename);
-		
 
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		scenario.getPopulation().getFactory().getRouteFactories().setRouteFactory(DefaultEnrichedTransitRoute.class,
-		    new DefaultEnrichedTransitRouteFactory());
+				new DefaultEnrichedTransitRouteFactory());
 		ScenarioUtils.loadScenario(scenario);
 
 		Population pop = scenario.getPopulation();
-		
+
 		Scenario newScenario = ScenarioUtils.createScenario(ConfigUtils.createConfig());
 		newScenario.getPopulation().getFactory().getRouteFactories().setRouteFactory(DefaultEnrichedTransitRoute.class,
-		    new DefaultEnrichedTransitRouteFactory());
+				new DefaultEnrichedTransitRouteFactory());
 		ScenarioUtils.loadScenario(newScenario);
 
 		Population newPop = newScenario.getPopulation();
-		
-		// if input percentage is >0 (i.e. not a percentage but a defined number of agents to sub-sample)
+
+		// if input percentage is >0 (i.e. not a percentage but a defined number of
+		// agents to sub-sample)
 		if (percentage > 1) {
 			double totalPop = pop.getPersons().values().size();
 			percentage = percentage / totalPop;
 			System.err.println("Adjusting percentage to: " + percentage + System.lineSeparator());
 		}
-		
+
 		for (Person person : pop.getPersons().values()) {
 			if (Math.random() < percentage) {
 				newPop.addPerson(person);

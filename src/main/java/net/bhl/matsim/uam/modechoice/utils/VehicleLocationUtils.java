@@ -8,6 +8,12 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 
+/**
+ * This class provides methods regarding vehicle location in a trip.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class VehicleLocationUtils {
 	final private static Id<Link> outsideLinkId = Id.createLinkId("outside");
 	

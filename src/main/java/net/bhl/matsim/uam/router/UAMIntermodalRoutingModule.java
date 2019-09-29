@@ -44,6 +44,12 @@ import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
 
+/**
+ * This class provides the route legs for a trip using UAM.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 @Deprecated
 public class UAMIntermodalRoutingModule implements RoutingModule {
 
@@ -67,7 +73,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
 			TransitRouter transitRouter, UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup,
 			BaselineTransitRoutingModule transitRouterDelegate, CustomModeChoiceParameters parameters,
-			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities, SubscriptionFinder subscriptions) {
+			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities,
+			SubscriptionFinder subscriptions) {
 		this(scenario, landingStations, modes, plcpc, plcpccar, carNetwork, uamConfig, transitConfigGroup, parameters,
 				waitingData, stationConnectionutilities, subscriptions);
 		this.transitRouterDelegate = transitRouterDelegate;
@@ -79,7 +86,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	public UAMIntermodalRoutingModule(Scenario scenario, UAMStations landingStations, Set<String> modes,
 			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
 			UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, CustomModeChoiceParameters parameters,
-			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities, SubscriptionFinder subscriptions) {
+			WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities,
+			SubscriptionFinder subscriptions) {
 		this.scenario = scenario;
 		this.plcpccar = plcpccar;
 		this.carNetwork = carNetwork;

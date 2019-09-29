@@ -14,16 +14,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This strategy is used to assign to the passenger the UAMRoute based on the minimum total travel time of the route.
+ * This strategy is used to assign to the passenger a UAMRoute based on the
+ * minimum total travel time of the route.
  * 
- * @author Aitan Militao
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
-public class UAMMinTravelTimeStrategy implements UAMStrategy{
+public class UAMMinTravelTimeStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
+
 	public UAMMinTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
-	
+
 	@Override
 	public UAMStrategyType getUAMStrategyType() {
 		return UAMStrategyType.MINTRAVELTIME;
@@ -68,5 +70,4 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy{
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}
-
 }

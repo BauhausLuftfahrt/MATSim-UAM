@@ -7,18 +7,12 @@ import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
-import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.router.util.LeastCostPathCalculator;
-import org.matsim.facilities.Facility;
-import org.matsim.pt.router.TransitRouter;
 
 /**
- * This class uses the strategy set in the config file to generate the routes for agents
+ * This class uses the strategy selected in the config file to generate the
+ * routes for agents using UAM.
  *
- * @author Aitan Militao, RRothfeld (Raoul Rothfeld)
+ * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyRouter {
     private final Scenario scenario;
@@ -104,5 +98,4 @@ public class UAMStrategyRouter {
                 this.strategy = new UAMPredefinedStrategy(strategyUtils);
 		}
     }
-
 }

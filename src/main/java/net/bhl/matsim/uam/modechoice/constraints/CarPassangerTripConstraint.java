@@ -8,6 +8,12 @@ import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraint;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 
+/**
+ * This class ensures that a trip has car passenger as mode.
+ * 
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ *
+ */
 public class CarPassangerTripConstraint extends AbstractTripConstraint {
 	@Override
 	public boolean validateBeforeEstimation(ModeChoiceTrip trip, String mode, List<String> previousModes) {
