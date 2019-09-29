@@ -1,11 +1,9 @@
 package net.bhl.matsim.uam.events;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.data.WaitingStationData;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -22,33 +20,30 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.vehicles.Vehicle;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.data.WaitingStationData;
-import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class that saves information about UAM trips for each agent.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEventHandler, ActivityStartEventHandler,
 		PersonEntersVehicleEventHandler {
+	Map<Id<Person>, ArrayList<UAMData>> demand = new ConcurrentHashMap<>();
+	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
+	Map<Id<Person>, Boolean> uamTrips = new ConcurrentHashMap<>();
+	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
+	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 	@Inject
 	private Scenario scenario;
 	@Inject
 	private UAMManager manager;
 	@Inject
 	private WaitingStationData waitingData;
-
-	Map<Id<Person>, ArrayList<UAMData>> demand = new ConcurrentHashMap<>();
-	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
-
-	Map<Id<Person>, Boolean> uamTrips = new ConcurrentHashMap<>();
-	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
-	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
 
 	@Override
 	public void reset(int iteration) {

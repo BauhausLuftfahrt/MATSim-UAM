@@ -8,8 +8,8 @@ package net.bhl.matsim.uam.router;
  * @author RRothfeld (Raoul Rothfeld)
  */
 public class UAMFlightSegments {
-    public static final String ATTRIBUTE = "type";
+	public static final String ATTRIBUTE = "type";
 
-    public static final String HORIZONTAL = "uam_horizontal";
-    public static final String VERTICAL = "uam_vertical";
+	public static final String HORIZONTAL = "uam_horizontal";
+	public static final String VERTICAL = "uam_vertical";
 }

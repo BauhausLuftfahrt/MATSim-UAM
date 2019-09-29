@@ -4,9 +4,8 @@ import org.matsim.core.population.routes.NetworkRoute;
 
 /**
  * This class stores information about a motorcycle trip prediction.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomMCPrediction {
 	final public double distance;

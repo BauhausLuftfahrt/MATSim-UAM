@@ -1,20 +1,18 @@
 package net.bhl.matsim.uam.schedule;
 
+import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.api.internal.HasPersonId;
-
-import net.bhl.matsim.uam.passenger.UAMRequest;
 
 import java.util.Map;
 
 /**
  * Event that is generated when the drop off occurs, in order to know which
  * person was dropped off.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMTransitEvent extends Event implements HasPersonId {
 	final private UAMRequest request;

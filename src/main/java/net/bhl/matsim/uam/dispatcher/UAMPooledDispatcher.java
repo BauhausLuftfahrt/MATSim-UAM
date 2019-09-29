@@ -1,12 +1,10 @@
 package net.bhl.matsim.uam.dispatcher;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.passenger.UAMRequest;
+import net.bhl.matsim.uam.schedule.*;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -17,32 +15,21 @@ import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.passenger.UAMRequest;
-import net.bhl.matsim.uam.schedule.UAMDropoffTask;
-import net.bhl.matsim.uam.schedule.UAMFlyTask;
-import net.bhl.matsim.uam.schedule.UAMPickupTask;
-import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
-import net.bhl.matsim.uam.schedule.UAMStayTask;
-import net.bhl.matsim.uam.schedule.UAMTask;
+import java.util.*;
 
 /**
  * UAM Dispatcher that allows pooled ride between passengers.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMPooledDispatcher implements Dispatcher {
+	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;
-	boolean reoptimize = true;
 	final private Queue<UAMVehicle> availableVehicles = new LinkedList<>();
-	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	final private Queue<UAMRequest> pendingRequests = new LinkedList<>();
 	final private QuadTree<UAMVehicle> availableVehiclesTree;
+	boolean reoptimize = true;
 	private Map<UAMVehicle, Coord> locationVehicles = new HashMap<>();
 
 	@Inject
@@ -76,7 +63,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.bhl.matsim.uam.dispatcher.Dispatcher#onRequestSubmitted(net.bhl.
 	 * matsim.uam.passanger.UAMRequest)
 	 */
@@ -88,7 +75,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * net.bhl.matsim.uam.dispatcher.Dispatcher#onNextTaskStarted(net.bhl.matsim
 	 * .uam.infrastructure.UAMVehicle)
@@ -144,7 +131,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 	/**
 	 * @param request UAM Request
 	 * @return True if origins and destinations of requests are the same and vehicle
-	 *         capacity constraint is met, otherwise false.
+	 * capacity constraint is met, otherwise false.
 	 */
 	private boolean findEligableEnRouteVehicle(UAMRequest request) {
 

@@ -1,13 +1,7 @@
 package net.bhl.matsim.uam.analysis.trips.run;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
+import net.bhl.matsim.uam.analysis.trips.listeners.DeckGLTripListener;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -17,8 +11,13 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.vehicles.Vehicle;
 
-import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
-import net.bhl.matsim.uam.analysis.trips.listeners.DeckGLTripListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This script convert events file to deck.gl-readable trips input file.
@@ -67,13 +66,13 @@ public class ConvertDeckGLTripsFromEvents {
 
 			bw.write("[" + System.lineSeparator());
 
-			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext();) {
+			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext(); ) {
 				Id<Vehicle> id = it.next();
 				int vendor = id.toString().contains("uam") ? 1 : 0;
 				bw.write("{\"vendor\": " + vendor + ", ");
 				bw.write("\"segments\": [");
 
-				for (Iterator<DeckGLTripItem> itemIter = deckGLTrips.get(id).iterator(); itemIter.hasNext();) {
+				for (Iterator<DeckGLTripItem> itemIter = deckGLTrips.get(id).iterator(); itemIter.hasNext(); ) {
 					DeckGLTripItem item = itemIter.next();
 					bw.write(item.convert(inCRS, outCRS, deckGLanimationSpeed));
 

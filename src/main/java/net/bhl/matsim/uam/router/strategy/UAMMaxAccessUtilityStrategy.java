@@ -1,23 +1,22 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
+import net.bhl.matsim.uam.events.UAMUtilitiesData;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.events.UAMUtilitiesAccessEgress;
-import net.bhl.matsim.uam.events.UAMUtilitiesData;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the
  * access and egress legs utilities to/from UAM Stations in a UAM trip.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMaxAccessUtilityStrategy implements UAMStrategy {

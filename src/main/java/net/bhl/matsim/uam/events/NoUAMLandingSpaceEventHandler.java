@@ -4,11 +4,10 @@ import org.matsim.core.events.handler.EventHandler;
 
 /**
  * Event Handler for the {@link NoUAMLandingSpaceEvent} event.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public interface NoUAMLandingSpaceEventHandler extends EventHandler {
-	public void handleEvent(NoUAMLandingSpaceEvent event);
+	void handleEvent(NoUAMLandingSpaceEvent event);
 
 }

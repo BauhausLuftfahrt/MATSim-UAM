@@ -4,7 +4,7 @@ import org.matsim.api.core.v01.Id;
 
 /**
  * This class defines the VTOL vehicle type and its properties.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 
@@ -18,7 +18,7 @@ public class UAMVehicleType {
 	private final double turnAroundTime; // [s]
 
 	public UAMVehicleType(Id<UAMVehicleType> id, int capacity, double cruiseSpeed, double verticalSpeed,
-			double boardingTime, double deboardingTime, double turnAroundTime) {
+						  double boardingTime, double deboardingTime, double turnAroundTime) {
 		this.id = id;
 		this.capacity = capacity;
 		this.cruiseSpeed = cruiseSpeed;

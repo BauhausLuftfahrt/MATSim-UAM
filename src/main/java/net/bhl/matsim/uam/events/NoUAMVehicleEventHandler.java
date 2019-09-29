@@ -4,10 +4,9 @@ import org.matsim.core.events.handler.EventHandler;
 
 /**
  * Event Handler for the {@link NoUAMVehicleEvent} event.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public interface NoUAMVehicleEventHandler extends EventHandler {
-	public void handleEvent(NoUAMVehicleEvent event);
+	void handleEvent(NoUAMVehicleEvent event);
 }

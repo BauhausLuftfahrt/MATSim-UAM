@@ -1,19 +1,18 @@
 package net.bhl.matsim.uam.modechoice.utils;
 
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.TripStructureUtils;
 
+import java.util.Iterator;
+
 /**
  * This class filter the input plans based on the number of long trips that a
  * person has.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class LongPlanFilter {
 	final private Logger logger = Logger.getLogger(LongPlanFilter.class);

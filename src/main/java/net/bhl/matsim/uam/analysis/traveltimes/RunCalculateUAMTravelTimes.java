@@ -186,21 +186,21 @@ public class RunCalculateUAMTravelTimes {
 				networkCar, transitRouter, pathCalculator, plcpccar, null);
 		UAMStrategy strategy = null;
 		switch (UAMStrategyType.valueOf(strategyName.toUpperCase())) {
-		case MINTRAVELTIME:
-			strategy = new UAMMinTravelTimeStrategy(strategyUtils);
-			break;
-		case MINACCESSTRAVELTIME:
-			strategy = new UAMMinAccessTravelTimeStrategy(strategyUtils);
-			break;
-		case MINDISTANCE:
-			strategy = new UAMMinDistanceStrategy(strategyUtils);
-			break;
-		case MINACCESSDISTANCE:
-			strategy = new UAMMinAccessDistanceStrategy(strategyUtils);
-			break;
-		default:
-			log.warn("Strategy not available, please provide an available strategy.");
-			System.exit(-1);
+			case MINTRAVELTIME:
+				strategy = new UAMMinTravelTimeStrategy(strategyUtils);
+				break;
+			case MINACCESSTRAVELTIME:
+				strategy = new UAMMinAccessTravelTimeStrategy(strategyUtils);
+				break;
+			case MINDISTANCE:
+				strategy = new UAMMinDistanceStrategy(strategyUtils);
+				break;
+			case MINACCESSDISTANCE:
+				strategy = new UAMMinAccessDistanceStrategy(strategyUtils);
+				break;
+			default:
+				log.warn("Strategy not available, please provide an available strategy.");
+				System.exit(-1);
 		}
 
 		// READ TRIPS INPUT
@@ -274,11 +274,11 @@ public class RunCalculateUAMTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
 							String.valueOf(trip.accessTime), String.valueOf(trip.flightTime),
-							String.valueOf(trip.egressTime), String.valueOf(trip.processTime) })
+							String.valueOf(trip.egressTime), String.valueOf(trip.processTime)})
 					+ "\n");
 		}
 
@@ -287,8 +287,8 @@ public class RunCalculateUAMTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time", "access_time", "flight_time", "egress_time", "process_time" });
+		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
+				"departure_time", "travel_time", "access_time", "flight_time", "egress_time", "process_time"});
 	}
 
 	static class TripItem {

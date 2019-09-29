@@ -1,8 +1,9 @@
 package net.bhl.matsim.uam.modechoice.tracking;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.ethz.matsim.baseline_scenario.traffic.BaselineLinkSpeedCalculator;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.bhl.matsim.uam.modechoice.CustomCarDisutility;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.LinkEnterEvent;
@@ -20,17 +21,13 @@ import org.matsim.core.trafficmonitoring.FreeSpeedTravelTime;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.vehicles.Vehicle;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import ch.ethz.matsim.baseline_scenario.traffic.BaselineLinkSpeedCalculator;
-import net.bhl.matsim.uam.modechoice.CustomCarDisutility;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class defines the handler for entering/leaving link events.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
 public class FreeflowTravelTimeValidator implements LinkEnterEventHandler, LinkLeaveEventHandler,

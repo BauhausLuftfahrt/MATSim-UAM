@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.modechoice.estimation.car;
 
-import java.util.List;
-
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
@@ -12,13 +11,12 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.facilities.ActivityFacilities;
 
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import java.util.List;
 
 /**
  * This class defines the predictor for car trips.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomCarPredictor {
 	final private TripRouter router;
@@ -26,7 +24,7 @@ public class CustomCarPredictor {
 	final private Network network;
 
 	public CustomCarPredictor(TripRouter router, ActivityFacilities facilities, TravelDisutility travelDisutility,
-			Network network) {
+							  Network network) {
 		this.router = router;
 		this.travelDisutility = travelDisutility;
 		this.network = network;
@@ -34,14 +32,14 @@ public class CustomCarPredictor {
 
 	public CustomCarPrediction predict(ModeChoiceTrip trip) {
 		Trip tripInformation = trip.getTripInformation();
-		
-		LinkWrapperFacility originFacility = 
+
+		LinkWrapperFacility originFacility =
 				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getOriginActivity().getLinkId()));
-		LinkWrapperFacility destinationFacility = 
+		LinkWrapperFacility destinationFacility =
 				new LinkWrapperFacility(this.network.getLinks().get(tripInformation.getDestinationActivity().getLinkId()));
 
 		List<? extends PlanElement> result = router.calcRoute("car", originFacility, destinationFacility,
-			tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
+				tripInformation.getOriginActivity().getEndTime(), trip.getPerson());
 
 		NetworkRoute route = (NetworkRoute) ((Leg) result.get(0)).getRoute();
 

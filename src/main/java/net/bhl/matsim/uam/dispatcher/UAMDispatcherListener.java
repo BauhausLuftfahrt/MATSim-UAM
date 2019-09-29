@@ -1,17 +1,15 @@
 package net.bhl.matsim.uam.dispatcher;
 
-import java.util.List;
-
+import com.google.inject.Inject;
 import org.matsim.core.mobsim.framework.events.MobsimBeforeSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 
-import com.google.inject.Inject;
+import java.util.List;
 
 /**
  * A listener for the UAMDispatchers to prepare for next simulation step.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMDispatcherListener implements MobsimBeforeSimStepListener {
 

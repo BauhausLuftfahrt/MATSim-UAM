@@ -1,14 +1,13 @@
 package net.bhl.matsim.uam.analysis.uamdemand.listeners;
 
+import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.population.Person;
 
-import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
-
 /**
  * This class stores information about a UAMtrip performed.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMListenerItem extends UAMDemandItem {

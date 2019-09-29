@@ -7,7 +7,7 @@ import org.matsim.contrib.dvrp.data.VehicleImpl;
 
 /**
  * This class defines the VTOL vehicle and its properties.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMVehicle extends VehicleImpl {
@@ -20,7 +20,7 @@ public class UAMVehicle extends VehicleImpl {
 	private final UAMVehicleType vehicleType;
 
 	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
-			double width, double length, double range, UAMVehicleType vehicleType) {
+					  double width, double length, double range, UAMVehicleType vehicleType) {
 
 		super(id, startLink, capacity, t0, t1);
 		this.initialStationId = stationId;
@@ -32,7 +32,7 @@ public class UAMVehicle extends VehicleImpl {
 	}
 
 	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
-			UAMVehicleType vehicleType) {
+					  UAMVehicleType vehicleType) {
 
 		super(id, startLink, capacity, t0, t1);
 		this.initialStationId = stationId;
@@ -62,7 +62,7 @@ public class UAMVehicle extends VehicleImpl {
 
 	/**
 	 * This method is used to retrieve the vehicle cruise speed during level flight.
-	 * 
+	 *
 	 * @return vehicle cruise speed in meter/second
 	 */
 	public double getCruiseSpeed() {
@@ -72,7 +72,7 @@ public class UAMVehicle extends VehicleImpl {
 	/**
 	 * This method is used to retrieve the vehicle vertical speed during take-off
 	 * and landing.
-	 * 
+	 *
 	 * @return vehicle vertical speed in meter/second
 	 */
 	public double getVerticalSpeed() {
@@ -82,7 +82,7 @@ public class UAMVehicle extends VehicleImpl {
 	/**
 	 * This method is used to retrieve the Time for the passenger to board in the
 	 * aircraft in seconds. Used in the <code>UAMPickUpTask</code>.
-	 * 
+	 *
 	 * @return the passenger boarding time in the aircraft
 	 */
 	public double getBoardingTime() {
@@ -92,7 +92,7 @@ public class UAMVehicle extends VehicleImpl {
 	/**
 	 * This method is used to retrieve the Time for the passenger to board off from
 	 * the aircraft in seconds. Used in the <code>UAMDropOffTask</code>.
-	 * 
+	 *
 	 * @return the passenger deboarding time in from the aircraft
 	 */
 	public double getDeboardingTime() {
@@ -103,9 +103,9 @@ public class UAMVehicle extends VehicleImpl {
 	 * This method is used to retrieve the Time needed for the UAM Vehicle to
 	 * perform the <code>TurnAroundTask</code> (unavailable for other trips after
 	 * landing)
-	 * 
+	 *
 	 * @return the UAM Vehicle turn around time (time unavailable for other trips
-	 *         after landing)
+	 * after landing)
 	 */
 	public double getTurnAroundTime() {
 		return vehicleType.getTurnAroundTime();

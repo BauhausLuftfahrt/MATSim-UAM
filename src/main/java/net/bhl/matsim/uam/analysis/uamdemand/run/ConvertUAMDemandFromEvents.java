@@ -1,10 +1,10 @@
 package net.bhl.matsim.uam.analysis.uamdemand.run;
 
-import java.io.IOException;
-
-import java.util.Arrays;
-import java.util.Collection;
-
+import net.bhl.matsim.uam.analysis.uamdemand.CSVUAMDemandWriter;
+import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
+import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMListener;
+import net.bhl.matsim.uam.analysis.uamdemand.readers.EventsUAMReader;
+import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
@@ -15,12 +15,9 @@ import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.pt.PtConstants;
 
-import net.bhl.matsim.uam.analysis.uamdemand.CSVUAMDemandWriter;
-import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
-import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMListener;
-import net.bhl.matsim.uam.analysis.uamdemand.readers.EventsUAMReader;
-import net.bhl.matsim.uam.router.UAMIntermodalRoutingModule;
-import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * This script generates a UAMDemand csv file containing UAMDemand data.

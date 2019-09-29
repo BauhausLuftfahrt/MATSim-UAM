@@ -1,19 +1,17 @@
 package net.bhl.matsim.uam.analysis.trips.readers;
 
-import java.util.Collection;
-
+import net.bhl.matsim.uam.analysis.trips.TripItem;
+import net.bhl.matsim.uam.analysis.trips.listeners.TripListener;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 
-import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
-import net.bhl.matsim.uam.analysis.trips.TripItem;
-import net.bhl.matsim.uam.analysis.trips.listeners.TripListener;
+import java.util.Collection;
 
 /**
  * This class is used to retrieve the a collection of {@link TripItem} by using
  * a simulation events file as input
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class EventsTripReader {

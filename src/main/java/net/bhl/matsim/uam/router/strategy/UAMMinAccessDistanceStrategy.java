@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * This strategy is used to assign to the passenger a UAMRoute based on the
  * minimum travel distance of access to UAM Station and egress from UAM Station.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMinAccessDistanceStrategy implements UAMStrategy {
@@ -57,7 +57,7 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy {
 			//fly time between stations
 			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
 			//updates departureTime 
-			double currentDepartureTime = departureTime + accessRoutesData.get(bestStationOrigin.getId()).getFastestAccessTime()+flyTime;
+			double currentDepartureTime = departureTime + accessRoutesData.get(bestStationOrigin.getId()).getFastestAccessTime() + flyTime;
 			for (String mode : modes) {
 				//Calculates the distance for the egress routes using updated departureTime
 				double egressDistance = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
@@ -69,7 +69,7 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy {
 					bestModeEgress = mode;
 				}
 			}
-		}				
+		}
 
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getShortestDistanceMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);

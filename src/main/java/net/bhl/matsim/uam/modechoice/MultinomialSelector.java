@@ -1,19 +1,15 @@
 package net.bhl.matsim.uam.modechoice;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilityCandidate;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelector;
 import ch.ethz.matsim.mode_choice.framework.utilities.UtilitySelectorFactory;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * This class selects trip candidates for the mode choice models.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class MultinomialSelector<T extends UtilityCandidate> implements UtilitySelector<T> {

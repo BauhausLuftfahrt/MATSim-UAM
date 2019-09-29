@@ -1,20 +1,18 @@
 package net.bhl.matsim.uam.modechoice.estimation.car;
 
-import java.util.List;
-
-import org.matsim.api.core.v01.population.Person;
-
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import org.matsim.api.core.v01.population.Person;
+
+import java.util.List;
 
 /**
  * This class defines the estimator for car trips.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomCarEstimator implements ModalTripEstimator {
 	final private CustomCarPredictor predictor;
@@ -27,7 +25,7 @@ public class CustomCarEstimator implements ModalTripEstimator {
 	}
 
 	public CustomCarEstimator(CustomModeChoiceParameters parameters, CustomCarPredictor predictor,
-			boolean isMinTravelTime) {
+							  boolean isMinTravelTime) {
 		this(parameters, predictor);
 		this.isMinTravelTime = isMinTravelTime;
 	}

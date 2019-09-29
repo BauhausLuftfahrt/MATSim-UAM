@@ -1,17 +1,15 @@
 package net.bhl.matsim.uam.modechoice.constraints;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
-
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import ch.ethz.matsim.mode_choice.framework.trip_based.constraints.TripConstraintFactory;
 import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
+import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.network.Link;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
- * 
  * This class ensures that the vehicle needs to be returned home if it was taken
  * in the first place. However, it must be noted that if the person start a tour
  * with a certain vehicle it needs to bring it back at the end of the tour. This
@@ -20,17 +18,16 @@ import net.bhl.matsim.uam.modechoice.utils.VehicleLocationUtils;
  * take a car back home. The agent will be forced to being the car back home in
  * the first tour. This was done in order to have easier implementation. If this
  * has an effect on the results is not clear.
- * 
- * @author balacmi (Milos Balac), sebhoerl (Sebastian Hörl)
  *
+ * @author balacmi (Milos Balac), sebhoerl (Sebastian Hörl)
  */
 public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
+	private boolean modeWasEnforced;
+
 	public AdvancedVehicleTripConstraint(List<ModeChoiceTrip> trips, Collection<String> constrainedModes,
-			Id<Link> homeLinkId) {
+										 Id<Link> homeLinkId) {
 		super(trips, constrainedModes, homeLinkId);
 	}
-
-	private boolean modeWasEnforced;
 
 	@Override
 	public boolean validateBeforeEstimation(ModeChoiceTrip trip, String mode, List<String> previousModes) {
@@ -62,13 +59,13 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	/**
 	 * @param currentDepartureLinkId Current departure link
 	 * @param trip                   Trip
 	 * @return True if the agent will return to this location before going home,
-	 *         otherwise false.
+	 * otherwise false.
 	 */
 	private boolean willReturnBeforeHome(Id<Link> currentDepartureLinkId, ModeChoiceTrip trip) {
 		int indexOfTrip = this.trips.indexOf(trip);
@@ -97,7 +94,7 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 
 		@Override
 		public AdvancedVehicleTripConstraint createConstraint(List<ModeChoiceTrip> trips,
-				Collection<String> availableModes) {
+															  Collection<String> availableModes) {
 			Id<Link> homeLinkId = VehicleLocationUtils.getHomeLinkId(trips);
 			return new AdvancedVehicleTripConstraint(trips, constrainedModes, homeLinkId);
 		}

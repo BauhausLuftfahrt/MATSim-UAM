@@ -1,17 +1,16 @@
 package net.bhl.matsim.uam.qsim;
 
-import java.util.Map;
-
 import net.bhl.matsim.uam.router.UAMFlightSegments;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QVehicle;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.LinkSpeedCalculator;
 
+import java.util.Map;
+
 /**
  * This class defines the LinkSpeedCalculator for UAM simulation.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 
@@ -21,7 +20,7 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 	final private LinkSpeedCalculator delegate;
 
 	public UAMLinkSpeedCalculator(Map<String, Double> mapVehicleVerticalSpeeds,
-			Map<String, Double> mapVehicleHorizontalSpeeds, LinkSpeedCalculator delegate) {
+								  Map<String, Double> mapVehicleHorizontalSpeeds, LinkSpeedCalculator delegate) {
 		// TODO use mapping of vehicle types instead of vehicles themselves!
 		this.mapVehicleVerticalSpeeds = mapVehicleVerticalSpeeds;
 		this.mapVehicleHorizontalSpeeds = mapVehicleHorizontalSpeeds;

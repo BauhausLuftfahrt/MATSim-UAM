@@ -1,19 +1,17 @@
 package net.bhl.matsim.uam.schedule;
 
+import net.bhl.matsim.uam.passenger.UAMRequest;
+import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
+import org.matsim.contrib.dvrp.schedule.DriveTaskImpl;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
-import org.matsim.contrib.dvrp.schedule.DriveTaskImpl;
-
-import net.bhl.matsim.uam.passenger.UAMRequest;
-
 /**
  * During this task the UAM vehicle is flying.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * 
  */
 public class UAMFlyTask extends DriveTaskImpl implements UAMTask {
 	private final Set<UAMRequest> requests = new HashSet<>();

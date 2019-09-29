@@ -8,14 +8,13 @@ import org.matsim.core.api.experimental.events.EventsManager;
 
 /**
  * This class a PassengerEngine for UAM simulation.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMPassengerEngine extends PassengerEngine {
 
 	public UAMPassengerEngine(String mode, EventsManager eventsManager, PassengerRequestCreator requestCreator,
-			VrpOptimizer optimizer, Network network) {
+							  VrpOptimizer optimizer, Network network) {
 		super(mode, eventsManager, requestCreator, optimizer, network);
 	}
 

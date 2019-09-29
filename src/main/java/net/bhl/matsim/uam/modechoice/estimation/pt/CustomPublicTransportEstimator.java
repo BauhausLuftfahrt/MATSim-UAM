@@ -1,9 +1,5 @@
 package net.bhl.matsim.uam.modechoice.estimation.pt;
 
-import java.util.List;
-
-import org.matsim.api.core.v01.population.Person;
-
 import ch.ethz.matsim.mode_choice.estimation.ModalTripEstimator;
 import ch.ethz.matsim.mode_choice.estimation.TripCandidateWithPrediction;
 import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
@@ -11,12 +7,14 @@ import ch.ethz.matsim.mode_choice.framework.trip_based.estimation.TripCandidate;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionInformation;
+import org.matsim.api.core.v01.population.Person;
+
+import java.util.List;
 
 /**
  * This class defines the estimator for Public Transport trips.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomPublicTransportEstimator implements ModalTripEstimator {
 	final private CustomPublicTransportPredictor predictor;
@@ -25,14 +23,14 @@ public class CustomPublicTransportEstimator implements ModalTripEstimator {
 	private boolean isMinTravelTime;
 
 	public CustomPublicTransportEstimator(CustomModeChoiceParameters parameters,
-			CustomPublicTransportPredictor predictor, SubscriptionFinder subscriptionFinder) {
+										  CustomPublicTransportPredictor predictor, SubscriptionFinder subscriptionFinder) {
 		this.predictor = predictor;
 		this.parameters = parameters;
 		this.subscriptionFinder = subscriptionFinder;
 	}
 
 	public CustomPublicTransportEstimator(CustomModeChoiceParameters parameters,
-			CustomPublicTransportPredictor predictor, SubscriptionFinder subscriptionFinder, boolean isMinTravelTime) {
+										  CustomPublicTransportPredictor predictor, SubscriptionFinder subscriptionFinder, boolean isMinTravelTime) {
 		this(parameters, predictor, subscriptionFinder);
 		this.isMinTravelTime = isMinTravelTime;
 	}

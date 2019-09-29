@@ -8,7 +8,7 @@ import java.util.Collection;
 
 /**
  * This class writes a CSV file containing information about each trip.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CSVTripWriter {
@@ -45,18 +45,18 @@ public class CSVTripWriter {
 
 	private String formatHeader() {
 		return String.join(delimiter,
-				new String[] { "person_id", "person_trip_id", "origin_x", "origin_y", "destination_x", "destination_y",
+				new String[]{"person_id", "person_trip_id", "origin_x", "origin_y", "destination_x", "destination_y",
 						"start_time", "travel_time", "network_distance", "mode", "preceedingPurpose",
-						"followingPurpose", "returning", "crowfly_distance" });
+						"followingPurpose", "returning", "crowfly_distance"});
 	}
 
 	private String formatTrip(TripItem trip) {
-		return String.join(delimiter, new String[] { trip.personId.toString(), String.valueOf(trip.personTripId),
+		return String.join(delimiter, new String[]{trip.personId.toString(), String.valueOf(trip.personTripId),
 				String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 				String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 				String.valueOf(trip.startTime), String.valueOf(trip.travelTime), String.valueOf(trip.networkDistance),
 				String.valueOf(trip.mode), normalizeActivityType(String.valueOf(trip.preceedingPurpose)),
 				normalizeActivityType(String.valueOf(trip.followingPurpose)), String.valueOf(trip.returning),
-				String.valueOf(trip.crowflyDistance) });
+				String.valueOf(trip.crowflyDistance)});
 	}
 }

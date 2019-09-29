@@ -28,23 +28,26 @@ import org.matsim.pt.router.TransitRouter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * This class provides the route legs for a trip using UAM from pre-calculated UAM legs.
+ *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ */
 public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
+	private static final Logger log = Logger.getLogger(UAMCachedIntermodalRoutingModule.class);
 	private final int counterLimit = 10;
+	private final Scenario scenario;
 	private int counterWarningWaitingTimeSlot = 0;
 	private int counterWarningWaitingTimeNull = 0;
 	private int counterWarningConvertedToWalk = 0;
-
-	private final Scenario scenario;
 	private LeastCostPathCalculator plcpccar;
 	private Network carNetwork;
 	private BaselineTransitRoutingModule transitRouterDelegate;
 	private WaitingStationData waitingData;
 	private UAMStationConnectionGraph stationConnections;
 	private UAMStrategyRouter strategyRouter;
-	private static final Logger log = Logger.getLogger(UAMCachedIntermodalRoutingModule.class);
 
 	// constructor used in case of simulating PT
 	public UAMCachedIntermodalRoutingModule(Scenario scenario, UAMStations landingStations,
@@ -78,7 +81,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 	@Override
 	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
-			Person person) {
+												 Person person) {
 		Network network = scenario.getNetwork();
 
 		PopulationFactory populationFactory = scenario.getPopulation().getFactory();
@@ -110,57 +113,57 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		double currentTime = departureTime;
 
 		switch (uamRoute.accessMode) {
-		case TransportMode.taxi:
-		case TransportMode.car:
-			Link accessOriginLink = carNetwork.getLinks().get(fromFacility.getLinkId());
-			if (accessOriginLink == null)
-				accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
-			Link accessDestinationLink = carNetwork.getLinks()
-					.get(uamRoute.bestOriginStation.getLocationLink().getId());
-			Leg carLeg = createCarLeg(UAMModes.UAM_ACCESS + TransportMode.car, accessOriginLink,
-					accessDestinationLink, departureTime, person, routeFactory, populationFactory);
-			currentTime += carLeg.getTravelTime();
-			trip.add(carLeg);
-			break;
-		case TransportMode.pt:
-			// checks if pt is being simulated before adding the trip
-			if (scenario.getConfig().transit().isUseTransit()) {
-				@SuppressWarnings("unchecked")
-				List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(fromFacility,
-						new LinkWrapperFacility(uamRoute.bestOriginStation.getLocationLink()), departureTime, person);
-				for (PlanElement leg : legs) {
-					if (leg instanceof Leg)
-						currentTime += ((Leg) leg).getTravelTime();
+			case TransportMode.taxi:
+			case TransportMode.car:
+				Link accessOriginLink = carNetwork.getLinks().get(fromFacility.getLinkId());
+				if (accessOriginLink == null)
+					accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
+				Link accessDestinationLink = carNetwork.getLinks()
+						.get(uamRoute.bestOriginStation.getLocationLink().getId());
+				Leg carLeg = createCarLeg(UAMModes.UAM_ACCESS + TransportMode.car, accessOriginLink,
+						accessDestinationLink, departureTime, person, routeFactory, populationFactory);
+				currentTime += carLeg.getTravelTime();
+				trip.add(carLeg);
+				break;
+			case TransportMode.pt:
+				// checks if pt is being simulated before adding the trip
+				if (scenario.getConfig().transit().isUseTransit()) {
+					@SuppressWarnings("unchecked")
+					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(fromFacility,
+							new LinkWrapperFacility(uamRoute.bestOriginStation.getLocationLink()), departureTime, person);
+					for (PlanElement leg : legs) {
+						if (leg instanceof Leg)
+							currentTime += ((Leg) leg).getTravelTime();
+					}
+					trip.addAll(legs);
+				} else {
+					Leg uavPtAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
+							network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
+							uamRoute.accessMode, uamRoute.accessMode);
+					currentTime += uavPtAccessLeg.getTravelTime();
+					trip.add(uavPtAccessLeg);
 				}
-				trip.addAll(legs);
-			} else {
-				Leg uavPtAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
+				break;
+			default:
+				Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
 						network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-						uamRoute.accessMode, uamRoute.accessMode);
-				currentTime += uavPtAccessLeg.getTravelTime();
-				trip.add(uavPtAccessLeg);
-			}
-			break;
-		default:
-			Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
-					network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-					uamRoute.accessMode, UAMModes.UAM_ACCESS + uamRoute.accessMode);
-			currentTime += uavAccessLeg.getTravelTime();
-			trip.add(uavAccessLeg);
+						uamRoute.accessMode, UAMModes.UAM_ACCESS + uamRoute.accessMode);
+				currentTime += uavAccessLeg.getTravelTime();
+				trip.add(uavAccessLeg);
 		}
 
 		/* origin station */
 		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
 				uamRoute.bestOriginStation.getLocationLink().getId());
 		uav_interaction1.setMaximumDuration(uamRoute.bestOriginStation.getPreFlightTime()); // Changes the value for the
-																							// duration of UAM
-																							// interaction after
-																							// arriving at the station
-																							// from the access leg
+		// duration of UAM
+		// interaction after
+		// arriving at the station
+		// from the access leg
 
 		trip.add(uav_interaction1);
 		currentTime += uamRoute.bestOriginStation.getPreFlightTime(); // Still have to figure out why this doesn't
-																		// affect events
+		// affect events
 
 		try {
 			// TODO REWORK
@@ -201,63 +204,63 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		currentTime += cachedLeg.travelTime;
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
-									// station
+		// station
 		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 		uav_interaction2.setMaximumDuration(uamRoute.bestDestinationStation.getPostFlightTime()); // Changes the value
-																									// for the duration
-																									// of UAM
-																									// interaction after
-																									// arriving at the
-																									// station from the
-																									// Flying leg
+		// for the duration
+		// of UAM
+		// interaction after
+		// arriving at the
+		// station from the
+		// Flying leg
 
 		trip.add(uav_interaction2);
 		currentTime += uamRoute.bestDestinationStation.getPostFlightTime(); // Still have to figure out why this doesn't
-																			// affect events
+		// affect events
 
 		/* egress leg */
 		switch (uamRoute.egressMode) {
-		case TransportMode.taxi:
-		case TransportMode.car:
-			Link egressDestinationLink = carNetwork.getLinks().get(toFacility.getLinkId());
-			if (egressDestinationLink == null)
-				egressDestinationLink = NetworkUtils.getNearestLinkExactly(carNetwork, toFacility.getCoord());
+			case TransportMode.taxi:
+			case TransportMode.car:
+				Link egressDestinationLink = carNetwork.getLinks().get(toFacility.getLinkId());
+				if (egressDestinationLink == null)
+					egressDestinationLink = NetworkUtils.getNearestLinkExactly(carNetwork, toFacility.getCoord());
 
-			Link egressOriginLink = carNetwork.getLinks()
-					.get(uamRoute.bestDestinationStation.getLocationLink().getId());
+				Link egressOriginLink = carNetwork.getLinks()
+						.get(uamRoute.bestDestinationStation.getLocationLink().getId());
 
-			Leg carLeg = createCarLeg(UAMModes.UAM_EGRESS + TransportMode.car, egressOriginLink,
-					egressDestinationLink, currentTime, person, routeFactory, populationFactory);
-			trip.add(carLeg);
-			break;
-		case TransportMode.pt:
-			// checks if pt is being simulated before adding the trip
-			if (scenario.getConfig().transit().isUseTransit()) {
-				@SuppressWarnings("unchecked")
-				List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(
-						new LinkWrapperFacility(uamRoute.bestDestinationStation.getLocationLink()), toFacility,
-						currentTime, person);
-				trip.addAll(legs);
-			} else {
-				Leg uavPtEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
-						uamRoute.bestDestinationStation.getLocationLink(),
-						network.getLinks().get(toFacility.getLinkId()), uamRoute.egressMode, uamRoute.egressMode);
-				trip.add(uavPtEgressLeg);
-			}
-			break;
-		default:
-			Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
-					uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
-					uamRoute.egressMode, UAMModes.UAM_EGRESS + uamRoute.egressMode);
-			trip.add(uavEgressLeg);
+				Leg carLeg = createCarLeg(UAMModes.UAM_EGRESS + TransportMode.car, egressOriginLink,
+						egressDestinationLink, currentTime, person, routeFactory, populationFactory);
+				trip.add(carLeg);
+				break;
+			case TransportMode.pt:
+				// checks if pt is being simulated before adding the trip
+				if (scenario.getConfig().transit().isUseTransit()) {
+					@SuppressWarnings("unchecked")
+					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(
+							new LinkWrapperFacility(uamRoute.bestDestinationStation.getLocationLink()), toFacility,
+							currentTime, person);
+					trip.addAll(legs);
+				} else {
+					Leg uavPtEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
+							uamRoute.bestDestinationStation.getLocationLink(),
+							network.getLinks().get(toFacility.getLinkId()), uamRoute.egressMode, uamRoute.egressMode);
+					trip.add(uavPtEgressLeg);
+				}
+				break;
+			default:
+				Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
+						uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
+						uamRoute.egressMode, UAMModes.UAM_EGRESS + uamRoute.egressMode);
+				trip.add(uavEgressLeg);
 		}
 
 		return trip;
 	}
 
 	private Leg createTeleportationLeg(RouteFactories routeFactory, PopulationFactory populationFactory,
-			Link originLink, Link destinationLink, String mode, String actualMode) {
+									   Link originLink, Link destinationLink, String mode, String actualMode) {
 
 		double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 				.getTeleportedModeSpeeds().get(mode);

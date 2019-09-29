@@ -6,7 +6,7 @@ import org.matsim.api.core.v01.population.Person;
 
 /**
  * This class stores information about a trip.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class TripItem {
@@ -24,8 +24,8 @@ public class TripItem {
 	public double crowflyDistance;
 
 	public TripItem(Id<Person> personId, int personTripId, Coord origin, Coord destination, double startTime,
-			double travelTime, double networkDistance, String mode, String preceedingPurpose, String followingPurpose,
-			boolean returning, double crowflyDistance) {
+					double travelTime, double networkDistance, String mode, String preceedingPurpose, String followingPurpose,
+					boolean returning, double crowflyDistance) {
 		this.personId = personId;
 		this.personTripId = personTripId;
 		this.origin = origin;

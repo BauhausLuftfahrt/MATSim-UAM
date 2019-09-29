@@ -1,15 +1,13 @@
 package net.bhl.matsim.uam.vrpagent;
 
-import org.matsim.contrib.dynagent.AbstractDynActivity;
-
 import net.bhl.matsim.uam.schedule.UAMStayTask;
+import org.matsim.contrib.dynagent.AbstractDynActivity;
 
 /**
  * An implementation of AbstractDynActivity for UAM DynAgents for the
  * UAMStayTask.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStayActivity extends AbstractDynActivity {
 	final private UAMStayTask stayTask;

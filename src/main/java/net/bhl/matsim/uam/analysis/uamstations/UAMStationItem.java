@@ -1,12 +1,11 @@
 package net.bhl.matsim.uam.analysis.uamstations;
 
-import org.matsim.api.core.v01.Id;
-
 import net.bhl.matsim.uam.infrastructure.UAMStation;
+import org.matsim.api.core.v01.Id;
 
 /**
  * This class stores information about a UAM Station.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStationItem {
@@ -19,7 +18,7 @@ public class UAMStationItem {
 	public String link;
 
 	public UAMStationItem(String name, Id<UAMStation> id, int landingcap, int preflighttime, int postflighttime,
-			int defaultwaittime, String link) {
+						  int defaultwaittime, String link) {
 		this.name = name;
 		this.id = id;
 		this.landingcap = landingcap;

@@ -1,7 +1,10 @@
 package net.bhl.matsim.uam.schedule;
 
-import java.util.List;
-
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.data.Request;
 import org.matsim.contrib.dvrp.data.Vehicle;
@@ -13,18 +16,12 @@ import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.events.MobsimBeforeSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import net.bhl.matsim.uam.dispatcher.Dispatcher;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.passenger.UAMRequest;
+import java.util.List;
 
 /**
  * An optimizer for UAM vehicles schedule.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * 
  */
 @Singleton
 public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBeforeSimStepListener {

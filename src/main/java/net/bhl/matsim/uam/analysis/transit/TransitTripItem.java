@@ -6,7 +6,7 @@ import org.matsim.api.core.v01.population.Person;
 
 /**
  * This class stores information about a trip performed by transit.
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class TransitTripItem {

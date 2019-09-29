@@ -1,8 +1,7 @@
 package net.bhl.matsim.uam.modechoice.estimation.pt;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
+import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -14,14 +13,13 @@ import org.matsim.core.router.TripStructureUtils.Trip;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.ActivityFacilities;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;
-import ch.ethz.matsim.mode_choice.framework.ModeChoiceTrip;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class defines the predictor for Public transport trips.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomPublicTransportPredictor {
 	final private TripRouter router;

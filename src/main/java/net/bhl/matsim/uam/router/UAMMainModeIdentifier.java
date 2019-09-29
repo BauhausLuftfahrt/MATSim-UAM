@@ -1,17 +1,16 @@
 package net.bhl.matsim.uam.router;
 
-import java.util.List;
-
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.router.MainModeIdentifier;
 
+import java.util.List;
+
 /**
  * This class identifies if a trip is using UAM or not.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMainModeIdentifier implements MainModeIdentifier {
 	private final MainModeIdentifier defaultModeIdentifier;
@@ -22,17 +21,17 @@ public class UAMMainModeIdentifier implements MainModeIdentifier {
 
 	@Override
 	public String identifyMainMode(List<? extends PlanElement> tripElements) {
-		for ( PlanElement pe : tripElements ) {
-			if ( pe instanceof Leg && (((Leg) pe).getMode().equals(UAMModes.UAM_MODE)
-					|| ((Leg)pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.walk)
-					|| ((Leg)pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.walk)
-					|| ((Leg)pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.bike)
-					|| ((Leg)pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.bike)))  {
+		for (PlanElement pe : tripElements) {
+			if (pe instanceof Leg && (((Leg) pe).getMode().equals(UAMModes.UAM_MODE)
+					|| ((Leg) pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.walk)
+					|| ((Leg) pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.walk)
+					|| ((Leg) pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.bike)
+					|| ((Leg) pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.bike))) {
 				return UAMModes.UAM_MODE;
 			}
 		}
 		// if the trip doesn't contain a uam leg,
 		// fall back to the default identification method.
-		return defaultModeIdentifier.identifyMainMode( tripElements );
+		return defaultModeIdentifier.identifyMainMode(tripElements);
 	}
 }

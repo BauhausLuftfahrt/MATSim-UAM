@@ -1,25 +1,24 @@
 package net.bhl.matsim.uam.scenario.population;
 
-import java.util.Random;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
 import org.matsim.api.core.v01.Scenario;
-
-//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
-
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationWriter;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+
+import java.util.Random;
+
+//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
 
 /**
  * This script adds socio-demographic attributes to each person object in an
  * existing population (or plan) file.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RunAddPopulationAttributes {
 
@@ -27,6 +26,11 @@ public class RunAddPopulationAttributes {
 	private double ptSubscriptionOwnsershipPercent = 0.75;
 	private double bikeOwnsershipPercent = 0.95;
 	private double employedPercent = 0.95;
+
+	public static void main(final String[] args) {
+		RunAddPopulationAttributes app = new RunAddPopulationAttributes();
+		app.run(args);
+	}
 
 	void run(final String[] args) {
 		// ARGS: population
@@ -42,19 +46,19 @@ public class RunAddPopulationAttributes {
 		Population pop = scenario.getPopulation();
 		for (Person p : pop.getPersons().values()) {
 			p.getAttributes().putAttribute("age", 30);
-			p.getAttributes().putAttribute("employed", new Random().nextDouble() < employedPercent ? true : false);
+			p.getAttributes().putAttribute("employed", new Random().nextDouble() < employedPercent);
 			p.getAttributes().putAttribute("ptSubscription",
-					new Random().nextDouble() < ptSubscriptionOwnsershipPercent ? true : false);
+					new Random().nextDouble() < ptSubscriptionOwnsershipPercent);
 			p.getAttributes().putAttribute("sex", new Random().nextBoolean() ? "m" : "f");
 			p.getAttributes().putAttribute("bikeAvailability",
 					new Random().nextDouble() < bikeOwnsershipPercent ? "always" : "never");
 
 			Double rand = new Random().nextDouble();
 			p.getAttributes().putAttribute("hasLicense", rand < carOwnsershipPercent ? "true" : "false"); // excepted as
-																											// string
-																											// instead
-																											// of
-																											// boolean
+			// string
+			// instead
+			// of
+			// boolean
 			p.getAttributes().putAttribute("carAvailability", rand < carOwnsershipPercent ? "always" : "never");
 		}
 
@@ -64,10 +68,5 @@ public class RunAddPopulationAttributes {
 		popwriter.write(inputPop[0] + "_added_attrs.xml" + inputPop[1]);
 
 		System.out.println("done.");
-	}
-
-	public static void main(final String[] args) {
-		RunAddPopulationAttributes app = new RunAddPopulationAttributes();
-		app.run(args);
 	}
 }

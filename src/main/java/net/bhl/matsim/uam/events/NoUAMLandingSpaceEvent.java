@@ -1,17 +1,16 @@
 package net.bhl.matsim.uam.events;
 
-import java.util.Map;
-
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 
+import java.util.Map;
+
 /**
  * An event for the case of no UAM Stations available for landing.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class NoUAMLandingSpaceEvent extends Event {
 

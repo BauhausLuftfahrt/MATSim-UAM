@@ -1,23 +1,22 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import net.bhl.matsim.uam.data.UAMAccessOptions;
+import net.bhl.matsim.uam.data.UAMRoute;
+import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 
-import net.bhl.matsim.uam.data.UAMAccessOptions;
-import net.bhl.matsim.uam.data.UAMRoute;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This strategy is used to assign to the passenger a UAMRoute based on the
  * minimum travel distance of the route.
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMMinDistanceStrategy implements UAMStrategy {
@@ -56,23 +55,23 @@ public class UAMMinDistanceStrategy implements UAMStrategy {
 				double accessTime = strategyUtils.estimateAccessLeg(true, fromFacility, departureTime,
 						stationOrigin, accessRoutesData.get(stationOrigin.getId()).getShortestDistanceMode()).travelTime;
 				//updates departureTime 
-				double currentDepartureTime = departureTime + accessTime+flyTime;
+				double currentDepartureTime = departureTime + accessTime + flyTime;
 				//Calculates the shortest path
 				for (String mode : modes) {
 					//Calculates the distance for the egress routes using updated departureTime
 					double egressDistance = strategyUtils.estimateAccessLeg(false, toFacility,
 							currentDepartureTime, stationDestination, mode).distance;
 					double totalDistance = accessRoutesData.get(stationOrigin.getId()).getShortestAccessDistance() + flyDistance + egressDistance;
-					if (totalDistance < minTotalDistance ) {
+					if (totalDistance < minTotalDistance) {
 						minTotalDistance = totalDistance;
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;
 						bestModeEgress = mode;
 					}
-				}	
+				}
 			}
 		}
-			
+
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getShortestDistanceMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}

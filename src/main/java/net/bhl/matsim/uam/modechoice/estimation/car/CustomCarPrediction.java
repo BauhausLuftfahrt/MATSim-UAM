@@ -4,9 +4,8 @@ import org.matsim.core.population.routes.NetworkRoute;
 
 /**
  * This class stores information about a car trip prediction.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomCarPrediction {
 	final public double distance;

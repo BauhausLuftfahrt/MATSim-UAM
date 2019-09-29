@@ -1,19 +1,17 @@
 package net.bhl.matsim.uam.analysis.uamdemand.readers;
 
-import java.util.Collection;
-
+import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
+import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMListener;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 
-import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMListener;
-import net.bhl.matsim.uam.analysis.trips.TripItem;
-import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
+import java.util.Collection;
 
 /**
  * This class is used to retrieve the a collection of {@link UAMDemandItem} by
  * using a simulation events file as input
- * 
+ *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class EventsUAMReader {

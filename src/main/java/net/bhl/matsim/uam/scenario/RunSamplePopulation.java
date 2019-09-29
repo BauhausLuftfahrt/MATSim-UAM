@@ -1,9 +1,8 @@
 package net.bhl.matsim.uam.scenario;
 
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
+import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
 import org.matsim.api.core.v01.Scenario;
-
-//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
-
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Population;
 import org.matsim.api.core.v01.population.PopulationWriter;
@@ -11,18 +10,21 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.scenario.ScenarioUtils;
 
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
-import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+//Adjusted from RunPopulationDownsamplingExample.java by matsim-code-examples
 
 /**
  * This script generates a new population file based on a given population file
  * and a percentage. The new population file is a fraction of the original
  * population file based on the percentage value provided.
- * 
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  *
+ * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class RunSamplePopulation {
+	public static void main(final String[] args) {
+		RunSamplePopulation app = new RunSamplePopulation();
+		app.run(args);
+	}
+
 	void run(final String[] args) {
 		String inputPopFilename = null;
 		String outputPopFilename = null;
@@ -85,11 +87,6 @@ public class RunSamplePopulation {
 		popwriter.write(outputPopFilename);
 
 		System.out.println("done.");
-	}
-
-	public static void main(final String[] args) {
-		RunSamplePopulation app = new RunSamplePopulation();
-		app.run(args);
 	}
 
 }

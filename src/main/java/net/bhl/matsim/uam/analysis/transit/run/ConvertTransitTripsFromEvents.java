@@ -1,8 +1,9 @@
 package net.bhl.matsim.uam.analysis.transit.run;
 
-import java.io.IOException;
-import java.util.Collection;
-
+import net.bhl.matsim.uam.analysis.transit.CSVTransitTripWriter;
+import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
+import net.bhl.matsim.uam.analysis.transit.listeners.TransitTripListener;
+import net.bhl.matsim.uam.analysis.transit.readers.EventsTransitTripReader;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
@@ -10,16 +11,14 @@ import org.matsim.core.router.StageActivityTypes;
 import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.pt.PtConstants;
 
-import net.bhl.matsim.uam.analysis.transit.CSVTransitTripWriter;
-import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
-import net.bhl.matsim.uam.analysis.transit.listeners.TransitTripListener;
-import net.bhl.matsim.uam.analysis.transit.readers.EventsTransitTripReader;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * This script generates a csv file containing information of all public
  * transport trips performed from an events output file. Necessary inputs are in
  * the following order: -Network file; -Events file; -output file;
- * 
+ *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 
