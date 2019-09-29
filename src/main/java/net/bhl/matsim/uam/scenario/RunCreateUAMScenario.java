@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import net.bhl.matsim.uam.infrastructure.UAMFlightSegments;
+import net.bhl.matsim.uam.router.UAMFlightSegments;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -450,7 +450,7 @@ public class RunCreateUAMScenario {
 
         Id<Link> id;
         boolean vertical = false;
-        boolean flightLink = true;
+        boolean horizontal = false;
         String f = from.toString();
         String t = to.toString();
 
@@ -462,6 +462,7 @@ public class RunCreateUAMScenario {
         } else if ((f.endsWith(name_uam_station_flight_level) && t.endsWith(name_uam_station_flight_level))) {
             // flight level link (horizontal/cruise)
             id = Id.createLinkId(name_uam_horizontal_link + from + "-" + to);
+            horizontal = true;
         } else if ((f.endsWith(name_uam_station_flight_access) && !t.endsWith(name_uam_station_flight_access))
                 || (!f.endsWith(name_uam_station_flight_access) && t.endsWith(name_uam_station_flight_access))) {
             // flight access link (vertical)
@@ -471,7 +472,6 @@ public class RunCreateUAMScenario {
                 || (!f.endsWith(name_uam_station_ground_access) && t.endsWith(name_uam_station_ground_access))) {
             // ground access link
             id = Id.createLinkId(name_uam_ground_link + from + "-" + to);
-            flightLink = false;
         } else
             throw new Exception("Unknown UAM link type.");
 
@@ -486,9 +486,12 @@ public class RunCreateUAMScenario {
         link.setNumberOfLanes(permlanes);
         link.setAllowedModes(modes);
 
+
+
         if (vertical)
         	link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.VERTICAL);
-        else if (flightLink)
+
+        if (horizontal)
 			link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.HORIZONTAL);
 
         try {

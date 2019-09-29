@@ -124,132 +124,132 @@
 		</link>
 		<link id="uam_hl-uam_wp_00_fl-uam_wp_02_fl" from="uam_wp_00_fl" to="uam_wp_02_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_01_fl-uam_wp_02_fl" from="uam_wp_01_fl" to="uam_wp_02_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_02_fl-uam_wp_00_fl" from="uam_wp_02_fl" to="uam_wp_00_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_02_fl-uam_wp_01_fl" from="uam_wp_02_fl" to="uam_wp_01_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_02_fl-uam_wp_03_fl" from="uam_wp_02_fl" to="uam_wp_03_fl" length="5010.0" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_03_fl-uam_wp_02_fl" from="uam_wp_03_fl" to="uam_wp_02_fl" length="5010.0" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_03_fl-uam_wp_04_fl" from="uam_wp_03_fl" to="uam_wp_04_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_03_fl-uam_wp_05_fl" from="uam_wp_03_fl" to="uam_wp_05_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_04_fl-uam_wp_03_fl" from="uam_wp_04_fl" to="uam_wp_03_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_hl-uam_wp_05_fl-uam_wp_03_fl" from="uam_wp_05_fl" to="uam_wp_03_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >horizontal</attribute>
+				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_00_fa-uam_st_00_ga" from="uam_st_00_fa" to="uam_st_00_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_00_ga-uam_st_00_fa" from="uam_st_00_ga" to="uam_st_00_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_01_fa-uam_st_01_ga" from="uam_st_01_fa" to="uam_st_01_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_01_ga-uam_st_01_fa" from="uam_st_01_ga" to="uam_st_01_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_04_fa-uam_st_04_ga" from="uam_st_04_fa" to="uam_st_04_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_04_ga-uam_st_04_fa" from="uam_st_04_ga" to="uam_st_04_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_05_fa-uam_st_05_ga" from="uam_st_05_fa" to="uam_st_05_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_sl-uam_st_05_ga-uam_st_05_fa" from="uam_st_05_ga" to="uam_st_05_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_st_00_fa-uam_wp_00_fl" from="uam_st_00_fa" to="uam_wp_00_fl" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_st_01_fa-uam_wp_01_fl" from="uam_st_01_fa" to="uam_wp_01_fl" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_st_04_fa-uam_wp_04_fl" from="uam_st_04_fa" to="uam_wp_04_fl" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_st_05_fa-uam_wp_05_fl" from="uam_st_05_fa" to="uam_wp_05_fl" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_wp_00_fl-uam_st_00_fa" from="uam_wp_00_fl" to="uam_st_00_fa" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_wp_01_fl-uam_st_01_fa" from="uam_wp_01_fl" to="uam_st_01_fa" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_wp_04_fl-uam_st_04_fa" from="uam_wp_04_fl" to="uam_st_04_fa" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 		<link id="uam_vl-uam_wp_05_fl-uam_st_05_fa" from="uam_wp_05_fl" to="uam_st_05_fa" length="600.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
-				<attribute name="flight" class="java.lang.String" >vertical</attribute>
+				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
 	</links>
