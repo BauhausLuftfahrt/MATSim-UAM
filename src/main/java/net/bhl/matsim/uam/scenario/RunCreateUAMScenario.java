@@ -39,7 +39,7 @@ import java.util.concurrent.Future;
  * uam-vehicles file, which are prerequisites for running a UAM-enabled MATSim
  * simulation.
  *
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * @author RRothfeld (Raoul Rothfeld)
  */
 public class RunCreateUAMScenario {
 
@@ -71,9 +71,10 @@ public class RunCreateUAMScenario {
 
 	private static double NO_LENGTH = -1;
 
+	// TODO Adjust documentation to inclusion of max-cruise-speed
 	public static void main(String[] args) throws Exception {
 		System.out.println("ARGS: base-folder* base-network.xml* uam-stations.csv* " +
-				"detour-factor vehicles.csv flight-nodes.csv flight-links.csv");
+				"detour-factor max-cruise-speed-m/s vehicles.csv flight-nodes.csv flight-links.csv");
 		System.out.println("(* required)");
 
 		// ARGS
@@ -86,11 +87,15 @@ public class RunCreateUAMScenario {
 		String vehicleInput = null;
 
 		boolean withDetour = args.length >= 4;
-		boolean withVehicles = args.length >= 5;
-		boolean withNetwork = args.length >= 6;
+		boolean withSpeed = args.length >= 4;
+		boolean withVehicles = args.length >= 6;
+		boolean withNetwork = args.length >= 7;
 
 		if (withDetour)
 			detour_factor = Double.parseDouble(args[j++]);
+
+		if (withSpeed)
+			default_link_freespeed = Double.parseDouble(args[j++]);
 
 		if (withVehicles)
 			vehicleInput = folder + "\\" + args[j++];

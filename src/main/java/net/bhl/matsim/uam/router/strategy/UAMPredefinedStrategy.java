@@ -17,7 +17,7 @@ import java.util.List;
  * This strategy is used to assign to the passenger a UAMRoute based on a
  * pre-defined route from the plans.
  *
- * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
+ * @author RRothfeld (Raoul Rothfeld)
  */
 public class UAMPredefinedStrategy implements UAMStrategy {
 	public static final String ACCESS_MODE = "accessMode";
