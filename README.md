@@ -29,7 +29,8 @@ List of all current features provided by MATSim-UAM with the version of feature 
 ### Infrastructure
 - UAM Vehicle Types: The vehicle type contains the capacity, cruisespeed, vertical speed, (de)boarding and turn around times. (v1)
 - UAM Vehicles: Contains information about the UAM Vehicle Type, initial UAM Station and start/end time of operation. (v1)
-- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location.(v1)
+- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location. (v1)
+- UAM Flight Network: Similar to conventional MATSim links, UAM flight links allow for the definition of flight routes with different flight segments. (v1)
 
 ### Simulation
 - UAM Vehicles follow a schedule that has the following sequence, starting and ending with StayTask: PickUpDriveTask, PickUpTask, DropOffDriveTask, DropOffTask, TurnAroundTask, StayTask. (v1)
@@ -47,7 +48,7 @@ List of all current features provided by MATSim-UAM with the version of feature 
 - Included interface to interact with [MITO](https://www.msm.bgu.tum.de/en/research/modeling/mito/) (Microscopic Transport Orchestrator). (v1)
 - Included external public transport and car router for calculating travel times for a list of origins and destinations. (v1)
 - Included external UAM station router for calculating travel times and distances between all UAM stations. (v1)
-- Included documenation about analysis and utility scripts. See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md). (v1)  
+- Included documentation about analysis and utility scripts. See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md). (v1)  
 
 ## Versions and Change Log
 
