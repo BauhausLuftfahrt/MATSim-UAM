@@ -26,9 +26,28 @@ Older versions can be used by replacing the version text with any of the listed 
 ## Features
 List of all current features provided by MATSim-UAM with the version of feature introduction in parentheses.
 
-- List of Features: //TODO Aitan
-    - Example 1 (v1)
-    - Example 2 (v1.1)
+### Infrastructure
+- UAM Vehicle Types: The vehicle type contains the capacity, cruisespeed, vertical speed, (de)boarding and turn around times. (v1)
+- UAM Vehicles: Contains information about the UAM Vehicle Type, initial UAM Station and start/end time of operation. (v1)
+- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location.(v1)
+
+### Simulation
+- UAM Vehicles follow a schedule that has the following sequence, starting and ending with StayTask: PickUpDriveTask, PickUpTask, DropOffDriveTask, DropOffTask, TurnAroundTask, StayTask. (v1)
+- UAM Passengers have the following sequence of activities: Access trip, preFlightTime, PickUpTask, UAM leg (UAMVehicle DropOffDriveTask), DropOffTask, PostFlightTime, Egress Trip. (v1)
+- Dispatching strategy: MATSim-UAM uses a pooled dispatcher that allows for shared rides if trip origin and destination are the same, and if vehicle capacity constraint is met. (v1)
+- Introduction of UAM routing strategies that aim to, e.g., maximize overral UAM trip utility, or minimize access/egress distance; including predefined routing strategy where UAM trips (i.e access/egress modes and UAM stations) can be defined externally, e.g. by MITO. (v1)
+- Integration of option to skip public transport simulation and teleport its agents instead. (v1)
+
+### Miscellaneous:
+- Conversion of MATSim events into CSV files will display distances in the scenario's CRS, instead of assuming a metre-based CRS and storing distances as KM. (v1)
+- Output plans will show expected distance and travel time for UAM legs. (v1)
+- Simulation-independent conversion from events to UAM demand (.CSV) file. (v1)
+- Warning log message when no age is given for an agent, so default age is being assumed in mode choice for cycling. (v1)
+- The input file for UAM Vehicles is written out into the output folder. (v1)
+- Included interface to interact with [MITO](https://www.msm.bgu.tum.de/en/research/modeling/mito/) (Microscopic Transport Orchestrator). (v1)
+- Included external public transport and car router for calculating travel times for a list of origins and destinations. (v1)
+- Included external UAM station router for calculating travel times and distances between all UAM stations. (v1)
+- Included documenation about analysis and utility scripts. See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md). (v1)  
 
 ## Versions and Change Log
 
