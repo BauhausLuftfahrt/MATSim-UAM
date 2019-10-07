@@ -62,7 +62,7 @@ public class RunGenerateNetworkChangeEventsFile {
 		new NetworkChangeEventsWriter().write(networkEventsChangeFile, networkChangeEvents);
 	}
 
-	public static TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
+	private TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
 			TravelTimeCalculatorConfigGroup group) {
 		EventsManager manager = EventsUtils.createEventsManager();
 		TravelTimeCalculator tcc = TravelTimeCalculator.create(network, group);
@@ -71,7 +71,7 @@ public class RunGenerateNetworkChangeEventsFile {
 		return tcc;
 	}
 
-	public static List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
+	private List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
 			Double endTime, Double timeStep, Double MinFreeSpeed) {
 		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
 		for (Link l : network.getLinks().values()) {
