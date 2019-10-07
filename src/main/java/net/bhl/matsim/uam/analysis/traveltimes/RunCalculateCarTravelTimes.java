@@ -6,18 +6,10 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.TravelTimeCalculatorConfigGroup;
-import org.matsim.core.events.EventsUtils;
-import org.matsim.core.events.MatsimEventsReader;
-import org.matsim.core.network.NetworkChangeEvent;
-import org.matsim.core.network.NetworkChangeEvent.ChangeType;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.network.io.MatsimNetworkReader;
-import org.matsim.core.network.io.NetworkChangeEventsWriter;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelDisutility;
@@ -62,16 +54,8 @@ public class RunCalculateCarTravelTimes {
 		config.network().setInputFile(networkInput);
 
 		// Generate networkChangeEvents file for the Time-Dependent Network
-		Network networkForReader = NetworkUtils.createNetwork();
-		new MatsimNetworkReader(networkForReader).readFile(networkInput);
-		TravelTimeCalculator tcc = readEventsIntoTravelTimeCalculator(networkForReader, eventsFileInput,
-				config.travelTimeCalculator());
-		double timeStep = 15 * 60;
-		double minFreeSpeed = 3;
-		config.qsim().setEndTime(30 * 60 * 60);
-		List<NetworkChangeEvent> networkChangeEvents = createNetworkChangeEvents(networkForReader, tcc,
-				config.qsim().getEndTime(), timeStep, minFreeSpeed);
-		new NetworkChangeEventsWriter().write(networkEventsChangeFile, networkChangeEvents);
+		RunGenerateNetworkChangeEventsFile fileGenerator = new RunGenerateNetworkChangeEventsFile();
+		fileGenerator.generateNetworkChangeEventsFile(networkInput, eventsFileInput, networkEventsChangeFile, config);
 
 		config.network().setTimeVariantNetwork(true);
 		config.network().setChangeEventsInputFile(networkEventsChangeFile);
@@ -160,7 +144,7 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-											 DefaultParallelLeastCostPathCalculator pathCalculator) throws InterruptedException, ExecutionException {
+			DefaultParallelLeastCostPathCalculator pathCalculator) throws InterruptedException, ExecutionException {
 		if (carNetwork.getLinks().get(from.getId()) != null)
 			from = carNetwork.getLinks().get(from.getId());
 		else
@@ -187,9 +171,9 @@ public class RunCalculateCarTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime) })
 					+ "\n");
 		}
 
@@ -198,51 +182,8 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time"});
-	}
-
-	public static TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
-																		  TravelTimeCalculatorConfigGroup group) {
-		EventsManager manager = EventsUtils.createEventsManager();
-		TravelTimeCalculator tcc = TravelTimeCalculator.create(network, group);
-		manager.addHandler(tcc);
-		new MatsimEventsReader(manager).readFile(eventsFile);
-		return tcc;
-	}
-
-	public static List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
-																	 Double endTime, Double timeStep, Double MinFreeSpeed) {
-		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
-		for (Link l : network.getLinks().values()) {
-
-//			if (l.getId().toString().startsWith("pt")) continue;
-
-			double length = l.getLength();
-			double previousTravelTime = l.getLength() / l.getFreespeed();
-
-			for (double time = 0; time < endTime; time = time + timeStep) {
-
-				double newTravelTime = tcc.getLinkTravelTimes().getLinkTravelTime(l, time, null, null);
-
-				if (newTravelTime != previousTravelTime) {
-					// log.warn("Linkd ID: "+ l.getId()+" previousTravelTime: "+previousTravelTime+"
-					// NewTravelTime: "+ newTravelTime);
-					NetworkChangeEvent nce = new NetworkChangeEvent(time);
-					nce.addLink(l);
-					double newFreespeed = length / newTravelTime;
-					if (newFreespeed < MinFreeSpeed)
-						newFreespeed = MinFreeSpeed;
-					NetworkChangeEvent.ChangeValue freespeedChange = new NetworkChangeEvent.ChangeValue(
-							ChangeType.ABSOLUTE_IN_SI_UNITS, newFreespeed);
-					nce.setFreespeedChange(freespeedChange);
-
-					networkChangeEvents.add(nce);
-					previousTravelTime = newTravelTime;
-				}
-			}
-		}
-		return networkChangeEvents;
+		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
+				"departure_time", "travel_time" });
 	}
 
 	public static class TripItem {
