@@ -179,6 +179,11 @@ Provides travel times for UAM trips for a list of origins and destinations and a
 	* coordinate-pairs-file.csv header [format]: origin_x [`double`], origin_y [`double`], destination_x [`double`], destination_y [`double`], trip_time [`HH:MM:SS`]
 	* allowed UAMStrategies: `minTravelTime, minAccessTravelTime, minDistance, minAccessDistance`
 
+### RunGenerateNetworkChangeEventsFile
+Generates a NetworkChangeEvents file containing changes in the network throughout the day. 
+* Location: net.bhl.matsim.uam.analysis.traveltimes.RunGenerateNetworkChangeEventsFile
+* Arguments: `PATH/network.xml(.gz) PATH/events.xml(.gz) PATH/output-networkEventsChange-file.xml(.gz)`
+
 ### ConvertDemographicsFromPopulation
 Creates a demographics file by reading through and gathering socio-demographic attributes from each person object in an existing population (or plan) file.
 * Location: net.bhl.matsim.uam.analysis.demographics.ConvertDemographicsFromPopulation
