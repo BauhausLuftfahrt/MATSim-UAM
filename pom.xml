@@ -106,7 +106,7 @@
     </profiles>
 
     <dependencies>
-        <!-- These javax dependencies have been included to avoid JAXBExceptions when writing out MATSim results under Java 9+ -->
+        <!-- These javax dependencies have been included to avoid JAXBExceptions when writing out MATSim results under Java 9+
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -126,7 +126,7 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency>
+        </dependency> -->
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
