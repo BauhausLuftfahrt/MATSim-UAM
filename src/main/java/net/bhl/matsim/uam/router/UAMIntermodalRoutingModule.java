@@ -96,26 +96,25 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		RouteFactories routeFactory = populationFactory.getRouteFactories();
 		final List<PlanElement> trip = new ArrayList<>();
 
-		UAMRoutes uamRoutes = UAMRoutes.getInstance();
-		if (!uamRoutes.contains(person.getId(), departureTime)) {
-			boolean success = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
-			if (!success) {
-				if (counterWarningConvertedToWalk < counterLimit)
-					log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
-							+ " could be calculated. Trip has been converted to walk.");
+		UAMRoute uamRoute = UAMRoutes.getInstance().get(person.getId(), departureTime);
+		if (uamRoute == null)
+			uamRoute = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
 
-				if (counterWarningConvertedToWalk == counterLimit - 1)
-					log.warn("No more UAM prediction warnings will be reported.");
+		if (uamRoute == null) {
+			if (counterWarningConvertedToWalk < counterLimit)
+				log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
+						+ " could be calculated. Trip has been converted to walk.");
 
-				counterWarningConvertedToWalk++;
-				Leg l = createTeleportationLeg(routeFactory, populationFactory,
-						network.getLinks().get(fromFacility.getLinkId()),
-						network.getLinks().get(toFacility.getLinkId()), TransportMode.walk, TransportMode.walk);
-				trip.add(l);
-				return trip;
-			}
+			if (counterWarningConvertedToWalk == counterLimit - 1)
+				log.warn("No more UAM prediction warnings will be reported.");
+
+			counterWarningConvertedToWalk++;
+			Leg l = createTeleportationLeg(routeFactory, populationFactory,
+					network.getLinks().get(fromFacility.getLinkId()),
+					network.getLinks().get(toFacility.getLinkId()), TransportMode.walk, TransportMode.walk);
+			trip.add(l);
+			return trip;
 		}
-		UAMRoute uamRoute = uamRoutes.get(person.getId(), departureTime);
 
 		/* access trip */
 		double currentTime = departureTime;

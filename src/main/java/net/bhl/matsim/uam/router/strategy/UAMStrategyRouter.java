@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.router.strategy;
 
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.data.UAMRoutes;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
@@ -56,18 +57,13 @@ public class UAMStrategyRouter {
 		this.transitRouter = transitRouter;
 	}
 
-	public boolean estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
-		try {
-			if (strategy == null)
-				this.setStrategy();
-			UAMRoutes.getInstance().add(person.getId(), departureTime,
-					strategy.getRoute(person, fromFacility, toFacility, departureTime));
-			return true;
-		} catch (NullPointerException e) {
-			// do not store best UAM route if any part of the UAM trip cannot be estimated
-			// (e.g. no destination station)
-			return false;
-		}
+	public UAMRoute estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+		if (strategy == null)
+			this.setStrategy();
+
+		UAMRoute route = strategy.getRoute(person, fromFacility, toFacility, departureTime);
+		UAMRoutes.getInstance().add(person.getId(), departureTime, route);
+		return route;
 	}
 
 	/**
