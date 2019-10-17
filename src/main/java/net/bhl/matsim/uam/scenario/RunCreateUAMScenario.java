@@ -62,11 +62,11 @@ public class RunCreateUAMScenario {
 	private static String mode_car = TransportMode.car;
 
 	private static double min_link_length = 1;
-	private static double max_horizontal_vtol_distance = 10;
+	private static double max_horizontal_vtol_distance = 100;
 	private static double permlanes = 1;
 	private static double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
-	private static double default_link_capacity = 120; // vehicles per hour
+	private static double default_link_capacity = 99999; // vehicles per hour
 	private static double max_link_freespeed = 90; // in m/s
 
 	private static double NO_LENGTH = -1;
