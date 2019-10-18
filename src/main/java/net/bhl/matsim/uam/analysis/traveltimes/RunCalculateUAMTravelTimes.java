@@ -256,6 +256,11 @@ public class RunCalculateUAMTravelTimes {
 
 			UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
 
+			trip.accessMode = uamRoute.accessMode;
+			trip.egressMode = uamRoute.egressMode;
+			trip.originStation = uamRoute.bestOriginStation.getId().toString();
+			trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
+
 			trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
 					uamRoute.bestOriginStation, uamRoute.accessMode);
 			trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
@@ -285,7 +290,8 @@ public class RunCalculateUAMTravelTimes {
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
 							String.valueOf(trip.accessTime), String.valueOf(trip.flightTime),
-							String.valueOf(trip.egressTime), String.valueOf(trip.processTime)})
+							String.valueOf(trip.egressTime), String.valueOf(trip.processTime),
+							trip.accessMode, trip.egressMode, trip.originStation, trip.destinationStation})
 					+ "\n");
 		}
 
@@ -295,7 +301,8 @@ public class RunCalculateUAMTravelTimes {
 
 	private static String formatHeader() {
 		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time", "access_time", "flight_time", "egress_time", "process_time"});
+				"departure_time", "travel_time", "access_time", "flight_time", "egress_time", "process_time",
+				"access_mode", "egress_mode", "orig_station", "dest_station"});
 	}
 
 	static class TripItem {
@@ -308,6 +315,10 @@ public class RunCalculateUAMTravelTimes {
 		public double flightTime;
 		public double egressTime;
 		public double processTime;
+		public String accessMode;
+		public String egressMode;
+		public String originStation;
+		public String destinationStation;
 	}
 
 }
