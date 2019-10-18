@@ -28,8 +28,7 @@ import java.util.concurrent.Future;
  * This script generates csv file containing estimated travel times by CAR for
  * trips. The trips file must contain departure time and origin and destination
  * coordinates for the trips. Necessary inputs are in the following order:
- * -Network file; -Events file; -Trips file; -output file; -output
- * networkEventsChangeFile;
+ * -Network file; -networkEventsChangeFile file; -Trips file; -output file;
  *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
@@ -39,23 +38,18 @@ public class RunCalculateCarTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* eventsFile.xml* tripsCoordinateFile.csv* outputfile-name.csv* outputfile-networkEventsChangeFile.xml.gz*");
+				"ARGS: base-network.xml* networkEventsChangeFile.xml.gz*.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
 		String networkInput = args[j++];
-		String eventsFileInput = args[j++]; // ADD EVENTS INPUT
+		String networkEventsChangeFile = args[j++]; // ADD EVENTS INPUT
 		String tripsInput = args[j++];
-		String outputPath = args[j++];
-		String networkEventsChangeFile = args[j++];
+		String outputPath = args[j];
 
 		Config config = ConfigUtils.createConfig();
 		config.network().setInputFile(networkInput);
-
-		// Generate networkChangeEvents file for the Time-Dependent Network
-		RunGenerateNetworkChangeEventsFile fileGenerator = new RunGenerateNetworkChangeEventsFile();
-		fileGenerator.generateNetworkChangeEventsFile(networkInput, eventsFileInput, networkEventsChangeFile, config);
 
 		config.network().setTimeVariantNetwork(true);
 		config.network().setChangeEventsInputFile(networkEventsChangeFile);
