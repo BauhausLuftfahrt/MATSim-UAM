@@ -56,7 +56,7 @@ public class RunCalculateUAMTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins");
+				"ARGS: base-network.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
 		System.out.println("(* required)");
 
 		// READ THE INPUTS
@@ -72,7 +72,15 @@ public class RunCalculateUAMTravelTimes {
 
 		double processTime = 0;
 		if (args.length == j + 1)
-			processTime = Double.parseDouble(args[j]) * 60;
+			processTime = Double.parseDouble(args[j++]) * 60;
+
+		double searchRadius = 50000;
+		if (args.length == j + 1)
+			searchRadius = Double.parseDouble(args[j++]) * 1000;
+
+		String accessModes = "car,pt,bike,walk";
+		if (args.length == j + 1)
+			accessModes = args[j];
 
 		// READ NETWORK
 		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
@@ -107,9 +115,8 @@ public class RunCalculateUAMTravelTimes {
 		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setBeelineDistanceFactor(1.4);
 
 		// set available modes
-		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setAvailableAccessModes("car,walk,pt,bike");
-
-		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setSearchRadius("999999999999999");
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setAvailableAccessModes(accessModes);
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setSearchRadius("" + searchRadius);
 
 		// Build scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
