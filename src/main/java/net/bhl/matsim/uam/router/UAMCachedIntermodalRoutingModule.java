@@ -92,7 +92,9 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		if (uamRoute == null)
 			uamRoute = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
 
-		if (uamRoute == null) {
+		// TODO rework error handling
+		if (uamRoute == null || uamRoute.accessMode == null || uamRoute.bestOriginStation == null
+				|| uamRoute.bestDestinationStation == null || uamRoute.egressMode == null) {
 			if (counterWarningConvertedToWalk < counterLimit)
 				log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
 						+ " could be calculated. Trip has been converted to walk.");
