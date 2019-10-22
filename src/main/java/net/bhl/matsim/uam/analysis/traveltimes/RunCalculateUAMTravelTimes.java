@@ -134,6 +134,13 @@ public class RunCalculateUAMTravelTimes {
 		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);
 
+		// SETUP UAM MANAGER AND STATIONCONENCTIONUTILITIES
+		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
+		uamReader.readFile(uamVehicles);
+		UAMManager uamManager = new UAMManager(network);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+		uamManager.setVehicles(uamReader.getVehicles());
+
 		// LEAST COST Parallel PATH CALCULATOR - uam
 		TravelTimeCalculator tcc2 = TravelTimeCalculator.create(network, config.travelTimeCalculator());
 		TravelTime travelTime = tcc2.getLinkTravelTimes();
@@ -142,13 +149,6 @@ public class RunCalculateUAMTravelTimes {
 		DefaultParallelLeastCostPathCalculator pathCalculator = DefaultParallelLeastCostPathCalculator.create(
 				Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkUAM, travelDisutility,
 				travelTime);
-
-		// SETUP UAM MANAGER AND STATIONCONENCTIONUTILITIES
-		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
-		uamReader.readFile(uamVehicles);
-		UAMManager uamManager = new UAMManager(network);
-		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-		uamManager.setVehicles(uamReader.getVehicles());
 
 		UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager, null,
 				pathCalculator);
@@ -245,29 +245,19 @@ public class RunCalculateUAMTravelTimes {
 		// Calculate travel times
 		log.info("Calculating travel times...");
 		int counter = 1;
+		ThreadCounter threadCounter = new ThreadCounter();
+		int maxProcesses =  Runtime.getRuntime().availableProcessors();
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
 				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
 						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
-			Link from = NetworkUtils.getNearestLink(network, trip.origin);
-			Link to = NetworkUtils.getNearestLink(network, trip.destination);
-			Facility<?> fromFacility = new LinkWrapperFacility(from);
-			Facility<?> toFacility = new LinkWrapperFacility(to);
 
-			UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
 
-			trip.accessMode = uamRoute.accessMode;
-			trip.egressMode = uamRoute.egressMode;
-			trip.originStation = uamRoute.bestOriginStation.getId().toString();
-			trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
+			while (threadCounter.getProcesses() >= maxProcesses - 1) {
+				Thread.sleep(2000);
+			}
+			new UAMTravelTimeCalculator(threadCounter, network, strategyUtils, strategy, trip).run();
 
-			trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
-					uamRoute.bestOriginStation, uamRoute.accessMode);
-			trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
-			trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
-					uamRoute.bestDestinationStation, uamRoute.egressMode);
-
-			trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
 			counter++;
 		}
 
@@ -319,6 +309,67 @@ public class RunCalculateUAMTravelTimes {
 		public String egressMode;
 		public String originStation;
 		public String destinationStation;
+	}
+
+	static class ThreadCounter {
+		private int processes;
+
+		public synchronized void register() {
+			processes++;
+		}
+
+		public synchronized void deregister() {
+			processes--;
+		}
+
+		public synchronized int getProcesses() {
+			return processes;
+		}
+	}
+
+	static class UAMTravelTimeCalculator implements Runnable {
+
+		private TripItem trip;
+		private Network network;
+		private UAMStrategyUtils strategyUtils;
+		private UAMStrategy strategy;
+		private ThreadCounter threadCounter;
+
+		UAMTravelTimeCalculator(ThreadCounter threadCounter,Network network, UAMStrategyUtils strategyUtils,
+								UAMStrategy strategy, TripItem trip) {
+			this.trip = trip;
+			this.network = network;
+			this.strategyUtils = strategyUtils;
+			this.strategy = strategy;
+			this.threadCounter = threadCounter;
+		}
+
+		@Override
+		public void run() {
+			threadCounter.register();
+
+			Link from = NetworkUtils.getNearestLink(network, trip.origin);
+			Link to = NetworkUtils.getNearestLink(network, trip.destination);
+			Facility<?> fromFacility = new LinkWrapperFacility(from);
+			Facility<?> toFacility = new LinkWrapperFacility(to);
+
+			UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
+
+			trip.accessMode = uamRoute.accessMode;
+			trip.egressMode = uamRoute.egressMode;
+			trip.originStation = uamRoute.bestOriginStation.getId().toString();
+			trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
+
+			trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
+					uamRoute.bestOriginStation, uamRoute.accessMode);
+			trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
+			trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
+					uamRoute.bestDestinationStation, uamRoute.egressMode);
+
+			trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
+
+			threadCounter.deregister();
+		}
 	}
 
 }
