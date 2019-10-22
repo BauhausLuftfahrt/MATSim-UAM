@@ -59,13 +59,14 @@ public class RunCalculateUAMTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
+				"ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
 		System.out.println("(* required)");
 
 		// READ THE INPUTS
 		// ARGS
 		int j = 0;
 		String networkInput = args[j++];
+		String networkEventsChangeFile = args[j++];
 		String uamVehicles = args[j++];
 		String transitScheduleInput = args[j++];
 		String transitVehiclesInput = args[j++];
@@ -127,6 +128,9 @@ public class RunCalculateUAMTravelTimes {
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
+
+		config.network().setTimeVariantNetwork(true);
+		config.network().setChangeEventsInputFile(networkEventsChangeFile);
 
 		// CREATE CAR/UAM NETWORK
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
