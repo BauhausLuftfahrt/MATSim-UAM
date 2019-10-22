@@ -13,6 +13,7 @@ import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.strategy.*;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
@@ -89,6 +90,10 @@ public class RunCalculateUAMTravelTimes {
 		// READ NETWORK
 		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
 		config.network().setInputFile(networkInput);
+
+		config.network().setTimeVariantNetwork(true);
+		config.network().setChangeEventsInputFile(networkEventsChangeFile);
+
 		// READ TRANSIT SCHEDULE
 		config.transit().setTransitScheduleFile(transitScheduleInput);
 		// READ TRANSIT VEHICLES FILE
@@ -128,9 +133,6 @@ public class RunCalculateUAMTravelTimes {
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
-
-		config.network().setTimeVariantNetwork(true);
-		config.network().setChangeEventsInputFile(networkEventsChangeFile);
 
 		// CREATE CAR/UAM NETWORK
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
@@ -388,6 +390,7 @@ public class RunCalculateUAMTravelTimes {
 
 			// SET PUBLIC TRANSPORT ROUTER - pt (this one is not parallel)
 			DefaultRaptorParametersForPerson parametersForPerson = new DefaultRaptorParametersForPerson(config);
+			Logger.getLogger("ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor").setLevel(Level.OFF);
 			SwissRailRaptor transitRouter = new SwissRailRaptor(data, parametersForPerson,
 					new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress());
 
