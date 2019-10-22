@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This strategy is used to assign to the passenger a UAMRoute based on the
@@ -32,7 +33,7 @@ public class UAMMinDistanceStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) throws InterruptedException, ExecutionException {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
