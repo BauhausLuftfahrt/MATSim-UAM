@@ -390,7 +390,7 @@ public class RunCalculateUAMTravelTimes {
 
 			// SET PUBLIC TRANSPORT ROUTER - pt (this one is not parallel)
 			DefaultRaptorParametersForPerson parametersForPerson = new DefaultRaptorParametersForPerson(config);
-			Logger.getLogger("ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor").setLevel(Level.OFF);
+			Logger.getLogger("ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor").setLevel(Level.WARN);
 			SwissRailRaptor transitRouter = new SwissRailRaptor(data, parametersForPerson,
 					new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress());
 
