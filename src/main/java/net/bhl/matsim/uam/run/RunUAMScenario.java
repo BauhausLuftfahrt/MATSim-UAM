@@ -13,6 +13,7 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
 import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
 import net.bhl.matsim.uam.qsim.UAMSpeedModule;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -114,7 +115,7 @@ public class RunUAMScenario {
 		Network network = controler.getScenario().getNetwork();
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add("uam");
+		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 
