@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE uam SYSTEM "src/main/resources/dtd/uam.dtd">
+
+<uam>
+	<stations>
+		<station id="MUC_4_56" name="Altom�nster (S2)" landingcap="99999" preflighttime="600" postflighttime="600" defaultwaittime="0" link="uam_sl-uam_st_MUC_4_56_ga-uam_st_MUC_4_56_fa"/>
+		<station id="MUC_4_67" name="Hbf AB" landingcap="99999" preflighttime="600" postflighttime="600" defaultwaittime="0" link="uam_sl-uam_st_MUC_4_67_ga-uam_st_MUC_4_67_fa"/>
+		<station id="MUC_4_74" name="Aichach" landingcap="99999" preflighttime="600" postflighttime="600" defaultwaittime="0" link="uam_sl-uam_st_MUC_4_74_ga-uam_st_MUC_4_74_fa"/>
+	</stations>
+	<vehicleTypes>
+		<vehicleType id="MC" capacity="2" cruisespeed="1" verticalspeed="5" boardingtime="30" deboardingtime="30" turnaroundtime="900"/>
+	</vehicleTypes>
+	<vehicles>
+		<vehicle id="uam_vh_MUC_4_00-0" type="MC" initialstation="MUC_4_67" starttime="00:00:00" endtime="30:00:00"/>
+	</vehicles>
+</uam>
