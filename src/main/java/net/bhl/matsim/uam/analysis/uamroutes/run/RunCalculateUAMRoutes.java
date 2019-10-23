@@ -16,6 +16,7 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.router.DijkstraFactory;
+import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
 import org.matsim.core.router.util.TravelDisutility;
 import org.matsim.core.router.util.TravelDisutilityUtils;
 import org.matsim.core.router.util.TravelTime;
@@ -64,8 +65,7 @@ public class RunCalculateUAMRoutes {
 
 	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
 		TravelTime tt = new FreeSpeedTravelTime();
-		TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
-				ConfigUtils.createConfig().planCalcScore());
+		TravelDisutility td = new OnlyTimeDependentTravelDisutility(tt);
 
 		UAMManager uamManager = new UAMManager(network);
 		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
