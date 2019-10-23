@@ -4,7 +4,7 @@
 <config>
 
 	<module name="uam" >
-		<param name="inputUAMFile" value="4.1_uam_vehicles_obuam_id-3.xml.gz" />
+		<param name="inputUAMFile" value="4.1_uam_vehicles_obuam_test.xml" />
 		<param name="availableAccessModes" value="walk,car,bike" />
 		<param name="parallelRouters" value="1" />
 		<param name="searchRadius" value="5050" />
