@@ -67,15 +67,15 @@ public class RunCalculateUAMRoutes {
 		TravelTime tt = new FreeSpeedTravelTime();
 		TravelDisutility td = new OnlyTimeDependentTravelDisutility(tt);
 
-		UAMManager uamManager = new UAMManager(network);
-		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-		uamManager.setVehicles(uamReader.getVehicles());
-
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
 		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
+
+		UAMManager uamManager = new UAMManager(networkUAM);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), networkUAM));
+		uamManager.setVehicles(uamReader.getVehicles());
 
 		return new UAMStationConnectionGraph(uamManager, null,
 				DefaultParallelLeastCostPathCalculator.create(
