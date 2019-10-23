@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.sbb.matsim.routing.pt.raptor.*;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMRoute;
@@ -13,7 +14,6 @@ import net.bhl.matsim.uam.qsim.UAMLinkSpeedCalculator;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.strategy.*;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
@@ -37,9 +37,11 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 import org.matsim.core.utils.misc.Time;
 import org.matsim.facilities.Facility;
+import org.matsim.pt.router.TransitRouter;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,7 +59,10 @@ import java.util.concurrent.Executors;
 
 public class RunCalculateUAMTravelTimes {
 	private static final Logger log = Logger.getLogger(RunCalculateUAMTravelTimes.class);
-
+	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<LeastCostPathCalculator>(Runtime.getRuntime().availableProcessors());
+	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<TransitRouter>(Runtime.getRuntime().availableProcessors());
+	private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator>(Runtime.getRuntime().availableProcessors());
+	
 	public static void main(String[] args) throws Exception {
 		System.out.println(
 				"ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
@@ -67,7 +72,7 @@ public class RunCalculateUAMTravelTimes {
 		// ARGS
 		int j = 0;
 		String networkInput = args[j++];
-		String networkEventsChangeFile = args[j++];
+//		String networkEventsChangeFile = args[j++];
 		String uamVehicles = args[j++];
 		String transitScheduleInput = args[j++];
 		String transitVehiclesInput = args[j++];
@@ -91,8 +96,8 @@ public class RunCalculateUAMTravelTimes {
 		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
 		config.network().setInputFile(networkInput);
 
-		config.network().setTimeVariantNetwork(true);
-		config.network().setChangeEventsInputFile(networkEventsChangeFile);
+//		config.network().setTimeVariantNetwork(true);
+//		config.network().setChangeEventsInputFile(networkEventsChangeFile);
 
 		// READ TRANSIT SCHEDULE
 		config.transit().setTransitScheduleFile(transitScheduleInput);
@@ -195,6 +200,23 @@ public class RunCalculateUAMTravelTimes {
 				pathCalculatorForStations);
 
 		pathCalculatorForStations.close();
+		
+		
+
+		DefaultRaptorParametersForPerson parametersForPerson = new DefaultRaptorParametersForPerson(config);
+		
+		//Provide routers
+		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar,
+				customCarDisutility, travelTime));
+			ptRouters.add(new SwissRailRaptor(data, parametersForPerson,
+					new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress()));
+			uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
+					Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkUAM, travelDisutility,
+					travelTime));
+		}
+
+		
 
 		// READ TRIPS INPUT
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(tripsInput)));
@@ -233,7 +255,7 @@ public class RunCalculateUAMTravelTimes {
 		int counter = 1;
 		ThreadCounter threadCounter = new ThreadCounter();
 		int maxProcesses = Runtime.getRuntime().availableProcessors();
-		ExecutorService es = Executors.newCachedThreadPool();
+		ExecutorService es = Executors.newFixedThreadPool(maxProcesses);
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
 				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
@@ -246,20 +268,13 @@ public class RunCalculateUAMTravelTimes {
 			es.execute(new UAMTravelTimeCalculator(threadCounter, network, config, trip, uamManager, networkUAM,
 					networkCar, scenario, strategyName, data, travelTime, travelDisutility, stationConnectionutilities,
 					customCarDisutility, pathCalculatorFactory));
-//			new Thread(new UAMTravelTimeCalculator(threadCounter, network, config, trip, uamManager, networkUAM, networkCar,
-//					scenario, strategyName, data, travelTime, travelDisutility, stationConnectionutilities)).start();
-
 			counter++;
-			if (counter == trips.size() + 1) {
-				es.shutdown(); 
-			}
 		}
 
+		es.shutdown();
 		while (!es.isTerminated()) {
-		// this is to make sure that the file is not written before any thread is over
-		//	log.info("Waiting all threads to finish...");
+			// this is to make sure that the file is not written before any thread is over
 		}
-		
 		// Writes output file
 		log.info("Writing travel times file...");
 		write(outputPath, trips);
@@ -332,17 +347,14 @@ public class RunCalculateUAMTravelTimes {
 		private Config config;
 		private ThreadCounter threadCounter;
 		private UAMManager uamManager;
-		private Network networkUAM;
 		private Network networkCar;
 		private Scenario scenario;
 		private String strategyName;
-		private SwissRailRaptorData data;
-		private TravelTime travelTime;
-		private TravelDisutility travelDisutility;
 		private UAMStationConnectionGraph stationConnectionutilities;
-		private CustomCarDisutility customCarDisutility;
-		private LeastCostPathCalculatorFactory pathCalculatorFactory;
-
+		private ParallelLeastCostPathCalculator pathCalculator;
+		private LeastCostPathCalculator plcpccar;
+		private TransitRouter transitRouter;
+		
 		UAMTravelTimeCalculator(ThreadCounter threadCounter, Network network, Config config, TripItem trip,
 				UAMManager uamManager, Network networkUAM, Network networkCar, Scenario scenario, String strategyName,
 				SwissRailRaptorData data, TravelTime travelTime, TravelDisutility travelDisutility,
@@ -353,49 +365,41 @@ public class RunCalculateUAMTravelTimes {
 			this.config = config;
 			this.threadCounter = threadCounter;
 			this.uamManager = uamManager;
-			this.networkUAM = networkUAM;
 			this.networkCar = networkCar;
 			this.scenario = scenario;
 			this.strategyName = strategyName;
-			this.data = data;
-			this.travelTime = travelTime;
-			this.travelDisutility = travelDisutility;
 			this.stationConnectionutilities = stationConnectionutilities;
-			this.customCarDisutility = customCarDisutility;
-			this.pathCalculatorFactory = pathCalculatorFactory;
 		}
 
 		@Override
 		public void run() {
 			threadCounter.register();
 
+			try {
+				pathCalculator = uamRouters.take();
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				plcpccar= carRouters.take();
+			} catch (InterruptedException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			try {
+				transitRouter = ptRouters.take();
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+
+			
 			Link from = NetworkUtils.getNearestLink(network, trip.origin);
 			Link to = NetworkUtils.getNearestLink(network, trip.destination);
 			Facility<?> fromFacility = new LinkWrapperFacility(from);
 			Facility<?> toFacility = new LinkWrapperFacility(to);
 
-			// SETTING PARALLEL ROUTERS
-
-			// LEAST COST Parallel PATH CALCULATOR - uam
-			DefaultParallelLeastCostPathCalculator pathCalculator = DefaultParallelLeastCostPathCalculator.create(
-					Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkUAM, travelDisutility,
-					travelTime);
-			// PLCPCCAR - car
-
-			LeastCostPathCalculator plcpccar = pathCalculatorFactory.createPathCalculator(networkCar,
-					customCarDisutility, travelTime);
-
-//			DefaultParallelLeastCostPathCalculator plcpccar = DefaultParallelLeastCostPathCalculator.create(
-//					Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkCar, travelDisutility, travelTime);
-
-			// SET PUBLIC TRANSPORT ROUTER - pt (this one is not parallel)
-			DefaultRaptorParametersForPerson parametersForPerson = new DefaultRaptorParametersForPerson(config);
-			Logger.getLogger("ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor").setLevel(Level.WARN);
-			SwissRailRaptor transitRouter = new SwissRailRaptor(data, parametersForPerson,
-					new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress());
-
-			// Create StrategyUtils
-			// Using default parameters from the uamConfig group : walkDistance, etc.
 			UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
 					(UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,
 					networkCar, transitRouter, pathCalculator, plcpccar, null);
@@ -448,8 +452,26 @@ public class RunCalculateUAMTravelTimes {
 			}
 
 			trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
-			pathCalculator.close();
-//			plcpccar.close();
+//			pathCalculator.close();
+
+			try {
+				ptRouters.put(transitRouter);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				uamRouters.put((DefaultParallelLeastCostPathCalculator) pathCalculator);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				carRouters.put(plcpccar);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			threadCounter.deregister();
 		}
 	}
