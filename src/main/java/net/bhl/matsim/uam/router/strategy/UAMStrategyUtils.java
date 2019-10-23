@@ -80,10 +80,11 @@ public class UAMStrategyUtils {
 														   Facility<?> facility, double departureTime) {
 		Set<String> modes = new HashSet<>(uamConfig.getAvailableAccessModes());
 		Map<Id<UAMStation>, UAMAccessOptions> accessRouteData = new HashMap<>();
-		String bestModeDistance = TransportMode.walk;
-		String bestModeTime = TransportMode.walk;
 
 		for (UAMStation station : stations) {
+			String bestModeDistance = null;
+			String bestModeTime = null;
+
 			double minDistance = Double.POSITIVE_INFINITY;
 			double minAccessTime = Double.POSITIVE_INFINITY;
 
@@ -92,19 +93,23 @@ public class UAMStrategyUtils {
 				double distance = uamAccessLeg.distance;
 				double travelTime = uamAccessLeg.travelTime;
 
-				boolean walkingFilter = distance > uamConfig.getWalkDistance() || mode.equals(TransportMode.walk);
-				if (distance < minDistance && walkingFilter) {
+				if (distance <= uamConfig.getWalkDistance() && modes.contains(TransportMode.walk))
+					continue;
+
+				if (distance < minDistance) {
 					minDistance = distance;
 					bestModeDistance = mode;
 				}
-				if (travelTime < minAccessTime && walkingFilter) {
+
+				if (travelTime < minAccessTime) {
 					minAccessTime = travelTime;
 					bestModeTime = mode;
 				}
 			}
 
-			accessRouteData.put(station.getId(), new UAMAccessOptions(minDistance, minAccessTime,
-					bestModeDistance, bestModeTime, station));
+			if (bestModeDistance != null)
+				accessRouteData.put(station.getId(), new UAMAccessOptions(minDistance, minAccessTime,
+						bestModeDistance, bestModeTime, station));
 		}
 		return accessRouteData;
 	}
