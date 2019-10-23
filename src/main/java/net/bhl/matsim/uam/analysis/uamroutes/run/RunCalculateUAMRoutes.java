@@ -7,11 +7,13 @@ import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.util.TravelDisutility;
@@ -23,7 +25,9 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This script generates a CSV file containing the distance, travel time and
@@ -67,11 +71,17 @@ public class RunCalculateUAMRoutes {
 		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
 		uamManager.setVehicles(uamReader.getVehicles());
 
+		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
+		Set<String> modes = new HashSet<>();
+		modes.add(UAMModes.UAM_MODE);
+		Network networkUAM = NetworkUtils.createNetwork();
+		filter.filter(networkUAM, modes);
+
 		return new UAMStationConnectionGraph(uamManager, null,
 				DefaultParallelLeastCostPathCalculator.create(
 						Runtime.getRuntime().availableProcessors(),
 						new DijkstraFactory(),
-						network, td, tt));
+						networkUAM, td, tt));
 	}
 
 	private static void write(String outputPath) throws IOException {

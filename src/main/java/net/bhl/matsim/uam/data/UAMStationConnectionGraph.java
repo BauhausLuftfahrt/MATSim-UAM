@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static java.lang.Math.min;
+
 /**
  * Class that stores information about UAMStations, such as distances, travel
  * times and utilities between stations.
@@ -65,10 +67,10 @@ public class UAMStationConnectionGraph {
 						log.error("UAM links within the MATSim network do not provide the \"type\" attribute, defining the flight segment.");
 
 					if (flightSegment.equals(UAMFlightSegments.HORIZONTAL))
-						travelTime += link.getLength() / horizontalSpeed;
+						travelTime += link.getLength() / min(horizontalSpeed, link.getFreespeed());
 
 					if (flightSegment.equals(UAMFlightSegments.VERTICAL))
-						travelTime += link.getLength() / verticalSpeed;
+						travelTime += link.getLength() / min(verticalSpeed, link.getFreespeed());
 				}
 
 				if (legs.containsKey(uamStationOrigin.getId())) {
