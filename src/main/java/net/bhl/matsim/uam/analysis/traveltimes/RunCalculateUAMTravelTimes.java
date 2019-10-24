@@ -71,15 +71,15 @@ public class RunCalculateUAMTravelTimes {
 		String outputPath = args[j++];
 
 		double processTime = 0;
-		if (args.length == j + 1)
+		if (args.length >= j + 1)
 			processTime = Double.parseDouble(args[j++]) * 60;
 
 		double searchRadius = 50000;
-		if (args.length == j + 1)
+		if (args.length >= j + 1)
 			searchRadius = Double.parseDouble(args[j++]) * 1000;
 
 		String accessModes = "car,pt,bike,walk";
-		if (args.length == j + 1)
+		if (args.length >= j + 1)
 			accessModes = args[j];
 
 		// READ NETWORK
