@@ -16,8 +16,8 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.router.DijkstraFactory;
+import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
 import org.matsim.core.router.util.TravelDisutility;
-import org.matsim.core.router.util.TravelDisutilityUtils;
 import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.trafficmonitoring.FreeSpeedTravelTime;
 
@@ -41,6 +41,7 @@ public class RunCalculateUAMRoutes {
 	static final private String delimiter = ",";
 	static private Map<Id<UAMStation>, UAMStation> stations;
 	static private UAMStationConnectionGraph uamSCG;
+	static private DefaultParallelLeastCostPathCalculator pllcpc;
 
 	static public void main(String[] args) throws IOException {
 		// PROVIDE: NETWORK UAMVEHICLES OUTFILE-NAME
@@ -54,34 +55,34 @@ public class RunCalculateUAMRoutes {
 		Network network = NetworkUtils.createNetwork();
 		new MatsimNetworkReader(network).readFile(networkString);
 
-		UAMXMLReader uamReader = new UAMXMLReader(network);
-		uamReader.readFile(uamVehicles);
-
-		stations = uamReader.getStations();
-		uamSCG = calculateRoutes(network, uamReader);
-		write(outfile);
-	}
-
-	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
-		TravelTime tt = new FreeSpeedTravelTime();
-		TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
-				ConfigUtils.createConfig().planCalcScore());
-
-		UAMManager uamManager = new UAMManager(network);
-		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-		uamManager.setVehicles(uamReader.getVehicles());
-
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
 		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 
-		return new UAMStationConnectionGraph(uamManager, null,
-				DefaultParallelLeastCostPathCalculator.create(
-						Runtime.getRuntime().availableProcessors(),
-						new DijkstraFactory(),
-						networkUAM, td, tt));
+		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
+		uamReader.readFile(uamVehicles);
+
+		stations = uamReader.getStations();
+		uamSCG = calculateRoutes(networkUAM, uamReader);
+		write(outfile);
+		pllcpc.close();
+	}
+
+	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
+		TravelTime tt = new FreeSpeedTravelTime();
+		TravelDisutility td = new OnlyTimeDependentTravelDisutility(tt);
+
+		UAMManager uamManager = new UAMManager(network);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+		uamManager.setVehicles(uamReader.getVehicles());
+		pllcpc = DefaultParallelLeastCostPathCalculator.create(
+				Runtime.getRuntime().availableProcessors(),
+				new DijkstraFactory(),
+				network, td, tt);
+
+		return new UAMStationConnectionGraph(uamManager, null, pllcpc);
 	}
 
 	private static void write(String outputPath) throws IOException {
