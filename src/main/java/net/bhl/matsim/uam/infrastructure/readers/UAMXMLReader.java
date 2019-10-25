@@ -28,15 +28,15 @@ import java.util.Stack;
  */
 public class UAMXMLReader extends MatsimXmlParser {
 
-	private Network network;
+	public final Network network;
 	private Map<Id<UAMStation>, UAMStation> stations = new HashMap<Id<UAMStation>, UAMStation>();
 	private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<Id<Vehicle>, UAMVehicle>(); // added
 	private Map<Id<UAMVehicleType>, UAMVehicleType> vehicleTypes = new HashMap<Id<UAMVehicleType>, UAMVehicleType>(); // added
 	private Map<String, Double> mapVehicleHorizontalSpeeds = new HashMap<>();
 	private Map<String, Double> mapVehicleVerticalSpeeds = new HashMap<>();
 
-	public UAMXMLReader(Network network) {
-		this.network = network;
+	public UAMXMLReader(Network uamNetwork) {
+		this.network = uamNetwork;
 	}
 
 	@Override
