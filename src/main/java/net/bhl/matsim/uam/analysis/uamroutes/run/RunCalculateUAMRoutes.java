@@ -77,11 +77,14 @@ public class RunCalculateUAMRoutes {
 		uamManager.setStations(new UAMStations(uamReader.getStations(), uamReader.network));
 		uamManager.setVehicles(uamReader.getVehicles());
 
-		return new UAMStationConnectionGraph(uamManager, null,
-				DefaultParallelLeastCostPathCalculator.create(
-						Runtime.getRuntime().availableProcessors(),
-						new DijkstraFactory(),
-						uamReader.network, td, tt));
+		DefaultParallelLeastCostPathCalculator pllcp = DefaultParallelLeastCostPathCalculator.create(
+				Runtime.getRuntime().availableProcessors(),
+				new DijkstraFactory(),
+				uamReader.network, td, tt);
+
+		UAMStationConnectionGraph uamSCG = new UAMStationConnectionGraph(uamManager, null, pllcp);
+		pllcp.close();
+		return uamSCG;
 	}
 
 	private static void write(String outputPath) throws IOException {
