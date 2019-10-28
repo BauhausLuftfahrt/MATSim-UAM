@@ -3,6 +3,8 @@ package net.bhl.matsim.uam.analysis.traveltimes;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.sbb.matsim.routing.pt.raptor.*;
+import net.bhl.matsim.uam.analysis.traveltimes.parallel.ThreadCounter;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
@@ -58,17 +60,16 @@ import java.util.concurrent.Executors;
  */
 
 public class RunCalculateUAMTravelTimes {
+	private static final int processes = Runtime.getRuntime().availableProcessors();
 	private static final Logger log = Logger.getLogger(RunCalculateUAMTravelTimes.class);
-	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<LeastCostPathCalculator>(Runtime.getRuntime().availableProcessors());
-	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<TransitRouter>(Runtime.getRuntime().availableProcessors());
-	private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator>(Runtime.getRuntime().availableProcessors());
+	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
+	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
+	private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
 	
 	public static void main(String[] args) throws Exception {
-		System.out.println(
-				"ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
+		System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
 		System.out.println("(* required)");
 
-		// READ THE INPUTS
 		// ARGS
 		int j = 0;
 		String networkInput = args[j++];
@@ -189,20 +190,20 @@ public class RunCalculateUAMTravelTimes {
 
 		// This router is used only to create the UAMStationConnectionGraph class
 		DefaultParallelLeastCostPathCalculator pathCalculatorForStations = DefaultParallelLeastCostPathCalculator
-				.create(Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkUAM,
+				.create(processes, new DijkstraFactory(), networkUAM,
 						travelDisutility, travelTime);
 		UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager, null,
 				pathCalculatorForStations);
 		pathCalculatorForStations.close();
 
 		//Provide routers
-		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+		for (int i = 0; i < processes; i++) {
 			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar,
 				customCarDisutility, travelTime));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress()));
 			uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
-					Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkUAM, travelDisutility,
+					processes, new DijkstraFactory(), networkUAM, travelDisutility,
 					travelTime));
 		}
 
@@ -242,14 +243,13 @@ public class RunCalculateUAMTravelTimes {
 		log.info("Calculating travel times...");
 		int counter = 1;
 		ThreadCounter threadCounter = new ThreadCounter();
-		int maxProcesses = Runtime.getRuntime().availableProcessors();
-		ExecutorService es = Executors.newFixedThreadPool(maxProcesses);
+		ExecutorService es = Executors.newFixedThreadPool(processes);
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
 				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
 						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
 
-			while (threadCounter.getProcesses() >= maxProcesses - 1)
+			while (threadCounter.getProcesses() >= processes - 1)
 				Thread.sleep(200);
 
 			es.execute(new UAMTravelTimeCalculator(threadCounter, network, config, trip, uamManager, networkUAM,
@@ -296,38 +296,6 @@ public class RunCalculateUAMTravelTimes {
 						"egress_mode", "orig_station", "dest_station" });
 	}
 
-	static class TripItem {
-		public Coord origin;
-		public Coord destination;
-		public double departureTime;
-		public double travelTime;
-		public double distance;
-		public double accessTime;
-		public double flightTime;
-		public double egressTime;
-		public double processTime;
-		public String accessMode;
-		public String egressMode;
-		public String originStation;
-		public String destinationStation;
-	}
-
-	static class ThreadCounter {
-		private int processes;
-
-		public synchronized void register() {
-			processes++;
-		}
-
-		public synchronized void deregister() {
-			processes--;
-		}
-
-		public synchronized int getProcesses() {
-			return processes;
-		}
-	}
-
 	static class UAMTravelTimeCalculator implements Runnable {
 
 		private TripItem trip;
@@ -367,8 +335,8 @@ public class RunCalculateUAMTravelTimes {
 				pathCalculator = uamRouters.take();
 				plcpccar= carRouters.take();
 				transitRouter = ptRouters.take();
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			
 			Link from = NetworkUtils.getNearestLink(network, trip.origin);
@@ -401,8 +369,8 @@ public class RunCalculateUAMTravelTimes {
 			UAMRoute uamRoute = null;
 			try {
 				uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
-			} catch (InterruptedException | ExecutionException e1) {
-				e1.printStackTrace();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
 			}
 
 			trip.accessMode = uamRoute.accessMode;
