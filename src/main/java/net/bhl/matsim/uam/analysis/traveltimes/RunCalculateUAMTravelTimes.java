@@ -66,7 +66,9 @@ public class RunCalculateUAMTravelTimes {
     private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
 
     public static void main(String[] args) throws Exception {
-        System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* total-process-times-mins search-radius-km access-modes");
+        System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* " +
+                "transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* " +
+                "total-process-times-mins search-radius-km access-modes");
         System.out.println("(* required)");
 
         // ARGS
@@ -281,21 +283,16 @@ public class RunCalculateUAMTravelTimes {
                     System.exit(-1);
             }
 
-            UAMRoute uamRoute = null;
             try {
-                uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+                UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
 
-            trip.accessMode = uamRoute.accessMode;
-            trip.egressMode = uamRoute.egressMode;
-            trip.originStation = uamRoute.bestOriginStation.getId().toString();
-            trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
+                trip.accessMode = uamRoute.accessMode;
+                trip.egressMode = uamRoute.egressMode;
+                trip.originStation = uamRoute.bestOriginStation.getId().toString();
+                trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
 
-            trip.processTime = processTime;
+                trip.processTime = processTime;
 
-            try {
                 trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
                         uamRoute.bestOriginStation, uamRoute.accessMode);
 
@@ -305,7 +302,7 @@ public class RunCalculateUAMTravelTimes {
                         uamRoute.bestDestinationStation, uamRoute.egressMode);
 
                 trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException | NullPointerException e) {
 				log.warn("No travel time estimation could be made for trip from " + trip.origin
 						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
             }
