@@ -33,7 +33,7 @@ public class TripItemReader {
                 Coord originCood = new Coord(originX, originY);
                 Coord destinationCoord = new Coord(destX, destY);
 
-                UAMTripItem trip = new UAMTripItem();
+                TripItem trip = new TripItem();
                 trip.origin = originCood;
                 trip.destination = destinationCoord;
                 trip.departureTime = departureTime;
