@@ -45,7 +45,7 @@ public class RunCalculateCarTravelTimes {
 	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("ARGS: base-network.xml* networkEventsChangeFile.xml.gz*.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
+		System.out.println("ARGS: base-network.xml* networkEventsChangeFile.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
 		System.out.println("(* required)");
 
 		// ARGS
