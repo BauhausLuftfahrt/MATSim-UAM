@@ -7,11 +7,13 @@ import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.util.TravelDisutility;
@@ -23,7 +25,9 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This script generates a CSV file containing the distance, travel time and
@@ -50,28 +54,37 @@ public class RunCalculateUAMRoutes {
 		Network network = NetworkUtils.createNetwork();
 		new MatsimNetworkReader(network).readFile(networkString);
 
-		UAMXMLReader uamReader = new UAMXMLReader(network);
+		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
+		Set<String> modes = new HashSet<>();
+		modes.add(UAMModes.UAM_MODE);
+		Network networkUAM = NetworkUtils.createNetwork();
+		filter.filter(networkUAM, modes);
+
+		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
 		uamReader.readFile(uamVehicles);
 
 		stations = uamReader.getStations();
-		uamSCG = calculateRoutes(network, uamReader);
+		uamSCG = calculateRoutes(uamReader);
 		write(outfile);
 	}
 
-	static public UAMStationConnectionGraph calculateRoutes(Network network, UAMXMLReader uamReader) {
+	static public UAMStationConnectionGraph calculateRoutes(UAMXMLReader uamReader) {
 		TravelTime tt = new FreeSpeedTravelTime();
 		TravelDisutility td = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(
 				ConfigUtils.createConfig().planCalcScore());
 
-		UAMManager uamManager = new UAMManager(network);
-		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+		UAMManager uamManager = new UAMManager(uamReader.network);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), uamReader.network));
 		uamManager.setVehicles(uamReader.getVehicles());
 
-		return new UAMStationConnectionGraph(uamManager, null,
-				DefaultParallelLeastCostPathCalculator.create(
-						Runtime.getRuntime().availableProcessors(),
-						new DijkstraFactory(),
-						network, td, tt));
+		DefaultParallelLeastCostPathCalculator pllcp = DefaultParallelLeastCostPathCalculator.create(
+				Runtime.getRuntime().availableProcessors(),
+				new DijkstraFactory(),
+				uamReader.network, td, tt);
+
+		UAMStationConnectionGraph uamSCG = new UAMStationConnectionGraph(uamManager, null, pllcp);
+		pllcp.close();
+		return uamSCG;
 	}
 
 	private static void write(String outputPath) throws IOException {
