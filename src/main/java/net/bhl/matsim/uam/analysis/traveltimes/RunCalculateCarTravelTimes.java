@@ -1,28 +1,28 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
+import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.controler.AbstractModule;
+import org.matsim.core.controler.Injector;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.DijkstraFactory;
+import org.matsim.core.router.AStarLandmarksFactory;
+import org.matsim.core.router.util.*;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
-import org.matsim.core.router.util.TravelDisutility;
-import org.matsim.core.router.util.TravelDisutilityUtils;
-import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
-import org.matsim.core.utils.misc.Time;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * This script generates csv file containing estimated travel times by CAR for
@@ -34,26 +34,22 @@ import java.util.concurrent.Future;
  */
 
 public class RunCalculateCarTravelTimes {
+	private static final int processes = Runtime.getRuntime().availableProcessors();
 	private static final Logger log = Logger.getLogger(RunCalculateCarTravelTimes.class);
+	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(
-				"ARGS: base-network.xml* networkEventsChangeFile.xml.gz*.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
+		System.out.println("ARGS: base-network.xml* networkEventsChangeFile.xml.gz*.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
 		String networkInput = args[j++];
-		String networkEventsChangeFile = args[j++]; // ADD EVENTS INPUT
+		String networkEventsChangeFile = args[j++];
 		String tripsInput = args[j++];
 		String outputPath = args[j];
 
-		Config config = ConfigUtils.createConfig();
-		config.network().setInputFile(networkInput);
-
-		config.network().setTimeVariantNetwork(true);
-		config.network().setChangeEventsInputFile(networkEventsChangeFile);
-
+		Config config = ConfigSetter.createCarConfig(networkInput, networkEventsChangeFile);
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
@@ -71,92 +67,48 @@ public class RunCalculateCarTravelTimes {
 		TravelDisutility travelDisutility = TravelDisutilityUtils
 				.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
 
-		DefaultParallelLeastCostPathCalculator pathCalculator = DefaultParallelLeastCostPathCalculator.create(
-				Runtime.getRuntime().availableProcessors(), new DijkstraFactory(), networkCar, travelDisutility,
-				travelTime);
-
-		// READ TRIPS FILE AND CALCULATES TRAVEL TIMES
-		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(tripsInput)));
-		String line = null;
-		List<String> header = null;
-		List<TripItem> trips = new ArrayList<>();
-
-		while ((line = reader.readLine()) != null) {
-			List<String> row = Arrays.asList(line.split(","));
-
-			if (header == null) {
-				header = row;
-			} else {
-				double originX = Double.parseDouble(row.get(header.indexOf("origin_x")));
-				double originY = Double.parseDouble(row.get(header.indexOf("origin_y")));
-				double destX = Double.parseDouble(row.get(header.indexOf("destination_x")));
-				double destY = Double.parseDouble(row.get(header.indexOf("destination_y")));
-				double departureTime = Time.parseTime(row.get(header.indexOf("trip_time")));
-
-				Coord originCood = new Coord(originX, originY);
-				Coord destinationCoord = new Coord(destX, destY);
-
-				TripItem trip = new TripItem();
-				trip.origin = originCood;
-				trip.destination = destinationCoord;
-				trip.departureTime = departureTime;
-
-				trips.add(trip);
+		com.google.inject.Injector injector = Injector.createInjector(config, new AbstractModule() {
+			@Override
+			public void install() {
+				bind(LeastCostPathCalculatorFactory.class).to(AStarLandmarksFactory.class);
 			}
+		});
+		LeastCostPathCalculatorFactory pathCalculatorFactory = injector
+				.getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
+
+		//Provide routers
+		for (int i = 0; i < processes; i++) {
+			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
 		}
-		reader.close();
+
+		// READ TRIPS INPUT
+		List<TripItem> trips = TripItemReader.getTripItems(tripsInput);
 
 		// Calculate travel times
 		log.info("Calculating travel times...");
-		List<TripItem> failedTrips = new ArrayList<>();
 		int counter = 1;
+		ThreadCounter threadCounter = new ThreadCounter();
+		ExecutorService es = Executors.newFixedThreadPool(processes);
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
 				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
 						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
-			try {
-				Link from = NetworkUtils.getNearestLink(network, trip.origin);
-				Link to = NetworkUtils.getNearestLink(network, trip.destination);
-				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, networkCar, pathCalculator);
-			} catch (NullPointerException e) {
-				log.warn("No travel time estimation could be made for trip #" + counter + " from " + trip.origin
-						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
-				failedTrips.add(trip);
-			}
 
+			while (threadCounter.getProcesses() >= processes - 1)
+				Thread.sleep(200);
+
+			es.execute(new CarTravelTimeCalculator(threadCounter, networkCar, trip));
 			counter++;
 		}
-
-		log.info("" + failedTrips.size() + " trips without travel times have been removed.");
-		trips.removeAll(failedTrips);
-		pathCalculator.close();
+		es.shutdown();
+		// Make sure that the file is not written before all threads are finished
+		while (!es.isTerminated())
+			Thread.sleep(200);
 
 		// Writes output file
 		log.info("Writing travelTimes file...");
 		write(outputPath, trips);
 		log.info("...done.");
-	}
-
-	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-			DefaultParallelLeastCostPathCalculator pathCalculator) throws InterruptedException, ExecutionException {
-		if (carNetwork.getLinks().get(from.getId()) != null)
-			from = carNetwork.getLinks().get(from.getId());
-		else
-			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
-
-		if (carNetwork.getLinks().get(to.getId()) != null)
-			to = carNetwork.getLinks().get(to.getId());
-		else
-			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
-		Future<Path> path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
-				null);
-		/*
-		 * for (Link link : path.get().links) { log.warn("Link ID: " + link.getId() +
-		 * "  Capacity: "+ link.getCapacity() + " FlowCapacityPerSec: " +
-		 * link.getFlowCapacityPerSec() +"   FreeSpeed: "+link.getFreespeed()); }
-		 */
-
-		return path.get().travelTime;
 	}
 
 	public static void write(String outputPath, List<TripItem> trips) throws IOException {
@@ -180,11 +132,66 @@ public class RunCalculateCarTravelTimes {
 				"departure_time", "travel_time" });
 	}
 
-	public static class TripItem {
-		public Coord origin;
-		public Coord destination;
-		public double departureTime;
-		public double travelTime;
+	static class CarTravelTimeCalculator implements Runnable {
 
+		private TripItem trip;
+		private ThreadCounter threadCounter;
+		private Network networkCar;
+		private LeastCostPathCalculator plcpccar;
+
+		CarTravelTimeCalculator(ThreadCounter threadCounter, Network network, TripItem trip) {
+			this.threadCounter = threadCounter;
+			this.networkCar = network;
+			this.trip = trip;
+		}
+
+		@Override
+		public void run() {
+			threadCounter.register();
+
+			try {
+				plcpccar = carRouters.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Link from = NetworkUtils.getNearestLink(networkCar, trip.origin);
+			Link to = NetworkUtils.getNearestLink(networkCar, trip.destination);
+
+			try {
+				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, networkCar, plcpccar);
+			} catch (NullPointerException e) {
+				log.warn("No travel time estimation could be made for trip from " + trip.origin
+						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
+			}
+
+			try {
+				carRouters.put(plcpccar);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			threadCounter.deregister();
+		}
 	}
+
+	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
+											 LeastCostPathCalculator pathCalculator) {
+		if (carNetwork.getLinks().get(from.getId()) != null)
+			from = carNetwork.getLinks().get(from.getId());
+		else
+			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
+
+		if (carNetwork.getLinks().get(to.getId()) != null)
+			to = carNetwork.getLinks().get(to.getId());
+		else
+			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
+		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
+				null);
+
+		double time = 0;
+		for (Link link : path.links)
+			time += link.getLength() / link.getFreespeed(departureTime);
+		return time;
+	}
+
 }

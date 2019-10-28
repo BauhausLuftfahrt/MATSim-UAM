@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.analysis.traveltimes.parallel;
+package net.bhl.matsim.uam.analysis.traveltimes.utils;
 
 public class ThreadCounter {
     private int processes;

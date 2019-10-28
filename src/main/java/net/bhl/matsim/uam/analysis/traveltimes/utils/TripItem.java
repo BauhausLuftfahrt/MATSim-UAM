@@ -7,6 +7,7 @@ public class TripItem {
     public Coord destination;
     public double departureTime;
     public double travelTime;
+
     public double distance;
     public double accessTime;
     public double flightTime;
