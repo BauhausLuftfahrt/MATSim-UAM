@@ -1,8 +1,8 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
 import ch.sbb.matsim.routing.pt.raptor.*;
-import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
+import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import org.apache.log4j.Logger;

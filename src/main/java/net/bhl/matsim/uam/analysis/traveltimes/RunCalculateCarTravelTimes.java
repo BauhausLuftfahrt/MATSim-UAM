@@ -4,7 +4,6 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
-import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
@@ -20,9 +19,16 @@ import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This script generates csv file containing estimated travel times by CAR for
