@@ -192,8 +192,6 @@ public class TripListener implements ActivityStartEventHandler, ActivityEndEvent
 
 		if (item != null) {
 			item.mode = "STUCK AND ABORTED";
-			item.destination = network.getLinks().get(event.getLinkId()).getCoord();
-			item.crowflyDistance = CoordUtils.calcEuclideanDistance(item.origin, item.destination);
 			trips.add(item);
 		}
 	}

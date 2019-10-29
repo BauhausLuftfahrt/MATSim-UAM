@@ -26,6 +26,7 @@ import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * This class provides the methods used for different UAMStrategies.
@@ -75,6 +76,8 @@ public class UAMStrategyUtils {
 	 * @param facility the origin of the trip (if access leg); the trip final
 	 *                 destination (if egress leg).
 	 * @return a map with station Id's as keys and UAMAccessRouteData as values.
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	Map<Id<UAMStation>, UAMAccessOptions> getAccessOptions(boolean access, Collection<UAMStation> stations,
 														   Facility<?> facility, double departureTime) {
@@ -139,6 +142,7 @@ public class UAMStrategyUtils {
 					to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
 				Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, null, null);
+
 				double distanceByCar = 0.0;
 				for (Link l : path.links) {
 					distanceByCar += l.getLength();
@@ -200,6 +204,8 @@ public class UAMStrategyUtils {
 					to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
 				Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, person, null);
+
+
 				double distance = 0.0;
 				for (Link l : path.links) {
 					distance += l.getLength();

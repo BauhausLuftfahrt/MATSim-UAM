@@ -68,7 +68,7 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 				continue;
 
 			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
-			//updated departureTime 				
+			// updated departureTime
 			double currentDepartureTime = departureTime + strategyUtils.estimateAccessLeg(true, fromFacility,
 					departureTime, bestStationOrigin, bestModeAccess).travelTime + flyTime;
 
@@ -83,8 +83,8 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 
 				if (strategyUtils.getParameters().storeUAMUtilities != 0) {
 					UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
-							stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(),
-							false, egressUtility, mode, departureTime));
+							stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), false,
+							egressUtility, mode, departureTime));
 				}
 			}
 		}
