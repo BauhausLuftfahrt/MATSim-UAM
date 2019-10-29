@@ -98,12 +98,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 		UAMRoute uamRoute = UAMRoutes.getInstance().get(person.getId(), departureTime);
 		if (uamRoute == null)
-			try {
-				uamRoute = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
-			} catch (InterruptedException | ExecutionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			uamRoute = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
 
 		if (uamRoute == null) {
 			if (counterWarningConvertedToWalk < counterLimit)

@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the
@@ -41,7 +40,7 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) throws InterruptedException, ExecutionException {
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		Network network = strategyUtils.getNetwork();
 		Set<String> modes = strategyUtils.getModes();
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);

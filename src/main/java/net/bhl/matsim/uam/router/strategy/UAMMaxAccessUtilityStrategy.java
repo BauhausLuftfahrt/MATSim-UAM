@@ -12,7 +12,6 @@ import org.matsim.facilities.Facility;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This strategy is used to assign to the passenger the UAMRoute based on the
@@ -33,7 +32,7 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) throws InterruptedException, ExecutionException {
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		Network network = strategyUtils.getNetwork();
 		Set<String> modes = new HashSet<>();
 		modes = strategyUtils.getModes();
@@ -43,63 +42,52 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 		UAMStation bestStationOrigin = null;
 		String bestModeAccess = TransportMode.walk;
 		double bestUtilityAccess = Double.NEGATIVE_INFINITY;
-		try {
-			for (UAMStation stationOrigin : stationsOrigin) {
-				for (String mode : modes) {
-					double accessUtility = strategyUtils.estimateUtilityWrapper(person, true, fromFacility, departureTime,
-							stationOrigin, mode);
-					if (accessUtility > bestUtilityAccess) {
-						bestUtilityAccess = accessUtility;
-						bestModeAccess = mode;
-						bestStationOrigin = stationOrigin;
-					}
+		for (UAMStation stationOrigin : stationsOrigin) {
+			for (String mode : modes) {
+				double accessUtility = strategyUtils.estimateUtilityWrapper(person, true, fromFacility, departureTime,
+						stationOrigin, mode);
+				if (accessUtility > bestUtilityAccess) {
+					bestUtilityAccess = accessUtility;
+					bestModeAccess = mode;
+					bestStationOrigin = stationOrigin;
+				}
 
-					if (strategyUtils.getParameters().storeUAMUtilities != 0) {
-						UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
-								stationOrigin.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), true,
-								accessUtility, mode, departureTime));
-					}
+				if (strategyUtils.getParameters().storeUAMUtilities != 0) {
+					UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
+							stationOrigin.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), true,
+							accessUtility, mode, departureTime));
 				}
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		// Egress utility
 		UAMStation bestStationDestination = null;
 		String bestModeEgress = TransportMode.walk;
 		double bestUtilityEgress = Double.NEGATIVE_INFINITY;
-		for (UAMStation stationDestination : stationsDestination)
-			try {
-				{
-					if (bestStationOrigin == stationDestination)
-						continue;
+		for (UAMStation stationDestination : stationsDestination) {
+			if (bestStationOrigin == stationDestination)
+				continue;
 
-					double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
-					//updated departureTime 				
-					double currentDepartureTime = departureTime + strategyUtils.estimateAccessLeg(true, fromFacility,
-							departureTime, bestStationOrigin, bestModeAccess).travelTime + flyTime;
+			double flyTime = strategyUtils.getFlightTime(bestStationOrigin, stationDestination);
+			// updated departureTime
+			double currentDepartureTime = departureTime + strategyUtils.estimateAccessLeg(true, fromFacility,
+					departureTime, bestStationOrigin, bestModeAccess).travelTime + flyTime;
 
-					for (String mode : modes) {
-						double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility,
-								currentDepartureTime, stationDestination, mode);
-						if (egressUtility > bestUtilityEgress) {
-							bestUtilityEgress = egressUtility;
-							bestModeEgress = mode;
-							bestStationDestination = stationDestination;
-						}
-
-						if (strategyUtils.getParameters().storeUAMUtilities != 0) {
-							UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
-									stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(),
-									false, egressUtility, mode, departureTime));
-						}
-					}
+			for (String mode : modes) {
+				double egressUtility = strategyUtils.estimateUtilityWrapper(person, false, toFacility,
+						currentDepartureTime, stationDestination, mode);
+				if (egressUtility > bestUtilityEgress) {
+					bestUtilityEgress = egressUtility;
+					bestModeEgress = mode;
+					bestStationDestination = stationDestination;
 				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				if (strategyUtils.getParameters().storeUAMUtilities != 0) {
+					UAMUtilitiesData.accessEgressOptions.add(new UAMUtilitiesAccessEgress(person.getId(),
+							stationDestination.getId(), network.getLinks().get(fromFacility.getLinkId()).getId(), false,
+							egressUtility, mode, departureTime));
+				}
 			}
+		}
 
 		return new UAMRoute(bestModeAccess, bestStationOrigin, bestStationDestination, bestModeEgress);
 	}

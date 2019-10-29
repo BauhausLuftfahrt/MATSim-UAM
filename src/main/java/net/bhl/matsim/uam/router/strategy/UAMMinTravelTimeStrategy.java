@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This strategy is used to assign to the passenger a UAMRoute based on the
@@ -33,14 +32,14 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) throws InterruptedException, ExecutionException {
+	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
 		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
 
 		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
-		//UAM flight time  + access and egress travel time
+		// UAM flight time + access and egress travel time
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		Set<String> modes = strategyUtils.getModes();
 		String bestModeEgress = TransportMode.walk;
@@ -48,16 +47,18 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 			for (UAMStation stationDestination : stationsDestination) {
 				if (stationOrigin == stationDestination)
 					continue;
-				//fly time between stations
+				// fly time between stations
 				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
-				//updates departureTime 
-				double currentDepartureTime = departureTime + accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime;
+				// updates departureTime
+				double currentDepartureTime = departureTime
+						+ accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime;
 				for (String mode : modes) {
-					//Calculates the time travel for the egress routes
-					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility,
-							currentDepartureTime, stationDestination, mode).travelTime;
-					//Calculates the minimum total time
-					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime + egressTravelTime;
+					// Calculates the time travel for the egress routes
+					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
+							stationDestination, mode).travelTime;
+					// Calculates the minimum total time
+					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime
+							+ egressTravelTime;
 					if (totalTime < minTotalTime) {
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;

@@ -1,8 +1,6 @@
 package net.bhl.matsim.uam.router.strategy;
 
-import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMAccessLeg;
 import net.bhl.matsim.uam.data.UAMAccessOptions;
@@ -29,7 +27,6 @@ import org.matsim.pt.router.TransitRouter;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * This class provides the methods used for different UAMStrategies.
@@ -46,9 +43,7 @@ public class UAMStrategyUtils {
 	private TransitRouter transitRouter;
 	private ParallelLeastCostPathCalculator plcpc;
 	private LeastCostPathCalculator plcpccar;
-	private ParallelLeastCostPathCalculator plcpccar2;
 	private CustomModeChoiceParameters parameters;
-	private boolean parallel = false;
 
 	public UAMStrategyUtils(UAMStations landingStations, UAMConfigGroup uamConfig, Scenario scenario,
 							UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
@@ -63,22 +58,6 @@ public class UAMStrategyUtils {
 		this.plcpc = plcpc;
 		this.plcpccar = plcpccar;
 		this.parameters = parameters;
-	}
-
-	public UAMStrategyUtils(UAMStations landingStations, UAMConfigGroup uamConfig, Scenario scenario,
-			UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
-			ParallelLeastCostPathCalculator plcpc, ParallelLeastCostPathCalculator plcpccar,
-			CustomModeChoiceParameters parameters) {
-		this.landingStations = landingStations;
-		this.uamConfig = uamConfig;
-		this.scenario = scenario;
-		this.stationConnections = stationConnections;
-		this.carNetwork = carNetwork;
-		this.transitRouter = transitRouter;
-		this.plcpc = plcpc;
-		this.plcpccar2 = plcpccar;
-		this.parameters = parameters;
-		this.parallel = true;
 	}
 
 	/**
@@ -101,7 +80,7 @@ public class UAMStrategyUtils {
 	 * @throws InterruptedException 
 	 */
 	Map<Id<UAMStation>, UAMAccessOptions> getAccessOptions(boolean access, Collection<UAMStation> stations,
-														   Facility<?> facility, double departureTime) throws InterruptedException, ExecutionException {
+														   Facility<?> facility, double departureTime) {
 		Set<String> modes = new HashSet<>(uamConfig.getAvailableAccessModes());
 		Map<Id<UAMStation>, UAMAccessOptions> accessRouteData = new HashMap<>();
 
@@ -138,7 +117,7 @@ public class UAMStrategyUtils {
 		return accessRouteData;
 	}
 
-	UAMAccessLeg estimateAccessLeg(boolean access, Facility<?> facility, double time, UAMStation station, String mode) throws InterruptedException, ExecutionException {
+	UAMAccessLeg estimateAccessLeg(boolean access, Facility<?> facility, double time, UAMStation station, String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;
 		if (access) {
@@ -162,26 +141,13 @@ public class UAMStrategyUtils {
 				else
 					to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
-				if (parallel) {
-					Future<Path> path = plcpccar2.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, null, null);
-					
-					double distanceByCar = 0.0;
-					for (Link l : path.get().links) {
-						distanceByCar += l.getLength();
-					}
-					return new UAMAccessLeg(path.get().travelTime, distanceByCar, path.get().links);
-				} else {
 					Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, null, null);
 				
 					double distanceByCar = 0.0;
 					for (Link l : path.links) {
 						distanceByCar += l.getLength();
 					}
-					return new UAMAccessLeg(path.travelTime, distanceByCar, path.links);
-				}
-				
-				
-		
+					return new UAMAccessLeg(path.travelTime, distanceByCar, path.links);				
 			case TransportMode.pt:
 				if (uamConfig.getPtSimulation()) {
 					List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
@@ -213,7 +179,7 @@ public class UAMStrategyUtils {
 	}
 
 	double estimateUtilityWrapper(Person person, boolean access, Facility<?> facility, double time, UAMStation station,
-								  String mode) throws InterruptedException, ExecutionException {
+								  String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;
 		if (access) {
@@ -237,16 +203,6 @@ public class UAMStrategyUtils {
 				else
 					to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
-				if (parallel) {
-					Future<Path> path = plcpccar2.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, person, null);
-					
-					
-					double distance = 0.0;
-					for (Link l : path.get().links) {
-						distance += l.getLength();
-					}
-					return estimateUtility(mode, path.get().travelTime, distance, person);
-				} else {
 					Path path = plcpccar.calcLeastCostPath(from.getFromNode(), to.getToNode(), time, person, null);
 					
 					
@@ -255,8 +211,6 @@ public class UAMStrategyUtils {
 						distance += l.getLength();
 					}
 					return estimateUtility(mode, path.travelTime, distance, person);
-				}
-
 			case TransportMode.pt:
 				if (uamConfig.getPtSimulation()) {
 					List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
@@ -386,7 +340,7 @@ public class UAMStrategyUtils {
 		return stationConnections;
 	}
 
-	public double getAccessTime(Facility<?> fromFacility, Double time, UAMStation departureStation, String mode) throws InterruptedException, ExecutionException {
+	public double getAccessTime(Facility<?> fromFacility, Double time, UAMStation departureStation, String mode) {
 		return estimateAccessLeg(true, fromFacility, time, departureStation, mode).travelTime;
 	}
 
@@ -398,7 +352,7 @@ public class UAMStrategyUtils {
 		return stationConnections.getFlightLeg(originStation.getId(), destinationStation.getId()).distance;
 	}
 
-	public double getEgressTime(Facility<?> toFacility, Double time, UAMStation destinationStation, String mode) throws InterruptedException, ExecutionException {
+	public double getEgressTime(Facility<?> toFacility, Double time, UAMStation destinationStation, String mode) {
 		return estimateAccessLeg(false, toFacility, time, destinationStation, mode).travelTime;
 	}
 }

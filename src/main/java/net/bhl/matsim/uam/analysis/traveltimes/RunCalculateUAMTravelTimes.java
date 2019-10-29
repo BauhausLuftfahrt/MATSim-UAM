@@ -43,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -302,7 +301,7 @@ public class RunCalculateUAMTravelTimes {
                         uamRoute.bestDestinationStation, uamRoute.egressMode);
 
                 trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
-            } catch (InterruptedException | ExecutionException | NullPointerException e) {
+            } catch (NullPointerException e) {
 				log.warn("No travel time estimation could be made for trip from " + trip.origin
 						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
             }

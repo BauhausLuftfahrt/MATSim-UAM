@@ -8,8 +8,6 @@ import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 
-import java.util.concurrent.ExecutionException;
-
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
@@ -60,7 +58,7 @@ public class UAMStrategyRouter {
 		this.transitRouter = transitRouter;
 	}
 
-	public UAMRoute estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) throws InterruptedException, ExecutionException {
+	public UAMRoute estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
 		if (strategy == null)
 			this.setStrategy();
 
