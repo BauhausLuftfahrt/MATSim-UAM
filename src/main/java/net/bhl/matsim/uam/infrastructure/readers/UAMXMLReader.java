@@ -113,10 +113,14 @@ public class UAMXMLReader extends MatsimXmlParser {
 
 			this.mapVehicleVerticalSpeeds.put(id.toString(), verticalSpeed);
 			this.mapVehicleHorizontalSpeeds.put(id.toString(), horizontalSpeed);
-			UAMVehicle vehicle = new UAMVehicle(id, stationid, this.stations.get(stationid).getLocationLink(), capacity,
-					starttime, endtime, vehicleTypes.get(vehicleTypeId));
-			vehicles.put(id, vehicle);
 
+			try {
+				UAMVehicle vehicle = new UAMVehicle(id, stationid, this.stations.get(stationid).getLocationLink(), capacity,
+						starttime, endtime, vehicleTypes.get(vehicleTypeId));
+				vehicles.put(id, vehicle);
+			} catch (NullPointerException e) {
+				Log.warn("UAM vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
+			}
 		} else {
 			Log.warn("There was an error parsing the UAM xml-file. Non vehicle/station element found.");
 		}
