@@ -51,12 +51,20 @@ public class CSVTripWriter {
 	}
 
 	private String formatTrip(TripItem trip) {
-		return String.join(delimiter, new String[]{trip.personId.toString(), String.valueOf(trip.personTripId),
-				String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
-				String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-				String.valueOf(trip.startTime), String.valueOf(trip.travelTime), String.valueOf(trip.networkDistance),
-				String.valueOf(trip.mode), normalizeActivityType(String.valueOf(trip.preceedingPurpose)),
-				normalizeActivityType(String.valueOf(trip.followingPurpose)), String.valueOf(trip.returning),
+		return String.join(delimiter, new String[]{
+				trip.personId.toString(),
+				String.valueOf(trip.personTripId),
+				trip.origin == null ? "" : String.valueOf(trip.origin.getX()),
+				trip.origin == null ? "" : String.valueOf(trip.origin.getY()),
+				trip.destination == null ? "" : String.valueOf(trip.destination.getX()),
+				trip.destination == null ? "" : String.valueOf(trip.destination.getY()),
+				String.valueOf(trip.startTime),
+				String.valueOf(trip.travelTime),
+				String.valueOf(trip.networkDistance),
+				trip.mode,
+				normalizeActivityType(trip.preceedingPurpose),
+				normalizeActivityType(trip.followingPurpose),
+				String.valueOf(trip.returning),
 				String.valueOf(trip.crowflyDistance)});
 	}
 }
