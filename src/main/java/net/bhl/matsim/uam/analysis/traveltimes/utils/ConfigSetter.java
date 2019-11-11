@@ -21,12 +21,11 @@ public class ConfigSetter {
         return config;
     }
 
-    public static Config createPTConfig(String networkInput, String transitScheduleInput, String transitVehiclesInput) {
+    public static Config createPTConfig(String networkInput, String transitScheduleInput) {
         Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
         config.network().setInputFile(networkInput);
 
         config.transit().setTransitScheduleFile(transitScheduleInput);
-        config.transit().setVehiclesFile(transitVehiclesInput);
 
         config.transitRouter().setSearchRadius(2500);
         config.planCalcScore().setPerforming_utils_hr(0);
@@ -55,9 +54,9 @@ public class ConfigSetter {
         return config;
     }
 
-    public static Config createUAMConfig(String networkInput, String networkEventsChangeFile, String transitScheduleInput,
-                                       String transitVehiclesInput, double searchRadius, String accessModes) {
-        Config config = createPTConfig(networkInput, transitScheduleInput, transitVehiclesInput);
+    public static Config createUAMConfig(String networkInput, String networkEventsChangeFile,
+                                         String transitScheduleInput, double searchRadius, String accessModes) {
+        Config config = createPTConfig(networkInput, transitScheduleInput);
 
         config.network().setTimeVariantNetwork(true);
         config.network().setChangeEventsInputFile(networkEventsChangeFile);

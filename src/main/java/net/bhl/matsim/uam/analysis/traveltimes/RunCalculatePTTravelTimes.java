@@ -49,12 +49,11 @@ public class RunCalculatePTTravelTimes {
         int j = 0;
         String networkInput = args[j++];
         String transitScheduleInput = args[j++];
-        String transitVehiclesInput = args[j++];
         String tripsInput = args[j++];
         String outputPath = args[j++];
 
         // READ NETWORK
-        Config config = ConfigSetter.createPTConfig(networkInput, transitScheduleInput, transitVehiclesInput);
+        Config config = ConfigSetter.createPTConfig(networkInput, transitScheduleInput);
         Scenario scenario = ScenarioUtils.createScenario(config);
         ScenarioUtils.loadScenario(scenario);
         Network network = scenario.getNetwork();
