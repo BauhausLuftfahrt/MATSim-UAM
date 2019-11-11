@@ -66,7 +66,7 @@ public class RunCalculateUAMTravelTimes {
 
     public static void main(String[] args) throws Exception {
         System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* " +
-                "transitVehiclesFile.xml* tripsCoordinateFile.csv* strategy-name* outputfile-name* " +
+                "tripsCoordinateFile.csv* strategy-name* outputfile-name* " +
                 "total-process-times-mins search-radius-km access-modes");
         System.out.println("(* required)");
 
@@ -76,7 +76,6 @@ public class RunCalculateUAMTravelTimes {
         String networkEventsChangeFile = args[j++];
         String uamVehicles = args[j++];
         String transitScheduleInput = args[j++];
-        String transitVehiclesInput = args[j++];
         String tripsInput = args[j++];
         String strategyName = args[j++];
         String outputPath = args[j++];
@@ -93,7 +92,7 @@ public class RunCalculateUAMTravelTimes {
         if (args.length >= j + 1)
             accessModes = args[j];
         Config config = ConfigSetter.createUAMConfig(networkInput, networkEventsChangeFile, transitScheduleInput,
-                transitVehiclesInput, searchRadius, accessModes);
+                searchRadius, accessModes);
 
         // Build scenario
         Scenario scenario = ScenarioUtils.createScenario(config);
