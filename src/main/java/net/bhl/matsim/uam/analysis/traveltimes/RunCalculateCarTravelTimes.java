@@ -191,13 +191,10 @@ public class RunCalculateCarTravelTimes {
 			to = carNetwork.getLinks().get(to.getId());
 		else
 			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
+
 		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
 				null);
-
-		double time = 0;
-		for (Link link : path.links)
-			time += link.getLength() / link.getFreespeed(departureTime);
-		return time;
+		return path.travelTime;
 	}
 
 }
