@@ -156,8 +156,7 @@ public class RunCalculatePTTravelTimes {
             try {
                 trip.travelTime = estimateTravelTime(from, to, trip.departureTime, transitRouter);
             } catch (NullPointerException e) {
-                log.warn("No travel time estimation could be made for trip from " + trip.origin
-                        + " to " + trip.destination + " at departure time " + trip.departureTime + "!");
+                // Do nothing; failed trip will show as null in results.
             }
 
             try {

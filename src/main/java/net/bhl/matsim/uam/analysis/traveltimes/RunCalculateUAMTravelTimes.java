@@ -301,8 +301,7 @@ public class RunCalculateUAMTravelTimes {
 
                 trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
             } catch (NullPointerException e) {
-				log.warn("No travel time estimation could be made for trip from " + trip.origin
-						+ " to " + trip.destination + " at departure time " + trip.departureTime + "!");
+                // Do nothing; failed trip will show as null in results.
             }
 
             try {
