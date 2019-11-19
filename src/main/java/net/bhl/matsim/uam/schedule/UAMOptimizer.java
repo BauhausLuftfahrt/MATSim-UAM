@@ -2,13 +2,18 @@ package net.bhl.matsim.uam.schedule;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
+
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.data.Request;
-import org.matsim.contrib.dvrp.data.Vehicle;
-import org.matsim.contrib.dvrp.optimizer.VrpOptimizerWithOnlineTracking;
+import org.matsim.contrib.dvrp.optimizer.Request;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.optimizer.VrpOptimizer;
+import org.matsim.contrib.dvrp.tracker.OnlineTrackerListener;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedules;
 import org.matsim.contrib.dvrp.schedule.Task;
@@ -24,9 +29,9 @@ import java.util.List;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
-public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBeforeSimStepListener {
+public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
-
+	private static final Logger log = Logger.getLogger(UAMOptimizer.class);
 	private Dispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
@@ -42,7 +47,8 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 	}
 
 	@Override
-	public void nextTask(Vehicle vehicle) {
+	public void nextTask(DvrpVehicle vehicle) {
+		
 		Schedule schedule = vehicle.getSchedule();
 		// this happens at the start of the simulation since
 		// the schedule has not started yet
@@ -51,6 +57,12 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 			return;
 		}
 		// STARTED
+		log.warn("Optimzer Running NEXT TASK METHOD");
+		log.warn("Schedule status: "+ String.valueOf(schedule.getStatus()));
+		log.warn("Current task: "+ String.valueOf(schedule.getCurrentTask()));
+		log.warn("Current task Id: "+ String.valueOf(schedule.getCurrentTask().getTaskIdx()));
+		log.warn("Tasks size: "+ String.valueOf(schedule.getTasks().size()));
+		
 		// get the current task and make it end now
 		Task currentTask = schedule.getCurrentTask();
 		currentTask.setEndTime(now);
@@ -130,6 +142,6 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 	}
 
 	@Override
-	public void vehicleEnteredNextLink(Vehicle vehicle, Link link) {
+	public void vehicleEnteredNextLink(DvrpVehicle vehicle, Link link) {
 	}
 }

@@ -256,8 +256,8 @@ public class RunCalculateUAMTravelTimes {
 
             Link from = NetworkUtils.getNearestLink(network, trip.origin);
             Link to = NetworkUtils.getNearestLink(network, trip.destination);
-            Facility<?> fromFacility = new LinkWrapperFacility(from);
-            Facility<?> toFacility = new LinkWrapperFacility(to);
+            Facility fromFacility = new LinkWrapperFacility(from);
+            Facility toFacility = new LinkWrapperFacility(to);
 
             UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
                     (UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,

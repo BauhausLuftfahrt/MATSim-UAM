@@ -33,15 +33,16 @@ public class UAMSpeedModule extends AbstractModule {
 
 	}
 
-	@Provides
-	@Singleton
-	public QNetworkFactory provideQNetworkFactory(EventsManager events, Scenario scenario,
-												  UAMLinkSpeedCalculator linkSpeedCalculator) {
-		ConfigurableQNetworkFactory networkFactory = new ConfigurableQNetworkFactory(events, scenario);
-		networkFactory.setLinkSpeedCalculator(linkSpeedCalculator);
-		return networkFactory;
-	}
-
+	/*
+	 * @Provides
+	 * 
+	 * @Singleton public QNetworkFactory provideQNetworkFactory(EventsManager
+	 * events, Scenario scenario, UAMLinkSpeedCalculator linkSpeedCalculator) {
+	 * ConfigurableQNetworkFactory networkFactory = new
+	 * ConfigurableQNetworkFactory(events, scenario);
+	 * networkFactory.setLinkSpeedCalculator(linkSpeedCalculator); return
+	 * networkFactory; }
+	 */
 	@Provides
 	@Singleton
 	public UAMLinkSpeedCalculator provideUAMLinkSpeedCalculator() {

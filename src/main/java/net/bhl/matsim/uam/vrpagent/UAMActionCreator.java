@@ -3,12 +3,14 @@ package net.bhl.matsim.uam.vrpagent;
 import com.google.inject.Inject;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
+import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.*;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentLogic;
-import org.matsim.contrib.dvrp.vrpagent.VrpLegs;
+import org.matsim.contrib.dvrp.vrpagent.VrpLegFactory;
 import org.matsim.contrib.dynagent.DynAction;
 import org.matsim.contrib.dynagent.DynAgent;
 
@@ -25,13 +27,14 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String TURNAROUND_ACTIVITY_TYPE = "UAMTurnAround";
 
 	@Inject
+	@DvrpMode(UAMModes.UAM_MODE)
 	private PassengerEngine passengerEngine;
 
 	@Inject
-	private VrpLegs.LegCreator legCreator;
+	private VrpLegFactory legCreator;
 
 	@Override
-	public DynAction createAction(DynAgent dynAgent, Vehicle vehicle, double now) {
+	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
 		Task task = vehicle.getSchedule().getCurrentTask();
 		if (task instanceof UAMTask) {
 			switch (((UAMTask) task).getUAMTaskType()) {
@@ -44,7 +47,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 					return new UAMPassengerDropoffActivity(passengerEngine, dynAgent, vehicle, mdt, mdt.getRequests(),
 							mdt.getDeboardingTime(), DROPOFF_ACTIVITY_TYPE);
 				case FLY:
-					return legCreator.createLeg(vehicle);
+					return legCreator.create(vehicle);
 				case STAY:
 					return new UAMStayActivity((UAMStayTask) task);
 				case TURNAROUND:

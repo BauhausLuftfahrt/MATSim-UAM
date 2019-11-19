@@ -2,15 +2,16 @@ package net.bhl.matsim.uam.infrastructure;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.data.Vehicle;
-import org.matsim.contrib.dvrp.data.VehicleImpl;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicleImpl;
+import org.matsim.contrib.dvrp.fleet.ImmutableDvrpVehicleSpecification;
 
 /**
  * This class defines the VTOL vehicle and its properties.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMVehicle extends VehicleImpl {
+public class UAMVehicle extends DvrpVehicleImpl {
 
 	// VTOL vehicle-specific properties
 	private final double width; // [m]
@@ -19,10 +20,11 @@ public class UAMVehicle extends VehicleImpl {
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
 
-	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
+	public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link startLink, int capacity, double t0, double t1,
 					  double width, double length, double range, UAMVehicleType vehicleType) {
 
-		super(id, startLink, capacity, t0, t1);
+		super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity).startLinkId(startLink.getId())
+				.serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
 		this.initialStationId = stationId;
 		this.width = width;
 		this.length = length;
@@ -31,10 +33,11 @@ public class UAMVehicle extends VehicleImpl {
 		this.vehicleType = vehicleType;
 	}
 
-	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
+	public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link startLink, int capacity, double t0, double t1,
 					  UAMVehicleType vehicleType) {
 
-		super(id, startLink, capacity, t0, t1);
+		super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity).startLinkId(startLink.getId())
+				.serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
 		this.initialStationId = stationId;
 		this.width = 0;
 		this.length = 0;

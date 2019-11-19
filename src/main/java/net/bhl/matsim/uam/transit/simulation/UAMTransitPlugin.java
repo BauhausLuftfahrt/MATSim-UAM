@@ -7,7 +7,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.config.Config;
-import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
@@ -21,12 +20,12 @@ import java.util.Collections;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMTransitPlugin extends AbstractQSimPlugin {
+public class UAMTransitPlugin {
 	public UAMTransitPlugin(Config config) {
-		super(config);
+//		super(config);
 	}
 
-	@Override
+//	@Override
 	public Collection<? extends Module> modules() {
 		return Collections.singletonList(new AbstractModule() {
 			@Override
@@ -42,12 +41,12 @@ public class UAMTransitPlugin extends AbstractQSimPlugin {
 		});
 	}
 
-	@Override
+//	@Override
 	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
 		return Collections.singletonList(UAMTransitEngine.class);
 	}
 
-	@Override
+//	@Override
 	public Collection<Class<? extends MobsimEngine>> engines() {
 		return Collections.singletonList(UAMTransitEngine.class);
 	}

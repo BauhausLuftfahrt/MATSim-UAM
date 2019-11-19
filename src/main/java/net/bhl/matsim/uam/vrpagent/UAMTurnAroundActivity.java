@@ -1,7 +1,9 @@
 package net.bhl.matsim.uam.vrpagent;
 
+import net.bhl.matsim.uam.schedule.UAMTask;
+import net.bhl.matsim.uam.schedule.UAMTask.UAMTaskType;
 import net.bhl.matsim.uam.schedule.UAMTurnAroundTask;
-import org.matsim.contrib.dynagent.AbstractDynActivity;
+import org.matsim.contrib.dynagent.DynActivity;
 
 /**
  * An implementation of AbstractDynActivity for UAM DynAgents for the
@@ -9,15 +11,21 @@ import org.matsim.contrib.dynagent.AbstractDynActivity;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMTurnAroundActivity extends AbstractDynActivity {
+public class UAMTurnAroundActivity implements DynActivity {
 
 	final private UAMTurnAroundTask turnAroundTask;
 	private double now;
+	private final String activityType;
 
 	public UAMTurnAroundActivity(UAMTurnAroundTask turnAroundTask) {
-		super(turnAroundTask.getName());
+		activityType = "UAMTurnAround";
 		this.turnAroundTask = turnAroundTask;
 		this.now = turnAroundTask.getBeginTime();
+	}
+
+	private static String getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -28,6 +36,11 @@ public class UAMTurnAroundActivity extends AbstractDynActivity {
 	@Override
 	public double getEndTime() {
 		return turnAroundTask.getEndTime();
+	}
+
+	@Override
+	public String getActivityType() {
+		return activityType;
 	}
 
 }

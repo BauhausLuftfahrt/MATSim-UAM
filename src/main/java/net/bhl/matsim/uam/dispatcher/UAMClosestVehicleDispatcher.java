@@ -12,7 +12,7 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.core.mobsim.framework.events.MobsimBeforeSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 import org.matsim.core.network.NetworkUtils;
@@ -50,7 +50,7 @@ public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener 
 
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
-		for (Vehicle veh : uamManager.getVehicles().values()) {
+		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
 
 			Id<UAMStation> stationId = ((UAMVehicle) veh).getInitialStationId();

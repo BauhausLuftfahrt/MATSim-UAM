@@ -10,7 +10,7 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
@@ -31,6 +31,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 	final private QuadTree<UAMVehicle> availableVehiclesTree;
 	boolean reoptimize = true;
 	private Map<UAMVehicle, Coord> locationVehicles = new HashMap<>();
+	private static final Logger log = Logger.getLogger(UAMPooledDispatcher.class);
 
 	@Inject
 	public UAMPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network) {
@@ -41,7 +42,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
-		for (Vehicle veh : uamManager.getVehicles().values()) {
+		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
 
 			Id<UAMStation> stationId = ((UAMVehicle) veh).getInitialStationId();
@@ -51,6 +52,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), (UAMVehicle) veh);
 			locationVehicles.put((UAMVehicle) veh, coord);
+			
 		}
 	}
 

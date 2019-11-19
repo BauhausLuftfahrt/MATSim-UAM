@@ -88,7 +88,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	}
 
 	@Override
-	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
+	public List<? extends PlanElement> calcRoute(Facility fromFacility, Facility toFacility, double departureTime,
 												 Person person) {
 		Network network = scenario.getNetwork();
 
@@ -337,5 +337,6 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		stageTypes.addActivityTypes(new StageActivityTypesImpl("uam_interaction"));
 		return stageTypes;
 	}
+
 
 }

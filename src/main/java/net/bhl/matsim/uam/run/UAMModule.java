@@ -18,6 +18,7 @@ import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListe
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
 import net.bhl.matsim.uam.qsim.UAMQSimPlugin;
+import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
@@ -25,18 +26,16 @@ import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
 import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.passenger.DefaultPassengerRequestValidator;
+import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
+import org.matsim.contrib.dvrp.router.DvrpRoutingNetworkProvider;
+import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
-import org.matsim.contrib.dynagent.run.DynActivityEnginePlugin;
+import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
-import org.matsim.core.mobsim.qsim.PopulationPlugin;
-import org.matsim.core.mobsim.qsim.TeleportationPlugin;
-import org.matsim.core.mobsim.qsim.changeeventsengine.NetworkChangeEventsPlugin;
-import org.matsim.core.mobsim.qsim.messagequeueengine.MessageQueuePlugin;
-import org.matsim.core.mobsim.qsim.qnetsimengine.QNetsimEnginePlugin;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
@@ -70,6 +69,10 @@ public class UAMModule extends AbstractModule {
 
 	@Override
 	public void install() {
+		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.UAM_MODE))
+				.toInstance(new DefaultPassengerRequestValidator());
+		installQSimModule(new UAMQsimModule());
+		installQSimModule(new DynActivityEngineModule());
 
 		// bining our own scoring function factory
 		bind(ScoringFunctionFactory.class).to(UAMScoringFunctionFactory.class).asEagerSingleton();
@@ -96,8 +99,7 @@ public class UAMModule extends AbstractModule {
 		// addEventHandlerBinding().to(UAMEventHandler.class);
 
 		// we need to bind our router for the uam trips
-		addRoutingModuleBinding(UAMModes.UAM_MODE)
-				.toProvider(UAMRoutingModuleProvider.class);
+		addRoutingModuleBinding(UAMModes.UAM_MODE).toProvider(UAMRoutingModuleProvider.class);
 
 		// we still need to provide a way to identify our trips
 		// as being uam trips.
@@ -110,32 +112,33 @@ public class UAMModule extends AbstractModule {
 		bind(TravelTime.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
 
-		bind(Network.class).annotatedWith(Names.named(DvrpModule.DVRP_ROUTING)).toInstance(this.networkUAM);
+		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING))
+				.toInstance(this.networkUAM);
 		bind(Network.class).annotatedWith(Names.named("car")).toInstance(this.networkCar);
 
 		bind(Network.class).annotatedWith(Names.named("uam"))
-				.to(Key.get(Network.class, Names.named(DvrpModule.DVRP_ROUTING)));
+				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 
 		// addControlerListenerBinding()
 		// .to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class,
 		// Names.named("uam")));
 	}
 
-	@Provides
-	@Singleton
-	public UAMFleetData provideData() {
-		UAMFleetData data = new UAMFleetData();
-
-		for (Vehicle veh : this.uamManager.getVehicles().values())
-			data.addVehicle(veh);
-		return data;
-	}
+	/*
+	 * @Provides
+	 * 
+	 * @Singleton public UAMFleetData provideDataForLoader() { UAMFleetData data =
+	 * new UAMFleetData();
+	 * 
+	 * for (DvrpVehicle veh : this.uamManager.getVehicles().values())
+	 * data.addVehicle(veh); return data; }
+	 */
 
 	@Provides
 	@Singleton
 	@Named("uam")
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-																				   @Named("uam") TravelTime travelTime) {
+			@Named("uam") TravelTime travelTime) {
 		// TODO: make this parameterized
 		int paralelRouters = uamConfig.getParallelRouters();
 		if (1 == paralelRouters) {
@@ -156,31 +159,29 @@ public class UAMModule extends AbstractModule {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
 
-	@Provides
-	@Singleton
-	public Collection<AbstractQSimPlugin> provideQSimPlugins(Config config) {
-		final Collection<AbstractQSimPlugin> plugins = new ArrayList<>();
-
-		plugins.add(new MessageQueuePlugin(config));
-		plugins.add(new DynActivityEnginePlugin(config));
-		plugins.add(new QNetsimEnginePlugin(config));
-
-		if (config.network().isTimeVariantNetwork()) {
-			plugins.add(new NetworkChangeEventsPlugin(config));
-		}
-
-		// TODO include config switch
-		// plugins.add(new BaselineTransitPlugin(config));
-
-		if (scenario.getConfig().transit().isUseTransit()) {
-			plugins.add(new UAMTransitPlugin(config));
-		}
-
-		plugins.add(new TeleportationPlugin(config));
-		plugins.add(new PopulationPlugin(config));
-		plugins.add(new UAMQSimPlugin(config));
-
-		return plugins;
-	}
+	/*
+	 * @Provides
+	 * 
+	 * @Singleton public Collection<AbstractQSimPlugin> provideQSimPlugins(Config
+	 * config) { final Collection<AbstractQSimPlugin> plugins = new ArrayList<>();
+	 * 
+	 * plugins.add(new MessageQueuePlugin(config)); plugins.add(new
+	 * DynActivityEnginePlugin(config)); plugins.add(new
+	 * QNetsimEnginePlugin(config));
+	 * 
+	 * if (config.network().isTimeVariantNetwork()) { plugins.add(new
+	 * NetworkChangeEventsPlugin(config)); }
+	 * 
+	 * // TODO include config switch // plugins.add(new
+	 * BaselineTransitPlugin(config));
+	 * 
+	 * if (scenario.getConfig().transit().isUseTransit()) { plugins.add(new
+	 * UAMTransitPlugin(config)); }
+	 * 
+	 * plugins.add(new TeleportationPlugin(config)); plugins.add(new
+	 * PopulationPlugin(config)); plugins.add(new UAMQSimPlugin(config));
+	 * 
+	 * return plugins; }
+	 */
 
 }

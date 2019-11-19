@@ -32,7 +32,7 @@ public class UAMMaxAccessUtilityStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		Network network = strategyUtils.getNetwork();
 		Set<String> modes = new HashSet<>();
 		modes = strategyUtils.getModes();

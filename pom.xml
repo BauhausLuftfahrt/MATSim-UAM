@@ -142,17 +142,17 @@
         <dependency>
             <groupId>org.matsim</groupId>
             <artifactId>matsim</artifactId>
-            <version>0.10.1</version>
+            <version>11.0</version>
         </dependency>
         <dependency>
             <groupId>ch.ethz.matsim</groupId>
             <artifactId>baseline_scenario</artifactId>
-            <version>0.0.1-synpop-SNAPSHOT</version>
+            <version>0.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.matsim.contrib</groupId>
             <artifactId>dvrp</artifactId>
-            <version>0.10.0-nov17</version>
+            <version>11.0</version>
         </dependency>
         <dependency>
             <groupId>ch.ethz.matsim</groupId>

@@ -37,7 +37,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		Leg l = null;
 		List<PlanElement> elements = person.getSelectedPlan().getPlanElements();
 		for (int i = 0; i < elements.size() - 2; i += 2) {

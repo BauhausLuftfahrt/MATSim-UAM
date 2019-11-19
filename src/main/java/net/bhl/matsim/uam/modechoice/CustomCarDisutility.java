@@ -4,6 +4,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.mobsim.qsim.qnetsimengine.QVehicle;
+import org.matsim.core.mobsim.qsim.qnetsimengine.QVehicleImpl;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.LinkSpeedCalculator;
 import org.matsim.core.router.costcalculators.TravelDisutilityFactory;
 import org.matsim.core.router.util.TravelDisutility;
@@ -18,7 +19,7 @@ import org.matsim.vehicles.VehicleUtils;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class CustomCarDisutility implements TravelDisutility {
-	final private static QVehicle qVehicle = new QVehicle(
+	final private static QVehicle qVehicle = new QVehicleImpl(
 			new VehicleImpl(Id.createVehicleId("calculation"), VehicleUtils.getDefaultVehicleType()));
 
 	final private LinkSpeedCalculator speedCalculator;

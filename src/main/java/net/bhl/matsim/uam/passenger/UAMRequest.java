@@ -5,8 +5,8 @@ import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.data.Request;
-import org.matsim.contrib.dvrp.data.RequestImpl;
+import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.dvrp.optimizer.Request;
 import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
 
@@ -16,20 +16,28 @@ import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMRequest implements PassengerRequest {
-
+	
+	final private Id<Request> id;
+	final private double submissionTime;
 	final private Link originLink;
 	final private Link destinationLink;
 	final private MobsimPassengerAgent passengerAgent;
-	final private Request delegate;
 	private UAMDropoffTask dropoffTask;
 	private UAMPickupTask pickupTask;
 	private Dispatcher dispatcher;
 	private double distance;
+	
+	private final double quantity;
+	private final double earliestStartTime;
+	private final double latestStartTime;
 
 	public UAMRequest(Id<Request> id, MobsimPassengerAgent passengerAgent, Link originLink, Link destinationLink,
 					  double pickupTime, double submissionTime, Dispatcher dispatcher, double distance) {
-		this.delegate = new RequestImpl(id, 1.0, pickupTime, pickupTime, submissionTime);
-
+		this.id = id;
+		this.submissionTime = submissionTime;
+		this.quantity = 1.0;
+		this.earliestStartTime = pickupTime;
+		this.latestStartTime = pickupTime;
 		this.passengerAgent = passengerAgent;
 		this.originLink = originLink;
 		this.destinationLink = destinationLink;
@@ -37,34 +45,38 @@ public class UAMRequest implements PassengerRequest {
 		this.distance = distance;
 	}
 
-	@Override
 	public double getQuantity() {
-		return delegate.getQuantity();
+		return this.quantity;
 	}
 
 	@Override
 	public double getEarliestStartTime() {
-		return delegate.getEarliestStartTime();
+		return this.earliestStartTime;
 	}
 
 	@Override
 	public double getLatestStartTime() {
-		return delegate.getLatestStartTime();
+		return this.latestStartTime;
 	}
 
 	@Override
 	public double getSubmissionTime() {
-		return delegate.getSubmissionTime();
+		return this.submissionTime;
 	}
 
 	@Override
 	public boolean isRejected() {
 		return false;
 	}
-
+	
 	@Override
 	public Id<Request> getId() {
-		return delegate.getId();
+		return this.id;
+	}
+
+	@Override
+	public Id<Person> getPassengerId() {
+		return passengerAgent.getId();
 	}
 
 	@Override
@@ -77,7 +89,6 @@ public class UAMRequest implements PassengerRequest {
 		return this.destinationLink;
 	}
 
-	@Override
 	public MobsimPassengerAgent getPassenger() {
 		return this.passengerAgent;
 	}
@@ -109,5 +120,18 @@ public class UAMRequest implements PassengerRequest {
 	public void setDistance(double distance) {
 		this.distance = distance;
 	}
+
+	@Override
+	public String getMode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setRejected(boolean rejected) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

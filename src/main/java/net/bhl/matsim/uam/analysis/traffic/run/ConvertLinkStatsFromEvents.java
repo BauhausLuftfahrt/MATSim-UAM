@@ -46,7 +46,7 @@ public class ConvertLinkStatsFromEvents {
 		new MatsimNetworkReader(netw).readFile(network);
 
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
-		tconfig.setAnalyzedModes(analyzedMode); // TODO does nothing?
+		tconfig.setAnalyzedModesAsString(analyzedMode); // TODO does nothing?
 		tconfig.setCalculateLinkToLinkTravelTimes(calculateLinkToLinkTravelTimes);
 		tconfig.setCalculateLinkTravelTimes(calculateLinkTravelTimes);
 		tconfig.setFilterModes(filterModes); // TODO does nothing?
@@ -63,7 +63,7 @@ public class ConvertLinkStatsFromEvents {
 		for (Link link : netw.getLinks().values()) {
 			Map<Integer, Double> timeDependantSpeeds = new HashMap<>();
 			for (int time = 0 + timeBinSize / 2; time < maxTime; time += timeBinSize) {
-				timeDependantSpeeds.put(time, link.getLength() / ttc.getLinkTravelTime(link, time));
+				timeDependantSpeeds.put(time, link.getLength() / ttc.getLinkTravelTimes().getLinkTravelTime(link, time, null, null));
 			}
 
 			linkStats.add(new LinkStatsItem(link.getId(), link.getLength(), link.getFreespeed(), timeDependantSpeeds));

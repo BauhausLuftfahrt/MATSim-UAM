@@ -1,7 +1,7 @@
 package net.bhl.matsim.uam.vrpagent;
 
 import net.bhl.matsim.uam.schedule.UAMStayTask;
-import org.matsim.contrib.dynagent.AbstractDynActivity;
+import org.matsim.contrib.dynagent.DynActivity;
 
 /**
  * An implementation of AbstractDynActivity for UAM DynAgents for the
@@ -9,12 +9,13 @@ import org.matsim.contrib.dynagent.AbstractDynActivity;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMStayActivity extends AbstractDynActivity {
+public class UAMStayActivity implements DynActivity  {
 	final private UAMStayTask stayTask;
 	private double now;
+	private final String activityType;
 
 	public UAMStayActivity(UAMStayTask stayTask) {
-		super(stayTask.getName());
+		activityType = stayTask.getName();
 		this.stayTask = stayTask;
 		this.now = stayTask.getBeginTime();
 	}
@@ -31,6 +32,11 @@ public class UAMStayActivity extends AbstractDynActivity {
 		} else {
 			return stayTask.getEndTime();
 		}
+	}
+
+	@Override
+	public String getActivityType() {
+		return activityType;
 	}
 
 }

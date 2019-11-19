@@ -34,7 +34,7 @@ public class TaxiRoutingModule implements RoutingModule {
 	}
 
 	@Override
-	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
+	public List<? extends PlanElement> calcRoute(Facility fromFacility, Facility toFacility, double departureTime,
 												 Person person) {
 		PopulationFactory populationFactory = scenario.getPopulation().getFactory();
 		RouteFactories routeFactory = populationFactory.getRouteFactories();

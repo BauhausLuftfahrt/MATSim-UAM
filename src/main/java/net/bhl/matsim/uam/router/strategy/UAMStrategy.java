@@ -21,7 +21,7 @@ public interface UAMStrategy {
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime);
+	UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime);
 
 	enum UAMStrategyType {
 		MAXUTILITY, MAXACCESSUTILITY, MINTRAVELTIME, MINACCESSTRAVELTIME, MINDISTANCE, MINACCESSDISTANCE, PREDEFINED

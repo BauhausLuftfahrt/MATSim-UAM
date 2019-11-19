@@ -579,7 +579,7 @@ public class CustomUAMPredictor {
 		return minTravelTime;
 	}
 
-	double estimateBeeLineTravelTime(String mode, Facility<?> facility, UAMStation station) {
+	double estimateBeeLineTravelTime(String mode, Facility facility, UAMStation station) {
 		double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 				.getTeleportedModeSpeeds().get(mode);
 		double travelDistance = estimateBeeLineDistance(mode, facility, station);
@@ -587,7 +587,7 @@ public class CustomUAMPredictor {
 		return travelTime;
 	}
 
-	double estimateBeeLineDistance(String mode, Facility<?> facility, UAMStation station) {
+	double estimateBeeLineDistance(String mode, Facility facility, UAMStation station) {
 		double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 				.getBeelineDistanceFactors().get(mode);
 		double distance = CoordUtils.calcEuclideanDistance(

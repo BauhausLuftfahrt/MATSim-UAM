@@ -58,7 +58,7 @@ public class UAMStrategyRouter {
 		this.transitRouter = transitRouter;
 	}
 
-	public UAMRoute estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute estimateUAMRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		if (strategy == null)
 			this.setStrategy();
 

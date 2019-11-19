@@ -80,7 +80,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 	}
 
 	@Override
-	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
+	public List<? extends PlanElement> calcRoute(Facility fromFacility, Facility toFacility, double departureTime,
 												 Person person) {
 		Network network = scenario.getNetwork();
 
