@@ -31,7 +31,7 @@ public class UAMMinAccessDistanceStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);

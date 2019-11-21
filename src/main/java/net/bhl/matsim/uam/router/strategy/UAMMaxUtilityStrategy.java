@@ -40,7 +40,7 @@ public class UAMMaxUtilityStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		Network network = strategyUtils.getNetwork();
 		Set<String> modes = strategyUtils.getModes();
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);

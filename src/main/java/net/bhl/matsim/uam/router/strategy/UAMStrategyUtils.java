@@ -65,7 +65,7 @@ public class UAMStrategyUtils {
 	 * location (facility) based in the searchRadius parameter defined in
 	 * the config file.
 	 */
-	Collection<UAMStation> getPossibleStations(Facility<?> facility) {
+	Collection<UAMStation> getPossibleStations(Facility facility) {
 		return landingStations.spatialStations.getDisk(facility.getCoord().getX(), facility.getCoord().getY(),
 				uamConfig.getSearchRadius());
 	}
@@ -80,7 +80,7 @@ public class UAMStrategyUtils {
 	 * @throws InterruptedException
 	 */
 	Map<Id<UAMStation>, UAMAccessOptions> getAccessOptions(boolean access, Collection<UAMStation> stations,
-														   Facility<?> facility, double departureTime) {
+														   Facility facility, double departureTime) {
 		Set<String> modes = new HashSet<>(uamConfig.getAvailableAccessModes());
 		Map<Id<UAMStation>, UAMAccessOptions> accessRouteData = new HashMap<>();
 
@@ -117,7 +117,7 @@ public class UAMStrategyUtils {
 		return accessRouteData;
 	}
 
-	UAMAccessLeg estimateAccessLeg(boolean access, Facility<?> facility, double time, UAMStation station, String mode) {
+	UAMAccessLeg estimateAccessLeg(boolean access, Facility facility, double time, UAMStation station, String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;
 		if (access) {
@@ -165,7 +165,7 @@ public class UAMStrategyUtils {
 		}
 	}
 
-	private UAMAccessLeg getBeelineAccessLeg(Facility<?> facility, UAMStation station, String mode) {
+	private UAMAccessLeg getBeelineAccessLeg(Facility facility, UAMStation station, String mode) {
 		double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 				.getBeelineDistanceFactors().get(mode);
 		double distance = CoordUtils.calcEuclideanDistance(
@@ -178,7 +178,7 @@ public class UAMStrategyUtils {
 				distance * distanceFactor, null);
 	}
 
-	double estimateUtilityWrapper(Person person, boolean access, Facility<?> facility, double time, UAMStation station,
+	double estimateUtilityWrapper(Person person, boolean access, Facility facility, double time, UAMStation station,
 								  String mode) {
 		Network network = scenario.getNetwork();
 		Link from, to;
@@ -340,7 +340,7 @@ public class UAMStrategyUtils {
 		return stationConnections;
 	}
 
-	public double getAccessTime(Facility<?> fromFacility, Double time, UAMStation departureStation, String mode) {
+	public double getAccessTime(Facility fromFacility, Double time, UAMStation departureStation, String mode) {
 		return estimateAccessLeg(true, fromFacility, time, departureStation, mode).travelTime;
 	}
 
@@ -352,7 +352,7 @@ public class UAMStrategyUtils {
 		return stationConnections.getFlightLeg(originStation.getId(), destinationStation.getId()).distance;
 	}
 
-	public double getEgressTime(Facility<?> toFacility, Double time, UAMStation destinationStation, String mode) {
+	public double getEgressTime(Facility toFacility, Double time, UAMStation destinationStation, String mode) {
 		return estimateAccessLeg(false, toFacility, time, destinationStation, mode).travelTime;
 	}
 }
