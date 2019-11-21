@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.scenario.network;
 
 // Adjusted from RunCreateNetworkSHP.java by matsim-code-examples
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
