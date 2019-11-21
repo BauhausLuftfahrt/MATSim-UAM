@@ -3,7 +3,6 @@ package net.bhl.matsim.uam.router;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -26,8 +25,6 @@ public class TaxiRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject
 	@Named("car")
 	Network networkCar;
-	@Inject
-	CustomModeChoiceParameters parameters;
 	@Inject
 	private Scenario scenario;
 	@Inject
