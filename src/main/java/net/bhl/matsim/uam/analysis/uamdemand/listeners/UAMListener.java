@@ -19,6 +19,7 @@ import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.MainModeIdentifier;
@@ -40,7 +41,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 	final private Collection<UAMDemandItem> uamData = new LinkedList<>();
 	final private Map<Id<Person>, UAMListenerItem> ongoing = new HashMap<>();
 	final private UAMStations uamStations;
-	final private Map<Id<org.matsim.contrib.dvrp.data.Vehicle>, UAMVehicle> vehicles;
+	final private Map<Id<DvrpVehicle>, UAMVehicle> vehicles;
 	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
 	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
 	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
