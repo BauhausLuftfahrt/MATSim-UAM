@@ -1,8 +1,8 @@
 package net.bhl.matsim.uam.analysis.trips;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.opengis.referencing.FactoryException;
