@@ -135,7 +135,6 @@ public class RunUAMScenario {
 			controler.addOverridingModule(new SwissRailRaptorModule());
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
-		controler.addOverridingModule(new CustomModule());
 		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
