@@ -8,7 +8,6 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.contrib.dvrp.data.Vehicle;
 import org.matsim.core.controler.events.IterationStartsEvent;
 import org.matsim.core.controler.listener.IterationStartsListener;
 import org.matsim.core.network.NetworkUtils;
@@ -29,10 +28,10 @@ public class UAMManager implements IterationStartsListener {
 
 	public QuadTree<UAMVehicle> mapAvailableVehicles;
 	private Set<UAMVehicle> availableVehicles = new HashSet<>();
-	private Map<Id<Vehicle>, Id<UAMStation>> vehicleLocations = new HashMap<>();
+	private Map<Id<UAMVehicle>, Id<UAMStation>> vehicleLocations = new HashMap<>();
 
 	private UAMStations stations;
-	private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<>();
+	private Map<Id<UAMVehicle>, UAMVehicle> vehicles = new HashMap<>();
 	private Map<Id<UAMStation>, StationOccupancy> availablespaceStations = new HashMap<>();
 	private QuadTree<UAMStation> stationsWithFreeLandingSpace;
 
@@ -53,11 +52,11 @@ public class UAMManager implements IterationStartsListener {
 		this.stations = stations;
 	}
 
-	public Map<Id<Vehicle>, UAMVehicle> getVehicles() {
+	public Map<Id<UAMVehicle>, UAMVehicle> getVehicles() {
 		return vehicles;
 	}
 
-	public void setVehicles(Map<Id<Vehicle>, UAMVehicle> vehicles) {
+	public void setVehicles(Map<Id<UAMVehicle>, UAMVehicle> vehicles) {
 		this.vehicles = vehicles;
 	}
 
