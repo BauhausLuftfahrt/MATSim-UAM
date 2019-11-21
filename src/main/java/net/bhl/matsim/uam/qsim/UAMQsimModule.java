@@ -17,6 +17,7 @@ import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSource;
 import org.matsim.contrib.dvrp.vrpagent.VrpLeg;
 import org.matsim.contrib.dvrp.vrpagent.VrpLegFactory;
@@ -51,15 +52,16 @@ public class UAMQsimModule extends AbstractModule {
 	@Provides
 	@Singleton
 	public PassengerEngine providePassengerEngine(EventsManager events, UAMRequestCreator requestCreator,
-												  UAMOptimizer optimizer, @Named("uam") Network network) {
-		return new PassengerEngine(UAMModes.UAM_MODE, events, requestCreator, optimizer, network);
+												  UAMOptimizer optimizer, @Named("uam") Network network,
+												  PassengerRequestValidator requestValidator) {
+		return new PassengerEngine(UAMModes.UAM_MODE, events, requestCreator, optimizer, network, requestValidator);
 	}
 
 	@Provides
 	@Singleton
 	VrpLeg provideLegCreator(DvrpVehicle vehicle, UAMOptimizer optimizer, QSim qSim) {
 		// TODO should be WITH online tracker // TODO RAOUL FOR MATSIM 11
-		return VrpLegFactory.createWithOnlineTracker(UAMModes.UAM_MODE, vehicle, optimizer, qSim.getSimTimer());
+		return VrpLegFactory.createWithOfflineTracker(UAMModes.UAM_MODE, vehicle, qSim.getSimTimer());
 	}
 
 	@Provides
