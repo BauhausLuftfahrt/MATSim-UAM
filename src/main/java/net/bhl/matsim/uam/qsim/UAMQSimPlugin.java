@@ -8,7 +8,7 @@ import org.matsim.contrib.dvrp.vrpagent.VrpAgentSource;
 import org.matsim.core.config.Config;
 import org.matsim.core.mobsim.framework.AgentSource;
 import org.matsim.core.mobsim.framework.listeners.MobsimListener;
-import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
+import org.matsim.core.mobsim.qsim.AbstractQSimModule;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
 
@@ -21,30 +21,32 @@ import java.util.Collections;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMQSimPlugin extends AbstractQSimPlugin {
+public class UAMQSimPlugin extends AbstractQSimModule {
 
-	public UAMQSimPlugin(Config config) {
-		super(config);
+	public UAMQSimPlugin() {
 	}
 
-	public Collection<? extends Module> modules() {
-		return Collections.singleton(new UAMQsimModule());
+	@Override
+	protected void configureQSim() {
 	}
 
-	public Collection<Class<? extends MobsimEngine>> engines() {
-		return Collections.singleton(PassengerEngine.class);
-	}
-
-	public Collection<Class<? extends MobsimListener>> listeners() {
-		return Arrays.asList(UAMOptimizer.class, UAMDispatcherListener.class);
-	}
-
-	public Collection<Class<? extends AgentSource>> agentSources() {
-		return Collections.singleton(VrpAgentSource.class);
-	}
-
-	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
-		return Arrays.asList(PassengerEngine.class, UAMDepartureHandler.class);
-	}
-
+//	public Collection<? extends Module> modules() {
+//		return Collections.singleton(new UAMQsimModule());
+//	}
+//
+//	public Collection<Class<? extends MobsimEngine>> engines() {
+//		return Collections.singleton(PassengerEngine.class);
+//	}
+//
+//	public Collection<Class<? extends MobsimListener>> listeners() {
+//		return Arrays.asList(UAMOptimizer.class, UAMDispatcherListener.class);
+//	}
+//
+//	public Collection<Class<? extends AgentSource>> agentSources() {
+//		return Collections.singleton(VrpAgentSource.class);
+//	}
+//
+//	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
+//		return Arrays.asList(PassengerEngine.class, UAMDepartureHandler.class);
+//	}
 }

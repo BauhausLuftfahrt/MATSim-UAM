@@ -14,6 +14,7 @@ import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
@@ -22,21 +23,20 @@ import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
-import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
+import net.bhl.matsim.uam.transit.simulation.UAMTransitModule;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.dvrp.data.Vehicle;
-import org.matsim.contrib.dvrp.run.DvrpModule;
+import org.matsim.contrib.dvrp.router.DvrpRoutingNetworkProvider;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
-import org.matsim.contrib.dynagent.run.DynActivityEnginePlugin;
+import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.mobsim.qsim.AbstractQSimPlugin;
-import org.matsim.core.mobsim.qsim.PopulationPlugin;
-import org.matsim.core.mobsim.qsim.TeleportationPlugin;
-import org.matsim.core.mobsim.qsim.changeeventsengine.NetworkChangeEventsPlugin;
-import org.matsim.core.mobsim.qsim.messagequeueengine.MessageQueuePlugin;
-import org.matsim.core.mobsim.qsim.qnetsimengine.QNetsimEnginePlugin;
+import org.matsim.core.mobsim.qsim.AbstractQSimModule;
+import org.matsim.core.mobsim.qsim.PopulationModule;
+import org.matsim.core.mobsim.qsim.TeleportationModule;
+import org.matsim.core.mobsim.qsim.changeeventsengine.NetworkChangeEventsModule;
+import org.matsim.core.mobsim.qsim.messagequeueengine.MessageQueueModule;
+import org.matsim.core.mobsim.qsim.qnetsimengine.QNetsimEngineModule;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
@@ -110,11 +110,11 @@ public class UAMModule extends AbstractModule {
 		bind(TravelTime.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
 
-		bind(Network.class).annotatedWith(Names.named(DvrpModule.DVRP_ROUTING)).toInstance(this.networkUAM);
+		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)).toInstance(this.networkUAM);
 		bind(Network.class).annotatedWith(Names.named("car")).toInstance(this.networkCar);
 
 		bind(Network.class).annotatedWith(Names.named("uam"))
-				.to(Key.get(Network.class, Names.named(DvrpModule.DVRP_ROUTING)));
+				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 
 		// addControlerListenerBinding()
 		// .to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class,
@@ -125,8 +125,7 @@ public class UAMModule extends AbstractModule {
 	@Singleton
 	public UAMFleetData provideData() {
 		UAMFleetData data = new UAMFleetData();
-
-		for (Vehicle veh : this.uamManager.getVehicles().values())
+		for (UAMVehicle veh : this.uamManager.getVehicles().values())
 			data.addVehicle(veh);
 		return data;
 	}
@@ -158,29 +157,24 @@ public class UAMModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	public Collection<AbstractQSimPlugin> provideQSimPlugins(Config config) {
-		final Collection<AbstractQSimPlugin> plugins = new ArrayList<>();
+	public Collection<AbstractQSimModule> provideQSimPlugins(Config config) {
+		final Collection<AbstractQSimModule> modules = new ArrayList<>();
 
-		plugins.add(new MessageQueuePlugin(config));
-		plugins.add(new DynActivityEnginePlugin(config));
-		plugins.add(new QNetsimEnginePlugin(config));
+		modules.add(new MessageQueueModule());
+		modules.add(new DynActivityEngineModule());
+		modules.add(new QNetsimEngineModule());
 
-		if (config.network().isTimeVariantNetwork()) {
-			plugins.add(new NetworkChangeEventsPlugin(config));
-		}
+		if (config.network().isTimeVariantNetwork())
+			modules.add(new NetworkChangeEventsModule());
 
-		// TODO include config switch
-		// plugins.add(new BaselineTransitPlugin(config));
+		if (scenario.getConfig().transit().isUseTransit())
+			modules.add(new UAMTransitModule());
 
-		if (scenario.getConfig().transit().isUseTransit()) {
-			plugins.add(new UAMTransitPlugin(config));
-		}
+		modules.add(new TeleportationModule());
+		modules.add(new PopulationModule());
+		modules.add(new UAMQSimPlugin());
 
-		plugins.add(new TeleportationPlugin(config));
-		plugins.add(new PopulationPlugin(config));
-		plugins.add(new UAMQSimPlugin(config));
-
-		return plugins;
+		return modules;
 	}
 
 }
