@@ -3,7 +3,7 @@ package net.bhl.matsim.uam.data;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.core.controler.events.BeforeMobsimEvent;
 import org.matsim.core.controler.listener.BeforeMobsimListener;
@@ -22,12 +22,17 @@ public class UAMLoader implements BeforeMobsimListener {
 
 	@Override
 	public void notifyBeforeMobsim(BeforeMobsimEvent event) {
-		for (Vehicle vehicle : data.getVehicles().values()) {
-			vehicle.resetSchedule();
-
+		for (DvrpVehicle vehicle : data.getVehicles().values()) {
 			Schedule schedule = vehicle.getSchedule();
-			schedule.addTask(
-					new UAMStayTask(vehicle.getServiceBeginTime(), Double.POSITIVE_INFINITY, vehicle.getStartLink())); // Usage of UAMStayTask
+
+			// reset schedule
+			while(schedule.getTaskCount() > 0) {
+				schedule.removeLastTask();
+			}
+
+			// add idle/stay task
+			schedule.addTask(new UAMStayTask(vehicle.getServiceBeginTime(),
+					Double.POSITIVE_INFINITY, vehicle.getStartLink()));
 		}
 
 	}
