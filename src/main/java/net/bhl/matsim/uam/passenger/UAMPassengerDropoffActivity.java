@@ -1,10 +1,10 @@
 package net.bhl.matsim.uam.passenger;
 
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.contrib.dvrp.schedule.StayTask;
-import org.matsim.contrib.dvrp.vrpagent.VrpActivity;
+import org.matsim.contrib.dynagent.DynActivity;
 import org.matsim.contrib.dynagent.DynAgent;
 
 import java.util.Set;
@@ -14,17 +14,17 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMPassengerDropoffActivity extends VrpActivity {
+public class UAMPassengerDropoffActivity implements DynActivity {
 	private final PassengerEngine passengerEngine;
 	private final DynAgent driver;
 	private final Set<? extends PassengerRequest> requests;
 
+	private String activityType;
 	private double endTime = 0.0;
 
-	public UAMPassengerDropoffActivity(PassengerEngine passengerEngine, DynAgent driver, Vehicle vehicle, StayTask dropoffTask,
+	public UAMPassengerDropoffActivity(PassengerEngine passengerEngine, DynAgent driver, DvrpVehicle vehicle, StayTask dropoffTask,
 									   Set<? extends PassengerRequest> requests, double dropoffDuration, String activityType) {
-		super(activityType, dropoffTask);
-
+		this.activityType = activityType;
 		this.passengerEngine = passengerEngine;
 		this.driver = driver;
 		this.requests = requests;
@@ -46,7 +46,17 @@ public class UAMPassengerDropoffActivity extends VrpActivity {
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		return endTime;
+	}
+
+	@Override
+	public void doSimStep(double now) {
+
 	}
 }
