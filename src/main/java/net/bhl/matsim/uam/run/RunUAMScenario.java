@@ -2,10 +2,10 @@ package net.bhl.matsim.uam.run;
 
 import ch.ethz.matsim.baseline_scenario.config.CommandLine;
 import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
-import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import ch.ethz.matsim.baseline_scenario.transit.simulation.BaselineTransitModule;
+import ch.sbb.matsim.mobsim.qsim.SBBTransitModule;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
@@ -142,7 +142,7 @@ public class RunUAMScenario {
 		// sets transit modules in case of simulating/not pT
 		controler.getConfig().transit().setUseTransit(uamConfigGroup.getPtSimulation());
 		if (uamConfigGroup.getPtSimulation()) {
-			controler.addOverridingModule(new SwissRailRaptorModule());
+			controler.addOverridingModule(new SBBTransitModule());
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
 		controler.addOverridingModule(new CustomModule());
