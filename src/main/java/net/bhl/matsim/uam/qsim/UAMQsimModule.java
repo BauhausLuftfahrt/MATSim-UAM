@@ -58,7 +58,7 @@ public class UAMQsimModule extends AbstractModule {
 	@Provides
 	@Singleton
 	VrpLeg provideLegCreator(DvrpVehicle vehicle, UAMOptimizer optimizer, QSim qSim) {
-		// TODO should be WITH online tracker
+		// TODO should be WITH online tracker // TODO RAOUL FOR MATSIM 11
 		return VrpLegFactory.createWithOnlineTracker(UAMModes.UAM_MODE, vehicle, optimizer, qSim.getSimTimer());
 	}
 
