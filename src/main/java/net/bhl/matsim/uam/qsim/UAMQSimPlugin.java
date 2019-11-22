@@ -30,23 +30,23 @@ public class UAMQSimPlugin extends AbstractQSimModule {
 	protected void configureQSim() {
 	}
 
-//	public Collection<? extends Module> modules() {
-//		return Collections.singleton(new UAMQsimModule());
-//	}
-//
-//	public Collection<Class<? extends MobsimEngine>> engines() {
-//		return Collections.singleton(PassengerEngine.class);
-//	}
-//
-//	public Collection<Class<? extends MobsimListener>> listeners() {
-//		return Arrays.asList(UAMOptimizer.class, UAMDispatcherListener.class);
-//	}
-//
-//	public Collection<Class<? extends AgentSource>> agentSources() {
-//		return Collections.singleton(VrpAgentSource.class);
-//	}
-//
-//	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
-//		return Arrays.asList(PassengerEngine.class, UAMDepartureHandler.class);
-//	}
+	public Collection<? extends Module> modules() {
+		return Collections.singleton(new UAMQsimModule());
+	}
+
+	public Collection<Class<? extends MobsimEngine>> engines() {
+		return Collections.singleton(PassengerEngine.class);
+	}
+
+	public Collection<Class<? extends MobsimListener>> listeners() {
+		return Arrays.asList(UAMOptimizer.class, UAMDispatcherListener.class);
+	}
+
+	public Collection<Class<? extends AgentSource>> agentSources() {
+		return Collections.singleton(VrpAgentSource.class);
+	}
+
+	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
+		return Arrays.asList(PassengerEngine.class, UAMDepartureHandler.class);
+	}
 }

@@ -28,29 +28,29 @@ public class UAMTransitModule extends AbstractQSimModule {
 	protected void configureQSim() {
 	}
 
-//	@Override
-//	public Collection<? extends Module> modules() {
-//		return Collections.singletonList(new AbstractModule() {
-//			@Override
-//			protected void configure() {
-//			}
-//
-//			@Provides
-//			@Singleton
-//			public UAMTransitEngine provideBaselineTransitEngine(EventsManager eventsManager,
-//																 TransitSchedule transitSchedule, DepartureFinder departureFinder, QSim qsim) {
-//				return new UAMTransitEngine(eventsManager, transitSchedule, departureFinder, qsim.getAgentCounter());
-//			}
-//		});
-//	}
-//
-//	@Override
-//	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
-//		return Collections.singletonList(UAMTransitEngine.class);
-//	}
-//
-//	@Override
-//	public Collection<Class<? extends MobsimEngine>> engines() {
-//		return Collections.singletonList(UAMTransitEngine.class);
-//	}
+	@Override
+	public Collection<? extends Module> modules() {
+		return Collections.singletonList(new AbstractModule() {
+			@Override
+			protected void configure() {
+			}
+
+			@Provides
+			@Singleton
+			public UAMTransitEngine provideBaselineTransitEngine(EventsManager eventsManager,
+																 TransitSchedule transitSchedule, DepartureFinder departureFinder, QSim qsim) {
+				return new UAMTransitEngine(eventsManager, transitSchedule, departureFinder, qsim.getAgentCounter());
+			}
+		});
+	}
+
+	@Override
+	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
+		return Collections.singletonList(UAMTransitEngine.class);
+	}
+
+	@Override
+	public Collection<Class<? extends MobsimEngine>> engines() {
+		return Collections.singletonList(UAMTransitEngine.class);
+	}
 }
