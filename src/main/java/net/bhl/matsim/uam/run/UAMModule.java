@@ -14,6 +14,7 @@ import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
@@ -59,19 +60,21 @@ public class UAMModule extends AbstractModule {
 	private Scenario scenario;
 	private Network networkUAM;
 	private Network networkCar;
+	private UAMXMLReader uamReader;
 
-	public UAMModule(UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar) {
+	public UAMModule(UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
 		this.uamManager = uamManager;
 		this.scenario = scenario;
 		this.networkUAM = networkUAM;
 		this.networkCar = networkCar;
+		this.uamReader = uamReader;
 	}
 
 	@Override
 	public void install() {
 		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.UAM_MODE))
 				.toInstance(new DefaultPassengerRequestValidator());
-		installQSimModule(new UAMQsimModule());
+		installQSimModule(new UAMQsimModule(uamReader));
 		installQSimModule(new DynActivityEngineModule());
 
 		// bining our own scoring function factory
@@ -124,15 +127,6 @@ public class UAMModule extends AbstractModule {
 		// Names.named("uam")));
 	}
 
-	/*
-	 * @Provides
-	 * 
-	 * @Singleton public UAMFleetData provideDataForLoader() { UAMFleetData data =
-	 * new UAMFleetData();
-	 * 
-	 * for (DvrpVehicle veh : this.uamManager.getVehicles().values())
-	 * data.addVehicle(veh); return data; }
-	 */
 
 	@Provides
 	@Singleton

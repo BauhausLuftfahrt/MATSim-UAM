@@ -29,7 +29,7 @@ import java.util.List;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
-public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
+public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
 	private static final Logger log = Logger.getLogger(UAMOptimizer.class);
 	private Dispatcher dispatcher;
@@ -48,11 +48,12 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 
 	@Override
 	public void nextTask(DvrpVehicle vehicle) {
-		
+	
 		Schedule schedule = vehicle.getSchedule();
 		// this happens at the start of the simulation since
 		// the schedule has not started yet
 		if (schedule.getStatus() != Schedule.ScheduleStatus.STARTED) {
+			log.warn("Inside OPtimizer IF");
 			schedule.nextTask();
 			return;
 		}
@@ -141,7 +142,6 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 		}
 	}
 
-	@Override
 	public void vehicleEnteredNextLink(DvrpVehicle vehicle, Link link) {
 	}
 }

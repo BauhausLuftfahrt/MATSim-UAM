@@ -74,10 +74,27 @@ public class UAMLoader implements BeforeMobsimListener {
 																														// UAMStayTask
 			
 			//reset BY COMMENTING THE CODE BELLOW YOU GET A DIFFERENT ERROR WITH ARRAY BOUNDS - CHECK THIS
-			if ((vehicle.getSchedule().getTasks().size()==0)) {
-				vehicle.getSchedule().addTask(
-						new UAMStayTask(vehicle.getServiceBeginTime(), Double.POSITIVE_INFINITY, vehicle.getStartLink())); 
-			}
+			
+			
+			log.warn("Task List size BEFORE: " + vehicle.getSchedule().getTasks().size());
+			
+	//		  for (Task task : vehicle.getSchedule().getTasks()) { 
+//				  vehicle.getSchedule().removeTask(task);}
+			
+//			  if ((vehicle.getSchedule().getTasks().size()==0)) {
+//			  log.warn("Adding stayTask..."); vehicle.getSchedule().addTask( new
+//			  UAMStayTask(vehicle.getServiceBeginTime(), Double.POSITIVE_INFINITY,
+	//		  vehicle.getStartLink())); }
+//			Schedule schedule = vehicle.getSchedule();
+//			while(schedule.getTaskCount() >= 0) {
+//				schedule.removeLastTask();
+//			}
+			// add idle/stay task
+//			schedule.addTask(new UAMStayTask(vehicle.getServiceBeginTime(),
+//					Double.POSITIVE_INFINITY, vehicle.getStartLink()));
+			  
+			  log.warn("Task List size AFTER: " + vehicle.getSchedule().getTasks().size());
+			 
 			log.warn("Vehicle schedule status AFTER: " + String.valueOf(vehicle.getSchedule().getStatus()));
 		}
 

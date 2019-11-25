@@ -4,6 +4,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicleImpl;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicleSpecification;
 import org.matsim.contrib.dvrp.fleet.ImmutableDvrpVehicleSpecification;
 
 /**
@@ -20,31 +21,40 @@ public class UAMVehicle extends DvrpVehicleImpl {
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
 
-	public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link startLink, int capacity, double t0, double t1,
-					  double width, double length, double range, UAMVehicleType vehicleType) {
-
-		super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity).startLinkId(startLink.getId())
-				.serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
+	/*
+	 * public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link
+	 * startLink, int capacity, double t0, double t1, double width, double length,
+	 * double range, UAMVehicleType vehicleType) {
+	 * 
+	 * super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity
+	 * ).startLinkId(startLink.getId())
+	 * .serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
+	 * this.initialStationId = stationId; this.width = width; this.length = length;
+	 * this.range = range;
+	 * 
+	 * this.vehicleType = vehicleType; }
+	 * 
+	 * public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link
+	 * startLink, int capacity, double t0, double t1, UAMVehicleType vehicleType) {
+	 * 
+	 * super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity
+	 * ).startLinkId(startLink.getId())
+	 * .serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
+	 * this.initialStationId = stationId; this.width = 0; this.length = 0;
+	 * this.range = 0;
+	 * 
+	 * this.vehicleType = vehicleType;
+	 * 
+	 * }
+	 */
+	
+	public UAMVehicle(DvrpVehicleSpecification specification, Link startLink, Id<UAMStation> stationId, UAMVehicleType vehicleType) {
+		super(specification, startLink);
 		this.initialStationId = stationId;
-		this.width = width;
-		this.length = length;
-		this.range = range;
-
 		this.vehicleType = vehicleType;
-	}
-
-	public UAMVehicle(Id<DvrpVehicle> id, Id<UAMStation> stationId, Link startLink, int capacity, double t0, double t1,
-					  UAMVehicleType vehicleType) {
-
-		super(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity).startLinkId(startLink.getId())
-				.serviceBeginTime(t0).serviceEndTime(t1).build(), startLink);
-		this.initialStationId = stationId;
 		this.width = 0;
 		this.length = 0;
 		this.range = 0;
-
-		this.vehicleType = vehicleType;
-
 	}
 
 	public Id<UAMStation> getInitialStationId() {
@@ -112,6 +122,10 @@ public class UAMVehicle extends DvrpVehicleImpl {
 	 */
 	public double getTurnAroundTime() {
 		return vehicleType.getTurnAroundTime();
+	}
+	
+	public UAMVehicleType getVehicleType() {
+		return this.vehicleType;
 	}
 
 }

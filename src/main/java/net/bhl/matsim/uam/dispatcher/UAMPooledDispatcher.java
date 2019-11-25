@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.fleet.Fleet;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
@@ -34,7 +35,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 	private static final Logger log = Logger.getLogger(UAMPooledDispatcher.class);
 
 	@Inject
-	public UAMPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network) {
+	public UAMPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
 
@@ -42,7 +43,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
-		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
+		for (DvrpVehicle veh :  data.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
 
 			Id<UAMStation> stationId = ((UAMVehicle) veh).getInitialStationId();

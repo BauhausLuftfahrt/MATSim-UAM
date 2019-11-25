@@ -10,7 +10,7 @@
 		<param name="searchRadius" value="5050" />
 		<param name="walkDistance" value="500" />
 		<param name="routingStrategy" value="mintraveltime" />
-		<param name="ptSimulation" value="true" />
+		<param name="ptSimulation" value="false" />
 	</module>
 	
 	<module name="global" >
@@ -37,7 +37,7 @@
 	</module>
 
 	<module name="qsim">
-		<param name="endTime" value="16:00:00" />
+		<param name="endTime" value="30:00:00" />
 		<param name="numberOfThreads" value="4" />
 		<param name="flowCapacityFactor" value="0.1" />
 		<param name="storageCapacityFactor" value="0.1" />
@@ -135,11 +135,11 @@
 			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
 		<!-- When simulating UAM: only use this parameterset when not simulating PT. If simulating PT do not use it. -->
-<!-- 	<parameterset type="teleportedModeParameters">
+	<parameterset type="teleportedModeParameters">
 			<param name="mode" value="pt" />
 			<param name="teleportedModeSpeed" value="10.0" />
 			<param name="beelineDistanceFactor" value="1.0" />
-		</parameterset> -->
+		</parameterset>
 	</module>
 
 	<module name="strategy">
