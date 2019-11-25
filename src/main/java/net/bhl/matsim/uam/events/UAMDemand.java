@@ -94,7 +94,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 				tempPTData.put(event.getPersonId(), ptData);
 			}
 
-		} else if (event.getLegMode().equals("uam")) {
+		} else if (event.getLegMode().equals("uam")&& !event.getPersonId().toString().startsWith("uam_vh_")) {
 			Link link = network.getLinks().get(event.getLinkId());
 			UAMStation station = this.manager.getStations().getNearestUAMStation(link);
 			if (tempPTData.containsKey(event.getPersonId())) {
@@ -121,13 +121,14 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 				this.tempPTData.remove(event.getPersonId());
 			} else {
 				// there was a normal access mode
-				UAMData data = this.demand.get(event.getPersonId())
-						.get(this.demand.get(event.getPersonId()).size() - 1);
-				data.originStationLink = link;
-				data.originStationId = station.getId();
+					UAMData data = this.demand.get(event.getPersonId())
+							.get(this.demand.get(event.getPersonId()).size() - 1);
+					data.originStationLink = link;
+					data.originStationId = station.getId();
+
 			}
 		}
-		if (event.getLegMode().equals("car") && event.getPersonId().toString().startsWith("uam_vh_")) {
+		if (event.getLegMode().equals("uam") && event.getPersonId().toString().startsWith("uam_vh_")) {
 			// TODO: pooling is not correctly documented for take-off time
 			// this needs to be corrected
 			if (vehicleToPerson.containsKey(event.getPersonId())) {

@@ -64,6 +64,10 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 		log.warn("Current task Id: "+ String.valueOf(schedule.getCurrentTask().getTaskIdx()));
 		log.warn("Tasks size: "+ String.valueOf(schedule.getTasks().size()));
 		
+		for (Task task : schedule.getTasks()) {
+			log.warn("task: " + String.valueOf(task));
+		}
+		
 		// get the current task and make it end now
 		Task currentTask = schedule.getCurrentTask();
 		currentTask.setEndTime(now);

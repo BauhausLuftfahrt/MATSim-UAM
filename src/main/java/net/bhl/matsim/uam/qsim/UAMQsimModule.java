@@ -96,11 +96,13 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 //		bindModal(UAMDepartureHandler.class).to(UAMDepartureHandler.class);
 		bind(UAMDepartureHandler.class);
 
-//		bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
+		bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
 		addModalQSimComponentBinding().to(VrpAgentSource.class);
-//		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
+		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
+		
+		
 
 	}
 
