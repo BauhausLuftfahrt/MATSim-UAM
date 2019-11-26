@@ -128,7 +128,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 
 			}
 		}
-		if (event.getLegMode().equals("uam") && event.getPersonId().toString().startsWith("uam_vh_")) {
+		if (event.getLegMode().equals("car") && event.getPersonId().toString().startsWith("uam_vh_")) {
 			// TODO: pooling is not correctly documented for take-off time
 			// this needs to be corrected
 			if (vehicleToPerson.containsKey(event.getPersonId())) {

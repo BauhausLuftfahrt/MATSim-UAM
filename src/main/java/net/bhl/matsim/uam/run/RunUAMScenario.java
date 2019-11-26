@@ -154,8 +154,9 @@ public class RunUAMScenario {
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
 //		controler.addOverridingModule(new DvrpModule());
-//		controler.configureQSimComponents(DvrpQSimComponents.activateModes(UAMModes.UAM_MODE));
+
 		controler.configureQSimComponents(configurator -> {UAMQsimModule.configureComponents(configurator);});
+//		controler.configureQSimComponents(DvrpQSimComponents.activateModes(UAMModes.UAM_MODE));
 
 		return controler;
 	}

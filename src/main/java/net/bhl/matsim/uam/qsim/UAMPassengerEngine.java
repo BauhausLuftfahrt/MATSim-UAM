@@ -15,7 +15,7 @@ import org.matsim.core.api.experimental.events.EventsManager;
 public class UAMPassengerEngine extends PassengerEngine {
 
 	public UAMPassengerEngine(String mode, EventsManager eventsManager, PassengerRequestCreator requestCreator,
-							  VrpOptimizer optimizer, Network network,  PassengerRequestValidator requestValidator) {
+			VrpOptimizer optimizer, Network network, PassengerRequestValidator requestValidator) {
 		super(mode, eventsManager, requestCreator, optimizer, network, requestValidator);
 	}
 

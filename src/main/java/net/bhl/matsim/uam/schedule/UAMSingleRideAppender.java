@@ -98,6 +98,10 @@ public class UAMSingleRideAppender {
 		}
 
 		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
+		
+
+		
+		
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
 				plainPickupPath, travelTime);
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
@@ -106,11 +110,22 @@ public class UAMSingleRideAppender {
 		// arrival time
 		// + boarding
 		// time
+		
+		
 
 		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
-		UAMPickupTask pickupTask = new UAMPickupTask(pickupPath.getArrivalTime(), // Vehicle picks up the passenger at
+		double pickUpTaskStartTime = startTime;	
+		//For the case when the Aircraft is already at the station there will be no pickUpDriveTask
+		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
+			log.warn("I HAVE THE SAME ORIGIN AND DESTINATION");
+			pickUpTaskStartTime = pickupPath.getArrivalTime();
+		} 
+		
+		
+		
+		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, // Vehicle picks up the passenger at
 				// the station
-				pickupPath.getArrivalTime() + vehicle.getBoardingTime(), // end time = arrival time + boarding time
+				pickUpTaskStartTime + vehicle.getBoardingTime(), // end time = arrival time + boarding time
 				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
 
 		UAMFlyTask dropoffDriveTask = new UAMFlyTask(dropoffPath, Arrays.asList(request)); // Vehicle flies to drop off
@@ -132,8 +147,11 @@ public class UAMSingleRideAppender {
 		} else {
 			schedule.removeLastTask();
 		}
-
-		schedule.addTask(pickupDriveTask);
+		
+		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
+			log.warn("I HAVE THE SAME ORIGIN AND DESTINATION");
+			schedule.addTask(pickupDriveTask);
+		} 		
 		schedule.addTask(pickupTask);
 		schedule.addTask(dropoffDriveTask);
 		schedule.addTask(dropoffTask);

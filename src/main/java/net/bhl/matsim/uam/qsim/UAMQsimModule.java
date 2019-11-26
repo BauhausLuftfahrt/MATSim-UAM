@@ -29,6 +29,7 @@ import org.matsim.contrib.dvrp.optimizer.VrpOptimizer;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.passenger.PassengerEngineQSimModule;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestCreator;
+import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
 import org.matsim.contrib.dvrp.run.AbstractDvrpModeQSimModule;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.run.DvrpModes;
@@ -42,6 +43,7 @@ import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
 import org.matsim.contrib.dvrp.vrpagent.VrpLeg;
 import org.matsim.contrib.dvrp.vrpagent.VrpLegFactory;
 import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
+import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.AgentSource;
 import org.matsim.core.mobsim.qsim.PopulationModule;
 import org.matsim.core.mobsim.qsim.QSim;
@@ -91,7 +93,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		bindModal(UAMDispatcherListener.class).to(UAMDispatcherListener.class);
 		bindModal(Fleet.class).to(UAMFleetData.class);
 
-//		bindModal(UAMSingleRideAppender.class).to(UAMSingleRideAppender.class);
+		bindModal(UAMSingleRideAppender.class).to(UAMSingleRideAppender.class);
 		bind(UAMSingleRideAppender.class);
 //		bindModal(UAMDepartureHandler.class).to(UAMDepartureHandler.class);
 		bind(UAMDepartureHandler.class);
@@ -102,8 +104,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(VrpAgentSource.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
 		
-		
-
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
@@ -112,15 +112,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		// components.addNamedComponent(COMPONENT_NAME);
 		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
 	}
-
-	/*
-	 * @Provides
-	 * 
-	 * @Singleton public PassengerEngine providePassengerEngine(EventsManager
-	 * events, UAMRequestCreator requestCreator, UAMOptimizer
-	 * optimizer, @Named("uam") Network network) { return new PassengerEngine("uam",
-	 * events, requestCreator, optimizer, network); }
-	 */
 
 	@Provides
 	@Singleton
