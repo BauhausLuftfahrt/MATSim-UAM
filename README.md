@@ -76,3 +76,4 @@ The following list provides a reverse-chronological overview of publications rel
 * Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. In 2018 Modeling and Simulation Technologies Conference (p. 3891).
 * Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Initial Analysis of Urban Air Mobility’s Transport Performance in Sioux Falls. In 2018 Aviation Technology, Integration, and Operations Conference (p. 2886).
 * A. Straubinger, R. Rothfeld, "Identification of Relevant Aspects for Personal Air Transport System Integration in Urban Mobility Modelling", 7th Transport Research Arena (TRA), Vienna, Austria, 2018.
+* M. Balac, A. Vetrella, & K.W. Axhausen (2018). "Towards the integration of aerial transportation in urban settings", 97th Transportation Research Board Conference, Washington D.C.,USA, 2018.
