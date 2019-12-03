@@ -3,6 +3,9 @@ package net.bhl.matsim.uam.run;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.SerialLeastCostPathCalculator;
+import ch.ethz.matsim.baseline_scenario.config.CommandLine;
+import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
+
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -11,6 +14,7 @@ import com.google.inject.name.Names;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMFleetData;
 import net.bhl.matsim.uam.data.UAMLoader;
+import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
@@ -18,6 +22,8 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
+import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
+import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.qsim.UAMQSimPlugin;
 import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
@@ -27,6 +33,7 @@ import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
 import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
+import org.matsim.api.core.v01.population.Population;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.DefaultPassengerRequestValidator;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
@@ -48,6 +55,10 @@ import org.matsim.vehicles.VehicleUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A MATSim Abstract Module for the classes used by the UAM simulation.
@@ -61,20 +72,23 @@ public class UAMModule extends AbstractModule {
 	private Network networkUAM;
 	private Network networkCar;
 	private UAMXMLReader uamReader;
+	private final CommandLine cmd;
 
-	public UAMModule(UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
+	public UAMModule(CommandLine cmd, 
+			UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
 		this.uamManager = uamManager;
 		this.scenario = scenario;
 		this.networkUAM = networkUAM;
 		this.networkCar = networkCar;
 		this.uamReader = uamReader;
+		this.cmd = cmd;
 	}
 
 	@Override
 	public void install() {
 		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.UAM_MODE))
 				.toInstance(new DefaultPassengerRequestValidator());
-		installQSimModule(new UAMQsimModule(uamReader));
+		installQSimModule(new UAMQsimModule(uamReader, uamManager));
 		installQSimModule(new DynActivityEngineModule());
 
 		// bining our own scoring function factory
@@ -84,6 +98,7 @@ public class UAMModule extends AbstractModule {
 		bind(UAMManager.class).toInstance(uamManager);
 		// adding UAMDemand as singleton
 		bind(UAMDemand.class).asEagerSingleton();
+
 
 		addControlerListenerBinding().to(UAMLoader.class);
 
@@ -152,6 +167,42 @@ public class UAMModule extends AbstractModule {
 			@Named("uam") ParallelLeastCostPathCalculator calculator) {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
+	
+	/*
+	 * @Provides
+	 * 
+	 * @Singleton public CustomModeChoiceParameters
+	 * provideCustomModeChoiceParameters() throws ConfigurationException { String
+	 * prefix = "scoring:";
+	 * 
+	 * List<String> scoringOptions = cmd.getAvailableOptions().stream().filter(o ->
+	 * o.startsWith(prefix)) .collect(Collectors.toList());
+	 * 
+	 * Map<String, String> rawParameters = new HashMap<>();
+	 * 
+	 * for (String option : scoringOptions) {
+	 * rawParameters.put(option.substring(prefix.length()),
+	 * cmd.getOptionStrict(option)); }
+	 * 
+	 * CustomModeChoiceParameters parameters = new CustomModeChoiceParameters();
+	 * parameters.load(rawParameters);
+	 * 
+	 * return parameters; }
+	 * 
+	 * @Provides
+	 * 
+	 * @Singleton public UAMStationConnectionGraph
+	 * provideUAMStationConnectionGraph(UAMManager uamManager,
+	 * CustomModeChoiceParameters parameters, @Named("uam")
+	 * ParallelLeastCostPathCalculator plcpc) { return new
+	 * UAMStationConnectionGraph(uamManager, parameters, plcpc); }
+	 * 
+	 * @Provides
+	 * 
+	 * @Singleton public SubscriptionFinder provideSubscriptionFinder(Population
+	 * population) { return new
+	 * SubscriptionFinder(population.getPersonAttributes()); }
+	 */
 
 	/*
 	 * @Provides

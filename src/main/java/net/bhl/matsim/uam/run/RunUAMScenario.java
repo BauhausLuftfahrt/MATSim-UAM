@@ -148,8 +148,8 @@ public class RunUAMScenario {
 			controler.addOverridingModule(new SwissRailRaptorModule());
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
-		controler.addOverridingModule(new CustomModule());
-		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar, uamReader));
+		controler.addOverridingModule(new CustomModule()); //taxi
+		controler.addOverridingModule(new UAMModule(cmd, uamManager, scenario, networkUAM, networkCar, uamReader));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());

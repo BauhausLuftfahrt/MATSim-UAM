@@ -145,7 +145,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
 
 				if (schedule.getTasks().get(index + 1) instanceof UAMPickupTask) {
-					UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index + 1);
+					UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index + 1); //TODO THIS IS NOT GOING TO BE ALWAYS A PICK UP TASK!
 					UAMRequest oldReq = (UAMRequest) pickupTask.getRequests().toArray()[0];
 					if (oldReq.getToLink() == request.getToLink() && oldReq.getFromLink() == request.getFromLink()) {
 						request.setDistance(oldReq.getDistance());

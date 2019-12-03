@@ -37,7 +37,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Override
 	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
-//		log.warn("Creating action");
+		log.warn("Creating action for agent: " + dynAgent.getId());
 		Task task = vehicle.getSchedule().getCurrentTask();
 		if (task instanceof UAMTask) {
 			switch (((UAMTask) task).getUAMTaskType()) {

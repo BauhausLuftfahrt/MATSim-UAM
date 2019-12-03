@@ -20,6 +20,7 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
@@ -45,6 +46,7 @@ import org.matsim.contrib.dvrp.vrpagent.VrpLegFactory;
 import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.AgentSource;
+import org.matsim.core.mobsim.qsim.DefaultTeleportationEngine;
 import org.matsim.core.mobsim.qsim.PopulationModule;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.TeleportationModule;
@@ -65,13 +67,15 @@ import java.util.Map;
 public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	public final static String COMPONENT_NAME = "UAMExtension";
 	private static final Logger log = Logger.getLogger(UAMQsimModule.class);
+	private UAMManager uamManager;
 	// private final QSim qsim;
 	// private final UAMConfigGroup uamConfigGroup;
 	private UAMXMLReader uamReader;
 
-	public UAMQsimModule(UAMXMLReader uamReader) {
+	public UAMQsimModule(UAMXMLReader uamReader, UAMManager uamManager) {
 		super(UAMModes.UAM_MODE);
 		this.uamReader = uamReader;
+		this.uamManager = uamManager;
 	}
 
 	@Override
@@ -89,7 +93,8 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		bind(UAMOptimizer.class);
 		bind(UAMDispatcherListener.class);
 //		bind(UAMLoader.class);
-
+		
+		bindModal(DefaultTeleportationEngine.class).to(DefaultTeleportationEngine.class);
 		bindModal(UAMDispatcherListener.class).to(UAMDispatcherListener.class);
 		bindModal(Fleet.class).to(UAMFleetData.class);
 
@@ -104,6 +109,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(VrpAgentSource.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
 		
+		
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
@@ -111,7 +117,9 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 		// components.addNamedComponent(COMPONENT_NAME);
 		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
+//		components.addComponent(DvrpModes.mode(TeleportationModule.COMPONENT_NAME));
 	}
+	
 
 	@Provides
 	@Singleton
@@ -191,6 +199,9 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 			log.warn("Vehicle schedule status AFTER: " + String.valueOf(veh.getSchedule().getStatus()));
 		}
+	
+		//populate manager here
+		uamManager.setVehicles(returnVehicles);
 		return new UAMFleetData(returnVehicles);
 	}
 

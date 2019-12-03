@@ -58,6 +58,7 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 			return;
 		}
 		// STARTED
+		log.warn("Vehicle: " + vehicle.getId());
 		log.warn("Optimzer Running NEXT TASK METHOD");
 		log.warn("Schedule status: "+ String.valueOf(schedule.getStatus()));
 		log.warn("Current task: "+ String.valueOf(schedule.getCurrentTask()));
@@ -107,7 +108,7 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 		ensureNonFinishingSchedule(schedule);
 
 		// UAMDispatcher dispatcher = ((UAMVehicle) vehicle).getDispatcher();
-
+		log.warn("Next task:" + String.valueOf(nextTask));
 		if (nextTask != null) {
 			synchronized (dispatcher) {
 				dispatcher.onNextTaskStarted((UAMVehicle) vehicle);

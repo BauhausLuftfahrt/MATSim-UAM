@@ -23,9 +23,9 @@
 		</attributes>
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:00:00"></activity>
-			<leg mode="walk" dep_time="06:00:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="06:00:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:00:00" end_time="11:00:00"></activity>
-			<leg mode="walk" dep_time="11:00:00" trav_time="12:00:00"></leg>
+			<leg mode="uam" dep_time="11:00:00" trav_time="12:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="12:00:00"></activity>
 		</plan>
 	</person>
