@@ -36,7 +36,7 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// ARGS
+		// ARGS network-file events-file network-change-events-output
 		int j = 0;
 		String networkInput = args[j++];
 		String eventsFileInput = args[j++];
