@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.analysis.traveltimes;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -28,8 +29,8 @@ import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 
 public class RunGenerateNetworkChangeEventsFile {
 	private double timeStep = 15 * 60; // Time step set to 15 minutes
-	double minFreeSpeed = 3;
-	double endTime = 30 * 60 * 60; // end time set to 30 hours
+	private double minFreeSpeed = 3;
+	private double endTime = 30 * 60 * 60; // end time set to 30 hours
 
 	public RunGenerateNetworkChangeEventsFile() {
 	}
@@ -39,7 +40,7 @@ public class RunGenerateNetworkChangeEventsFile {
 		int j = 0;
 		String networkInput = args[j++];
 		String eventsFileInput = args[j++];
-		String networkEventsChangeFile = args[j++];
+		String networkEventsChangeFile = args[j];
 
 		Config config = ConfigUtils.createConfig();
 		config.network().setInputFile(networkInput);
@@ -76,7 +77,8 @@ public class RunGenerateNetworkChangeEventsFile {
 		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
 		for (Link l : network.getLinks().values()) {
 
-			//if (l.getId().toString().startsWith("pt")) continue;
+			// skip UAM links
+			if (l.getAllowedModes().contains(UAMModes.UAM_MODE)) continue;
 
 			double length = l.getLength();
 			double previousTravelTime = l.getLength() / l.getFreespeed();
@@ -86,8 +88,6 @@ public class RunGenerateNetworkChangeEventsFile {
 				double newTravelTime = tcc.getLinkTravelTimes().getLinkTravelTime(l, time, null, null);
 
 				if (newTravelTime != previousTravelTime) {
-					// log.warn("Linkd ID: "+ l.getId()+" previousTravelTime: "+previousTravelTime+"
-					// NewTravelTime: "+ newTravelTime);
 					NetworkChangeEvent nce = new NetworkChangeEvent(time);
 					nce.addLink(l);
 					double newFreespeed = length / newTravelTime;
