@@ -103,7 +103,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
 
-			if (!findEligableEnRouteVehicle(request)) {
+			if (!findEligableEnRouteVehicle(request)) { 
 				UAMVehicle vehicle = this.availableVehiclesTree.getClosest(request.getFromLink().getCoord().getX(),
 						request.getFromLink().getCoord().getY());
 				Coord coord = this.locationVehicles.get(vehicle);
@@ -150,7 +150,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 					if (oldReq.getToLink() == request.getToLink() && oldReq.getFromLink() == request.getFromLink()) {
 						request.setDistance(oldReq.getDistance());
 						pickupTask.getRequests().add(request);
-						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3);
+						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3); //This is always going to be a dropoff?
 						dropOff.getRequests().add(request);
 
 						if ((int) vehicle.getCapacity() == dropOff.getRequests().size())

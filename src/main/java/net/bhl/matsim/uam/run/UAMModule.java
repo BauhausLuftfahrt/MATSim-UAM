@@ -41,6 +41,7 @@ import org.matsim.contrib.dvrp.router.DvrpRoutingNetworkProvider;
 import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
+import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
 import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
 import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
@@ -126,6 +127,9 @@ public class UAMModule extends AbstractModule {
 
 		// here we provide vehicles and network to be used for uam trips
 		bind(VehicleType.class).annotatedWith(Names.named("uam")).toInstance(VehicleUtils.getDefaultVehicleType());
+		
+		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
+		.toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(TravelTime.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));

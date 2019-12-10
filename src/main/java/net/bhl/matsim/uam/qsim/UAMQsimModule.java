@@ -80,7 +80,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Override
 	protected void configureQSim() {
-//		 install(new VrpAgentSourceQSimModule(getMode()));
+		 install(new VrpAgentSourceQSimModule(getMode()));
 		install(new PassengerEngineQSimModule(getMode()));
 
 		bindModal(PassengerRequestCreator.class).to(UAMRequestCreator.class);
@@ -93,8 +93,8 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		bind(UAMOptimizer.class);
 		bind(UAMDispatcherListener.class);
 //		bind(UAMLoader.class);
-		
-		bindModal(DefaultTeleportationEngine.class).to(DefaultTeleportationEngine.class);
+
+//		bindModal(DefaultTeleportationEngine.class).to(DefaultTeleportationEngine.class);
 		bindModal(UAMDispatcherListener.class).to(UAMDispatcherListener.class);
 		bindModal(Fleet.class).to(UAMFleetData.class);
 
@@ -102,14 +102,14 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		bind(UAMSingleRideAppender.class);
 //		bindModal(UAMDepartureHandler.class).to(UAMDepartureHandler.class);
 		bind(UAMDepartureHandler.class);
+	
 
 		bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
-		addModalQSimComponentBinding().to(VrpAgentSource.class);
+		//addModalQSimComponentBinding().to(VrpAgentSource.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
-		
-		
+
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
@@ -119,7 +119,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
 //		components.addComponent(DvrpModes.mode(TeleportationModule.COMPONENT_NAME));
 	}
-	
 
 	@Provides
 	@Singleton
@@ -127,19 +126,25 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		return new VrpLegFactory() {
 			@Override
 			public VrpLeg create(DvrpVehicle vehicle) {
-				return VrpLegFactory.createWithOnlineTracker(UAMModes.UAM_MODE, vehicle,
+				return VrpLegFactory.createWithOnlineTracker(TransportMode.car, vehicle,
 						(OnlineTrackerListener) optimizer, qSim.getSimTimer());
 			}
 		};
 	}
 
-	@Provides
-	@Singleton
-	public VrpAgentSource provideAgentSource(@DvrpMode(UAMModes.UAM_MODE) DynActionCreator actionCreator,
-			@DvrpMode(UAMModes.UAM_MODE) Fleet data, @DvrpMode(UAMModes.UAM_MODE) VrpOptimizer optimizer,
-			@Named("uam") VehicleType vehicleType, QSim qSim) {
-		return new VrpAgentSource(actionCreator, data, optimizer, qSim, vehicleType);
-	}
+	/*
+	 * @Provides
+	 * 
+	 * @Singleton public VrpAgentSource
+	 * provideAgentSource(@DvrpMode(UAMModes.UAM_MODE) DynActionCreator
+	 * actionCreator,
+	 * 
+	 * @DvrpMode(UAMModes.UAM_MODE) Fleet data, @DvrpMode(UAMModes.UAM_MODE)
+	 * VrpOptimizer optimizer,
+	 * 
+	 * @Named("uam") VehicleType vehicleType, QSim qSim) { return new
+	 * VrpAgentSource(actionCreator, data, optimizer, qSim, vehicleType); }
+	 */
 
 	@Provides
 	@Singleton
@@ -160,15 +165,15 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	public UAMFleetData provideData() {
 //	  UAMFleetData data = new UAMFleetData();
 		Map<Id<DvrpVehicle>, UAMVehicle> returnVehicles = new HashMap<>();
-		
-		for (DvrpVehicleSpecification specification : uamReader.getFleetSpecification().getVehicleSpecifications().values()) {
-			
-			
-			returnVehicles.put(specification.getId(), new UAMVehicle(specification, uamReader.getVehicles().get(specification.getId()).getStartLink(), 
-					uamReader.getVehicles().get(specification.getId()).getInitialStationId(),
-					uamReader.getVehicles().get(specification.getId()).getVehicleType()));
+
+		for (DvrpVehicleSpecification specification : uamReader.getFleetSpecification().getVehicleSpecifications()
+				.values()) {
+
+			returnVehicles.put(specification.getId(),
+					new UAMVehicle(specification, uamReader.getVehicles().get(specification.getId()).getStartLink(),
+							uamReader.getVehicles().get(specification.getId()).getInitialStationId(),
+							uamReader.getVehicles().get(specification.getId()).getVehicleType()));
 		}
-		
 
 		for (DvrpVehicle veh : returnVehicles.values()) {
 			log.warn("Task List size BEFORE: " + veh.getSchedule().getTasks().size());
@@ -181,8 +186,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 			 * task.setEndTime(veh.getServiceBeginTime()); } else {
 			 * veh.getSchedule().removeLastTask(); } }
 			 */
-			//create a new Fleet every iteration
-			
+			// create a new Fleet every iteration
 
 			Schedule schedule = veh.getSchedule();
 //			while (schedule.getTaskCount() > 0) {
@@ -192,15 +196,15 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 //				
 //			}
 			veh.getSchedule()
-					.addTask(new UAMStayTask(veh.getServiceBeginTime(),  Double.POSITIVE_INFINITY, veh.getStartLink()));
+					.addTask(new UAMStayTask(veh.getServiceBeginTime(), Double.POSITIVE_INFINITY, veh.getStartLink()));
 			returnVehicles.put(veh.getId(), (UAMVehicle) veh);
 
 			log.warn("Task List size AFTER: " + veh.getSchedule().getTasks().size());
 
 			log.warn("Vehicle schedule status AFTER: " + String.valueOf(veh.getSchedule().getStatus()));
 		}
-	
-		//populate manager here
+
+		// populate manager here
 		uamManager.setVehicles(returnVehicles);
 		return new UAMFleetData(returnVehicles);
 	}
