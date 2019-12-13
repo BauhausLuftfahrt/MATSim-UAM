@@ -93,6 +93,9 @@ public class RunGenerateNetworkChangeEventsFile {
 					double newFreespeed = length / newTravelTime;
 					if (newFreespeed < MinFreeSpeed)
 						newFreespeed = MinFreeSpeed;
+					if (Double.isInfinite(newFreespeed))
+						newFreespeed = Double.MAX_VALUE;
+					
 					NetworkChangeEvent.ChangeValue freespeedChange = new NetworkChangeEvent.ChangeValue(
 							ChangeType.ABSOLUTE_IN_SI_UNITS, newFreespeed);
 					nce.setFreespeedChange(freespeedChange);
