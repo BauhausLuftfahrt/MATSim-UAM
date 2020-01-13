@@ -177,24 +177,12 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 		for (DvrpVehicle veh : returnVehicles.values()) {
 			log.warn("Task List size BEFORE: " + veh.getSchedule().getTasks().size());
-
 			log.warn("Vehicle schedule status BEFORE: " + String.valueOf(veh.getSchedule().getStatus()));
 
-			/*
-			 * for (Task task : veh.getSchedule().getTasks()) { log.warn("Task name: " +
-			 * task.toString()); if (task.getStatus() == Task.TaskStatus.STARTED) {
-			 * task.setEndTime(veh.getServiceBeginTime()); } else {
-			 * veh.getSchedule().removeLastTask(); } }
-			 */
 			// create a new Fleet every iteration
 
 			Schedule schedule = veh.getSchedule();
-//			while (schedule.getTaskCount() > 0) {
-//				schedule.removeLastTask();
-//			}
 
-//				
-//			}
 			veh.getSchedule()
 					.addTask(new UAMStayTask(veh.getServiceBeginTime(), Double.POSITIVE_INFINITY, veh.getStartLink()));
 			returnVehicles.put(veh.getId(), (UAMVehicle) veh);

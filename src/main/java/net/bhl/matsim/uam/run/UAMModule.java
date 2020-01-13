@@ -73,16 +73,13 @@ public class UAMModule extends AbstractModule {
 	private Network networkUAM;
 	private Network networkCar;
 	private UAMXMLReader uamReader;
-	private final CommandLine cmd;
 
-	public UAMModule(CommandLine cmd, 
-			UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
+	public UAMModule(UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
 		this.uamManager = uamManager;
 		this.scenario = scenario;
 		this.networkUAM = networkUAM;
 		this.networkCar = networkCar;
 		this.uamReader = uamReader;
-		this.cmd = cmd;
 	}
 
 	@Override
