@@ -3,7 +3,6 @@ package net.bhl.matsim.uam.schedule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;

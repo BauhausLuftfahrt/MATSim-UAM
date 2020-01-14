@@ -4,7 +4,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
 import net.bhl.matsim.uam.dispatcher.UAMManager;

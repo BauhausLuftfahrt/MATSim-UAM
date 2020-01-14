@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.data;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.WaitingData;

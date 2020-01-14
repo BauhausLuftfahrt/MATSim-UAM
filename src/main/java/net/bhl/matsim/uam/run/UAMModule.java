@@ -13,7 +13,6 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.data.UAMLoader;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
@@ -96,9 +95,6 @@ public class UAMModule extends AbstractModule {
 		bind(UAMManager.class).toInstance(uamManager);
 		// adding UAMDemand as singleton
 		bind(UAMDemand.class).asEagerSingleton();
-
-
-		addControlerListenerBinding().to(UAMLoader.class);
 
 		// controler listeners need to be binded
 		addControlerListenerBinding().toInstance(uamManager);

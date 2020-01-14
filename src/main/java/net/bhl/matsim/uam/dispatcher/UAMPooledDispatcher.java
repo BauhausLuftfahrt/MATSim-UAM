@@ -32,7 +32,6 @@ public class UAMPooledDispatcher implements Dispatcher {
 	final private QuadTree<UAMVehicle> availableVehiclesTree;
 	boolean reoptimize = true;
 	private Map<UAMVehicle, Coord> locationVehicles = new HashMap<>();
-	private static final Logger log = Logger.getLogger(UAMPooledDispatcher.class);
 
 	@Inject
 	public UAMPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
@@ -102,7 +101,6 @@ public class UAMPooledDispatcher implements Dispatcher {
 		// TODO: have pending requests per station
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
-
 			if (!findEligableEnRouteVehicle(request)) { 
 				UAMVehicle vehicle = this.availableVehiclesTree.getClosest(request.getFromLink().getCoord().getX(),
 						request.getFromLink().getCoord().getY());
@@ -145,12 +143,12 @@ public class UAMPooledDispatcher implements Dispatcher {
 				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
 
 				if (schedule.getTasks().get(index + 1) instanceof UAMPickupTask) {
-					UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index + 1); //TODO THIS IS NOT GOING TO BE ALWAYS A PICK UP TASK!
+					UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index + 1);
 					UAMRequest oldReq = (UAMRequest) pickupTask.getRequests().toArray()[0];
 					if (oldReq.getToLink() == request.getToLink() && oldReq.getFromLink() == request.getFromLink()) {
 						request.setDistance(oldReq.getDistance());
 						pickupTask.getRequests().add(request);
-						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3); //This is always going to be a dropoff?
+						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3);
 						dropOff.getRequests().add(request);
 
 						if ((int) vehicle.getCapacity() == dropOff.getRequests().size())
