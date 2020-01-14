@@ -43,6 +43,7 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 			passengerEngine.dropOffPassenger(driver, request, now);
 		}
 	}
+
 	@Override
 	public double getEndTime() {
 		return endTime;
