@@ -39,9 +39,4 @@ public class UAMStayActivity implements DynActivity {
 		}
 	}
 
-	@Override
-	public String getActivityType() {
-		return activityType;
-	}
-
 }

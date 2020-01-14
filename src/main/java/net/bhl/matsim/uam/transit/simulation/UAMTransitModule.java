@@ -20,8 +20,8 @@ import java.util.Collections;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMTransitPlugin {
-	public UAMTransitPlugin(Config config) {
+public class UAMTransitModule {
+	public UAMTransitModule(Config config) {
 //		super(config);
 	}
 

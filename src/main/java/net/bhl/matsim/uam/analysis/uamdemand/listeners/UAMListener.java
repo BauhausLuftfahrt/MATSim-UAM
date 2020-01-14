@@ -26,7 +26,6 @@ import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.StageActivityTypes;
 import org.matsim.vehicles.Vehicle;
-import sun.rmi.transport.Transport;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

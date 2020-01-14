@@ -24,7 +24,6 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	private final double pickupDuration;
 	private final String activityType;
 
-	private String activityType;
 	private double maximumRequestT0 = 0;
 
 	private double endTime = 0.0;
@@ -119,8 +118,4 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 		}
 	}
 
-	@Override
-	public String getActivityType() {
-		return activityType;
-	}
 }
