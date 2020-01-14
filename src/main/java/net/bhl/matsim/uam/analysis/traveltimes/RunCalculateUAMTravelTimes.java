@@ -148,9 +148,11 @@ public class RunCalculateUAMTravelTimes {
 		//Provide routers
 		for (int i = 0; i < processes; i++) {
 			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
-			RaptorStopFinder stopFinder = null; // TODO RAOUL FOR MATSIM 11
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
-					new LeastCostRaptorRouteSelector(), stopFinder));
+					new LeastCostRaptorRouteSelector(),
+					new DefaultRaptorStopFinder(null,
+							new DefaultRaptorIntermodalAccessEgress(),
+							null))); // TODO MATSIM 11
 			uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
 					processes, new DijkstraFactory(), networkUAM, travelDisutility,
 					travelTime));
