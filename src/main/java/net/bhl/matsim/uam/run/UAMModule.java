@@ -118,14 +118,12 @@ public class UAMModule extends AbstractModule {
 	@Named("uam")
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
 																				   @Named("uam") TravelTime travelTime) {
-		// TODO: make this parameterized
-		int paralelRouters = uamConfig.getParallelRouters();
-		if (1 == paralelRouters) {
+		int parallelRouters = uamConfig.getParallelRouters();
+		if (1 == parallelRouters) {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(networkUAM,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime));
 		} else {
-			// TODO CHECK if this is really UAM only network
-			return DefaultParallelLeastCostPathCalculator.create(paralelRouters, new DijkstraFactory(), networkUAM,
+			return DefaultParallelLeastCostPathCalculator.create(parallelRouters, new DijkstraFactory(), networkUAM,
 					new OnlyTimeDependentTravelDisutility(travelTime), travelTime);
 		}
 	}
