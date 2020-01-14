@@ -7,7 +7,6 @@ import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -15,7 +14,6 @@ import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
 import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.LinkWrapperFacility;
@@ -43,12 +41,10 @@ public class UAMStrategyUtils {
 	private TransitRouter transitRouter;
 	private ParallelLeastCostPathCalculator plcpc;
 	private LeastCostPathCalculator plcpccar;
-	private CustomModeChoiceParameters parameters;
 
 	public UAMStrategyUtils(UAMStations landingStations, UAMConfigGroup uamConfig, Scenario scenario,
 							UAMStationConnectionGraph stationConnections, Network carNetwork, TransitRouter transitRouter,
-							ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar,
-							CustomModeChoiceParameters parameters) {
+							ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar) {
 		this.landingStations = landingStations;
 		this.uamConfig = uamConfig;
 		this.scenario = scenario;
@@ -57,7 +53,6 @@ public class UAMStrategyUtils {
 		this.transitRouter = transitRouter;
 		this.plcpc = plcpc;
 		this.plcpccar = plcpccar;
-		this.parameters = parameters;
 	}
 
 	/**
@@ -330,10 +325,6 @@ public class UAMStrategyUtils {
 
 	Set<String> getModes() {
 		return uamConfig.getAvailableAccessModes();
-	}
-
-	public CustomModeChoiceParameters getParameters() {
-		return parameters;
 	}
 
 	UAMStationConnectionGraph getStationConnections() {

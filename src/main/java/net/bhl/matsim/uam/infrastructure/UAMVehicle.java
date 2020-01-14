@@ -13,36 +13,18 @@ import org.matsim.contrib.dvrp.fleet.DvrpVehicleSpecification;
 public class UAMVehicle extends DvrpVehicleImpl {
 
 	// VTOL vehicle-specific properties
-	private final double width; // [m]
-	private final double length; // [m]
-	private final double range; // [m]
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
 
 	public UAMVehicle(DvrpVehicleSpecification specification, Link startLink, Id<UAMStation> stationId,
-			UAMVehicleType vehicleType) {
+					  UAMVehicleType vehicleType) {
 		super(specification, startLink);
 		this.initialStationId = stationId;
 		this.vehicleType = vehicleType;
-		this.width = 0;
-		this.length = 0;
-		this.range = 0;
 	}
 
 	public Id<UAMStation> getInitialStationId() {
 		return initialStationId;
-	}
-
-	public double getWidth() {
-		return width;
-	}
-
-	public double getLength() {
-		return length;
-	}
-
-	public double getRange() {
-		return range;
 	}
 
 	/**

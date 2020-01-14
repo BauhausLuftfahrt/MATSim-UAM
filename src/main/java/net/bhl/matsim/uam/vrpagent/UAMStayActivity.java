@@ -26,6 +26,11 @@ public class UAMStayActivity implements DynActivity  {
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		if (Double.isInfinite(stayTask.getEndTime())) {
 			return now + 1;

@@ -26,9 +26,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.pt.PtConstants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,12 +36,9 @@ import java.util.Set;
  * capabilities.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * @version 1.1
- * @since 2019-01-15
  */
 public class RunUAMScenario {
 
-	private final static boolean useMinTravelTimeModeChoice = true;
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
@@ -107,9 +102,6 @@ public class RunUAMScenario {
 
 		scenario.getPopulation().getFactory().getRouteFactories().setRouteFactory(DefaultEnrichedTransitRoute.class,
 				new DefaultEnrichedTransitRouteFactory());
-		new LongPlanFilter(8, new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE))
-				.run(scenario.getPopulation());
-
 		controler = new Controler(scenario);
 
 		// Initiate Urban Air Mobility XML reading and parsing
@@ -138,14 +130,13 @@ public class RunUAMScenario {
 		uamManager.setStations(uamStations);
 		uamManager.setVehicles(uamReader.getVehicles());
 
-		controler.addOverridingModule(new CustomModeChoiceModuleMinTravelTime(cmd, useMinTravelTimeModeChoice));
-
 		// sets transit modules in case of simulating/not pT
 		controler.getConfig().transit().setUseTransit(uamConfigGroup.getPtSimulation());
 		if (uamConfigGroup.getPtSimulation()) {
 			controler.addOverridingModule(new SwissRailRaptorModule());
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
+
 		controler.addOverridingModule(new CustomModule()); //taxi
 		controler.addOverridingModule(new UAMModule(uamManager, networkUAM, networkCar, uamReader));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),

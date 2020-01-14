@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;
@@ -16,12 +17,12 @@ import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMRequest implements PassengerRequest {
-	
 	final private Id<Request> id;
 	final private double submissionTime;
 	final private Link originLink;
 	final private Link destinationLink;
 	final private MobsimPassengerAgent passengerAgent;
+
 	private UAMDropoffTask dropoffTask;
 	private UAMPickupTask pickupTask;
 	private Dispatcher dispatcher;
@@ -39,8 +40,6 @@ public class UAMRequest implements PassengerRequest {
 		this.earliestStartTime = pickupTime;
 		this.latestStartTime = pickupTime;
 		this.passengerAgent = passengerAgent;
-		this.originLink = originLink;
-		this.destinationLink = destinationLink;
 		this.dispatcher = dispatcher;
 		this.distance = distance;
 	}
@@ -56,7 +55,8 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public double getLatestStartTime() {
-		return this.latestStartTime;
+		// TODO revisit
+		return this.earliestStartTime;
 	}
 
 	@Override
@@ -81,16 +81,25 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public Link getFromLink() {
-		return this.originLink;
+		return this.fromLink;
 	}
 
 	@Override
 	public Link getToLink() {
-		return this.destinationLink;
+		return this.toLink;
 	}
 
 	public MobsimPassengerAgent getPassenger() {
 		return this.passengerAgent;
+
+	@Override
+	public Id<Person> getPassengerId() {
+		return this.passengerAgent.getId();
+	}
+
+	@Override
+	public String getMode() {
+		return this.mode;
 	}
 
 	public UAMDropoffTask getDropoffTask() {

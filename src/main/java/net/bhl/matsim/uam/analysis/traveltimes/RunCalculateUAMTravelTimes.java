@@ -122,10 +122,10 @@ public class RunCalculateUAMTravelTimes {
                 ConfigSetter.createRaptorConfig(config), network);
 
         // Generate data for other routers
-    	TravelTimeCalculator.Builder ttcBuilder = new TravelTimeCalculator.Builder(network);
-		ttcBuilder.configure(config.travelTimeCalculator());
-		TravelTimeCalculator tcc2 = ttcBuilder.build();
-        TravelTime travelTime = tcc2.getLinkTravelTimes();
+        TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
+        builder.configure(config.travelTimeCalculator());
+        TravelTimeCalculator ttc = builder.build();
+        TravelTime travelTime = ttc.getLinkTravelTimes();
         TravelDisutility travelDisutility = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
 
         com.google.inject.Injector injector = Injector.createInjector(config, new AbstractModule() {
@@ -141,15 +141,16 @@ public class RunCalculateUAMTravelTimes {
         DefaultParallelLeastCostPathCalculator pathCalculatorForStations = DefaultParallelLeastCostPathCalculator
                 .create(processes, new DijkstraFactory(), networkUAM,
                         travelDisutility, travelTime);
-        UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager, null,
+        UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager,
                 pathCalculatorForStations);
         pathCalculatorForStations.close();
 
         //Provide routers
         for (int i = 0; i < processes; i++) {
             carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
+            RaptorStopFinder stopFinder = null; // TODO RAOUL FOR MATSIM 11
             ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
-                    new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress()));
+                    new LeastCostRaptorRouteSelector(), stopFinder));
             uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
                     processes, new DijkstraFactory(), networkUAM, travelDisutility,
                     travelTime));
@@ -263,7 +264,7 @@ public class RunCalculateUAMTravelTimes {
 
             UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
                     (UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,
-                    networkCar, transitRouter, pathCalculator, plcpccar, null);
+                    networkCar, transitRouter, pathCalculator, plcpccar);
             UAMStrategy strategy = null;
             switch (UAMStrategyType.valueOf(strategyName.toUpperCase())) {
                 case MINTRAVELTIME:

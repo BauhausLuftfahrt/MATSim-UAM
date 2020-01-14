@@ -32,6 +32,11 @@ public class UAMTurnAroundActivity implements DynActivity {
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		return turnAroundTask.getEndTime();
 	}

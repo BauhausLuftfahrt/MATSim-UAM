@@ -45,7 +45,6 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 
 	@Override
 	public void nextTask(DvrpVehicle vehicle) {
-	
 		Schedule schedule = vehicle.getSchedule();
 		// this happens at the start of the simulation since
 		// the schedule has not started yet
@@ -131,5 +130,6 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 	}
 
 	public void vehicleEnteredNextLink(DvrpVehicle vehicle, Link link) {
+		
 	}
 }

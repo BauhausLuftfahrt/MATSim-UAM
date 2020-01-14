@@ -15,6 +15,7 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+
 public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
 	private final PassengerEngine passengerEngine;
@@ -23,6 +24,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	private final double pickupDuration;
 	private final String activityType;
 
+	private String activityType;
 	private double maximumRequestT0 = 0;
 
 	private double endTime = 0.0;
@@ -31,11 +33,12 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	public UAMPassengerPickupActivity(PassengerEngine passengerEngine, DynAgent driver,
 									  DvrpVehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,
 									  double pickupDuration, String activityType) {
-			if (requests.size() > vehicle.getCapacity()) {
+		if (requests.size() > vehicle.getCapacity()) {
 			// Number of requests exceeds number of seats
 			throw new IllegalStateException();
 		}
 		this.activityType = activityType;
+
 		this.passengerEngine = passengerEngine;
 		this.driver = driver;
 		this.pickupDuration = pickupDuration;
@@ -72,6 +75,11 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		return endTime;
 	}
@@ -85,7 +93,8 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
 	private PassengerRequest getRequestForPassenger(MobsimPassengerAgent passenger) {
 		for (PassengerRequest request : requests) {
-			if (passenger.getId() == request.getPassengerId()) return request;
+			if (passenger.getId().equals(request.getPassengerId()))
+				return request;
 		}
 
 		return null;

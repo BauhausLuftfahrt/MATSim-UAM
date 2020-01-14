@@ -71,9 +71,6 @@ public class ConfigSetter {
         raptorStaticConfig.setBeelineWalkSpeed(0.9230769);
         raptorStaticConfig.setMinimalTransferTime(0);
         raptorStaticConfig.setBeelineWalkConnectionDistance(250);
-        raptorStaticConfig.setMarginalUtilityOfTravelTimeAccessWalk_utl_s(-0.0017944);
-        raptorStaticConfig.setMarginalUtilityOfTravelTimeEgressWalk_utl_s(-0.0017944);
-        raptorStaticConfig.setMarginalUtilityOfTravelTimeWalk_utl_s(-0.0017944);
         return raptorStaticConfig;
     }
 }

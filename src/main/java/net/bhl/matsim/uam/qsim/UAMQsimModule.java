@@ -83,7 +83,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
-
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {

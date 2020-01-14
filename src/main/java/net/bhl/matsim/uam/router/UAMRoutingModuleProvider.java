@@ -9,8 +9,6 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -38,8 +36,6 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject(optional = true)
 	BaselineTransitRoutingModule transitRouting;
 	@Inject
-	CustomModeChoiceParameters parameters;
-	@Inject
 	private Scenario scenario;
 	@Inject
 	private UAMManager uamManager;
@@ -64,9 +60,6 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject
 	private UAMStationConnectionGraph stationConnectionutilities;
 
-	@Inject
-	private SubscriptionFinder subscriptionFinder;
-
 	@Override
 	public RoutingModule get() {
 		TravelTime travelTime = travelTimes.get(TransportMode.car);
@@ -78,12 +71,11 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 
 		if (scenario.getConfig().transit().isUseTransit()) {
 			return new UAMCachedIntermodalRoutingModule(scenario, uamManager.getStations(), plcpc, pathCalculator,
-					networkCar, transitRouter, uamConfig, transitConfig, transitRouting, parameters, waitingData,
-					stationConnectionutilities, subscriptionFinder);
+					networkCar, transitRouter, uamConfig, transitConfig, transitRouting, waitingData,
+					stationConnectionutilities);
 		} else {
 			return new UAMCachedIntermodalRoutingModule(scenario, uamManager.getStations(), plcpc, pathCalculator,
-					networkCar, uamConfig, transitConfig, parameters, waitingData, stationConnectionutilities,
-					subscriptionFinder);
+					networkCar, uamConfig, transitConfig, waitingData, stationConnectionutilities);
 		}
 	}
 }

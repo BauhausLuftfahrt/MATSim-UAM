@@ -114,7 +114,6 @@ public class UAMModule extends AbstractModule {
 
 	}
 
-
 	@Provides
 	@Singleton
 	@Named("uam")

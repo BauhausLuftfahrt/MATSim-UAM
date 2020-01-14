@@ -19,7 +19,7 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 	private final DynAgent driver;
 	private final Set<? extends PassengerRequest> requests;
 	private final String activityType;
-	
+
 	private double endTime = 0.0;
 
 	public UAMPassengerDropoffActivity(PassengerEngine passengerEngine, DynAgent driver, DvrpVehicle vehicle, StayTask dropoffTask,
@@ -45,16 +45,19 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		return endTime;
 	}
-
 
 	@Override
 	public String getActivityType() {
 		return activityType;
 	}
-
 
 	@Override
 	public void doSimStep(double now) {
