@@ -20,6 +20,7 @@ import java.util.Collections;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+// TODO DEPRECATED?
 public class UAMTransitModule {
 	public UAMTransitModule(Config config) {
 //		super(config);
