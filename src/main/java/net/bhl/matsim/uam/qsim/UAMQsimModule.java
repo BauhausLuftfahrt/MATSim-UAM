@@ -61,8 +61,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	public static void configureComponents(QSimComponentsConfig components) {
 		DynActivityEngineModule.configureComponents(components);
-
-		// components.addNamedComponent(COMPONENT_NAME);
 		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
 	}
 
