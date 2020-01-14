@@ -125,9 +125,9 @@ public class RunCalculateCarTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime) })
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
 					+ "\n");
 		}
 
@@ -136,8 +136,25 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time" });
+		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
+				"departure_time", "travel_time"});
+	}
+
+	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
+											 LeastCostPathCalculator pathCalculator) {
+		if (carNetwork.getLinks().get(from.getId()) != null)
+			from = carNetwork.getLinks().get(from.getId());
+		else
+			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
+
+		if (carNetwork.getLinks().get(to.getId()) != null)
+			to = carNetwork.getLinks().get(to.getId());
+		else
+			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
+
+		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
+				null);
+		return path.travelTime;
 	}
 
 	static class CarTravelTimeCalculator implements Runnable {
@@ -179,23 +196,6 @@ public class RunCalculateCarTravelTimes {
 			}
 			threadCounter.deregister();
 		}
-	}
-
-	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-											 LeastCostPathCalculator pathCalculator) {
-		if (carNetwork.getLinks().get(from.getId()) != null)
-			from = carNetwork.getLinks().get(from.getId());
-		else
-			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
-
-		if (carNetwork.getLinks().get(to.getId()) != null)
-			to = carNetwork.getLinks().get(to.getId());
-		else
-			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
-
-		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
-				null);
-		return path.travelTime;
 	}
 
 }

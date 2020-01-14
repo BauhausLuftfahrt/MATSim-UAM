@@ -59,6 +59,13 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		this.uamManager = uamManager;
 	}
 
+	public static void configureComponents(QSimComponentsConfig components) {
+		DynActivityEngineModule.configureComponents(components);
+
+		// components.addNamedComponent(COMPONENT_NAME);
+		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
+	}
+
 	@Override
 	protected void configureQSim() {
 		install(new VrpAgentSourceQSimModule(getMode()));
@@ -84,13 +91,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
 	}
 
-	public static void configureComponents(QSimComponentsConfig components) {
-		DynActivityEngineModule.configureComponents(components);
-
-		// components.addNamedComponent(COMPONENT_NAME);
-		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
-	}
-
 	@Provides
 	@Singleton
 	VrpLegFactory provideLegCreator(@DvrpMode(UAMModes.UAM_MODE) VrpOptimizer optimizer, QSim qSim) {
@@ -106,7 +106,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	@Provides
 	@Singleton
 	List<Dispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-			@Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+										@Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
 
 		Dispatcher dispatcher = new UAMPooledDispatcher(appender, uamManager, network, data);
 

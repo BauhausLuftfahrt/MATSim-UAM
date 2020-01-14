@@ -21,15 +21,13 @@ public class UAMRequest implements PassengerRequest {
 	final private Link originLink;
 	final private Link destinationLink;
 	final private MobsimPassengerAgent passengerAgent;
-
+	private final double quantity;
+	private final double earliestStartTime;
+	private final double latestStartTime;
 	private UAMDropoffTask dropoffTask;
 	private UAMPickupTask pickupTask;
 	private Dispatcher dispatcher;
 	private double distance;
-	
-	private final double quantity;
-	private final double earliestStartTime;
-	private final double latestStartTime;
 
 	public UAMRequest(Id<Request> id, MobsimPassengerAgent passengerAgent, Link originLink, Link destinationLink,
 					  double pickupTime, double submissionTime, Dispatcher dispatcher, double distance) {
@@ -67,7 +65,7 @@ public class UAMRequest implements PassengerRequest {
 	public boolean isRejected() {
 		return false;
 	}
-	
+
 	@Override
 	public Id<Request> getId() {
 		return this.id;
@@ -91,55 +89,55 @@ public class UAMRequest implements PassengerRequest {
 	public MobsimPassengerAgent getPassenger() {
 		return this.passengerAgent;
 
-	@Override
-	public Id<Person> getPassengerId() {
-		return this.passengerAgent.getId();
+		@Override
+		public Id<Person> getPassengerId () {
+			return this.passengerAgent.getId();
+		}
+
+		@Override
+		public String getMode () {
+			return this.mode;
+		}
+
+		public UAMDropoffTask getDropoffTask () {
+			return dropoffTask;
+		}
+
+		public void setDropoffTask (UAMDropoffTask dropoffTask){
+			this.dropoffTask = dropoffTask;
+		}
+
+		public UAMPickupTask getPickupTask () {
+			return pickupTask;
+		}
+
+		public void setPickupTask (UAMPickupTask pickupTask){
+			this.pickupTask = pickupTask;
+		}
+
+		public Dispatcher getDispatcher () {
+			return dispatcher;
+		}
+
+		public double getDistance () {
+			return distance;
+		}
+
+		public void setDistance ( double distance){
+			this.distance = distance;
+		}
+
+		@Override
+		public String getMode () {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void setRejected ( boolean rejected){
+			// TODO Auto-generated method stub
+
+		}
+
+
 	}
-
-	@Override
-	public String getMode() {
-		return this.mode;
-	}
-
-	public UAMDropoffTask getDropoffTask() {
-		return dropoffTask;
-	}
-
-	public void setDropoffTask(UAMDropoffTask dropoffTask) {
-		this.dropoffTask = dropoffTask;
-	}
-
-	public UAMPickupTask getPickupTask() {
-		return pickupTask;
-	}
-
-	public void setPickupTask(UAMPickupTask pickupTask) {
-		this.pickupTask = pickupTask;
-	}
-
-	public Dispatcher getDispatcher() {
-		return dispatcher;
-	}
-
-	public double getDistance() {
-		return distance;
-	}
-
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
-
-	@Override
-	public String getMode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setRejected(boolean rejected) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-}

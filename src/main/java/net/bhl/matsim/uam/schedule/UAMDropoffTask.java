@@ -53,7 +53,7 @@ public class UAMDropoffTask extends StayTaskImpl implements UAMTask {
 	public double getDeboardingTime() {
 		return deboardingTime;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UAMDropOffTask(" + (this.getName() != null ? this.getName() : "") + "@" + this.getLink().getId() + ")" + commonToString();

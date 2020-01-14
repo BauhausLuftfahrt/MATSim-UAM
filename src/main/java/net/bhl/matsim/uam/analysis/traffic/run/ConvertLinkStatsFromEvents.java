@@ -44,16 +44,16 @@ public class ConvertLinkStatsFromEvents {
 		new MatsimNetworkReader(netw).readFile(network);
 
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
-		
+
 		Set<String> modes = new HashSet<>();
 		for (String mode : analyzedModes)
 			modes.add(mode);
 		tconfig.setAnalyzedModes(modes); // TODO does nothing?
 		tconfig.setFilterModes(filterModes); // TODO does nothing?
-		
+
 		tconfig.setCalculateLinkToLinkTravelTimes(calculateLinkToLinkTravelTimes);
 		tconfig.setCalculateLinkTravelTimes(calculateLinkTravelTimes);
-		
+
 		tconfig.setMaxTime(maxTime);
 		tconfig.setTraveltimeBinSize(timeBinSize);
 

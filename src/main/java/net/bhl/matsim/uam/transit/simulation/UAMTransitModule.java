@@ -25,7 +25,7 @@ public class UAMTransitPlugin {
 //		super(config);
 	}
 
-//	@Override
+	//	@Override
 	public Collection<? extends Module> modules() {
 		return Collections.singletonList(new AbstractModule() {
 			@Override
@@ -41,12 +41,12 @@ public class UAMTransitPlugin {
 		});
 	}
 
-//	@Override
+	//	@Override
 	public Collection<Class<? extends DepartureHandler>> departureHandlers() {
 		return Collections.singletonList(UAMTransitEngine.class);
 	}
 
-//	@Override
+	//	@Override
 	public Collection<Class<? extends MobsimEngine>> engines() {
 		return Collections.singletonList(UAMTransitEngine.class);
 	}

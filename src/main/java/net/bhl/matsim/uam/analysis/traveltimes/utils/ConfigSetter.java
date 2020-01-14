@@ -11,66 +11,66 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup;
 
 public class ConfigSetter {
-    public static Config createCarConfig(String networkInput, String networkEventsChangeFile) {
-        Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
-        config.network().setInputFile(networkInput);
+	public static Config createCarConfig(String networkInput, String networkEventsChangeFile) {
+		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
+		config.network().setInputFile(networkInput);
 
-        config.network().setTimeVariantNetwork(true);
-        config.network().setChangeEventsInputFile(networkEventsChangeFile);
+		config.network().setTimeVariantNetwork(true);
+		config.network().setChangeEventsInputFile(networkEventsChangeFile);
 
-        return config;
-    }
+		return config;
+	}
 
-    public static Config createPTConfig(String networkInput, String transitScheduleInput) {
-        Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
-        config.network().setInputFile(networkInput);
+	public static Config createPTConfig(String networkInput, String transitScheduleInput) {
+		Config config = ConfigUtils.createConfig(new UAMConfigGroup(), new DvrpConfigGroup());
+		config.network().setInputFile(networkInput);
 
-        config.transit().setTransitScheduleFile(transitScheduleInput);
+		config.transit().setTransitScheduleFile(transitScheduleInput);
 
-        config.transitRouter().setSearchRadius(2500);
-        config.planCalcScore().setPerforming_utils_hr(0);
-        config.planCalcScore().setMarginalUtlOfWaitingPt_utils_hr(-2.3);
-        config.planCalcScore().setUtilityOfLineSwitch(-0.17);
-        config.transitRouter().setExtensionRadius(500);
+		config.transitRouter().setSearchRadius(2500);
+		config.planCalcScore().setPerforming_utils_hr(0);
+		config.planCalcScore().setMarginalUtlOfWaitingPt_utils_hr(-2.3);
+		config.planCalcScore().setUtilityOfLineSwitch(-0.17);
+		config.transitRouter().setExtensionRadius(500);
 
-        PlanCalcScoreConfigGroup.ModeParams accessWalk = new PlanCalcScoreConfigGroup.ModeParams(
-                TransportMode.access_walk);
-        accessWalk.setMarginalUtilityOfTraveling(-4.0);
-        config.planCalcScore().addModeParams(accessWalk);
-        PlanCalcScoreConfigGroup.ModeParams egressWalk = new PlanCalcScoreConfigGroup.ModeParams(
-                TransportMode.egress_walk);
-        egressWalk.setMarginalUtilityOfTraveling(-4.0);
-        config.planCalcScore().addModeParams(egressWalk);
+		PlanCalcScoreConfigGroup.ModeParams accessWalk = new PlanCalcScoreConfigGroup.ModeParams(
+				TransportMode.access_walk);
+		accessWalk.setMarginalUtilityOfTraveling(-4.0);
+		config.planCalcScore().addModeParams(accessWalk);
+		PlanCalcScoreConfigGroup.ModeParams egressWalk = new PlanCalcScoreConfigGroup.ModeParams(
+				TransportMode.egress_walk);
+		egressWalk.setMarginalUtilityOfTraveling(-4.0);
+		config.planCalcScore().addModeParams(egressWalk);
 
-        config.planCalcScore().getOrCreateModeParams(TransportMode.pt).setMarginalUtilityOfTraveling(-1.32);
-        config.planCalcScore().getOrCreateModeParams(TransportMode.walk).setMarginalUtilityOfTraveling(-6.46);
-        config.transit().setUseTransit(true);
+		config.planCalcScore().getOrCreateModeParams(TransportMode.pt).setMarginalUtilityOfTraveling(-1.32);
+		config.planCalcScore().getOrCreateModeParams(TransportMode.walk).setMarginalUtilityOfTraveling(-6.46);
+		config.transit().setUseTransit(true);
 
-        config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setTeleportedModeSpeed(1.2);
-        config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setBeelineDistanceFactor(1.3);
-        config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setTeleportedModeSpeed(3.1);
-        config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setBeelineDistanceFactor(1.4);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setTeleportedModeSpeed(1.2);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.walk).setBeelineDistanceFactor(1.3);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setTeleportedModeSpeed(3.1);
+		config.plansCalcRoute().getModeRoutingParams().get(TransportMode.bike).setBeelineDistanceFactor(1.4);
 
-        return config;
-    }
+		return config;
+	}
 
-    public static Config createUAMConfig(String networkInput, String networkEventsChangeFile,
-                                         String transitScheduleInput, double searchRadius, String accessModes) {
-        Config config = createPTConfig(networkInput, transitScheduleInput);
+	public static Config createUAMConfig(String networkInput, String networkEventsChangeFile,
+										 String transitScheduleInput, double searchRadius, String accessModes) {
+		Config config = createPTConfig(networkInput, transitScheduleInput);
 
-        config.network().setTimeVariantNetwork(true);
-        config.network().setChangeEventsInputFile(networkEventsChangeFile);
+		config.network().setTimeVariantNetwork(true);
+		config.network().setChangeEventsInputFile(networkEventsChangeFile);
 
-        ((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setAvailableAccessModes(accessModes);
-        ((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setSearchRadius("" + searchRadius);
-        return config;
-    }
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setAvailableAccessModes(accessModes);
+		((UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE)).setSearchRadius("" + searchRadius);
+		return config;
+	}
 
-    public static RaptorStaticConfig createRaptorConfig(Config config) {
-        RaptorStaticConfig raptorStaticConfig = RaptorUtils.createStaticConfig(config);
-        raptorStaticConfig.setBeelineWalkSpeed(0.9230769);
-        raptorStaticConfig.setMinimalTransferTime(0);
-        raptorStaticConfig.setBeelineWalkConnectionDistance(250);
-        return raptorStaticConfig;
-    }
+	public static RaptorStaticConfig createRaptorConfig(Config config) {
+		RaptorStaticConfig raptorStaticConfig = RaptorUtils.createStaticConfig(config);
+		raptorStaticConfig.setBeelineWalkSpeed(0.9230769);
+		raptorStaticConfig.setMinimalTransferTime(0);
+		raptorStaticConfig.setBeelineWalkConnectionDistance(250);
+		return raptorStaticConfig;
+	}
 }

@@ -97,9 +97,9 @@ public class UAMModule extends AbstractModule {
 
 		// here we provide vehicles and network to be used for uam trips
 		bind(VehicleType.class).annotatedWith(Names.named("uam")).toInstance(VehicleUtils.getDefaultVehicleType());
-		
+
 		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
-		.toInstance(VehicleUtils.getDefaultVehicleType());
+				.toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(TravelTime.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
@@ -117,7 +117,7 @@ public class UAMModule extends AbstractModule {
 	@Singleton
 	@Named("uam")
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-			@Named("uam") TravelTime travelTime) {
+																				   @Named("uam") TravelTime travelTime) {
 		// TODO: make this parameterized
 		int paralelRouters = uamConfig.getParallelRouters();
 		if (1 == paralelRouters) {

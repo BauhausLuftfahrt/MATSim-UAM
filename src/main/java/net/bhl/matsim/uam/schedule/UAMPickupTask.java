@@ -52,7 +52,7 @@ public class UAMPickupTask extends StayTaskImpl implements UAMTask {
 	public double getBoardingTime() {
 		return boardingTime;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UAMPickUpTask(" + (this.getName() != null ? this.getName() : "") + "@" + this.getLink().getId() + ")" + commonToString();

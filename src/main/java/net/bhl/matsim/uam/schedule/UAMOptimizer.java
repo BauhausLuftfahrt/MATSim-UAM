@@ -25,7 +25,7 @@ import java.util.List;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
-public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimBeforeSimStepListener {
+public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
 	private Dispatcher dispatcher;
 	@Inject
@@ -50,7 +50,7 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 			schedule.nextTask();
 			return;
 		}
-		
+
 		// get the current task and make it end now
 		Task currentTask = schedule.getCurrentTask();
 		currentTask.setEndTime(now);
@@ -128,6 +128,6 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 	}
 
 	public void vehicleEnteredNextLink(DvrpVehicle vehicle, Link link) {
-		
+
 	}
 }

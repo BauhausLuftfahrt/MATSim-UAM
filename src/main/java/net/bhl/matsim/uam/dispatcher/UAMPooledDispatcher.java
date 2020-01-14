@@ -42,7 +42,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
-		for (DvrpVehicle veh :  data.getVehicles().values()) {
+		for (DvrpVehicle veh : data.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
 
 			Id<UAMStation> stationId = ((UAMVehicle) veh).getInitialStationId();
@@ -52,7 +52,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), (UAMVehicle) veh);
 			locationVehicles.put((UAMVehicle) veh, coord);
-			
+
 		}
 	}
 
@@ -101,7 +101,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 		// TODO: have pending requests per station
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
-			if (!findEligableEnRouteVehicle(request)) { 
+			if (!findEligableEnRouteVehicle(request)) {
 				UAMVehicle vehicle = this.availableVehiclesTree.getClosest(request.getFromLink().getCoord().getX(),
 						request.getFromLink().getCoord().getY());
 				Coord coord = this.locationVehicles.get(vehicle);
@@ -151,7 +151,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3);
 						dropOff.getRequests().add(request);
 
-						if ((int) vehicle.getCapacity() == dropOff.getRequests().size())
+						if (vehicle.getCapacity() == dropOff.getRequests().size())
 							this.enRouteToPickupVehicles.remove(vehicle);
 
 						return true;

@@ -72,7 +72,7 @@ public class UAMVehicle extends DvrpVehicleImpl {
 	 * landing)
 	 *
 	 * @return the UAM Vehicle turn around time (time unavailable for other trips
-	 *         after landing)
+	 * after landing)
 	 */
 	public double getTurnAroundTime() {
 		return vehicleType.getTurnAroundTime();

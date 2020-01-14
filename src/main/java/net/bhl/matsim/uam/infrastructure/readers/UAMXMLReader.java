@@ -32,9 +32,9 @@ import java.util.Stack;
 public class UAMXMLReader extends MatsimXmlParser {
 
 	public final Network network;
+	private final Map<Id<DvrpVehicle>, UAMVehicle> vehiclesForData = new HashMap<Id<DvrpVehicle>, UAMVehicle>(); // added
 	private Map<Id<UAMStation>, UAMStation> stations = new HashMap<Id<UAMStation>, UAMStation>();
 	private Map<Id<DvrpVehicle>, UAMVehicle> vehicles = new HashMap<Id<DvrpVehicle>, UAMVehicle>(); // added
-	private final Map<Id<DvrpVehicle>, UAMVehicle> vehiclesForData = new HashMap<Id<DvrpVehicle>, UAMVehicle>(); // added
 	private Map<Id<UAMVehicleType>, UAMVehicleType> vehicleTypes = new HashMap<Id<UAMVehicleType>, UAMVehicleType>(); // added
 	private Map<String, Double> mapVehicleHorizontalSpeeds = new HashMap<>();
 	private Map<String, Double> mapVehicleVerticalSpeeds = new HashMap<>();

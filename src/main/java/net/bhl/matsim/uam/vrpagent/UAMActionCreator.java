@@ -37,22 +37,22 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 		Task task = vehicle.getSchedule().getCurrentTask();
 		if (task instanceof UAMTask) {
 			switch (((UAMTask) task).getUAMTaskType()) {
-			case PICKUP:
-				UAMPickupTask mpt = (UAMPickupTask) task;
-				return new UAMPassengerPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
-						mpt.getBoardingTime(), PICKUP_ACTIVITY_TYPE);
-			case DROPOFF:
-				UAMDropoffTask mdt = (UAMDropoffTask) task;
-				return new UAMPassengerDropoffActivity(passengerEngine, dynAgent, vehicle, mdt, mdt.getRequests(),
-						mdt.getDeboardingTime(), DROPOFF_ACTIVITY_TYPE);
-			case FLY:
-				return legCreator.create(vehicle);
-			case STAY:
-				return new UAMStayActivity((UAMStayTask) task);
-			case TURNAROUND:
-				return new UAMTurnAroundActivity((UAMTurnAroundTask) task);
-			default:
-				throw new IllegalStateException();
+				case PICKUP:
+					UAMPickupTask mpt = (UAMPickupTask) task;
+					return new UAMPassengerPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
+							mpt.getBoardingTime(), PICKUP_ACTIVITY_TYPE);
+				case DROPOFF:
+					UAMDropoffTask mdt = (UAMDropoffTask) task;
+					return new UAMPassengerDropoffActivity(passengerEngine, dynAgent, vehicle, mdt, mdt.getRequests(),
+							mdt.getDeboardingTime(), DROPOFF_ACTIVITY_TYPE);
+				case FLY:
+					return legCreator.create(vehicle);
+				case STAY:
+					return new UAMStayActivity((UAMStayTask) task);
+				case TURNAROUND:
+					return new UAMTurnAroundActivity((UAMTurnAroundTask) task);
+				default:
+					throw new IllegalStateException();
 			}
 		} else {
 			throw new IllegalArgumentException();

@@ -66,13 +66,13 @@ public class ConvertDeckGLTripsFromEvents {
 
 			bw.write("[" + System.lineSeparator());
 
-			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext();) {
+			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext(); ) {
 				Id<Vehicle> id = it.next();
 				int vendor = id.toString().contains("uam") ? 1 : 0;
 				bw.write("{\"vendor\": " + vendor + ", ");
 				bw.write("\"segments\": [");
 
-				for (Iterator<DeckGLTripItem> itemIter = deckGLTrips.get(id).iterator(); itemIter.hasNext();) {
+				for (Iterator<DeckGLTripItem> itemIter = deckGLTrips.get(id).iterator(); itemIter.hasNext(); ) {
 					DeckGLTripItem item = itemIter.next();
 					bw.write(item.convert(inCRS, outCRS, deckGLanimationSpeed));
 

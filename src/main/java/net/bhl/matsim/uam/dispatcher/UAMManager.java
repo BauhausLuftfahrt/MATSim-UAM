@@ -61,7 +61,7 @@ public class UAMManager implements IterationStartsListener {
 	public void setVehicles(Map<Id<DvrpVehicle>, UAMVehicle> vehicles) {
 		this.vehicles = vehicles;
 	}
-	
+
 
 	/**
 	 * Adds a vehicle, after it lands, to the available vehicles.

@@ -51,7 +51,7 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	public void generateNetworkChangeEventsFile(String networkInput, String eventsFileInput,
-			String networkEventsChangeFile, Config config) {
+												String networkEventsChangeFile, Config config) {
 		// Generate networkChangeEvents file for the Time-Dependent Network
 		Network networkForReader = NetworkUtils.createNetwork();
 		new MatsimNetworkReader(networkForReader).readFile(networkInput);
@@ -64,7 +64,7 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	private TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
-			TravelTimeCalculatorConfigGroup group) {
+																	TravelTimeCalculatorConfigGroup group) {
 		EventsManager manager = EventsUtils.createEventsManager();
 
 		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
@@ -77,7 +77,7 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	private List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
-			Double endTime, Double timeStep, Double MinFreeSpeed) {
+															   Double endTime, Double timeStep, Double MinFreeSpeed) {
 		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
 		for (Link l : network.getLinks().values()) {
 
@@ -99,7 +99,7 @@ public class RunGenerateNetworkChangeEventsFile {
 						newFreespeed = MinFreeSpeed;
 					if (Double.isInfinite(newFreespeed))
 						newFreespeed = Double.MAX_VALUE;
-					
+
 					NetworkChangeEvent.ChangeValue freespeedChange = new NetworkChangeEvent.ChangeValue(
 							ChangeType.ABSOLUTE_IN_SI_UNITS, newFreespeed);
 					nce.setFreespeedChange(freespeedChange);

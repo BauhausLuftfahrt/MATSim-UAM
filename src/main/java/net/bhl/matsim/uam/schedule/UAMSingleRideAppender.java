@@ -88,7 +88,7 @@ public class UAMSingleRideAppender {
 		} else {
 			startTime = stayTask.getBeginTime();
 		}
-		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());		
+		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
 				plainPickupPath, travelTime);
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
@@ -97,14 +97,14 @@ public class UAMSingleRideAppender {
 		// arrival time
 		// + boarding
 		// time
-		
+
 		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
-		double pickUpTaskStartTime = startTime;	
+		double pickUpTaskStartTime = startTime;
 		//For the case when the Aircraft is already at the station there will be no pickUpDriveTask
-		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
+		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
 			pickUpTaskStartTime = pickupPath.getArrivalTime();
-		} 
-		
+		}
+
 		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, // Vehicle picks up the passenger at
 				// the station
 				pickUpTaskStartTime + vehicle.getBoardingTime(), // end time = arrival time + boarding time
@@ -124,15 +124,15 @@ public class UAMSingleRideAppender {
 				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime() + vehicle.getTurnAroundTime(),
 				request.getToLink(), Arrays.asList(request));
 
-		if (stayTask.getStatus() == Task.TaskStatus.STARTED) { 
+		if (stayTask.getStatus() == Task.TaskStatus.STARTED) {
 			stayTask.setEndTime(startTime);
 		} else {
 			schedule.removeLastTask();
 		}
-		
-		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
+
+		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
 			schedule.addTask(pickupDriveTask);
-		} 		
+		}
 		schedule.addTask(pickupTask);
 		schedule.addTask(dropoffDriveTask);
 		schedule.addTask(dropoffTask);

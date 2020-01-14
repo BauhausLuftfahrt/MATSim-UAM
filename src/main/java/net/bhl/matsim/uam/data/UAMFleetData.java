@@ -16,11 +16,11 @@ import java.util.Map;
  */
 public class UAMFleetData implements Fleet {
 	private final Map<Id<DvrpVehicle>, UAMVehicle> vehicles;
-	
+
 	public UAMFleetData(Map<Id<DvrpVehicle>, UAMVehicle> vehicles) {
 		this.vehicles = vehicles;
 	}
-	
+
 	@Override
 	public Map<Id<DvrpVehicle>, ? extends DvrpVehicle> getVehicles() {
 		return ImmutableMap.copyOf(vehicles);

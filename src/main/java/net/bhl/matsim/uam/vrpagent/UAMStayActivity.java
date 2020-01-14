@@ -9,10 +9,10 @@ import org.matsim.contrib.dynagent.DynActivity;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMStayActivity implements DynActivity  {
+public class UAMStayActivity implements DynActivity {
 	final private UAMStayTask stayTask;
-	private double now;
 	private final String activityType;
+	private double now;
 
 	public UAMStayActivity(UAMStayTask stayTask) {
 		activityType = stayTask.getName();
