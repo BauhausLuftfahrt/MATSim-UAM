@@ -64,9 +64,11 @@ public class RunCalculatePTTravelTimes {
 
 		//Provide routers
 		for (int i = 0; i < processes; i++) {
-			RaptorStopFinder stopFinder = null; // TODO RAOUL FOR MATSIM 11
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
-					new LeastCostRaptorRouteSelector(), stopFinder));
+					new LeastCostRaptorRouteSelector(),
+					new DefaultRaptorStopFinder(null,
+							new DefaultRaptorIntermodalAccessEgress(),
+							null))); // TODO MATSIM 11
 		}
 
 		// READ TRIPS INPUT
