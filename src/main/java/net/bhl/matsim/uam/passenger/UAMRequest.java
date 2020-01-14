@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;
@@ -34,6 +35,8 @@ public class UAMRequest implements PassengerRequest {
 		this.id = id;
 		this.submissionTime = submissionTime;
 		this.quantity = 1.0;
+		this.originLink = originLink;
+		this.destinationLink = destinationLink;
 		this.earliestStartTime = pickupTime;
 		this.latestStartTime = pickupTime;
 		this.passengerAgent = passengerAgent;
@@ -52,7 +55,6 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public double getLatestStartTime() {
-		// TODO revisit
 		return this.earliestStartTime;
 	}
 
@@ -67,6 +69,11 @@ public class UAMRequest implements PassengerRequest {
 	}
 
 	@Override
+	public void setRejected(boolean rejected) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
 	public Id<Request> getId() {
 		return this.id;
 	}
@@ -78,66 +85,49 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public Link getFromLink() {
-		return this.fromLink;
+		return this.originLink;
 	}
 
 	@Override
 	public Link getToLink() {
-		return this.toLink;
+		return this.destinationLink;
 	}
 
 	public MobsimPassengerAgent getPassenger() {
 		return this.passengerAgent;
-
-		@Override
-		public Id<Person> getPassengerId () {
-			return this.passengerAgent.getId();
-		}
-
-		@Override
-		public String getMode () {
-			return this.mode;
-		}
-
-		public UAMDropoffTask getDropoffTask () {
-			return dropoffTask;
-		}
-
-		public void setDropoffTask (UAMDropoffTask dropoffTask){
-			this.dropoffTask = dropoffTask;
-		}
-
-		public UAMPickupTask getPickupTask () {
-			return pickupTask;
-		}
-
-		public void setPickupTask (UAMPickupTask pickupTask){
-			this.pickupTask = pickupTask;
-		}
-
-		public Dispatcher getDispatcher () {
-			return dispatcher;
-		}
-
-		public double getDistance () {
-			return distance;
-		}
-
-		public void setDistance ( double distance){
-			this.distance = distance;
-		}
-
-		@Override
-		public String getMode () {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public void setRejected ( boolean rejected){
-			// TODO Auto-generated method stub
-
-		}
-
-
 	}
+
+	@Override
+	public String getMode() {
+		return UAMModes.UAM_MODE;
+	}
+
+	public UAMDropoffTask getDropoffTask() {
+		return dropoffTask;
+	}
+
+	public void setDropoffTask(UAMDropoffTask dropoffTask) {
+		this.dropoffTask = dropoffTask;
+	}
+
+	public UAMPickupTask getPickupTask() {
+		return pickupTask;
+	}
+
+	public void setPickupTask(UAMPickupTask pickupTask) {
+		this.pickupTask = pickupTask;
+	}
+
+	public Dispatcher getDispatcher() {
+		return dispatcher;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+}
