@@ -12,18 +12,12 @@ import org.matsim.contrib.dynagent.DynActivity;
 public class UAMTurnAroundActivity implements DynActivity {
 
 	final private UAMTurnAroundTask turnAroundTask;
-	private final String activityType;
+	private static final String activityType = "UAMTurnAround";
 	private double now;
 
 	public UAMTurnAroundActivity(UAMTurnAroundTask turnAroundTask) {
-		activityType = "UAMTurnAround";
 		this.turnAroundTask = turnAroundTask;
 		this.now = turnAroundTask.getBeginTime();
-	}
-
-	private static String getName() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -39,11 +33,6 @@ public class UAMTurnAroundActivity implements DynActivity {
 	@Override
 	public double getEndTime() {
 		return turnAroundTask.getEndTime();
-	}
-
-	@Override
-	public String getActivityType() {
-		return activityType;
 	}
 
 }
