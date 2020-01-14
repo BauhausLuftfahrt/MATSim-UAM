@@ -1,8 +1,5 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -13,11 +10,14 @@ import org.matsim.core.config.groups.TravelTimeCalculatorConfigGroup;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.network.NetworkChangeEvent;
-import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.NetworkChangeEvent.ChangeType;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.network.io.NetworkChangeEventsWriter;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This script generates a NetworkChangeEvents file containing changes in the

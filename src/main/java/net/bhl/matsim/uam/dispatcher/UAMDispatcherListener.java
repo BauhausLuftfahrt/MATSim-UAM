@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.dispatcher;
 
 import com.google.inject.Inject;
-
 import org.matsim.core.mobsim.framework.events.MobsimBeforeSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 

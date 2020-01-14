@@ -8,15 +8,14 @@ import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.dispatcher.UAMPooledDispatcher;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.passenger.UAMRequestCreator;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
 import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
-import net.bhl.matsim.uam.infrastructure.UAMVehicle;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;

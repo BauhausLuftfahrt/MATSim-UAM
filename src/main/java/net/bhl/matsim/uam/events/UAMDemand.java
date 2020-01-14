@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.events;
 
 import com.google.inject.Inject;
-
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;

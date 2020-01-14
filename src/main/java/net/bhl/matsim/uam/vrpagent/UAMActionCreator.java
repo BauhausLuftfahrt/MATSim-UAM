@@ -5,7 +5,6 @@ import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.*;
-
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.run.DvrpMode;

@@ -1,9 +1,7 @@
 package net.bhl.matsim.uam.qsim;
 
 import com.google.inject.Inject;
-
 import net.bhl.matsim.uam.router.UAMModes;
-
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.*;

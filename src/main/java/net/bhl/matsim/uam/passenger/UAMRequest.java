@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.passenger;
 
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
-import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;

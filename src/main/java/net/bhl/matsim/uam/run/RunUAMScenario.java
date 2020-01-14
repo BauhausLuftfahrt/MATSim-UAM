@@ -10,8 +10,6 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
-import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
 import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import net.bhl.matsim.uam.router.UAMModes;
@@ -137,7 +135,6 @@ public class RunUAMScenario {
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
 
-		controler.addOverridingModule(new CustomModule()); //taxi
 		controler.addOverridingModule(new UAMModule(uamManager, networkUAM, networkCar, uamReader));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
