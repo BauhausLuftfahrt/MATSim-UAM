@@ -122,7 +122,9 @@ public class RunCalculateUAMTravelTimes {
                 ConfigSetter.createRaptorConfig(config), network);
 
         // Generate data for other routers
-        TravelTimeCalculator tcc2 = TravelTimeCalculator.create(network, config.travelTimeCalculator());
+    	TravelTimeCalculator.Builder ttcBuilder = new TravelTimeCalculator.Builder(network);
+		ttcBuilder.configure(config.travelTimeCalculator());
+		TravelTimeCalculator tcc2 = ttcBuilder.build();
         TravelTime travelTime = tcc2.getLinkTravelTimes();
         TravelDisutility travelDisutility = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
 

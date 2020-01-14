@@ -60,6 +60,7 @@ public class MinTravelTimeModel implements ModeChoiceModel {
 		boolean ignoreAgentRequested = false;
 
 		for (List<ModeChoiceTrip> tourTrips : tourFinder.findTours(trips)) {
+			
 			ModeChainGenerator generator = modeChainGeneratorFactory.createModeChainGenerator(modes, tourTrips);
 			UtilitySelector<TourCandidate> selector = selectorFactory.createUtilitySelector();
 

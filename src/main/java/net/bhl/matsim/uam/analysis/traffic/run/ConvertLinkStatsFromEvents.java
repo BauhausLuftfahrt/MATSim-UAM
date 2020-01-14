@@ -53,7 +53,9 @@ public class ConvertLinkStatsFromEvents {
 		tconfig.setMaxTime(maxTime);
 		tconfig.setTraveltimeBinSize(timeBinSize);
 
-		TravelTimeCalculator ttc = TravelTimeCalculator.create(netw, tconfig);
+		TravelTimeCalculator.Builder ttcBuilder = new TravelTimeCalculator.Builder(netw);
+		ttcBuilder.configure(tconfig);
+		TravelTimeCalculator ttc = ttcBuilder.build();
 		EventsManager manager = EventsUtils.createEventsManager();
 		manager.addHandler(ttc);
 		EventsReaderXMLv1 eventsReader = new EventsReaderXMLv1(manager);

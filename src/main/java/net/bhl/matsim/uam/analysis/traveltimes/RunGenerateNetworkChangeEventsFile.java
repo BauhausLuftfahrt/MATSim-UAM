@@ -65,7 +65,9 @@ public class RunGenerateNetworkChangeEventsFile {
 	private TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
 			TravelTimeCalculatorConfigGroup group) {
 		EventsManager manager = EventsUtils.createEventsManager();
-		TravelTimeCalculator tcc = TravelTimeCalculator.create(network, group);
+		TravelTimeCalculator.Builder ttcBuilder = new TravelTimeCalculator.Builder(network);
+		ttcBuilder.configure(group);
+		TravelTimeCalculator tcc = ttcBuilder.build();
 		manager.addHandler(tcc);
 		new MatsimEventsReader(manager).readFile(eventsFile);
 		return tcc;

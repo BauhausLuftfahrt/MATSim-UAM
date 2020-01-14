@@ -173,7 +173,7 @@ public class UAMStrategyUtils {
 				station.getLocationLink().getCoord());
 		double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
 				.getTeleportedModeSpeeds().get(mode);
-
+		
 		return new UAMAccessLeg(distance * distanceFactor / speed,
 				distance * distanceFactor, null);
 	}
