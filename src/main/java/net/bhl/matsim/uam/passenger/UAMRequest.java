@@ -55,7 +55,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public double getLatestStartTime() {
-		return this.earliestStartTime;
+		return this.latestStartTime;
 	}
 
 	@Override
