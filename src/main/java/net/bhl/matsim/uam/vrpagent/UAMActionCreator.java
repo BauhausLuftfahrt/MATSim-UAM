@@ -6,7 +6,6 @@ import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.*;
 
-import org.apache.log4j.Logger;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.run.DvrpMode;
@@ -27,7 +26,6 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String DROPOFF_ACTIVITY_TYPE = "UAMDropoff";
 	public static final String STAY_ACTIVITY_TYPE = "UAMStay";
 	public static final String TURNAROUND_ACTIVITY_TYPE = "UAMTurnAround";
-	private static final Logger log = Logger.getLogger(UAMActionCreator.class);
 	@Inject
 	@DvrpMode(UAMModes.UAM_MODE)
 	private PassengerEngine passengerEngine;
@@ -37,26 +35,25 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Override
 	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
-		log.warn("Creating action for agent: " + dynAgent.getId());
 		Task task = vehicle.getSchedule().getCurrentTask();
 		if (task instanceof UAMTask) {
 			switch (((UAMTask) task).getUAMTaskType()) {
-				case PICKUP:
-					UAMPickupTask mpt = (UAMPickupTask) task;
-					return new UAMPassengerPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
-							mpt.getBoardingTime(), PICKUP_ACTIVITY_TYPE);
-				case DROPOFF:
-					UAMDropoffTask mdt = (UAMDropoffTask) task;
-					return new UAMPassengerDropoffActivity(passengerEngine, dynAgent, vehicle, mdt, mdt.getRequests(),
-							mdt.getDeboardingTime(), DROPOFF_ACTIVITY_TYPE);
-				case FLY:
-					return legCreator.create(vehicle);
-				case STAY:
-					return new UAMStayActivity((UAMStayTask) task);
-				case TURNAROUND:
-					return new UAMTurnAroundActivity((UAMTurnAroundTask) task);
-				default:
-					throw new IllegalStateException();
+			case PICKUP:
+				UAMPickupTask mpt = (UAMPickupTask) task;
+				return new UAMPassengerPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
+						mpt.getBoardingTime(), PICKUP_ACTIVITY_TYPE);
+			case DROPOFF:
+				UAMDropoffTask mdt = (UAMDropoffTask) task;
+				return new UAMPassengerDropoffActivity(passengerEngine, dynAgent, vehicle, mdt, mdt.getRequests(),
+						mdt.getDeboardingTime(), DROPOFF_ACTIVITY_TYPE);
+			case FLY:
+				return legCreator.create(vehicle);
+			case STAY:
+				return new UAMStayActivity((UAMStayTask) task);
+			case TURNAROUND:
+				return new UAMTurnAroundActivity((UAMTurnAroundTask) task);
+			default:
+				throw new IllegalStateException();
 			}
 		} else {
 			throw new IllegalArgumentException();

@@ -7,9 +7,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
-import net.bhl.matsim.uam.qsim.UAMQsimModule;
 
-import org.apache.log4j.Logger;
 import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
 import org.matsim.contrib.dvrp.schedule.Schedule;
@@ -33,7 +31,6 @@ public class UAMSingleRideAppender {
 	@Inject
 	@Named("uam")
 	private ParallelLeastCostPathCalculator router;
-	private static final Logger log = Logger.getLogger(UAMSingleRideAppender.class);
 
 	@Inject
 	@Named("uam")
@@ -54,9 +51,6 @@ public class UAMSingleRideAppender {
 	public void schedule(UAMRequest request, UAMVehicle vehicle, double now) {
 		Schedule schedule = vehicle.getSchedule();
 		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
-//		UAMStayTask stayTask = (UAMStayTask) Schedules.getNextTask(schedule); // selects the last task in the schedule
-		// and create a stayTask with it
-
 		Future<Path> pickup = router.calcLeastCostPath(stayTask.getLink().getToNode(), // pickup path is from downstream
 				// node of stayTask Link to
 				// upstream node from request
@@ -87,7 +81,6 @@ public class UAMSingleRideAppender {
 
 		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
 		// and create a stayTask with it
-
 		double startTime = 0.0;
 		double scheduleEndTime = schedule.getEndTime();
 
@@ -96,12 +89,7 @@ public class UAMSingleRideAppender {
 		} else {
 			startTime = stayTask.getBeginTime();
 		}
-
-		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
-		
-
-		
-		
+		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());		
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
 				plainPickupPath, travelTime);
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
@@ -111,17 +99,12 @@ public class UAMSingleRideAppender {
 		// + boarding
 		// time
 		
-		
-
 		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
 		double pickUpTaskStartTime = startTime;	
 		//For the case when the Aircraft is already at the station there will be no pickUpDriveTask
 		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
-			log.warn("I HAVE THE SAME ORIGIN AND DESTINATION");
 			pickUpTaskStartTime = pickupPath.getArrivalTime();
 		} 
-		
-		
 		
 		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, // Vehicle picks up the passenger at
 				// the station
@@ -142,14 +125,13 @@ public class UAMSingleRideAppender {
 				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime() + vehicle.getTurnAroundTime(),
 				request.getToLink(), Arrays.asList(request));
 
-		if (stayTask.getStatus() == Task.TaskStatus.STARTED) { // Confused by this and the previous check on line 83
+		if (stayTask.getStatus() == Task.TaskStatus.STARTED) { 
 			stayTask.setEndTime(startTime);
 		} else {
 			schedule.removeLastTask();
 		}
 		
 		if (!stayTask.getLink().getId().equals( request.getFromLink().getId())) {
-			log.warn("I HAVE THE SAME ORIGIN AND DESTINATION");
 			schedule.addTask(pickupDriveTask);
 		} 		
 		schedule.addTask(pickupTask);

@@ -19,8 +19,6 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
-import org.matsim.contrib.dvrp.run.DvrpModule;
-import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
@@ -149,14 +147,12 @@ public class RunUAMScenario {
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
 		controler.addOverridingModule(new CustomModule()); //taxi
-		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar, uamReader));
+		controler.addOverridingModule(new UAMModule(uamManager, networkUAM, networkCar, uamReader));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
-//		controler.addOverridingModule(new DvrpModule());
 
 		controler.configureQSimComponents(configurator -> {UAMQsimModule.configureComponents(configurator);});
-//		controler.configureQSimComponents(DvrpQSimComponents.activateModes(UAMModes.UAM_MODE));
 
 		return controler;
 	}

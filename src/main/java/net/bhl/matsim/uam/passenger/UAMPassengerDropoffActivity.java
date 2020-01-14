@@ -37,7 +37,6 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 		endTime = dropoffTask.getBeginTime() + dropoffDuration;
 	}
 
-
 	@Override
 	public void finalizeAction(double now) {
 		for (PassengerRequest request : requests) {
@@ -59,7 +58,5 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 
 	@Override
 	public void doSimStep(double now) {
-
-		
 	}
 }

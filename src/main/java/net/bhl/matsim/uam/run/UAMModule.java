@@ -3,8 +3,6 @@ package net.bhl.matsim.uam.run;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.SerialLeastCostPathCalculator;
-import ch.ethz.matsim.baseline_scenario.config.CommandLine;
-import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
 
 import com.google.inject.Key;
 import com.google.inject.Provides;
@@ -12,8 +10,6 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
@@ -21,28 +17,19 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.listeners.ParallelLeastCostPathCalculatorShutdownListener;
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
-import net.bhl.matsim.uam.qsim.UAMQSimPlugin;
 import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
-import net.bhl.matsim.uam.transit.simulation.UAMTransitPlugin;
-import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Population;
-import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.DefaultPassengerRequestValidator;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
 import org.matsim.contrib.dvrp.router.DvrpRoutingNetworkProvider;
 import org.matsim.contrib.dvrp.run.DvrpModes;
-import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
 import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
-import org.matsim.core.config.Config;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.MainModeIdentifier;
@@ -53,13 +40,6 @@ import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.vehicles.VehicleType;
 import org.matsim.vehicles.VehicleUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 /**
  * A MATSim Abstract Module for the classes used by the UAM simulation.
  *
@@ -68,14 +48,12 @@ import java.util.stream.Collectors;
 public class UAMModule extends AbstractModule {
 
 	private UAMManager uamManager;
-	private Scenario scenario;
 	private Network networkUAM;
 	private Network networkCar;
 	private UAMXMLReader uamReader;
 
-	public UAMModule(UAMManager uamManager, Scenario scenario, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
+	public UAMModule(UAMManager uamManager, Network networkUAM, Network networkCar, UAMXMLReader uamReader) {
 		this.uamManager = uamManager;
-		this.scenario = scenario;
 		this.networkUAM = networkUAM;
 		this.networkCar = networkCar;
 		this.uamReader = uamReader;
@@ -134,9 +112,6 @@ public class UAMModule extends AbstractModule {
 		bind(Network.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 
-		// addControlerListenerBinding()
-		// .to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class,
-		// Names.named("uam")));
 	}
 
 
@@ -164,66 +139,5 @@ public class UAMModule extends AbstractModule {
 			@Named("uam") ParallelLeastCostPathCalculator calculator) {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
-	
-	/*
-	 * @Provides
-	 * 
-	 * @Singleton public CustomModeChoiceParameters
-	 * provideCustomModeChoiceParameters() throws ConfigurationException { String
-	 * prefix = "scoring:";
-	 * 
-	 * List<String> scoringOptions = cmd.getAvailableOptions().stream().filter(o ->
-	 * o.startsWith(prefix)) .collect(Collectors.toList());
-	 * 
-	 * Map<String, String> rawParameters = new HashMap<>();
-	 * 
-	 * for (String option : scoringOptions) {
-	 * rawParameters.put(option.substring(prefix.length()),
-	 * cmd.getOptionStrict(option)); }
-	 * 
-	 * CustomModeChoiceParameters parameters = new CustomModeChoiceParameters();
-	 * parameters.load(rawParameters);
-	 * 
-	 * return parameters; }
-	 * 
-	 * @Provides
-	 * 
-	 * @Singleton public UAMStationConnectionGraph
-	 * provideUAMStationConnectionGraph(UAMManager uamManager,
-	 * CustomModeChoiceParameters parameters, @Named("uam")
-	 * ParallelLeastCostPathCalculator plcpc) { return new
-	 * UAMStationConnectionGraph(uamManager, parameters, plcpc); }
-	 * 
-	 * @Provides
-	 * 
-	 * @Singleton public SubscriptionFinder provideSubscriptionFinder(Population
-	 * population) { return new
-	 * SubscriptionFinder(population.getPersonAttributes()); }
-	 */
-
-	/*
-	 * @Provides
-	 * 
-	 * @Singleton public Collection<AbstractQSimPlugin> provideQSimPlugins(Config
-	 * config) { final Collection<AbstractQSimPlugin> plugins = new ArrayList<>();
-	 * 
-	 * plugins.add(new MessageQueuePlugin(config)); plugins.add(new
-	 * DynActivityEnginePlugin(config)); plugins.add(new
-	 * QNetsimEnginePlugin(config));
-	 * 
-	 * if (config.network().isTimeVariantNetwork()) { plugins.add(new
-	 * NetworkChangeEventsPlugin(config)); }
-	 * 
-	 * // TODO include config switch // plugins.add(new
-	 * BaselineTransitPlugin(config));
-	 * 
-	 * if (scenario.getConfig().transit().isUseTransit()) { plugins.add(new
-	 * UAMTransitPlugin(config)); }
-	 * 
-	 * plugins.add(new TeleportationPlugin(config)); plugins.add(new
-	 * PopulationPlugin(config)); plugins.add(new UAMQSimPlugin(config));
-	 * 
-	 * return plugins; }
-	 */
 
 }

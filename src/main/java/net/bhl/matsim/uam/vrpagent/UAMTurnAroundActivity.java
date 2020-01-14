@@ -1,7 +1,5 @@
 package net.bhl.matsim.uam.vrpagent;
 
-import net.bhl.matsim.uam.schedule.UAMTask;
-import net.bhl.matsim.uam.schedule.UAMTask.UAMTaskType;
 import net.bhl.matsim.uam.schedule.UAMTurnAroundTask;
 import org.matsim.contrib.dynagent.DynActivity;
 

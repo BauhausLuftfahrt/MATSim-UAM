@@ -1,7 +1,6 @@
 package net.bhl.matsim.uam.events;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
@@ -128,7 +127,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 
 			}
 		}
-		if (event.getLegMode().equals("car") && event.getPersonId().toString().startsWith("uam_vh_")) {
+		if (event.getLegMode().equals("uam") && event.getPersonId().toString().startsWith("uam_vh_")) {
 			// TODO: pooling is not correctly documented for take-off time
 			// this needs to be corrected
 			if (vehicleToPerson.containsKey(event.getPersonId()) && !event.getPersonId().toString().startsWith("uam_vh_") ) {

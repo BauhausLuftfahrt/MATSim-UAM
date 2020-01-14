@@ -59,9 +59,6 @@ public class AdvancedVehicleTripConstraint extends VehicleTripConstraint {
 	}
 
 	/**
-	 *
-	 */
-	/**
 	 * @param currentDepartureLinkId Current departure link
 	 * @param trip                   Trip
 	 * @return True if the agent will return to this location before going home,

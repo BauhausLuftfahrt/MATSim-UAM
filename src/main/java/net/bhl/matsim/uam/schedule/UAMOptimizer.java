@@ -7,7 +7,6 @@ import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 
-import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.optimizer.Request;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
@@ -30,7 +29,6 @@ import java.util.List;
 @Singleton
 public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
-	private static final Logger log = Logger.getLogger(UAMOptimizer.class);
 	private Dispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
@@ -52,20 +50,8 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 		// this happens at the start of the simulation since
 		// the schedule has not started yet
 		if (schedule.getStatus() != Schedule.ScheduleStatus.STARTED) {
-			log.warn("Inside OPtimizer IF");
 			schedule.nextTask();
 			return;
-		}
-		// STARTED
-		log.warn("Vehicle: " + vehicle.getId());
-		log.warn("Optimzer Running NEXT TASK METHOD");
-		log.warn("Schedule status: "+ String.valueOf(schedule.getStatus()));
-		log.warn("Current task: "+ String.valueOf(schedule.getCurrentTask()));
-		log.warn("Current task Id: "+ String.valueOf(schedule.getCurrentTask().getTaskIdx()));
-		log.warn("Tasks size: "+ String.valueOf(schedule.getTasks().size()));
-		
-		for (Task task : schedule.getTasks()) {
-			log.warn("task: " + String.valueOf(task));
 		}
 		
 		// get the current task and make it end now
@@ -106,8 +92,6 @@ public class UAMOptimizer implements VrpOptimizer,OnlineTrackerListener, MobsimB
 		schedule.nextTask();
 		ensureNonFinishingSchedule(schedule);
 
-		// UAMDispatcher dispatcher = ((UAMVehicle) vehicle).getDispatcher();
-		log.warn("Next task:" + String.valueOf(nextTask));
 		if (nextTask != null) {
 			synchronized (dispatcher) {
 				dispatcher.onNextTaskStarted((UAMVehicle) vehicle);

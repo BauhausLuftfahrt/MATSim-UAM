@@ -2,10 +2,11 @@ package net.bhl.matsim.uam.qsim;
 
 
 /**
- * This class provides Qsim resources to the UAMModule.
+ * This class provides Qsim resources to the UAMModule. With the MATSim 11 update, this class was substituted by UAMQSimModule.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class UAMQSimPlugin{
 
 	/*

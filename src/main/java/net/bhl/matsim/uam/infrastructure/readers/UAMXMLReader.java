@@ -121,21 +121,18 @@ public class UAMXMLReader extends MatsimXmlParser {
 			this.mapVehicleHorizontalSpeeds.put(id.toString(), horizontalSpeed);
 
 			try {
-				//TODO add a check for different IDS
-				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder().id(id).capacity(capacity)
-						.startLinkId(this.stations.get(stationid).getLocationLink().getId()).serviceBeginTime(starttime).serviceEndTime(endtime).build());
-				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id), 
-						this.stations.get(stationid).getLocationLink(), 
-						stationid,	vehicleTypes.get(vehicleTypeId));
-				
-	//			UAMVehicle vehicle = new UAMVehicle(id, stationid, this.stations.get(stationid).getLocationLink(), capacity,
-	//					starttime, endtime, vehicleTypes.get(vehicleTypeId));
+				// TODO add a check for different IDS
+				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder().id(id)
+						.capacity(capacity).startLinkId(this.stations.get(stationid).getLocationLink().getId())
+						.serviceBeginTime(starttime).serviceEndTime(endtime).build());
+				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
+						this.stations.get(stationid).getLocationLink(), stationid, vehicleTypes.get(vehicleTypeId));
+
 				vehicles.put(id, vehicle);
-				UAMVehicle vehicleCopy = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id), 
-						this.stations.get(stationid).getLocationLink(), 
-						stationid,	vehicleTypes.get(vehicleTypeId));
+				UAMVehicle vehicleCopy = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
+						this.stations.get(stationid).getLocationLink(), stationid, vehicleTypes.get(vehicleTypeId));
 				vehiclesForData.put(id, vehicleCopy);
-			
+
 			} catch (NullPointerException e) {
 				Log.warn("UAM vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
 			}
@@ -146,7 +143,6 @@ public class UAMXMLReader extends MatsimXmlParser {
 
 	@Override
 	public void endTag(String name, String content, Stack<String> context) {
-
 	}
 
 	public Map<Id<UAMStation>, UAMStation> getStations() {
@@ -156,14 +152,10 @@ public class UAMXMLReader extends MatsimXmlParser {
 	public Map<Id<DvrpVehicle>, UAMVehicle> getVehicles() {
 
 		return ImmutableMap.copyOf(vehicles);
-		
-		//		return vehicles;
 	}
-	
+
 	public Map<Id<DvrpVehicle>, UAMVehicle> getVehiclesForData() {
 		Map<Id<DvrpVehicle>, UAMVehicle> returnVehicles = new HashMap<Id<DvrpVehicle>, UAMVehicle>(vehiclesForData);
-//		return ImmutableMap.copyOf(vehiclesForData);
-		//		return vehicles;
 		return returnVehicles;
 	}
 
@@ -174,7 +166,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 	public Map<String, Double> getMapVehicleVerticalSpeeds() {
 		return this.mapVehicleVerticalSpeeds;
 	}
-	
+
 	public FleetSpecificationImpl getFleetSpecification() {
 		return this.fleetSpecification;
 	}
