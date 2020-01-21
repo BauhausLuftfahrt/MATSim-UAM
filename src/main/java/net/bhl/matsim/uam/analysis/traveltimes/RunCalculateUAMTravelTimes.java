@@ -26,9 +26,7 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Injector;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.AStarLandmarksFactory;
-import org.matsim.core.router.DijkstraFactory;
-import org.matsim.core.router.LinkWrapperFacility;
+import org.matsim.core.router.*;
 import org.matsim.core.router.util.*;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
@@ -39,9 +37,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -148,11 +144,12 @@ public class RunCalculateUAMTravelTimes {
 		//Provide routers
 		for (int i = 0; i < processes; i++) {
 			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
+			Map<String, RoutingModule> router = new HashMap<>();
+			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
+					scenario.getPopulation().getFactory(),0,1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
-					new DefaultRaptorStopFinder(null,
-							new DefaultRaptorIntermodalAccessEgress(),
-							null))); // TODO MATSIM 11
+					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
 			uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
 					processes, new DijkstraFactory(), networkUAM, travelDisutility,
 					travelTime));
