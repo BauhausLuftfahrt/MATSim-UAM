@@ -7,12 +7,15 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.core.config.Config;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.LinkWrapperFacility;
+import org.matsim.core.router.RoutingModule;
+import org.matsim.core.router.TeleportationRoutingModule;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.router.TransitRouter;
 
@@ -20,7 +23,9 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,7 +47,7 @@ public class RunCalculatePTTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* transitScheduleFile.xml* transitVehiclesFile.xml* tripsCoordinateFile.csv* outputfile-name*");
+				"ARGS: base-network.xml* transitScheduleFile.xml* tripsCoordinateFile.csv* outputfile-name*");
 		System.out.println("(* required)");
 
 		// ARGS
@@ -50,7 +55,7 @@ public class RunCalculatePTTravelTimes {
 		String networkInput = args[j++];
 		String transitScheduleInput = args[j++];
 		String tripsInput = args[j++];
-		String outputPath = args[j++];
+		String outputPath = args[j];
 
 		// READ NETWORK
 		Config config = ConfigSetter.createPTConfig(networkInput, transitScheduleInput);
@@ -64,11 +69,12 @@ public class RunCalculatePTTravelTimes {
 
 		//Provide routers
 		for (int i = 0; i < processes; i++) {
+			Map<String, RoutingModule> router = new HashMap<>();
+			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
+					scenario.getPopulation().getFactory(),0,1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
-					new DefaultRaptorStopFinder(null,
-							new DefaultRaptorIntermodalAccessEgress(),
-							null))); // TODO MATSIM 11
+					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
 		}
 
 		// READ TRIPS INPUT
@@ -127,9 +133,13 @@ public class RunCalculatePTTravelTimes {
 		List<Leg> legs = router.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to), departureTime,
 				null);
 		double time = 0;
-		for (Leg leg : legs)
+		boolean onlyWalk = true;
+		for (Leg leg : legs) {
+			if (onlyWalk)
+				onlyWalk = leg.getMode().contains(TransportMode.walk) ? true : false;
 			time += leg.getTravelTime();
-		return time;
+		}
+		return onlyWalk ? -1 * time : time;
 	}
 
 	static class PTTravelTimeCalculator implements Runnable {
