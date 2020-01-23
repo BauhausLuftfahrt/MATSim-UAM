@@ -39,9 +39,9 @@
                         <artifactId>maven-assembly-plugin</artifactId>
                         <version>3.2.0</version>
                         <configuration>
-                            <descriptorRefs>
-                                <descriptorRef>zip</descriptorRef>
-                            </descriptorRefs>
+                            <descriptors>
+                                <descriptor>src/main/assembly/assembly-release.xml</descriptor>
+                            </descriptors>
                         </configuration>
                         <executions>
                             <execution>
