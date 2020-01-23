@@ -29,7 +29,7 @@ import java.util.Collection;
 public class ConvertTripsFromPopulation {
 	static public void main(String[] args) throws IOException {
 		// PROVIDE: NETWORK PLANS
-		extract(args[0], args[1], args[0] + "trips.csv");
+		extract(args[0], args[1], args[0] + ".trips.csv");
 		System.out.println("done.");
 	}
 
