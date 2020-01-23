@@ -28,7 +28,11 @@ public class TripItemReader {
 				double originY = Double.parseDouble(row.get(header.indexOf("origin_y")));
 				double destX = Double.parseDouble(row.get(header.indexOf("destination_x")));
 				double destY = Double.parseDouble(row.get(header.indexOf("destination_y")));
-				double departureTime = Time.parseTime(row.get(header.indexOf("trip_time")));
+
+				int departureTimeIndex = header.indexOf("trip_time");
+				if (departureTimeIndex < 0)
+					departureTimeIndex = header.indexOf("start_time");
+				double departureTime = Time.parseTime(row.get(departureTimeIndex));
 
 				Coord originCood = new Coord(originX, originY);
 				Coord destinationCoord = new Coord(destX, destY);
