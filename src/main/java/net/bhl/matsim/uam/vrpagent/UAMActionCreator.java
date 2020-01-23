@@ -5,6 +5,7 @@ import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.schedule.*;
+import org.apache.log4j.Logger;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.run.DvrpMode;
@@ -31,7 +32,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Inject
 	private VrpLegFactory legCreator;
-
+	private static final Logger log = Logger.getLogger(UAMActionCreator.class);
 	@Override
 	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
 		Task task = vehicle.getSchedule().getCurrentTask();

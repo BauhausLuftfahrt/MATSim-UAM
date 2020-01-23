@@ -143,7 +143,7 @@ public class RunUAMScenario {
 		controler.configureQSimComponents(configurator -> {
 			UAMQsimModule.configureComponents(configurator);
 		});
-
+		//controler.configureQSimComponents(DvrpQSimComponents.activateModes(UAMModes.UAM_MODE));
 		return controler;
 	}
 }

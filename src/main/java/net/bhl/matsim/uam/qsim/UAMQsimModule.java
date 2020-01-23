@@ -16,6 +16,7 @@ import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
 import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
+import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -52,6 +53,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	public final static String COMPONENT_NAME = "UAMExtension";
 	private UAMManager uamManager;
 	private UAMXMLReader uamReader;
+	private static final Logger log = Logger.getLogger(UAMQsimModule.class);
 
 	public UAMQsimModule(UAMXMLReader uamReader, UAMManager uamManager) {
 		super(UAMModes.UAM_MODE);
@@ -95,6 +97,8 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		return new VrpLegFactory() {
 			@Override
 			public VrpLeg create(DvrpVehicle vehicle) {
+				log.warn("I'm BEING CALLED! ProvideLegCreator");
+
 				return VrpLegFactory.createWithOnlineTracker(TransportMode.car, vehicle,
 						(OnlineTrackerListener) optimizer, qSim.getSimTimer());
 			}
@@ -110,7 +114,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 		List<Dispatcher> dispatchers = new ArrayList<>();
 		dispatchers.add(dispatcher);
-
 		return dispatchers;
 	}
 
