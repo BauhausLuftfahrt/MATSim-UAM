@@ -120,15 +120,15 @@ public class UAMXMLReader extends MatsimXmlParser {
 			this.mapVehicleHorizontalSpeeds.put(id.toString(), horizontalSpeed);
 
 			try {
-				ImmutableDvrpVehicleSpecification specs = ImmutableDvrpVehicleSpecification.newBuilder()
+				// TODO add a check for different IDS. newiD: VehTypeId+VehId
+				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder()
 						.id(id)
-						.startLinkId(this.stations.get(stationid).getLocationLink().getId())
 						.capacity(capacity)
-						.serviceBeginTime(starttime)
-						.serviceEndTime(endtime)
-						.build();
+						.startLinkId(this.stations.get(stationid).getLocationLink().getId())
+						.serviceBeginTime(starttime).serviceEndTime(endtime)
+						.build());
 
-				UAMVehicle vehicle = new UAMVehicle(specs, this.stations.get(stationid).getLocationLink(), stationid,
+				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id), this.stations.get(stationid).getLocationLink(), stationid,
 						vehicleTypes.get(vehicleTypeId));
 
 				vehicles.put(id, vehicle);
