@@ -6,6 +6,7 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import org.apache.log4j.Logger;
+import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -13,6 +14,8 @@ import org.matsim.api.core.v01.population.Leg;
 import org.matsim.core.config.Config;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.LinkWrapperFacility;
+import org.matsim.core.router.util.LeastCostPathCalculator;
+import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.router.TransitRouter;
 
@@ -20,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -107,7 +111,7 @@ public class RunCalculatePTTravelTimes {
             writer.write(String.join(",",
                     new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
                             String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-                            String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
+                            String.valueOf(trip.departureTime), String.valueOf(trip.travelTime), String.valueOf(trip.travelTime)})
                     + "\n");
         }
 
@@ -117,7 +121,7 @@ public class RunCalculatePTTravelTimes {
 
     private static String formatHeader() {
         return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-                "departure_time", "travel_time"});
+                "departure_time", "travel_time", "distance"});
     }
 
     static class PTTravelTimeCalculator implements Runnable {
@@ -154,7 +158,16 @@ public class RunCalculatePTTravelTimes {
             Link to = NetworkUtils.getNearestLink(network, trip.destination);
 
             try {
-                trip.travelTime = estimateTravelTime(from, to, trip.departureTime, transitRouter);
+            	 List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to), trip.departureTime,
+                         null);
+            	 double time = 0;
+            	 double distanceByPt = 0.0;
+                 for (Leg leg : legs) {
+                	 time += leg.getTravelTime();
+                	 distanceByPt += leg.getRoute().getDistance();
+                 }
+         		 trip.travelTime = time;
+         		 trip.distance = distanceByPt;
             } catch (NullPointerException e) {
                 // Do nothing; failed trip will show as null in results.
             }
@@ -176,5 +189,6 @@ public class RunCalculatePTTravelTimes {
 			time += leg.getTravelTime();
         return time;
     }
+
 
 }
