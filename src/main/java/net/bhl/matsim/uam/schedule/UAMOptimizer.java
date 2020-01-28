@@ -5,8 +5,6 @@ import com.google.inject.Singleton;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
-import net.bhl.matsim.uam.qsim.UAMQsimModule;
-import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.optimizer.Request;
@@ -28,7 +26,6 @@ import java.util.List;
  */
 @Singleton
 public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
-	private static final Logger log = Logger.getLogger(UAMQsimModule.class);
 	private double now;
 	private Dispatcher dispatcher;
 	@Inject
@@ -36,8 +33,6 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 
 	@Override
 	public void requestSubmitted(Request request) {
-		//log.warn("I'm BEING CALLED! ");
-
 		UAMRequest uamRequest = (UAMRequest) request;
 		dispatcher = uamRequest.getDispatcher();
 

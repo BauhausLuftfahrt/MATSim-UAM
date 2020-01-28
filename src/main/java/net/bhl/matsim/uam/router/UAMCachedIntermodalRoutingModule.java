@@ -125,7 +125,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			case TransportMode.pt:
 				// checks if pt is being simulated before adding the trip
 				if (scenario.getConfig().transit().isUseTransit()) {
-					@SuppressWarnings("unchecked")
+					@SuppressWarnings("unchecked")				
 					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(fromFacility,
 							new LinkWrapperFacility(uamRoute.bestOriginStation.getLocationLink()), departureTime, person);
 					for (PlanElement leg : legs) {

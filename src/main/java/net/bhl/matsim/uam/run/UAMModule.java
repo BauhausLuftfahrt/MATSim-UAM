@@ -31,8 +31,6 @@ import org.matsim.contrib.dvrp.trafficmonitoring.DvrpTravelTimeModule;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
 import org.matsim.contrib.dynagent.run.DynActivityEngineModule;
 import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.DijkstraFactory;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.MainModeIdentifierImpl;
@@ -41,8 +39,6 @@ import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.vehicles.VehicleType;
 import org.matsim.vehicles.VehicleUtils;
-
-import java.util.Collections;
 
 /**
  * A MATSim Abstract Module for the classes used by the UAM simulation.
@@ -146,16 +142,6 @@ public class UAMModule extends AbstractModule {
 	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, plcpc);
 	}
-
-	@Provides
-	@Named("road")
-	@Singleton
-	public Network provideRoadNetwork(Network fullNetwork) {
-		Network roadNetwork = NetworkUtils.createNetwork();
-		new TransportModeNetworkFilter(fullNetwork).filter(roadNetwork, Collections.singleton("car"));
-		return roadNetwork;
-	}
-
 
 
 }

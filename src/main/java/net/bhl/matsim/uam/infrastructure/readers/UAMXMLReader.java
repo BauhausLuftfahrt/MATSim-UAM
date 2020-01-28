@@ -120,16 +120,15 @@ public class UAMXMLReader extends MatsimXmlParser {
 			this.mapVehicleHorizontalSpeeds.put(id.toString(), horizontalSpeed);
 
 			try {
-				// TODO add a check for different IDS. newiD: VehTypeId+VehId
-				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder()
-						.id(id)
-						.capacity(capacity)
-						.startLinkId(this.stations.get(stationid).getLocationLink().getId())
-						.serviceBeginTime(starttime).serviceEndTime(endtime)
-						.build());
+				if (vehicles.containsKey(id)) {
+					id = Id.create(atts.getValue("id").concat("_" + atts.getValue("type")), DvrpVehicle.class);
+				}
+				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder().id(id)
+						.capacity(capacity).startLinkId(this.stations.get(stationid).getLocationLink().getId())
+						.serviceBeginTime(starttime).serviceEndTime(endtime).build());
 
-				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id), this.stations.get(stationid).getLocationLink(), stationid,
-						vehicleTypes.get(vehicleTypeId));
+				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
+						this.stations.get(stationid).getLocationLink(), stationid, vehicleTypes.get(vehicleTypeId));
 
 				vehicles.put(id, vehicle);
 				UAMVehicle vehicleCopy = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
