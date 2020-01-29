@@ -7,7 +7,7 @@
 		<param name="inputUAMFile" value="uam.xml" />
 		<param name="availableAccessModes" value="walk,car,bike" />
 		<param name="parallelRouters" value="4" />
-		<param name="searchRadius" value="99999" />
+		<param name="searchRadius" value="50500" />
 		<param name="walkDistance" value="500" />
 		<param name="routingStrategy" value="mintraveltime" />
 		<param name="ptSimulation" value="false" />
@@ -37,11 +37,11 @@
 	</module>
 
 	<module name="qsim">
-		<param name="endTime" value="30:00:00" />
+		<param name="endTime" value="24:00:00" />
 		<param name="numberOfThreads" value="4" />
 		<param name="flowCapacityFactor" value="0.1" />
 		<param name="storageCapacityFactor" value="0.1" />
-		<param name="mainMode" value="car,access_uam_car,egress_uam_car, uam"/>
+		<param name="mainMode" value="car,access_uam_car,egress_uam_car"/>
 	</module>
 
 	<module name="transit">
@@ -69,7 +69,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="uam" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -77,7 +77,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="access_uam_walk" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -85,7 +85,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="egress_uam_walk" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -93,7 +93,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="access_uam_car" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -101,7 +101,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="egress_uam_car" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -109,7 +109,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="access_uam_bike" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -117,7 +117,7 @@
 		<parameterset type="modeParams" >
 			<param name="constant" value="0.0" />
 			<param name="marginalUtilityOfDistance_util_m" value="0.0" />
-			<param name="marginalUtilityOfTraveling_util_hr" value="-6.0" />
+			<param name="marginalUtilityOfTraveling_util_hr" value="0.0" />
 			<param name="mode" value="egress_uam_bike" />
 			<param name="monetaryDistanceRate" value="0.0" />
 		</parameterset>
@@ -126,19 +126,19 @@
 	<module name="planscalcroute">
 		<parameterset type="teleportedModeParameters">
 			<param name="mode" value="bike" />
-			<param name="teleportedModeSpeed" value="0.3" />
-			<param name="beelineDistanceFactor" value="10.0" />
+			<param name="teleportedModeSpeed" value="3.3" />
+			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
 		<parameterset type="teleportedModeParameters">
 			<param name="mode" value="walk" />
-			<param name="teleportedModeSpeed" value="0.2" />
-			<param name="beelineDistanceFactor" value="10.0" />
+			<param name="teleportedModeSpeed" value="2.2" />
+			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
 		<!-- When simulating UAM: only use this parameterset when not simulating PT. If simulating PT do not use it. -->
 	<parameterset type="teleportedModeParameters">
 			<param name="mode" value="pt" />
-			<param name="teleportedModeSpeed" value="0.2" />
-			<param name="beelineDistanceFactor" value="10.0" />
+			<param name="teleportedModeSpeed" value="10.0" />
+			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
 	</module>
 
@@ -149,18 +149,20 @@
 		<param name="Module_1" value="KeepLastSelected" />
 
 		<param name="ModuleProbability_2" value="0.3" />
-		<param name="Module_2" value="custom" />	
+		<param name="Module_2" value="SubtourModeChoice" />	
+	</module>
 
 
-<!-- 		<parameterset type="strategysettings">
-			<param name="strategyName" value="ChangeExpBeta"/>
-			<param name="weight" value="0.9"/>
-		</parameterset>
+	<module name="subtourModeChoice" >
 
-		<parameterset type="strategysettings">
-			<param name="strategyName" value="ReRoute"/>
-			<param name="weight" value="0.1"/>
-		</parameterset> -->
+		<!-- Defines the chain-based modes, seperated by commas -->
+		<param name="chainBasedModes" value="car" />
+
+		<!-- Defines whether car availability must be considered or not. A agent has no car only if it has no license, or never access to a car -->
+		<param name="considerCarAvailability" value="true" />
+
+		<!-- Defines all the modes available, including chain-based modes, seperated by commas -->
+		<param name="modes" value="car,pt,walk,bike,uam" />
 	</module>
 
   <module name="linkStats" >

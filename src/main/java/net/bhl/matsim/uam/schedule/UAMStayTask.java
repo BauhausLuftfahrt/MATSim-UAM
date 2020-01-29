@@ -17,7 +17,7 @@ public class UAMStayTask extends StayTaskImpl implements UAMTask {
 	}
 
 	public UAMStayTask(double beginTime, double endTime, Link link) {
-		this(beginTime, endTime, link, "AVStay");
+		this(beginTime, endTime, link, "UAMStay");
 	}
 
 	@Override

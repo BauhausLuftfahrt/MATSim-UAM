@@ -6,8 +6,6 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.data.UAMRoutes;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
@@ -32,16 +30,14 @@ public class UAMStrategyRouter {
 	private Network carNetwork;
 	private TransitRouter transitRouter;
 	private UAMStationConnectionGraph stationConnectionutilities;
-	private CustomModeChoiceParameters parameters;
 	private UAMStrategy strategy;
 
 	public UAMStrategyRouter(
-			Scenario scenario, UAMConfigGroup uamConfig, CustomModeChoiceParameters parameters,
+			Scenario scenario, UAMConfigGroup uamConfig,
 			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, UAMStations landingStations, Network carNetwork,
 			UAMStationConnectionGraph stationConnectionutilities) {
 		this.scenario = scenario;
 		this.uamConfig = uamConfig;
-		this.parameters = parameters;
 		this.plcpc = plcpc;
 		this.plcpccar = plcpccar;
 		this.landingStations = landingStations;
@@ -51,14 +47,14 @@ public class UAMStrategyRouter {
 
 	public UAMStrategyRouter(
 			TransitRouter transitRouter,
-			Scenario scenario, UAMConfigGroup uamConfig, CustomModeChoiceParameters parameters,
+			Scenario scenario, UAMConfigGroup uamConfig,
 			ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, UAMStations landingStations, Network carNetwork,
 			UAMStationConnectionGraph stationConnectionutilities) {
-		this(scenario, uamConfig, parameters, plcpc, plcpccar, landingStations, carNetwork, stationConnectionutilities);
+		this(scenario, uamConfig, plcpc, plcpccar, landingStations, carNetwork, stationConnectionutilities);
 		this.transitRouter = transitRouter;
 	}
 
-	public UAMRoute estimateUAMRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute estimateUAMRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		if (strategy == null)
 			this.setStrategy();
 
@@ -75,16 +71,9 @@ public class UAMStrategyRouter {
 	 */
 	private void setStrategy() {
 		UAMStrategyUtils strategyUtils = new UAMStrategyUtils(this.landingStations, this.uamConfig, this.scenario,
-				this.stationConnectionutilities, this.carNetwork, this.transitRouter, this.plcpc, this.plcpccar,
-				this.parameters);
+				this.stationConnectionutilities, this.carNetwork, this.transitRouter, this.plcpc, this.plcpccar);
 		log.info("Setting UAM routing strategy to " + uamConfig.getUAMRoutingStrategy());
 		switch (uamConfig.getUAMRoutingStrategy()) {
-			case MAXUTILITY:
-				this.strategy = new UAMMaxUtilityStrategy(strategyUtils, parameters);
-				return;
-			case MAXACCESSUTILITY:
-				this.strategy = new UAMMaxAccessUtilityStrategy(strategyUtils);
-				return;
 			case MINTRAVELTIME:
 				this.strategy = new UAMMinTravelTimeStrategy(strategyUtils);
 				return;

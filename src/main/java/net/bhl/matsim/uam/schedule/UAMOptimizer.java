@@ -6,12 +6,13 @@ import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.data.Request;
-import org.matsim.contrib.dvrp.data.Vehicle;
-import org.matsim.contrib.dvrp.optimizer.VrpOptimizerWithOnlineTracking;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.optimizer.Request;
+import org.matsim.contrib.dvrp.optimizer.VrpOptimizer;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedules;
 import org.matsim.contrib.dvrp.schedule.Task;
+import org.matsim.contrib.dvrp.tracker.OnlineTrackerListener;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.events.MobsimBeforeSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
@@ -24,9 +25,8 @@ import java.util.List;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Singleton
-public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBeforeSimStepListener {
+public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
-
 	private Dispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
@@ -42,7 +42,8 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 	}
 
 	@Override
-	public void nextTask(Vehicle vehicle) {
+	public void nextTask(DvrpVehicle vehicle) {
+
 		Schedule schedule = vehicle.getSchedule();
 		// this happens at the start of the simulation since
 		// the schedule has not started yet
@@ -50,7 +51,7 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 			schedule.nextTask();
 			return;
 		}
-		// STARTED
+
 		// get the current task and make it end now
 		Task currentTask = schedule.getCurrentTask();
 		currentTask.setEndTime(now);
@@ -88,8 +89,6 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 		ensureNonFinishingSchedule(schedule);
 		schedule.nextTask();
 		ensureNonFinishingSchedule(schedule);
-
-		// UAMDispatcher dispatcher = ((UAMVehicle) vehicle).getDispatcher();
 
 		if (nextTask != null) {
 			synchronized (dispatcher) {
@@ -129,7 +128,7 @@ public class UAMOptimizer implements VrpOptimizerWithOnlineTracking, MobsimBefor
 		}
 	}
 
-	@Override
-	public void vehicleEnteredNextLink(Vehicle vehicle, Link link) {
+	public void vehicleEnteredNextLink(DvrpVehicle vehicle, Link link) {
+
 	}
 }

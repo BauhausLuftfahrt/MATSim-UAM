@@ -1,10 +1,12 @@
 package net.bhl.matsim.uam.qsim;
 
 import com.google.inject.Inject;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
 import org.matsim.core.mobsim.framework.PlanAgent;
@@ -23,6 +25,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 	Set<Id<Person>> bookedTrips = new HashSet<>();
 	@Inject
+	@DvrpMode(UAMModes.UAM_MODE)
 	private PassengerEngine passengerEngine;
 
 	@Override

@@ -2,16 +2,15 @@ package net.bhl.matsim.uam.run;
 
 import ch.ethz.matsim.baseline_scenario.config.CommandLine;
 import ch.ethz.matsim.baseline_scenario.config.CommandLine.ConfigurationException;
-import ch.ethz.matsim.baseline_scenario.transit.BaselineTransitModule;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
+import ch.ethz.matsim.baseline_scenario.transit.simulation.BaselineTransitModule;
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.modechoice.CustomModeChoiceModuleMinTravelTime;
-import net.bhl.matsim.uam.modechoice.utils.LongPlanFilter;
+import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Scenario;
@@ -25,9 +24,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.StageActivityTypesImpl;
 import org.matsim.core.scenario.ScenarioUtils;
-import org.matsim.pt.PtConstants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,12 +34,9 @@ import java.util.Set;
  * capabilities.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
- * @version 1.1
- * @since 2019-01-15
  */
 public class RunUAMScenario {
 
-	private final static boolean useMinTravelTimeModeChoice = true;
 	private static UAMConfigGroup uamConfigGroup;
 	private static CommandLine cmd;
 	private static String path;
@@ -106,9 +100,6 @@ public class RunUAMScenario {
 
 		scenario.getPopulation().getFactory().getRouteFactories().setRouteFactory(DefaultEnrichedTransitRoute.class,
 				new DefaultEnrichedTransitRouteFactory());
-		new LongPlanFilter(8, new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE))
-				.run(scenario.getPopulation());
-
 		controler = new Controler(scenario);
 
 		// Initiate Urban Air Mobility XML reading and parsing
@@ -137,20 +128,21 @@ public class RunUAMScenario {
 		uamManager.setStations(uamStations);
 		uamManager.setVehicles(uamReader.getVehicles());
 
-		controler.addOverridingModule(new CustomModeChoiceModuleMinTravelTime(cmd, useMinTravelTimeModeChoice));
-
 		// sets transit modules in case of simulating/not pT
 		controler.getConfig().transit().setUseTransit(uamConfigGroup.getPtSimulation());
 		if (uamConfigGroup.getPtSimulation()) {
 			controler.addOverridingModule(new SwissRailRaptorModule());
 			controler.addOverridingModule(new BaselineTransitModule());
 		}
-		controler.addOverridingModule(new CustomModule());
-		controler.addOverridingModule(new UAMModule(uamManager, scenario, networkUAM, networkCar));
+
+		controler.addOverridingModule(new UAMModule(uamManager, networkUAM, networkCar, uamReader));
 		controler.addOverridingModule(new UAMSpeedModule(uamReader.getMapVehicleVerticalSpeeds(),
 				uamReader.getMapVehicleHorizontalSpeeds()));
 		controler.addOverridingModule(new DvrpTravelTimeModule());
 
+		controler.configureQSimComponents(configurator -> {
+			UAMQsimModule.configureComponents(configurator);
+		});
 		return controler;
 	}
 }

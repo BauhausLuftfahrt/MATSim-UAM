@@ -22,6 +22,7 @@ import java.util.Map;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEventHandler {
+
 	final private Map<Id<Vehicle>, List<DeckGLTripItem>> deckGLTrips;
 	final private Network network;
 	final private long minTime;
@@ -80,4 +81,5 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 			trips.add(new DeckGLTripItem(location, time, minTime));
 		}
 	}
+
 }

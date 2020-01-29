@@ -71,8 +71,10 @@ public class RunCalculateCarTravelTimes {
 		filter.filter(networkCar, modesCar);
 
 		// LEAST COST PATH CALCULATOR
-		TravelTimeCalculator tcc2 = TravelTimeCalculator.create(network, config.travelTimeCalculator());
-		TravelTime travelTime = tcc2.getLinkTravelTimes();
+		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
+		builder.configure(config.travelTimeCalculator());
+		TravelTimeCalculator ttc = builder.build();
+		TravelTime travelTime = ttc.getLinkTravelTimes();
 		TravelDisutility travelDisutility = TravelDisutilityUtils
 				.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
 
@@ -126,7 +128,7 @@ public class RunCalculateCarTravelTimes {
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
 			writer.write(String.join(",",
-					new String[] { String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
 							String.valueOf(trip.distance),
@@ -179,7 +181,6 @@ public class RunCalculateCarTravelTimes {
 				trip.distance = distanceByCar;
 				trip.travelTime = path.travelTime;
 				trip.linksList = extractLinks(path.links);
-				//path.links
 			} catch (NullPointerException e) {
 				// Do nothing; failed trip will show as null in results.
 			}
@@ -236,5 +237,4 @@ public class RunCalculateCarTravelTimes {
 		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
 		return path;
 	}
-
 }

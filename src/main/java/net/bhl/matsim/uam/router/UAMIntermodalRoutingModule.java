@@ -5,8 +5,6 @@ import ch.ethz.matsim.baseline_scenario.transit.routing.BaselineTransitRoutingMo
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.*;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
-import net.bhl.matsim.uam.modechoice.estimation.pt.subscription.SubscriptionFinder;
 import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -60,22 +58,20 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	public UAMIntermodalRoutingModule(Scenario scenario, UAMStations landingStations, Set<String> modes,
 									  ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
 									  TransitRouter transitRouter, UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup,
-									  BaselineTransitRoutingModule transitRouterDelegate, CustomModeChoiceParameters parameters,
-									  WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities,
-									  SubscriptionFinder subscriptions) {
-		this(scenario, landingStations, modes, plcpc, plcpccar, carNetwork, uamConfig, transitConfigGroup, parameters,
-				waitingData, stationConnectionutilities, subscriptions);
+									  BaselineTransitRoutingModule transitRouterDelegate,
+									  WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities) {
+		this(scenario, landingStations, modes, plcpc, plcpccar, carNetwork, uamConfig, transitConfigGroup,
+				waitingData, stationConnectionutilities);
 		this.transitRouterDelegate = transitRouterDelegate;
-		this.strategyRouter = new UAMStrategyRouter(transitRouter, scenario, uamConfig, parameters, plcpc, plcpccar,
+		this.strategyRouter = new UAMStrategyRouter(transitRouter, scenario, uamConfig, plcpc, plcpccar,
 				landingStations, carNetwork, stationConnectionutilities);
 
 	}
 
 	public UAMIntermodalRoutingModule(Scenario scenario, UAMStations landingStations, Set<String> modes,
 									  ParallelLeastCostPathCalculator plcpc, LeastCostPathCalculator plcpccar, Network carNetwork,
-									  UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup, CustomModeChoiceParameters parameters,
-									  WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities,
-									  SubscriptionFinder subscriptions) {
+									  UAMConfigGroup uamConfig, TransitConfigGroup transitConfigGroup,
+									  WaitingStationData waitingData, UAMStationConnectionGraph stationConnectionutilities) {
 		this.scenario = scenario;
 		this.plcpccar = plcpccar;
 		this.carNetwork = carNetwork;
@@ -83,12 +79,12 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		this.stationConnectionutilities = stationConnectionutilities;
 		this.plcpc = plcpc;
 
-		this.strategyRouter = new UAMStrategyRouter(scenario, uamConfig, parameters, plcpc, plcpccar, landingStations,
+		this.strategyRouter = new UAMStrategyRouter(scenario, uamConfig, plcpc, plcpccar, landingStations,
 				carNetwork, stationConnectionutilities);
 	}
 
 	@Override
-	public List<? extends PlanElement> calcRoute(Facility<?> fromFacility, Facility<?> toFacility, double departureTime,
+	public List<? extends PlanElement> calcRoute(Facility fromFacility, Facility toFacility, double departureTime,
 												 Person person) {
 		Network network = scenario.getNetwork();
 
@@ -337,5 +333,6 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		stageTypes.addActivityTypes(new StageActivityTypesImpl("uam_interaction"));
 		return stageTypes;
 	}
+
 
 }

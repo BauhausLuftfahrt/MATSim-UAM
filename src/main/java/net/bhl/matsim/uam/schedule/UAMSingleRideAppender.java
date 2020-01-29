@@ -50,8 +50,6 @@ public class UAMSingleRideAppender {
 	public void schedule(UAMRequest request, UAMVehicle vehicle, double now) {
 		Schedule schedule = vehicle.getSchedule();
 		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
-		// and create a stayTask with it
-
 		Future<Path> pickup = router.calcLeastCostPath(stayTask.getLink().getToNode(), // pickup path is from downstream
 				// node of stayTask Link to
 				// upstream node from request
@@ -79,9 +77,9 @@ public class UAMSingleRideAppender {
 		double now = task.time;
 
 		Schedule schedule = vehicle.getSchedule();
+
 		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
 		// and create a stayTask with it
-
 		double startTime = 0.0;
 		double scheduleEndTime = schedule.getEndTime();
 
@@ -90,7 +88,6 @@ public class UAMSingleRideAppender {
 		} else {
 			startTime = stayTask.getBeginTime();
 		}
-
 		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
 				plainPickupPath, travelTime);
@@ -102,9 +99,15 @@ public class UAMSingleRideAppender {
 		// time
 
 		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
-		UAMPickupTask pickupTask = new UAMPickupTask(pickupPath.getArrivalTime(), // Vehicle picks up the passenger at
+		double pickUpTaskStartTime = startTime;
+		//For the case when the Aircraft is already at the station there will be no pickUpDriveTask
+		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
+			pickUpTaskStartTime = pickupPath.getArrivalTime();
+		}
+
+		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, // Vehicle picks up the passenger at
 				// the station
-				pickupPath.getArrivalTime() + vehicle.getBoardingTime(), // end time = arrival time + boarding time
+				pickUpTaskStartTime + vehicle.getBoardingTime(), // end time = arrival time + boarding time
 				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
 
 		UAMFlyTask dropoffDriveTask = new UAMFlyTask(dropoffPath, Arrays.asList(request)); // Vehicle flies to drop off
@@ -121,13 +124,15 @@ public class UAMSingleRideAppender {
 				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime() + vehicle.getTurnAroundTime(),
 				request.getToLink(), Arrays.asList(request));
 
-		if (stayTask.getStatus() == Task.TaskStatus.STARTED) { // Confused by this and the previous check on line 83
+		if (stayTask.getStatus() == Task.TaskStatus.STARTED) {
 			stayTask.setEndTime(startTime);
 		} else {
 			schedule.removeLastTask();
 		}
 
-		schedule.addTask(pickupDriveTask);
+		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
+			schedule.addTask(pickupDriveTask);
+		}
 		schedule.addTask(pickupTask);
 		schedule.addTask(dropoffDriveTask);
 		schedule.addTask(dropoffTask);

@@ -34,13 +34,13 @@ public class UAMTransitEvent extends Event implements HasPersonId {
 	@Override
 	public Map<String, String> getAttributes() {
 		Map<String, String> attr = super.getAttributes();
-		attr.put("person", request.getPassenger().getId().toString());
+		attr.put("person", request.getPassengerId().toString());
 		// attr.put("distance", String.valueOf(request.getRoute().getDistance()));
 		return attr;
 	}
 
 	@Override
 	public Id<Person> getPersonId() {
-		return request.getPassenger().getId();
+		return request.getPassengerId();
 	}
 }

@@ -8,6 +8,7 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,12 +66,16 @@ public class RunCalculatePTTravelTimes {
 
         RaptorStaticConfig raptorStaticConfig = ConfigSetter.createRaptorConfig(config);
         SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), raptorStaticConfig,
-                network);
+            network);
 
         //Provide routers
         for (int i = 0; i < processes; i++) {
-            ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
-                    new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress()));
+          Map<String, RoutingModule> router = new HashMap<>();
+          router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
+              scenario.getPopulation().getFactory(),0,1.5));
+          ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
+              new LeastCostRaptorRouteSelector(),
+              new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
         }
 
         // READ TRIPS INPUT
@@ -111,7 +117,7 @@ public class RunCalculatePTTravelTimes {
             writer.write(String.join(",",
                     new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
                             String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-                            String.valueOf(trip.departureTime), String.valueOf(trip.travelTime), String.valueOf(trip.travelTime)})
+                            String.valueOf(trip.departureTime), String.valueOf(trip.travelTime), String.valueOf(trip.distance)})
                     + "\n");
         }
 
@@ -186,9 +192,58 @@ public class RunCalculatePTTravelTimes {
                 null);
         double time = 0;
         for (Leg leg : legs)
-			time += leg.getTravelTime();
-        return time;
-    }
+			    time += leg.getTravelTime();
+		}
+		return onlyWalk ? -1 * time : time;
+	}
+
+	static class PTTravelTimeCalculator implements Runnable {
+
+		private TripItem trip;
+		private Network network;
+		private Config config;
+		private ThreadCounter threadCounter;
+		private Network networkCar;
+		private Scenario scenario;
+		private TransitRouter transitRouter;
+
+		PTTravelTimeCalculator(ThreadCounter threadCounter, Network network, Config config, TripItem trip,
+							   Network networkCar, Scenario scenario) {
+			this.trip = trip;
+			this.network = network;
+			this.config = config;
+			this.threadCounter = threadCounter;
+			this.networkCar = networkCar;
+			this.scenario = scenario;
+		}
+
+		@Override
+		public void run() {
+			threadCounter.register();
+
+			try {
+				transitRouter = ptRouters.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Link from = NetworkUtils.getNearestLink(network, trip.origin);
+			Link to = NetworkUtils.getNearestLink(network, trip.destination);
+
+			try {
+				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, transitRouter);
+			} catch (NullPointerException e) {
+				// Do nothing; failed trip will show as null in results.
+			}
+
+			try {
+				ptRouters.put(transitRouter);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			threadCounter.deregister();
+		}
+	}
 
 
 }

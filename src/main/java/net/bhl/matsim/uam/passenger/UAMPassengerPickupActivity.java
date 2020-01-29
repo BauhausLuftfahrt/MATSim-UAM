@@ -1,11 +1,10 @@
 package net.bhl.matsim.uam.passenger;
 
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.passenger.PassengerPickupActivity;
 import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.contrib.dvrp.schedule.StayTask;
-import org.matsim.contrib.dynagent.AbstractDynActivity;
 import org.matsim.contrib.dynagent.DynAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
 
@@ -16,12 +15,14 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMPassengerPickupActivity extends AbstractDynActivity implements PassengerPickupActivity {
+
+public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
 	private final PassengerEngine passengerEngine;
 	private final DynAgent driver;
 	private final Set<? extends PassengerRequest> requests;
 	private final double pickupDuration;
+	private final String activityType;
 
 	private double maximumRequestT0 = 0;
 
@@ -29,14 +30,13 @@ public class UAMPassengerPickupActivity extends AbstractDynActivity implements P
 	private int passengersAboard = 0;
 
 	public UAMPassengerPickupActivity(PassengerEngine passengerEngine, DynAgent driver,
-									  Vehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,
+									  DvrpVehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,
 									  double pickupDuration, String activityType) {
-		super(activityType);
-
 		if (requests.size() > vehicle.getCapacity()) {
 			// Number of requests exceeds number of seats
 			throw new IllegalStateException();
 		}
+		this.activityType = activityType;
 
 		this.passengerEngine = passengerEngine;
 		this.driver = driver;
@@ -74,6 +74,11 @@ public class UAMPassengerPickupActivity extends AbstractDynActivity implements P
 	}
 
 	@Override
+	public String getActivityType() {
+		return activityType;
+	}
+
+	@Override
 	public double getEndTime() {
 		return endTime;
 	}
@@ -87,7 +92,8 @@ public class UAMPassengerPickupActivity extends AbstractDynActivity implements P
 
 	private PassengerRequest getRequestForPassenger(MobsimPassengerAgent passenger) {
 		for (PassengerRequest request : requests) {
-			if (passenger == request.getPassenger()) return request;
+			if (passenger.getId().equals(request.getPassengerId()))
+				return request;
 		}
 
 		return null;
@@ -111,4 +117,5 @@ public class UAMPassengerPickupActivity extends AbstractDynActivity implements P
 			endTime = now + pickupDuration;
 		}
 	}
+
 }
