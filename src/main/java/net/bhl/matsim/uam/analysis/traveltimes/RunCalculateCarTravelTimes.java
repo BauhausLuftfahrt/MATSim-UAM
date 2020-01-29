@@ -1,14 +1,15 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Injector;
 import org.matsim.core.network.NetworkUtils;
@@ -46,17 +47,16 @@ public class RunCalculateCarTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* networkEventsChangeFile.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
+				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
-		String networkInput = args[j++];
-		String networkEventsChangeFile = args[j++];
+		String configInput = args[j++];
 		String tripsInput = args[j++];
 		String outputPath = args[j];
 
-		Config config = ConfigSetter.createCarConfig(networkInput, networkEventsChangeFile);
+		Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
@@ -176,7 +176,7 @@ public class RunCalculateCarTravelTimes {
 					if (distance != 0)
 						linksList.append("->");
 					distance += link.getLength();
-					linksList.append("[link:" + link.getId().toString() + "]");
+					linksList.append("[link:").append(link.getId().toString()).append("]");
 				}
 
 				trip.distance = distance;

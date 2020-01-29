@@ -1,10 +1,10 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
 import ch.sbb.matsim.routing.pt.raptor.*;
-import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -12,6 +12,8 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.ConfigWriter;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.LinkWrapperFacility;
 import org.matsim.core.router.RoutingModule;
@@ -47,23 +49,22 @@ public class RunCalculatePTTravelTimes {
 
     public static void main(String[] args) throws Exception {
         System.out.println(
-                "ARGS: base-network.xml* transitScheduleFile.xml* tripsCoordinateFile.csv* outputfile-name*");
+                "ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name*");
         System.out.println("(* required)");
 
         // ARGS
         int j = 0;
-        String networkInput = args[j++];
-        String transitScheduleInput = args[j++];
+        String configInput = args[j++];
         String tripsInput = args[j++];
         String outputPath = args[j];
 
         // READ NETWORK
-        Config config = ConfigSetter.createPTConfig(networkInput, transitScheduleInput);
+        Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
         Scenario scenario = ScenarioUtils.createScenario(config);
         ScenarioUtils.loadScenario(scenario);
         Network network = scenario.getNetwork();
 
-        RaptorStaticConfig raptorStaticConfig = ConfigSetter.createRaptorConfig(config);
+        RaptorStaticConfig raptorStaticConfig = RaptorUtils.createStaticConfig(config);
         SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), raptorStaticConfig,
             network);
 
@@ -167,11 +168,11 @@ public class RunCalculatePTTravelTimes {
 						 routeList.append("->");
                 	 time += leg.getTravelTime();
                 	 distance += leg.getRoute().getDistance();
-                	 routeList.append("[mode:" + leg.getMode() + "]");
-					 routeList.append("[start:" + leg.getRoute().getStartLinkId() + "]");
-					 routeList.append("[end:" + leg.getRoute().getEndLinkId() + "]");
-					 routeList.append("[time:" + leg.getTravelTime() + "]");
-					 routeList.append("[distance:" + leg.getRoute().getDistance() + "]");
+                	 routeList.append("[mode:").append(leg.getMode()).append("]");
+					 routeList.append("[start:").append(leg.getRoute().getStartLinkId()).append("]");
+					 routeList.append("[end:").append(leg.getRoute().getEndLinkId()).append("]");
+					 routeList.append("[time:").append(leg.getTravelTime()).append("]");
+					 routeList.append("[distance:").append(leg.getRoute().getDistance()).append("]");
                  }
          		 trip.travelTime = time;
          		 trip.distance = distance;
