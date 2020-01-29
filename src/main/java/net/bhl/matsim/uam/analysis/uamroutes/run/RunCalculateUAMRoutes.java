@@ -82,7 +82,7 @@ public class RunCalculateUAMRoutes {
 				new DijkstraFactory(),
 				uamReader.network, td, tt);
 
-		UAMStationConnectionGraph uamSCG = new UAMStationConnectionGraph(uamManager, null, pllcp);
+		UAMStationConnectionGraph uamSCG = new UAMStationConnectionGraph(uamManager, pllcp);
 		pllcp.close();
 		return uamSCG;
 	}

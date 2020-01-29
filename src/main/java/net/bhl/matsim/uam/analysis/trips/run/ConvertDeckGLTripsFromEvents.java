@@ -34,8 +34,8 @@ public class ConvertDeckGLTripsFromEvents {
 	private static long minTime = 21600;
 	private static long maxTime = minTime + (1 * 3600);
 
-	static public void main(String[] args) throws IOException {
-		// PROVIDE: NETWORK EVENTS INPUT_CRS*
+	static public void main(String[] args) throws IOException { // PROVIDE:
+		// NETWORK EVENTS INPUT_CRS*
 		// * optional
 		if (args.length == 3)
 			inCRS = args[2];
@@ -98,4 +98,5 @@ public class ConvertDeckGLTripsFromEvents {
 			}
 		}
 	}
+
 }

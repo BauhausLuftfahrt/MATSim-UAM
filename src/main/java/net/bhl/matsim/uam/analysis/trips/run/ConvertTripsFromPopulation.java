@@ -22,14 +22,14 @@ import java.util.Collection;
 /**
  * This script creates a trips file by reading through and gathering trip
  * information from an existing population (or plan) file. Necessary inputs are
- * in the following order: -Network file; -Plans file; -output file;
+ * in the following order: -Network file; -Plans file;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConvertTripsFromPopulation {
 	static public void main(String[] args) throws IOException {
-		// PROVIDE: NETWORK PLANS OUTFILE-NAME
-		extract(args[0], args[1], args[2]);
+		// PROVIDE: NETWORK PLANS
+		extract(args[0], args[1], args[0] + ".trips.csv");
 		System.out.println("done.");
 	}
 

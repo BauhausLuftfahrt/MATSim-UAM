@@ -26,9 +26,7 @@ import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Injector;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
-import org.matsim.core.router.AStarLandmarksFactory;
-import org.matsim.core.router.DijkstraFactory;
-import org.matsim.core.router.LinkWrapperFacility;
+import org.matsim.core.router.*;
 import org.matsim.core.router.util.*;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
@@ -39,9 +37,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,261 +54,267 @@ import java.util.concurrent.Executors;
  */
 
 public class RunCalculateUAMTravelTimes {
-    private static final int processes = Runtime.getRuntime().availableProcessors();
-    private static final Logger log = Logger.getLogger(RunCalculateUAMTravelTimes.class);
-    private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
-    private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
-    private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
+	private static final int processes = Runtime.getRuntime().availableProcessors();
+	private static final Logger log = Logger.getLogger(RunCalculateUAMTravelTimes.class);
+	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
+	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
+	private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* " +
-                "tripsCoordinateFile.csv* strategy-name* outputfile-name* " +
-                "total-process-times-mins search-radius-km access-modes");
-        System.out.println("(* required)");
+	public static void main(String[] args) throws Exception {
+		System.out.println("ARGS: base-network.xml* networkChangeEvents.xml* uam.xml* transitScheduleFile.xml* " +
+				"tripsCoordinateFile.csv* strategy-name* outputfile-name* " +
+				"total-process-times-mins search-radius-km access-modes");
+		System.out.println("(* required)");
 
-        // ARGS
-        int j = 0;
-        String networkInput = args[j++];
-        String networkEventsChangeFile = args[j++];
-        String uamVehicles = args[j++];
-        String transitScheduleInput = args[j++];
-        String tripsInput = args[j++];
-        String strategyName = args[j++];
-        String outputPath = args[j++];
+		// ARGS
+		int j = 0;
+		String networkInput = args[j++];
+		String networkEventsChangeFile = args[j++];
+		String uamVehicles = args[j++];
+		String transitScheduleInput = args[j++];
+		String tripsInput = args[j++];
+		String strategyName = args[j++];
+		String outputPath = args[j++];
 
-        double processTime = 0;
-        if (args.length >= j + 1)
-            processTime = Double.parseDouble(args[j++]) * 60;
+		double processTime = 0;
+		if (args.length >= j + 1)
+			processTime = Double.parseDouble(args[j++]) * 60;
 
-        double searchRadius = 50000;
-        if (args.length >= j + 1)
-            searchRadius = Double.parseDouble(args[j++]) * 1000;
+		double searchRadius = 50000;
+		if (args.length >= j + 1)
+			searchRadius = Double.parseDouble(args[j++]) * 1000;
 
-        String accessModes = "car,pt,bike,walk";
-        if (args.length >= j + 1)
-            accessModes = args[j];
-        Config config = ConfigSetter.createUAMConfig(networkInput, networkEventsChangeFile, transitScheduleInput,
-                searchRadius, accessModes);
+		String accessModes = "car,pt,bike,walk";
+		if (args.length >= j + 1)
+			accessModes = args[j];
+		Config config = ConfigSetter.createUAMConfig(networkInput, networkEventsChangeFile, transitScheduleInput,
+				searchRadius, accessModes);
 
-        // Build scenario
-        Scenario scenario = ScenarioUtils.createScenario(config);
-        ScenarioUtils.loadScenario(scenario);
-        Network network = scenario.getNetwork();
+		// Build scenario
+		Scenario scenario = ScenarioUtils.createScenario(config);
+		ScenarioUtils.loadScenario(scenario);
+		Network network = scenario.getNetwork();
 
-        // CREATE CAR/UAM NETWORK
-        TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
-        Set<String> modes = new HashSet<>();
-        modes.add(UAMModes.UAM_MODE);
-        Network networkUAM = NetworkUtils.createNetwork();
-        filter.filter(networkUAM, modes);
-        Network networkCar = NetworkUtils.createNetwork();
-        Set<String> modesCar = new HashSet<>();
-        modesCar.add(TransportMode.car);
-        filter.filter(networkCar, modesCar);
+		// CREATE CAR/UAM NETWORK
+		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
+		Set<String> modes = new HashSet<>();
+		modes.add(UAMModes.UAM_MODE);
+		Network networkUAM = NetworkUtils.createNetwork();
+		filter.filter(networkUAM, modes);
+		Network networkCar = NetworkUtils.createNetwork();
+		Set<String> modesCar = new HashSet<>();
+		modesCar.add(TransportMode.car);
+		filter.filter(networkCar, modesCar);
 
-        // SETUP UAM MANAGER AND STATIONCONENCTIONUTILITIES
-        UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
-        uamReader.readFile(uamVehicles);
-        UAMManager uamManager = new UAMManager(network);
-        uamManager.setStations(new UAMStations(uamReader.getStations(), network));
-        uamManager.setVehicles(uamReader.getVehicles());
+		// SETUP UAM MANAGER AND STATIONCONENCTIONUTILITIES
+		UAMXMLReader uamReader = new UAMXMLReader(networkUAM);
+		uamReader.readFile(uamVehicles);
+		UAMManager uamManager = new UAMManager(network);
+		uamManager.setStations(new UAMStations(uamReader.getStations(), network));
+		uamManager.setVehicles(uamReader.getVehicles());
 
-        // data for parallel public transport router
-        SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(),
-                ConfigSetter.createRaptorConfig(config), network);
+		// data for parallel public transport router
+		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(),
+				ConfigSetter.createRaptorConfig(config), network);
 
-        // Generate data for other routers
-        TravelTimeCalculator tcc2 = TravelTimeCalculator.create(network, config.travelTimeCalculator());
-        TravelTime travelTime = tcc2.getLinkTravelTimes();
-        TravelDisutility travelDisutility = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
+		// Generate data for other routers
+		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
+		builder.configure(config.travelTimeCalculator());
+		TravelTimeCalculator ttc = builder.build();
+		TravelTime travelTime = ttc.getLinkTravelTimes();
+		TravelDisutility travelDisutility = TravelDisutilityUtils.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
 
-        com.google.inject.Injector injector = Injector.createInjector(config, new AbstractModule() {
-            @Override
-            public void install() {
-                bind(LeastCostPathCalculatorFactory.class).to(AStarLandmarksFactory.class);
-            }
-        });
-        LeastCostPathCalculatorFactory pathCalculatorFactory = injector
-                .getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
+		com.google.inject.Injector injector = Injector.createInjector(config, new AbstractModule() {
+			@Override
+			public void install() {
+				bind(LeastCostPathCalculatorFactory.class).to(AStarLandmarksFactory.class);
+			}
+		});
+		LeastCostPathCalculatorFactory pathCalculatorFactory = injector
+				.getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
 
-        // This router is used only to create the UAMStationConnectionGraph class
-        DefaultParallelLeastCostPathCalculator pathCalculatorForStations = DefaultParallelLeastCostPathCalculator
-                .create(processes, new DijkstraFactory(), networkUAM,
-                        travelDisutility, travelTime);
-        UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager, null,
-                pathCalculatorForStations);
-        pathCalculatorForStations.close();
+		// This router is used only to create the UAMStationConnectionGraph class
+		DefaultParallelLeastCostPathCalculator pathCalculatorForStations = DefaultParallelLeastCostPathCalculator
+				.create(processes, new DijkstraFactory(), networkUAM,
+						travelDisutility, travelTime);
+		UAMStationConnectionGraph stationConnectionutilities = new UAMStationConnectionGraph(uamManager,
+				pathCalculatorForStations);
+		pathCalculatorForStations.close();
 
-        //Provide routers
-        for (int i = 0; i < processes; i++) {
-            carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
-            ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
-                    new LeastCostRaptorRouteSelector(), new DefaultRaptorIntermodalAccessEgress()));
-            uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
-                    processes, new DijkstraFactory(), networkUAM, travelDisutility,
-                    travelTime));
-        }
+		//Provide routers
+		for (int i = 0; i < processes; i++) {
+			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
+			Map<String, RoutingModule> router = new HashMap<>();
+			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
+					scenario.getPopulation().getFactory(),0,1.5));
+			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
+					new LeastCostRaptorRouteSelector(),
+					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
+			uamRouters.add(DefaultParallelLeastCostPathCalculator.create(
+					processes, new DijkstraFactory(), networkUAM, travelDisutility,
+					travelTime));
+		}
 
-        // READ TRIPS INPUT
-        List<TripItem> trips = TripItemReader.getTripItems(tripsInput);
+		// READ TRIPS INPUT
+		List<TripItem> trips = TripItemReader.getTripItems(tripsInput);
 
-        // Calculate travel times
-        log.info("Calculating travel times...");
-        int counter = 1;
-        ThreadCounter threadCounter = new ThreadCounter();
-        ExecutorService es = Executors.newFixedThreadPool(processes);
-        for (TripItem trip : trips) {
-            if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
-                log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
-                        + String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
+		// Calculate travel times
+		log.info("Calculating travel times...");
+		int counter = 1;
+		ThreadCounter threadCounter = new ThreadCounter();
+		ExecutorService es = Executors.newFixedThreadPool(processes);
+		for (TripItem trip : trips) {
+			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
+				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
+						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
 
-            while (threadCounter.getProcesses() >= processes - 1)
-                Thread.sleep(200);
+			while (threadCounter.getProcesses() >= processes - 1)
+				Thread.sleep(200);
 
-            es.execute(new UAMTravelTimeCalculator(threadCounter, network, config, trip, uamManager,
-					networkCar, scenario, strategyName, stationConnectionutilities,	processTime));
-            counter++;
-        }
-        es.shutdown();
-        // Make sure that the file is not written before all threads are finished
-        while (!es.isTerminated())
-            Thread.sleep(200);
+			es.execute(new UAMTravelTimeCalculator(threadCounter, network, config, trip, uamManager,
+					networkCar, scenario, strategyName, stationConnectionutilities, processTime));
+			counter++;
+		}
+		es.shutdown();
+		// Make sure that the file is not written before all threads are finished
+		while (!es.isTerminated())
+			Thread.sleep(200);
 
-        // Writes output file
-        log.info("Writing travel times file...");
-        write(outputPath, trips);
-        log.info("...done.");
+		// Writes output file
+		log.info("Writing travel times file...");
+		write(outputPath, trips);
+		log.info("...done.");
 
-    }
+	}
 
-    public static void write(String outputPath, List<TripItem> trips) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
+	public static void write(String outputPath, List<TripItem> trips) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputPath)));
 
-        writer.write(formatHeader() + "\n");
-        for (TripItem trip : trips) {
-            writer.write(String.join(",",
-                    new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
-                            String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-                            String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
-                            String.valueOf(trip.accessTime), String.valueOf(trip.flightTime),
-                            String.valueOf(trip.egressTime), String.valueOf(trip.processTime), trip.accessMode,
-                            trip.egressMode, trip.originStation, trip.destinationStation})
-                    + "\n");
-        }
+		writer.write(formatHeader() + "\n");
+		for (TripItem trip : trips) {
+			writer.write(String.join(",",
+					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
+							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
+							String.valueOf(trip.accessTime), String.valueOf(trip.flightTime),
+							String.valueOf(trip.egressTime), String.valueOf(trip.processTime), trip.accessMode,
+							trip.egressMode, trip.originStation, trip.destinationStation})
+					+ "\n");
+		}
 
-        writer.flush();
-        writer.close();
-    }
+		writer.flush();
+		writer.close();
+	}
 
-    private static String formatHeader() {
-        return String.join(",",
-                new String[]{"origin_x", "origin_y", "destination_x", "destination_y", "departure_time",
-                        "travel_time", "access_time", "flight_time", "egress_time", "process_time", "access_mode",
-                        "egress_mode", "orig_station", "dest_station"});
-    }
+	private static String formatHeader() {
+		return String.join(",",
+				new String[]{"origin_x", "origin_y", "destination_x", "destination_y", "departure_time",
+						"travel_time", "access_time", "flight_time", "egress_time", "process_time", "access_mode",
+						"egress_mode", "orig_station", "dest_station"});
+	}
 
-    static class UAMTravelTimeCalculator implements Runnable {
+	static class UAMTravelTimeCalculator implements Runnable {
 
-        private TripItem trip;
-        private Network network;
-        private Config config;
-        private ThreadCounter threadCounter;
-        private UAMManager uamManager;
-        private Network networkCar;
-        private Scenario scenario;
-        private String strategyName;
-        private UAMStationConnectionGraph stationConnectionutilities;
-        private ParallelLeastCostPathCalculator pathCalculator;
-        private LeastCostPathCalculator plcpccar;
-        private TransitRouter transitRouter;
-        private double processTime;
+		private TripItem trip;
+		private Network network;
+		private Config config;
+		private ThreadCounter threadCounter;
+		private UAMManager uamManager;
+		private Network networkCar;
+		private Scenario scenario;
+		private String strategyName;
+		private UAMStationConnectionGraph stationConnectionutilities;
+		private ParallelLeastCostPathCalculator pathCalculator;
+		private LeastCostPathCalculator plcpccar;
+		private TransitRouter transitRouter;
+		private double processTime;
 
-        UAMTravelTimeCalculator(ThreadCounter threadCounter, Network network, Config config, TripItem trip,
+		UAMTravelTimeCalculator(ThreadCounter threadCounter, Network network, Config config, TripItem trip,
 								UAMManager uamManager, Network networkCar, Scenario scenario, String strategyName,
 								UAMStationConnectionGraph stationConnectionutilities, double processTime) {
-            this.trip = trip;
-            this.network = network;
-            this.config = config;
-            this.threadCounter = threadCounter;
-            this.uamManager = uamManager;
-            this.networkCar = networkCar;
-            this.scenario = scenario;
-            this.strategyName = strategyName;
-            this.stationConnectionutilities = stationConnectionutilities;
-            this.processTime = processTime;
-        }
+			this.trip = trip;
+			this.network = network;
+			this.config = config;
+			this.threadCounter = threadCounter;
+			this.uamManager = uamManager;
+			this.networkCar = networkCar;
+			this.scenario = scenario;
+			this.strategyName = strategyName;
+			this.stationConnectionutilities = stationConnectionutilities;
+			this.processTime = processTime;
+		}
 
-        @Override
-        public void run() {
-            threadCounter.register();
+		@Override
+		public void run() {
+			threadCounter.register();
 
-            try {
-                pathCalculator = uamRouters.take();
-                plcpccar = carRouters.take();
-                transitRouter = ptRouters.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+			try {
+				pathCalculator = uamRouters.take();
+				plcpccar = carRouters.take();
+				transitRouter = ptRouters.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-            Link from = NetworkUtils.getNearestLink(network, trip.origin);
-            Link to = NetworkUtils.getNearestLink(network, trip.destination);
-            Facility<?> fromFacility = new LinkWrapperFacility(from);
-            Facility<?> toFacility = new LinkWrapperFacility(to);
+			Link from = NetworkUtils.getNearestLink(network, trip.origin);
+			Link to = NetworkUtils.getNearestLink(network, trip.destination);
+			Facility fromFacility = new LinkWrapperFacility(from);
+			Facility toFacility = new LinkWrapperFacility(to);
 
-            UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
-                    (UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,
-                    networkCar, transitRouter, pathCalculator, plcpccar, null);
-            UAMStrategy strategy = null;
-            switch (UAMStrategyType.valueOf(strategyName.toUpperCase())) {
-                case MINTRAVELTIME:
-                    strategy = new UAMMinTravelTimeStrategy(strategyUtils);
-                    break;
-                case MINACCESSTRAVELTIME:
-                    strategy = new UAMMinAccessTravelTimeStrategy(strategyUtils);
-                    break;
-                case MINDISTANCE:
-                    strategy = new UAMMinDistanceStrategy(strategyUtils);
-                    break;
-                case MINACCESSDISTANCE:
-                    strategy = new UAMMinAccessDistanceStrategy(strategyUtils);
-                    break;
-                default:
-                    log.warn("Strategy not available, please provide an available strategy.");
-                    System.exit(-1);
-            }
+			UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(),
+					(UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE), scenario, stationConnectionutilities,
+					networkCar, transitRouter, pathCalculator, plcpccar);
+			UAMStrategy strategy = null;
+			switch (UAMStrategyType.valueOf(strategyName.toUpperCase())) {
+				case MINTRAVELTIME:
+					strategy = new UAMMinTravelTimeStrategy(strategyUtils);
+					break;
+				case MINACCESSTRAVELTIME:
+					strategy = new UAMMinAccessTravelTimeStrategy(strategyUtils);
+					break;
+				case MINDISTANCE:
+					strategy = new UAMMinDistanceStrategy(strategyUtils);
+					break;
+				case MINACCESSDISTANCE:
+					strategy = new UAMMinAccessDistanceStrategy(strategyUtils);
+					break;
+				default:
+					log.warn("Strategy not available, please provide an available strategy.");
+					System.exit(-1);
+			}
 
-            try {
-                UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
+			try {
+				UAMRoute uamRoute = strategy.getRoute(null, fromFacility, toFacility, trip.departureTime);
 
-                trip.accessMode = uamRoute.accessMode;
-                trip.egressMode = uamRoute.egressMode;
-                trip.originStation = uamRoute.bestOriginStation.getId().toString();
-                trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
+				trip.accessMode = uamRoute.accessMode;
+				trip.egressMode = uamRoute.egressMode;
+				trip.originStation = uamRoute.bestOriginStation.getId().toString();
+				trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
 
-                trip.processTime = processTime;
+				trip.processTime = processTime;
 
-                trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
-                        uamRoute.bestOriginStation, uamRoute.accessMode);
+				trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
+						uamRoute.bestOriginStation, uamRoute.accessMode);
 
-                trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
+				trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
 
-                trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
-                        uamRoute.bestDestinationStation, uamRoute.egressMode);
+				trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
+						uamRoute.bestDestinationStation, uamRoute.egressMode);
 
-                trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
-            } catch (NullPointerException e) {
-                // Do nothing; failed trip will show as null in results.
-            }
+				trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
+			} catch (NullPointerException e) {
+				// Do nothing; failed trip will show as null in results.
+			}
 
-            try {
-                ptRouters.put(transitRouter);
-                uamRouters.put((DefaultParallelLeastCostPathCalculator) pathCalculator);
-                carRouters.put(plcpccar);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            threadCounter.deregister();
-        }
-    }
+			try {
+				ptRouters.put(transitRouter);
+				uamRouters.put((DefaultParallelLeastCostPathCalculator) pathCalculator);
+				carRouters.put(plcpccar);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			threadCounter.deregister();
+		}
+	}
 
 }

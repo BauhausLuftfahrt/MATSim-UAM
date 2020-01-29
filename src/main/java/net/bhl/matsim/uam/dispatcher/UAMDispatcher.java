@@ -6,7 +6,7 @@ import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMTask;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -31,7 +31,7 @@ public class UAMDispatcher implements Dispatcher {
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
 
-		for (Vehicle veh : uamManager.getVehicles().values()) {
+		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
 		}
 	}

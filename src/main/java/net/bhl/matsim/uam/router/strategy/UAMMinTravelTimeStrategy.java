@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.router.strategy;
 import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
+
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
@@ -21,7 +22,6 @@ import java.util.Set;
  */
 public class UAMMinTravelTimeStrategy implements UAMStrategy {
 	private UAMStrategyUtils strategyUtils;
-
 	public UAMMinTravelTimeStrategy(UAMStrategyUtils strategyUtils) {
 		this.strategyUtils = strategyUtils;
 	}
@@ -32,7 +32,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 	}
 
 	@Override
-	public UAMRoute getRoute(Person person, Facility<?> fromFacility, Facility<?> toFacility, double departureTime) {
+	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
@@ -68,7 +68,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 				}
 			}
 		}
-
+		
 		return new UAMRoute(accessRoutesData.get(bestStationOrigin.getId()).getFastestTimeMode(), bestStationOrigin,
 				bestStationDestination, bestModeEgress);
 	}

@@ -4,7 +4,6 @@ import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.modechoice.estimation.CustomModeChoiceParameters;
 import net.bhl.matsim.uam.router.UAMFlightSegments;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -30,8 +29,7 @@ public class UAMStationConnectionGraph {
 	final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
 	private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;
 
-	public UAMStationConnectionGraph(UAMManager uamManager, CustomModeChoiceParameters parameters,
-									 @Named("uam") ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph(UAMManager uamManager, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
 		log.info("Calculating travel times and distances between all UAM stations.");
 
 		legs = new HashMap<>();

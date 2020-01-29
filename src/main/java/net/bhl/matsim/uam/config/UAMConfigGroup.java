@@ -24,7 +24,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 	private String inputUAMFile;
 	private Set<String> availableAccessModes;
-	private UAMStrategyType routingStrategy = UAMStrategyType.MAXACCESSUTILITY;
+	private UAMStrategyType routingStrategy = UAMStrategyType.MINACCESSTRAVELTIME;
 	private int parallelRouters = 2;
 	private double searchRadius = 5000; // maximum crow fly distance to origin/destination stations
 	// the uam access and egress mode, otherwise the fastest (car or pt)

@@ -10,13 +10,11 @@ import org.matsim.core.events.EventsReaderXMLv1;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
+import org.matsim.core.router.util.TravelTime;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This script generates a csv file containing the average speed per link per
@@ -33,7 +31,7 @@ public class ConvertLinkStatsFromEvents {
 	static boolean calculateLinkTravelTimes = true;
 	static boolean calculateLinkToLinkTravelTimes = false;
 	static boolean filterModes = true;
-	static String analyzedMode = "car";
+	static String[] analyzedModes = {"car"};
 
 	static public void main(String[] args) throws IOException {
 		// PROVIDE: NETWORK EVENTS OUTFILE-NAME
@@ -46,24 +44,34 @@ public class ConvertLinkStatsFromEvents {
 		new MatsimNetworkReader(netw).readFile(network);
 
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
-		tconfig.setAnalyzedModes(analyzedMode); // TODO does nothing?
+
+		Set<String> modes = new HashSet<>();
+		for (String mode : analyzedModes)
+			modes.add(mode);
+		tconfig.setAnalyzedModes(modes); // TODO does nothing?
+		tconfig.setFilterModes(filterModes); // TODO does nothing?
+
 		tconfig.setCalculateLinkToLinkTravelTimes(calculateLinkToLinkTravelTimes);
 		tconfig.setCalculateLinkTravelTimes(calculateLinkTravelTimes);
-		tconfig.setFilterModes(filterModes); // TODO does nothing?
+
 		tconfig.setMaxTime(maxTime);
 		tconfig.setTraveltimeBinSize(timeBinSize);
 
-		TravelTimeCalculator ttc = TravelTimeCalculator.create(netw, tconfig);
+		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(netw);
+		builder.configure(tconfig);
+		TravelTimeCalculator ttc = builder.build();
+
 		EventsManager manager = EventsUtils.createEventsManager();
 		manager.addHandler(ttc);
 		EventsReaderXMLv1 eventsReader = new EventsReaderXMLv1(manager);
 		eventsReader.readFile(events);
 
 		Collection<LinkStatsItem> linkStats = new HashSet<>();
+		TravelTime tts = ttc.getLinkTravelTimes();
 		for (Link link : netw.getLinks().values()) {
 			Map<Integer, Double> timeDependantSpeeds = new HashMap<>();
 			for (int time = 0 + timeBinSize / 2; time < maxTime; time += timeBinSize) {
-				timeDependantSpeeds.put(time, link.getLength() / ttc.getLinkTravelTime(link, time));
+				timeDependantSpeeds.put(time, link.getLength() / tts.getLinkTravelTime(link, time, null, null));
 			}
 
 			linkStats.add(new LinkStatsItem(link.getId(), link.getLength(), link.getFreespeed(), timeDependantSpeeds));

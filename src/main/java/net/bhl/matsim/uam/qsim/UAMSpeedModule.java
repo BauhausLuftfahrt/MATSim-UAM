@@ -2,11 +2,7 @@ package net.bhl.matsim.uam.qsim;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.matsim.api.core.v01.Scenario;
-import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.controler.AbstractModule;
-import org.matsim.core.mobsim.qsim.qnetsimengine.ConfigurableQNetworkFactory;
-import org.matsim.core.mobsim.qsim.qnetsimengine.QNetworkFactory;
 import org.matsim.core.mobsim.qsim.qnetsimengine.linkspeedcalculator.DefaultLinkSpeedCalculator;
 
 import java.util.Map;
@@ -31,15 +27,6 @@ public class UAMSpeedModule extends AbstractModule {
 	@Override
 	public void install() {
 
-	}
-
-	@Provides
-	@Singleton
-	public QNetworkFactory provideQNetworkFactory(EventsManager events, Scenario scenario,
-												  UAMLinkSpeedCalculator linkSpeedCalculator) {
-		ConfigurableQNetworkFactory networkFactory = new ConfigurableQNetworkFactory(events, scenario);
-		networkFactory.setLinkSpeedCalculator(linkSpeedCalculator);
-		return networkFactory;
 	}
 
 	@Provides

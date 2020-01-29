@@ -1,5 +1,6 @@
 package net.bhl.matsim.uam.infrastructure.readers;
 
+import com.google.common.collect.ImmutableMap;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
@@ -9,7 +10,9 @@ import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.contrib.dvrp.data.Vehicle;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
+import org.matsim.contrib.dvrp.fleet.FleetSpecificationImpl;
+import org.matsim.contrib.dvrp.fleet.ImmutableDvrpVehicleSpecification;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.io.MatsimXmlParser;
 import org.matsim.core.utils.misc.Time;
@@ -29,11 +32,13 @@ import java.util.Stack;
 public class UAMXMLReader extends MatsimXmlParser {
 
 	public final Network network;
+	private final Map<Id<DvrpVehicle>, UAMVehicle> vehiclesForData = new HashMap<Id<DvrpVehicle>, UAMVehicle>(); // added
 	private Map<Id<UAMStation>, UAMStation> stations = new HashMap<Id<UAMStation>, UAMStation>();
-	private Map<Id<Vehicle>, UAMVehicle> vehicles = new HashMap<Id<Vehicle>, UAMVehicle>(); // added
+	private Map<Id<DvrpVehicle>, UAMVehicle> vehicles = new HashMap<Id<DvrpVehicle>, UAMVehicle>(); // added
 	private Map<Id<UAMVehicleType>, UAMVehicleType> vehicleTypes = new HashMap<Id<UAMVehicleType>, UAMVehicleType>(); // added
 	private Map<String, Double> mapVehicleHorizontalSpeeds = new HashMap<>();
 	private Map<String, Double> mapVehicleVerticalSpeeds = new HashMap<>();
+	private FleetSpecificationImpl fleetSpecification = new FleetSpecificationImpl();
 
 	public UAMXMLReader(Network uamNetwork) {
 		this.network = uamNetwork;
@@ -93,7 +98,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 					deboardingTime, turnAroundTime);
 			vehicleTypes.put(id, vehicleType);
 		} else if (name.equals("vehicle")) {
-			Id<Vehicle> id = Id.create(atts.getValue("id"), Vehicle.class);
+			Id<DvrpVehicle> id = Id.create(atts.getValue("id"), DvrpVehicle.class);
 			Id<UAMVehicleType> vehicleTypeId = Id.create(atts.getValue("type"), UAMVehicleType.class);
 
 			// gets starttime and endtime
@@ -115,9 +120,21 @@ public class UAMXMLReader extends MatsimXmlParser {
 			this.mapVehicleHorizontalSpeeds.put(id.toString(), horizontalSpeed);
 
 			try {
-				UAMVehicle vehicle = new UAMVehicle(id, stationid, this.stations.get(stationid).getLocationLink(), capacity,
-						starttime, endtime, vehicleTypes.get(vehicleTypeId));
+				if (vehicles.containsKey(id)) {
+					id = Id.create(atts.getValue("id").concat("_" + atts.getValue("type")), DvrpVehicle.class);
+				}
+				fleetSpecification.addVehicleSpecification(ImmutableDvrpVehicleSpecification.newBuilder().id(id)
+						.capacity(capacity).startLinkId(this.stations.get(stationid).getLocationLink().getId())
+						.serviceBeginTime(starttime).serviceEndTime(endtime).build());
+
+				UAMVehicle vehicle = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
+						this.stations.get(stationid).getLocationLink(), stationid, vehicleTypes.get(vehicleTypeId));
+
 				vehicles.put(id, vehicle);
+				UAMVehicle vehicleCopy = new UAMVehicle(fleetSpecification.getVehicleSpecifications().get(id),
+						this.stations.get(stationid).getLocationLink(), stationid, vehicleTypes.get(vehicleTypeId));
+				vehiclesForData.put(id, vehicleCopy);
+
 			} catch (NullPointerException e) {
 				Log.warn("UAM vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
 			}
@@ -128,15 +145,19 @@ public class UAMXMLReader extends MatsimXmlParser {
 
 	@Override
 	public void endTag(String name, String content, Stack<String> context) {
-
 	}
 
 	public Map<Id<UAMStation>, UAMStation> getStations() {
 		return stations;
 	}
 
-	public Map<Id<Vehicle>, UAMVehicle> getVehicles() {
-		return vehicles;
+	public Map<Id<DvrpVehicle>, UAMVehicle> getVehicles() {
+		return ImmutableMap.copyOf(vehicles);
+	}
+
+	public Map<Id<DvrpVehicle>, UAMVehicle> getVehiclesForData() {
+		Map<Id<DvrpVehicle>, UAMVehicle> returnVehicles = new HashMap<Id<DvrpVehicle>, UAMVehicle>(vehiclesForData);
+		return returnVehicles;
 	}
 
 	public Map<String, Double> getMapVehicleHorizontalSpeeds() {
@@ -145,6 +166,10 @@ public class UAMXMLReader extends MatsimXmlParser {
 
 	public Map<String, Double> getMapVehicleVerticalSpeeds() {
 		return this.mapVehicleVerticalSpeeds;
+	}
+
+	public FleetSpecificationImpl getFleetSpecification() {
+		return this.fleetSpecification;
 	}
 
 }

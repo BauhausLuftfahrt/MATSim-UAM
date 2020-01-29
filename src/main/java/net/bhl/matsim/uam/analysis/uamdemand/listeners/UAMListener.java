@@ -5,6 +5,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
@@ -19,6 +20,7 @@ import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.MainModeIdentifier;
@@ -40,7 +42,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 	final private Collection<UAMDemandItem> uamData = new LinkedList<>();
 	final private Map<Id<Person>, UAMListenerItem> ongoing = new HashMap<>();
 	final private UAMStations uamStations;
-	final private Map<Id<org.matsim.contrib.dvrp.data.Vehicle>, UAMVehicle> vehicles;
+	final private Map<Id<DvrpVehicle>, UAMVehicle> vehicles;
 	Map<Id<Person>, PTData> tempPTData = new ConcurrentHashMap<>();
 	Map<Id<Person>, Id<Vehicle>> personToVehicle = new ConcurrentHashMap<>();
 	Map<Id<Vehicle>, Set<Id<Person>>> vehicleToPerson = new ConcurrentHashMap<>();
@@ -71,14 +73,15 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 
 	@Override
 	public void handleEvent(PersonDepartureEvent event) {
-		if (event.getLegMode().startsWith("access_uam")) {
+		if (event.getLegMode().startsWith(UAMModes.UAM_ACCESS)) {
 			ongoing.put(event.getPersonId(), new UAMListenerItem(event.getPersonId(),
 					network.getLinks().get(event.getLinkId()).getCoord(), event.getTime(), event.getLegMode()));
-		} else if (event.getLegMode().startsWith("egress_uam")) {
+		} else if (event.getLegMode().startsWith(UAMModes.UAM_EGRESS)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.departureFromStationTime = event.getTime();
-		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk")
-				|| event.getLegMode().equals("pt")) {
+		} else if (event.getLegMode().equals(TransportMode.access_walk)
+				|| event.getLegMode().equals(TransportMode.transit_walk)
+				|| event.getLegMode().equals(TransportMode.pt)) {
 			// we need to store the information about the pt trip
 			// in case this becomes an access or an egress uam trip
 			if (!tempPTData.containsKey(event.getPersonId())) {
@@ -87,15 +90,10 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 				ptData.originLink = network.getLinks().get(event.getLinkId());
 				tempPTData.put(event.getPersonId(), ptData);
 			}
-		} else if (event.getLegMode().equals("uam")) {
-			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord(); // get the coord from the
-			// link
-			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId())); // uses
-			// the
-			// link
-			// to
-			// get
-			// station
+		} else if (event.getLegMode().equals(UAMModes.UAM_MODE)) {
+			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord();
+			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId()));
+
 			if (tempPTData.containsKey(event.getPersonId())) {
 				// if there was pt information we need to add it
 				// to the UAMData object
@@ -116,7 +114,8 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 			}
 		}
 
-		if (event.getLegMode().equals("car") && event.getPersonId().toString().startsWith("uam_vh_")) {
+		if (event.getLegMode().equals(TransportMode.car)
+				&& event.getPersonId().toString().startsWith("uam_vh_")) { // TODO should not be based on ID
 			// TODO: pooling is not correctly documented for take-off time
 			// this needs to be corrected
 			if (vehicleToPerson.containsKey(event.getPersonId())) {
@@ -131,7 +130,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 
 	@Override
 	public void handleEvent(PersonArrivalEvent event) {
-		if (event.getLegMode().equals("uam")) {
+		if (event.getLegMode().equals(UAMModes.UAM_MODE)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			tempPTData.remove(event.getPersonId());
 			uamData.destinationStationCoord = network.getLinks().get(event.getLinkId()).getCoord();
@@ -142,16 +141,17 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 			// ground
 			uamData.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			uamData.uamTrip = true;
-		} else if (event.getLegMode().startsWith("egress_uam")) {
+		} else if (event.getLegMode().startsWith(UAMModes.UAM_EGRESS)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.egressMode = event.getLegMode();
 			uamData.endTime = event.getTime();
 			uamData.destination = network.getLinks().get(event.getLinkId()).getCoord();
-		} else if (event.getLegMode().startsWith("access_uam")) {
+		} else if (event.getLegMode().startsWith(UAMModes.UAM_ACCESS)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.arrivalAtStationTime = event.getTime();
-		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk")
-				|| (event.getLegMode().equals("pt"))) {
+		} else if (event.getLegMode().equals(TransportMode.egress_walk)
+				|| event.getLegMode().equals(TransportMode.transit_walk)
+				|| (event.getLegMode().equals(TransportMode.pt))) {
 			// we are still in the potential access or egress pt trip
 			PTData data = tempPTData.get(event.getPersonId());
 			data.endTime = event.getTime();
@@ -164,7 +164,8 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 		// when we arrive at the destination we need to check if there was an egress pt
 		// trip and add that information to the UAMData
 		UAMDemandItem uamData = ongoing.get(event.getPersonId());
-		if (!event.getActType().equals("uam_interaction") && !event.getActType().equals("pt interaction")) {
+		if (!event.getActType().equals(UAMModes.UAM_INTERACTION)
+				&& !event.getActType().equals("pt interaction")) {
 			if (ongoing.containsKey(event.getPersonId())) {
 				if (uamData.uamTrip) {
 					if (tempPTData.containsKey(event.getPersonId())) {

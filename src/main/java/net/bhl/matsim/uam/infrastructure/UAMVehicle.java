@@ -2,62 +2,29 @@ package net.bhl.matsim.uam.infrastructure;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.data.Vehicle;
-import org.matsim.contrib.dvrp.data.VehicleImpl;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicleImpl;
+import org.matsim.contrib.dvrp.fleet.DvrpVehicleSpecification;
 
 /**
  * This class defines the VTOL vehicle and its properties.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMVehicle extends VehicleImpl {
+public class UAMVehicle extends DvrpVehicleImpl {
 
 	// VTOL vehicle-specific properties
-	private final double width; // [m]
-	private final double length; // [m]
-	private final double range; // [m]
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
 
-	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
-					  double width, double length, double range, UAMVehicleType vehicleType) {
-
-		super(id, startLink, capacity, t0, t1);
-		this.initialStationId = stationId;
-		this.width = width;
-		this.length = length;
-		this.range = range;
-
-		this.vehicleType = vehicleType;
-	}
-
-	public UAMVehicle(Id<Vehicle> id, Id<UAMStation> stationId, Link startLink, double capacity, double t0, double t1,
+	public UAMVehicle(DvrpVehicleSpecification specification, Link startLink, Id<UAMStation> stationId,
 					  UAMVehicleType vehicleType) {
-
-		super(id, startLink, capacity, t0, t1);
+		super(specification, startLink);
 		this.initialStationId = stationId;
-		this.width = 0;
-		this.length = 0;
-		this.range = 0;
-
 		this.vehicleType = vehicleType;
-
 	}
 
 	public Id<UAMStation> getInitialStationId() {
 		return initialStationId;
-	}
-
-	public double getWidth() {
-		return width;
-	}
-
-	public double getLength() {
-		return length;
-	}
-
-	public double getRange() {
-		return range;
 	}
 
 	/**
@@ -109,6 +76,10 @@ public class UAMVehicle extends VehicleImpl {
 	 */
 	public double getTurnAroundTime() {
 		return vehicleType.getTurnAroundTime();
+	}
+
+	public UAMVehicleType getVehicleType() {
+		return this.vehicleType;
 	}
 
 }

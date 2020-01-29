@@ -1,8 +1,8 @@
 package net.bhl.matsim.uam.analysis.trips;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Coordinate;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.core.utils.geometry.geotools.MGC;
 import org.opengis.referencing.FactoryException;
@@ -16,6 +16,7 @@ import org.opengis.referencing.operation.TransformException;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class DeckGLTripItem {
+
 	public Coord location;
 	public long time;
 	public long timeShift;
@@ -41,8 +42,8 @@ public class DeckGLTripItem {
 		CoordinateReferenceSystem crsIn = null;
 		CoordinateReferenceSystem crsOut = null;
 		try {
-			crsIn = MGC.getCRS(inputEPSGCode); // EPSG:code
-			crsOut = MGC.getCRS(outputEPSGCode); // EPSG:code
+			crsIn = MGC.getCRS(inputEPSGCode); // EPSG:code crsOut =
+			MGC.getCRS(outputEPSGCode); // EPSG:code 
 			MathTransform transform = CRS.findMathTransform(crsIn, crsOut);
 			Coordinate source = new Coordinate(location.getX(), location.getY());
 			convertedSource = JTS.transform(source, null, transform);
@@ -59,4 +60,5 @@ public class DeckGLTripItem {
 
 		return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
 	}
+
 }

@@ -1,8 +1,5 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -13,11 +10,14 @@ import org.matsim.core.config.groups.TravelTimeCalculatorConfigGroup;
 import org.matsim.core.events.EventsUtils;
 import org.matsim.core.events.MatsimEventsReader;
 import org.matsim.core.network.NetworkChangeEvent;
-import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.NetworkChangeEvent.ChangeType;
+import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
 import org.matsim.core.network.io.NetworkChangeEventsWriter;
 import org.matsim.core.trafficmonitoring.TravelTimeCalculator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This script generates a NetworkChangeEvents file containing changes in the
@@ -51,7 +51,7 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	public void generateNetworkChangeEventsFile(String networkInput, String eventsFileInput,
-			String networkEventsChangeFile, Config config) {
+												String networkEventsChangeFile, Config config) {
 		// Generate networkChangeEvents file for the Time-Dependent Network
 		Network networkForReader = NetworkUtils.createNetwork();
 		new MatsimNetworkReader(networkForReader).readFile(networkInput);
@@ -64,16 +64,20 @@ public class RunGenerateNetworkChangeEventsFile {
 	}
 
 	private TravelTimeCalculator readEventsIntoTravelTimeCalculator(Network network, String eventsFile,
-			TravelTimeCalculatorConfigGroup group) {
+																	TravelTimeCalculatorConfigGroup group) {
 		EventsManager manager = EventsUtils.createEventsManager();
-		TravelTimeCalculator tcc = TravelTimeCalculator.create(network, group);
-		manager.addHandler(tcc);
+
+		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
+		builder.configure(group);
+		TravelTimeCalculator ttc = builder.build();
+		manager.addHandler(ttc);
+
 		new MatsimEventsReader(manager).readFile(eventsFile);
-		return tcc;
+		return ttc;
 	}
 
 	private List<NetworkChangeEvent> createNetworkChangeEvents(Network network, TravelTimeCalculator tcc,
-			Double endTime, Double timeStep, Double MinFreeSpeed) {
+															   Double endTime, Double timeStep, Double MinFreeSpeed) {
 		List<NetworkChangeEvent> networkChangeEvents = new ArrayList<>();
 		for (Link l : network.getLinks().values()) {
 
@@ -95,7 +99,7 @@ public class RunGenerateNetworkChangeEventsFile {
 						newFreespeed = MinFreeSpeed;
 					if (Double.isInfinite(newFreespeed))
 						newFreespeed = Double.MAX_VALUE;
-					
+
 					NetworkChangeEvent.ChangeValue freespeedChange = new NetworkChangeEvent.ChangeValue(
 							ChangeType.ABSOLUTE_IN_SI_UNITS, newFreespeed);
 					nce.setFreespeedChange(freespeedChange);
