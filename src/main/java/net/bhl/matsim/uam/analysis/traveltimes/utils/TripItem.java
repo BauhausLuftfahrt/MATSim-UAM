@@ -11,7 +11,7 @@ public class TripItem {
   public Coord destination;
   public double departureTime;
   public double travelTime;
-  public String linksList;
+  public String description;
 
 	public double distance;
 	public double accessTime;

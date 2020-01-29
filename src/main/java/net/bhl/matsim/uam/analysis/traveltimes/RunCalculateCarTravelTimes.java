@@ -5,7 +5,6 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import org.apache.log4j.Logger;
-import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -24,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -131,8 +129,7 @@ public class RunCalculateCarTravelTimes {
 					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
-							String.valueOf(trip.distance),
-							trip.linksList })
+							String.valueOf(trip.distance), trip.description})
 					+ "\n");
 		}
 
@@ -142,7 +139,7 @@ public class RunCalculateCarTravelTimes {
 
 	private static String formatHeader() {
 		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time", "distance", "linksPath"});
+				"departure_time", "travel_time", "distance", "description"});
 	}
 
 	static class CarTravelTimeCalculator implements Runnable {
@@ -173,14 +170,18 @@ public class RunCalculateCarTravelTimes {
 
 			try {
 				Path path = estimatePath(from, to, trip.departureTime, networkCar, plcpccar);
-				double distanceByCar = 0.0;
-				for (Link l : path.links) {
-					distanceByCar += l.getLength();
+				double distance = 0;
+				StringBuilder linksList = new StringBuilder();
+				for (Link link : path.links) {
+					if (distance != 0)
+						linksList.append("->");
+					distance += link.getLength();
+					linksList.append("[link:" + link.getId().toString() + "]");
 				}
-				
-				trip.distance = distanceByCar;
+
+				trip.distance = distance;
 				trip.travelTime = path.travelTime;
-				trip.linksList = extractLinks(path.links);
+				trip.description = linksList.toString();
 			} catch (NullPointerException e) {
 				// Do nothing; failed trip will show as null in results.
 			}
@@ -194,47 +195,14 @@ public class RunCalculateCarTravelTimes {
 		}
 	}
 
-	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-			LeastCostPathCalculator pathCalculator) {
-		if (carNetwork.getLinks().get(from.getId()) != null)
-			from = carNetwork.getLinks().get(from.getId());
-		else
-			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
-
-		if (carNetwork.getLinks().get(to.getId()) != null)
-			to = carNetwork.getLinks().get(to.getId());
-		else
-			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
-
-		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
-		return path.travelTime;
-	}
-
-	public static String extractLinks(List<Link> links) {
-		List<Id> idList = new ArrayList<>(); 
-		String linksList = "";
-		for (Link l : links) {
-			idList.add(l.getId());
-		//	System.out.println(l.getId());
-			linksList = linksList.concat(l.getId().toString()+";");
-		//	System.out.println(linksList);
-		}
-		return linksList;
-	}
-
 	private static Path estimatePath(Link from, Link to, double departureTime, Network carNetwork,
 			LeastCostPathCalculator pathCalculator) {
-		if (carNetwork.getLinks().get(from.getId()) != null)
-			from = carNetwork.getLinks().get(from.getId());
-		else
+		if (carNetwork.getLinks().get(from.getId()) == null)
 			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
 
-		if (carNetwork.getLinks().get(to.getId()) != null)
-			to = carNetwork.getLinks().get(to.getId());
-		else
+		if (carNetwork.getLinks().get(to.getId()) == null)
 			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
-		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
-		return path;
+		return pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
 	}
 }
