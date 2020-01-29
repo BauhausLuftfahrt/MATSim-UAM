@@ -130,7 +130,7 @@ public class RunCalculateUAMTravelTimes {
 			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
 			Map<String, RoutingModule> router = new HashMap<>();
 			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
-					scenario.getPopulation().getFactory(),0,1.5));
+					scenario.getPopulation().getFactory(), 0, 1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
 					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
