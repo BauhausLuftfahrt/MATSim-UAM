@@ -52,6 +52,11 @@ List of all current features provided by MATSim-UAM with the version of feature 
 
 ## Versions and Change Log
 
+### v2.0
+Updates the extension to MATSim version 11 and current DVRP version. Major changes includes:
+- UAMQSimPlugin is substituted by UAMQSimModule
+- A new fleet is provided every new iteration by using UAMFleetData
+
 ### v1.1
 Input/output:
 - UAM-enabled MATSim networks are required to provide an flight attribute indicating every flight links' flight segment (e.g. vertical or horizontal). **No backwards compatibility of input network files.**
