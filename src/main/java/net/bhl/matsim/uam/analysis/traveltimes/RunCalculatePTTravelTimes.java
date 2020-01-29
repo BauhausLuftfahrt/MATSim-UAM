@@ -1,10 +1,10 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
 import ch.sbb.matsim.routing.pt.raptor.*;
-import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -12,6 +12,7 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.router.LinkWrapperFacility;
 import org.matsim.core.router.RoutingModule;
@@ -47,23 +48,22 @@ public class RunCalculatePTTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: base-network.xml* transitScheduleFile.xml* tripsCoordinateFile.csv* outputfile-name*");
+				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name*");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
-		String networkInput = args[j++];
-		String transitScheduleInput = args[j++];
+		String configInput = args[j++];
 		String tripsInput = args[j++];
 		String outputPath = args[j];
 
 		// READ NETWORK
-		Config config = ConfigSetter.createPTConfig(networkInput, transitScheduleInput);
+		Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
 
-		RaptorStaticConfig raptorStaticConfig = ConfigSetter.createRaptorConfig(config);
+		RaptorStaticConfig raptorStaticConfig = RaptorUtils.createStaticConfig(config);
 		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), raptorStaticConfig,
 				network);
 
@@ -71,7 +71,7 @@ public class RunCalculatePTTravelTimes {
 		for (int i = 0; i < processes; i++) {
 			Map<String, RoutingModule> router = new HashMap<>();
 			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt,
-					scenario.getPopulation().getFactory(),0,1.5));
+					scenario.getPopulation().getFactory(), 0, 1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
 					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
@@ -93,7 +93,7 @@ public class RunCalculatePTTravelTimes {
 			while (threadCounter.getProcesses() >= processes - 1)
 				Thread.sleep(200);
 
-			es.execute(new PTTravelTimeCalculator(threadCounter, network, config, trip, network, scenario));
+			es.execute(new PTTravelTimeCalculator(threadCounter, network, trip));
 			counter++;
 		}
 		es.shutdown();
@@ -116,7 +116,8 @@ public class RunCalculatePTTravelTimes {
 			writer.write(String.join(",",
 					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
+							String.valueOf(trip.distance), trip.description})
 					+ "\n");
 		}
 
@@ -126,40 +127,20 @@ public class RunCalculatePTTravelTimes {
 
 	private static String formatHeader() {
 		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time"});
-	}
-
-	private static double estimateTravelTime(Link from, Link to, double departureTime, TransitRouter router) {
-		List<Leg> legs = router.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to), departureTime,
-				null);
-		double time = 0;
-		boolean onlyWalk = true;
-		for (Leg leg : legs) {
-			if (onlyWalk)
-				onlyWalk = leg.getMode().contains(TransportMode.walk) ? true : false;
-			time += leg.getTravelTime();
-		}
-		return onlyWalk ? -1 * time : time;
+				"departure_time", "travel_time", "distance", "description"});
 	}
 
 	static class PTTravelTimeCalculator implements Runnable {
 
 		private TripItem trip;
 		private Network network;
-		private Config config;
 		private ThreadCounter threadCounter;
-		private Network networkCar;
-		private Scenario scenario;
 		private TransitRouter transitRouter;
 
-		PTTravelTimeCalculator(ThreadCounter threadCounter, Network network, Config config, TripItem trip,
-							   Network networkCar, Scenario scenario) {
+		PTTravelTimeCalculator(ThreadCounter threadCounter, Network network, TripItem trip) {
 			this.trip = trip;
 			this.network = network;
-			this.config = config;
 			this.threadCounter = threadCounter;
-			this.networkCar = networkCar;
-			this.scenario = scenario;
 		}
 
 		@Override
@@ -176,7 +157,25 @@ public class RunCalculatePTTravelTimes {
 			Link to = NetworkUtils.getNearestLink(network, trip.destination);
 
 			try {
-				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, transitRouter);
+				List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from),
+						new LinkWrapperFacility(to), trip.departureTime, null);
+				double time = 0;
+				double distance = 0;
+				StringBuilder routeList = new StringBuilder();
+				for (Leg leg : legs) {
+					if (time != 0)
+						routeList.append("->");
+					time += leg.getTravelTime();
+					distance += leg.getRoute().getDistance();
+					routeList.append("[mode:").append(leg.getMode()).append("]");
+					routeList.append("[start:").append(leg.getRoute().getStartLinkId()).append("]");
+					routeList.append("[end:").append(leg.getRoute().getEndLinkId()).append("]");
+					routeList.append("[time:").append(leg.getTravelTime()).append("]");
+					routeList.append("[distance:").append(leg.getRoute().getDistance()).append("]");
+				}
+				trip.travelTime = time;
+				trip.distance = distance;
+				trip.description = routeList.toString();
 			} catch (NullPointerException e) {
 				// Do nothing; failed trip will show as null in results.
 			}
@@ -189,5 +188,4 @@ public class RunCalculatePTTravelTimes {
 			threadCounter.deregister();
 		}
 	}
-
 }

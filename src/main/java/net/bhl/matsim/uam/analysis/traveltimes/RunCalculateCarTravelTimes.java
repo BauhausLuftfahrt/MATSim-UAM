@@ -1,14 +1,15 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import net.bhl.matsim.uam.analysis.traveltimes.utils.ConfigSetter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
+import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Injector;
 import org.matsim.core.network.NetworkUtils;
@@ -45,17 +46,17 @@ public class RunCalculateCarTravelTimes {
 	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("ARGS: base-network.xml* networkEventsChangeFile.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
+		System.out.println(
+				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
-		String networkInput = args[j++];
-		String networkEventsChangeFile = args[j++];
+		String configInput = args[j++];
 		String tripsInput = args[j++];
 		String outputPath = args[j];
 
-		Config config = ConfigSetter.createCarConfig(networkInput, networkEventsChangeFile);
+		Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
 		Scenario scenario = ScenarioUtils.createScenario(config);
 		ScenarioUtils.loadScenario(scenario);
 		Network network = scenario.getNetwork();
@@ -84,7 +85,7 @@ public class RunCalculateCarTravelTimes {
 		LeastCostPathCalculatorFactory pathCalculatorFactory = injector
 				.getInstance(LeastCostPathCalculatorFactory.class); // AStarLandmarksFactory
 
-		//Provide routers
+		// Provide routers
 		for (int i = 0; i < processes; i++) {
 			carRouters.add(pathCalculatorFactory.createPathCalculator(networkCar, travelDisutility, travelTime));
 		}
@@ -127,7 +128,8 @@ public class RunCalculateCarTravelTimes {
 			writer.write(String.join(",",
 					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
-							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime)})
+							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
+							String.valueOf(trip.distance), trip.description})
 					+ "\n");
 		}
 
@@ -137,24 +139,18 @@ public class RunCalculateCarTravelTimes {
 
 	private static String formatHeader() {
 		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
-				"departure_time", "travel_time"});
+				"departure_time", "travel_time", "distance", "description"});
 	}
 
-	private static double estimateTravelTime(Link from, Link to, double departureTime, Network carNetwork,
-											 LeastCostPathCalculator pathCalculator) {
-		if (carNetwork.getLinks().get(from.getId()) != null)
-			from = carNetwork.getLinks().get(from.getId());
-		else
+	private static Path estimatePath(Link from, Link to, double departureTime, Network carNetwork,
+									 LeastCostPathCalculator pathCalculator) {
+		if (carNetwork.getLinks().get(from.getId()) == null)
 			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
 
-		if (carNetwork.getLinks().get(to.getId()) != null)
-			to = carNetwork.getLinks().get(to.getId());
-		else
+		if (carNetwork.getLinks().get(to.getId()) == null)
 			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
 
-		Path path = pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null,
-				null);
-		return path.travelTime;
+		return pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
 	}
 
 	static class CarTravelTimeCalculator implements Runnable {
@@ -184,7 +180,19 @@ public class RunCalculateCarTravelTimes {
 			Link to = NetworkUtils.getNearestLink(networkCar, trip.destination);
 
 			try {
-				trip.travelTime = estimateTravelTime(from, to, trip.departureTime, networkCar, plcpccar);
+				Path path = estimatePath(from, to, trip.departureTime, networkCar, plcpccar);
+				double distance = 0;
+				StringBuilder linksList = new StringBuilder();
+				for (Link link : path.links) {
+					if (distance != 0)
+						linksList.append("->");
+					distance += link.getLength();
+					linksList.append("[link:").append(link.getId().toString()).append("]");
+				}
+
+				trip.distance = distance;
+				trip.travelTime = path.travelTime;
+				trip.description = linksList.toString();
 			} catch (NullPointerException e) {
 				// Do nothing; failed trip will show as null in results.
 			}
@@ -197,5 +205,4 @@ public class RunCalculateCarTravelTimes {
 			threadCounter.deregister();
 		}
 	}
-
 }

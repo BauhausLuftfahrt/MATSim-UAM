@@ -120,7 +120,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 
 	@StringSetter("availableAccessModes")
 	public void setAvailableAccessModes(final String availableAccessModes) {
-		String[] arr = availableAccessModes.split(",");
+		String[] arr = availableAccessModes.replaceAll("[\\[\\]]", "").split("[,; ]+");
 		this.availableAccessModes = new HashSet<>();
 		this.availableAccessModes.addAll(Arrays.asList(arr));
 	}

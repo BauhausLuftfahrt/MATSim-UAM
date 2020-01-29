@@ -53,6 +53,11 @@ List of all current features provided by MATSim-UAM with the version of feature 
 ## Versions and Change Log
 
 ### v2.0
+Travel time scripts:
+- Replaced provision of, e.g., network and transit schedule via programme arguments to retrieval from config file
+- Added distance and links path list to CalculateCarTravelTimes
+- Added distance and route information to CalculatePTTravelTimes
+
 Updates the extension to MATSim version 11 and current DVRP version. Major changes includes:
 - UAMQSimPlugin is substituted by UAMQSimModule
 - A new fleet is provided every new iteration by using UAMFleetData
