@@ -138,8 +138,19 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[] { "origin_x", "origin_y", "destination_x", "destination_y",
+		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
 				"departure_time", "travel_time", "distance", "description"});
+	}
+
+	private static Path estimatePath(Link from, Link to, double departureTime, Network carNetwork,
+									 LeastCostPathCalculator pathCalculator) {
+		if (carNetwork.getLinks().get(from.getId()) == null)
+			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
+
+		if (carNetwork.getLinks().get(to.getId()) == null)
+			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
+
+		return pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
 	}
 
 	static class CarTravelTimeCalculator implements Runnable {
@@ -193,16 +204,5 @@ public class RunCalculateCarTravelTimes {
 			}
 			threadCounter.deregister();
 		}
-	}
-
-	private static Path estimatePath(Link from, Link to, double departureTime, Network carNetwork,
-			LeastCostPathCalculator pathCalculator) {
-		if (carNetwork.getLinks().get(from.getId()) == null)
-			from = NetworkUtils.getNearestLinkExactly(carNetwork, from.getCoord());
-
-		if (carNetwork.getLinks().get(to.getId()) == null)
-			to = NetworkUtils.getNearestLinkExactly(carNetwork, to.getCoord());
-
-		return pathCalculator.calcLeastCostPath(from.getFromNode(), to.getToNode(), departureTime, null, null);
 	}
 }

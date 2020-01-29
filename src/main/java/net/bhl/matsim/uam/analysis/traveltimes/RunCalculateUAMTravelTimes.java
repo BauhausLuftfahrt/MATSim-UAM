@@ -11,7 +11,7 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.infrastructure.readers.*;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.strategy.*;
 import org.apache.log4j.Logger;
@@ -19,6 +19,7 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
+import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
@@ -71,7 +72,7 @@ public class RunCalculateUAMTravelTimes {
 		String outputPath = args[j];
 
 		UAMConfigGroup uamConfigGroup = new UAMConfigGroup();
-		Config config = ConfigUtils.loadConfig(configInput, uamConfigGroup);
+		Config config = ConfigUtils.loadConfig(configInput, uamConfigGroup, new DvrpConfigGroup());
 
 		// Build scenario
 		Scenario scenario = ScenarioUtils.createScenario(config);
