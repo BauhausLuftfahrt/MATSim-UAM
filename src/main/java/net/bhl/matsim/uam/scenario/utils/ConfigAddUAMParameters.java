@@ -1,8 +1,9 @@
 package net.bhl.matsim.uam.scenario.utils;
 
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
-import org.matsim.core.config.Config;
-import org.matsim.core.config.ConfigGroup;
+import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
+import org.matsim.core.config.*;
 
 /**
  * This class adds UAM parameters to the Config file.
@@ -10,6 +11,20 @@ import org.matsim.core.config.ConfigGroup;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class ConfigAddUAMParameters {
+
+	public static void main(String[] args) {
+
+		System.out.println("args: path to config, UAM input file, modes, number of threads, search radius, " +
+				"walk distance, routing strategy, PT Simulation used");
+
+		int i = 0;
+		Config config = ConfigUtils.loadConfig(args[i++], new UAMConfigGroup(), new DvrpConfigGroup());
+		addUAMParameters(config, args[i++], args[i++], Integer.parseInt(args[i++]), Integer.parseInt(args[i++]),
+				Integer.parseInt(args[i++]), UAMStrategy.UAMStrategyType.valueOf(args[i++].toUpperCase()), Boolean.parseBoolean(args[i]));
+		ConfigWriter configWriter = new ConfigWriter(config);
+		configWriter.write(args[0] + ".uam.xml");
+	}
+
 	public static void addUAMParameters(Config config, String inputUAMFile, String modes, int threads, int searchRadius,
 										int walkDistance, UAMStrategy.UAMStrategyType routingStrategy, boolean ptSimulation) {
 		config.getModules().get("uam").addParam("inputUAMFile", inputUAMFile);
