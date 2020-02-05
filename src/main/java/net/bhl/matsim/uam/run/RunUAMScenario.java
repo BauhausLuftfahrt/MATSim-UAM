@@ -55,16 +55,13 @@ public class RunUAMScenario {
 		try {
 			cmd = new CommandLine.Builder(args) //
 					.allowPositionalArguments(false) //
-					.allowOptions("config-path", "model-type", "no-vehicle-constraint", "track-car-travel-times",
-							"use-advanced-vehicle-trip-constraint", "fallback-behaviour", "short-distance",
-							"remove-routes", "use-custom-travel-time", "stuck-penalty", "delay-intersection") //
-					.allowPrefixes("scoring") //
+					.allowOptions("config-path") //
 					.build();
 
 			if (cmd.hasOption("config-path"))
 				path = cmd.getOption("config-path").get();
 			else
-				path = "./config.xml";
+				path = args[0];
 
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
