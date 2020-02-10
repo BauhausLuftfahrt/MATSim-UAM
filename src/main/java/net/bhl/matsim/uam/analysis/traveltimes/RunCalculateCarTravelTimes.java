@@ -45,16 +45,21 @@ public class RunCalculateCarTravelTimes {
 	private static final Logger log = Logger.getLogger(RunCalculateCarTravelTimes.class);
 	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
 
+	private static boolean writeDescription = true;
+
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name.csv*");
+				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name.csv* write-description");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
 		String configInput = args[j++];
 		String tripsInput = args[j++];
-		String outputPath = args[j];
+		String outputPath = args[j++];
+
+		if (args.length > 3)
+			writeDescription = Boolean.parseBoolean(args[j]);
 
 		Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
 		Scenario scenario = ScenarioUtils.createScenario(config);
@@ -184,10 +189,11 @@ public class RunCalculateCarTravelTimes {
 				double distance = 0;
 				StringBuilder linksList = new StringBuilder();
 				for (Link link : path.links) {
-					if (distance != 0)
+					if (distance != 0 && writeDescription)
 						linksList.append("->");
 					distance += link.getLength();
-					linksList.append("[link:").append(link.getId().toString()).append("]");
+					if (writeDescription)
+						linksList.append("[link:").append(link.getId().toString()).append("]");
 				}
 
 				trip.distance = distance;

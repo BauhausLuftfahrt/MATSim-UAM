@@ -46,16 +46,21 @@ public class RunCalculatePTTravelTimes {
 	private static final Logger log = Logger.getLogger(RunCalculatePTTravelTimes.class);
 	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
 
+	private static boolean writeDescription = true;
+
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name*");
+				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name* write-description");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
 		String configInput = args[j++];
 		String tripsInput = args[j++];
-		String outputPath = args[j];
+		String outputPath = args[j++];
+
+		if (args.length > 3)
+			writeDescription = Boolean.parseBoolean(args[j]);
 
 		// READ NETWORK
 		Config config = ConfigUtils.loadConfig(configInput, new UAMConfigGroup());
@@ -163,15 +168,17 @@ public class RunCalculatePTTravelTimes {
 				double distance = 0;
 				StringBuilder routeList = new StringBuilder();
 				for (Leg leg : legs) {
-					if (time != 0)
+					if (time != 0 && writeDescription)
 						routeList.append("->");
 					time += leg.getTravelTime();
 					distance += leg.getRoute().getDistance();
-					routeList.append("[mode:").append(leg.getMode()).append("]");
-					routeList.append("[start:").append(leg.getRoute().getStartLinkId()).append("]");
-					routeList.append("[end:").append(leg.getRoute().getEndLinkId()).append("]");
-					routeList.append("[time:").append(leg.getTravelTime()).append("]");
-					routeList.append("[distance:").append(leg.getRoute().getDistance()).append("]");
+					if (writeDescription) {
+						routeList.append("[mode:").append(leg.getMode()).append("]");
+						routeList.append("[start:").append(leg.getRoute().getStartLinkId()).append("]");
+						routeList.append("[end:").append(leg.getRoute().getEndLinkId()).append("]");
+						routeList.append("[time:").append(leg.getTravelTime()).append("]");
+						routeList.append("[distance:").append(leg.getRoute().getDistance()).append("]");
+					}
 				}
 				trip.travelTime = time;
 				trip.distance = distance;
