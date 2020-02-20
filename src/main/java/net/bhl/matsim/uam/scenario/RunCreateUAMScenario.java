@@ -28,6 +28,7 @@ import org.matsim.core.utils.collections.Tuple;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.core.utils.io.MatsimXmlWriter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -57,6 +58,8 @@ public class RunCreateUAMScenario {
 	private static String name_uam_station_flight_level = "_fl";
 
 	private static String name_uam_dtd = "src/main/resources/dtd/uam.dtd";
+
+	static String outputFolder = "uam-scenarios";
 
 	private static String mode_uam = UAMModes.UAM_MODE;
 	private static String mode_car = TransportMode.car;
@@ -287,12 +290,15 @@ public class RunCreateUAMScenario {
 			}
 		}
 
-		// WRITE STATION DISTANCE CSV
+		// Output names
 		String path = networkInput.substring(0, networkInput.lastIndexOf("\\"));
+		path += "\\" + outputFolder;
+		new File(path).mkdir();
 		String fileName = networkInput.substring(networkInput.lastIndexOf("\\"), networkInput.lastIndexOf(".xml")) + "_" +
 				stationInput.substring(stationInput.lastIndexOf("\\") + 1, stationInput.lastIndexOf(".csv")) + "_" +
 				vehicleInput.substring(vehicleInput.lastIndexOf("\\") + 1, vehicleInput.lastIndexOf(".csv"));
 
+		// WRITE STATION DISTANCE CSV
 		try {
 			calculateStationDistances(network, stationIDs, path + "\\" + fileName + "_uam_distances.csv");
 		} catch (Exception e) {
