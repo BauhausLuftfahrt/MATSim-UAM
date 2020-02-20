@@ -20,6 +20,8 @@ public class BatchCreateUAMScenario {
 	private static String stationsString = "stations";
 	private static String vehiclesString = "vehicles";
 	private static String networkString = "network";
+	private static String nodesEndString = ".nodes.csv";
+	private static String linksEndString = ".links.csv";
 
 	public static void main(final String[] args) throws IOException {
 		System.out.println("ARGS: base-folder");
@@ -53,11 +55,18 @@ public class BatchCreateUAMScenario {
 		int i = 0;
 		for (String n : networkFiles) {
 			for (String s : stationFiles) {
+				String nodesFile = s.replace(".csv", nodesEndString);
+				String linksFile = s.replace(".csv", linksEndString);
+				boolean routed = new File(nodesFile).exists() && new File(linksFile).exists();
+
 				for (String v : vehiclesFiles) {
 					System.out.println("=========================================================");
 					System.out.println("Working on combination " + ++i + "/" + total + ": " + n + ", " + s + ", " + v);
-					// Only allows for direct flight links
-					RunCreateUAMScenario.convert(n, s, v);
+
+					if (routed)
+						RunCreateUAMScenario.convert(n, s, v, nodesFile, linksFile);
+					else
+						RunCreateUAMScenario.convert(n, s, v);
 				}
 			}
 		}

@@ -111,6 +111,10 @@ public class RunCreateUAMScenario {
 		convert(networkInput, stationInput, true, vehicleInput, false, null, null);
 	}
 
+	public static void convert (String networkInput, String stationInput, String vehicleInput, String nodesInput, String linksInput) {
+		convert(networkInput, stationInput, true, vehicleInput, true, nodesInput, linksInput);
+	}
+
 	public static void convert(String networkInput, String stationInput,
 							   boolean withVehicles, String vehicleInput,
 							   boolean withNetwork, String nodesInput, String linksInput) {
@@ -298,6 +302,7 @@ public class RunCreateUAMScenario {
 				stationInput.substring(stationInput.lastIndexOf("\\") + 1, stationInput.lastIndexOf(".csv")) + "_" +
 				vehicleInput.substring(vehicleInput.lastIndexOf("\\") + 1, vehicleInput.lastIndexOf(".csv"));
 		fileName = fileName.replace("stations", "s").replace("vehicles", "v");
+		fileName = (withNetwork ? "_routed" : "") + fileName;
 
 		// WRITE STATION DISTANCE CSV
 		try {
