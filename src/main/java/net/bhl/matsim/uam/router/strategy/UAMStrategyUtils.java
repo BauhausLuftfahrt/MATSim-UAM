@@ -60,9 +60,26 @@ public class UAMStrategyUtils {
 	 * location (facility) based in the searchRadius parameter defined in
 	 * the config file.
 	 */
-	Collection<UAMStation> getPossibleStations(Facility facility) {
-		return landingStations.spatialStations.getDisk(facility.getCoord().getX(), facility.getCoord().getY(),
-				uamConfig.getSearchRadius());
+	Collection<UAMStation> getPossibleStations(Facility fromFacility) {
+		if (!uamConfig.getStaticSearchRadius())
+			log.error("Cannot get possible stations only with fromFacility when using non-static search radius.");
+
+		return getPossibleStations(fromFacility, null);
+	}
+
+	/**
+	 * @return the list of possible UAMStations accessible from/to a specific
+	 * location (facility) based in the searchRadius parameter defined in
+	 * the config file and the beeline distance.
+	 */
+	Collection<UAMStation> getPossibleStations(Facility fromFacility, Facility toFacility) {
+		double radius = uamConfig.getSearchRadius();
+
+		if (!uamConfig.getStaticSearchRadius())
+			radius *= CoordUtils.calcEuclideanDistance(fromFacility.getCoord(), toFacility.getCoord());
+
+		return landingStations.spatialStations.getDisk(fromFacility.getCoord().getX(),
+				fromFacility.getCoord().getY(), radius);
 	}
 
 	/**
