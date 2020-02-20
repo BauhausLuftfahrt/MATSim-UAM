@@ -282,7 +282,7 @@ public class RunCalculateUAMTravelTimes {
 
 				trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime;
 			} catch (NullPointerException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 			try {
