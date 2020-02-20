@@ -65,8 +65,7 @@ public class BatchCreateUAMScenario {
 
 					if (routed)
 						RunCreateUAMScenario.convert(n, s, v, nodesFile, linksFile);
-					else
-						RunCreateUAMScenario.convert(n, s, v);
+					RunCreateUAMScenario.convert(n, s, v);
 				}
 			}
 		}
