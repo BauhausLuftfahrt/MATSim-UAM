@@ -20,8 +20,8 @@ public class BatchCreateUAMScenario {
 	private static String stationsString = "stations";
 	private static String vehiclesString = "vehicles";
 	private static String networkString = "network";
-	private static String nodesEndString = ".nodes.csv";
-	private static String linksEndString = ".links.csv";
+	private static String nodesEndString = "_nodes.csv";
+	private static String linksEndString = "_links.csv";
 
 	public static void main(final String[] args) throws IOException {
 		System.out.println("ARGS: base-folder");
@@ -40,7 +40,7 @@ public class BatchCreateUAMScenario {
 		Collection<String> stationFiles = new HashSet<>();
 		Collection<String> vehiclesFiles = new HashSet<>();
 		for (File f : potentialStationsFiles) {
-			if (f.getName().contains(stationsString))
+			if (f.getName().contains(stationsString) && !f.getName().contains(nodesEndString) && !f.getName().contains(linksEndString))
 				stationFiles.add(f.getAbsolutePath());
 			else if (f.getName().contains(vehiclesString))
 				vehiclesFiles.add(f.getAbsolutePath());
