@@ -301,8 +301,8 @@ public class RunCreateUAMScenario {
 		String fileName = networkInput.substring(networkInput.lastIndexOf("\\"), networkInput.lastIndexOf(".xml")) + "_" +
 				stationInput.substring(stationInput.lastIndexOf("\\") + 1, stationInput.lastIndexOf(".csv")) + "_" +
 				vehicleInput.substring(vehicleInput.lastIndexOf("\\") + 1, vehicleInput.lastIndexOf(".csv"));
-		fileName = fileName.replace("stations", "s").replace("vehicles", "v");
-		fileName = (withNetwork ? "_routed" : "") + fileName;
+		fileName = fileName.replace("stations", "s").replace("vehicles", "v")
+				+ (withNetwork ? "_routed" : "");
 
 		// WRITE STATION DISTANCE CSV
 		try {
@@ -457,7 +457,7 @@ public class RunCreateUAMScenario {
 	}
 
 	private static String encode(String s) {
-		return s.replaceAll("[^a-zA-Z0-9]", "").trim().toLowerCase();
+		return s.replaceAll("[^a-zA-Z0-9]", "x").trim().toLowerCase();
 	}
 
 	private static class UAMVehiclesXmlWriter extends MatsimXmlWriter {
