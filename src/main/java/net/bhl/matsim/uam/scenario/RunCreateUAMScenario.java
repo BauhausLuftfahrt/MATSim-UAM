@@ -76,7 +76,7 @@ public class RunCreateUAMScenario {
 
 	// TODO Adjust documentation to inclusion of max-cruise-speed
 	public static void main(String[] args) {
-		System.out.println("ARGS: base-folder* base-network.xml* uam-stations.csv* vehicles.csv flight-nodes.csv flight-links.csv");
+		System.out.println("ARGS: base-folder* base-network.xml* uam-stations.csv* uam-vehicles.csv flight-nodes.csv flight-links.csv");
 		System.out.println("(* required)");
 
 		// ARGS
@@ -297,6 +297,7 @@ public class RunCreateUAMScenario {
 		String fileName = networkInput.substring(networkInput.lastIndexOf("\\"), networkInput.lastIndexOf(".xml")) + "_" +
 				stationInput.substring(stationInput.lastIndexOf("\\") + 1, stationInput.lastIndexOf(".csv")) + "_" +
 				vehicleInput.substring(vehicleInput.lastIndexOf("\\") + 1, vehicleInput.lastIndexOf(".csv"));
+		fileName = fileName.replace("stations", "s").replace("vehicles", "v");
 
 		// WRITE STATION DISTANCE CSV
 		try {
