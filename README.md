@@ -52,6 +52,14 @@ List of all current features provided by MATSim-UAM with the version of feature 
 
 ## Versions and Change Log
 
+### v2.1 _(work in progress)_
+TODO:
+- update documentation for scenario creation and travel time scripts
+
+Scenario creation:
+- Added batch scenario creator
+- Simplified input parameters of existing UAM scenario creator
+
 ### v2.0
 Travel time scripts:
 - Replaced provision of, e.g., network and transit schedule via programme arguments to retrieval from config file
