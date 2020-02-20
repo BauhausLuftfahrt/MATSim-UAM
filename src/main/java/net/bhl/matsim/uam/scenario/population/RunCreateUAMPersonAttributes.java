@@ -71,6 +71,9 @@ public class RunCreateUAMPersonAttributes {
 
 					Coord originCoord = ((Activity) p).getCoord();
 
+					if (!uamConfigGroup.getStaticSearchRadius())
+						System.err.println("Warning: UAM search radius must be static = true! Setting it to static.");
+
 					Collection<UAMStation> stations = uamStations.spatialStations.getDisk(originCoord.getX(),
 							originCoord.getY(), uamConfigGroup.getSearchRadius());
 
