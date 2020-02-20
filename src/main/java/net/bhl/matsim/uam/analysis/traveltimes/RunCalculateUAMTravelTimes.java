@@ -145,6 +145,7 @@ public class RunCalculateUAMTravelTimes {
 
 		// Calculate travel times
 		log.info("Calculating travel times...");
+		log.warn("UAM process times are being ignored! All passenger processes are set to duration of 0.");
 		int counter = 1;
 		ThreadCounter threadCounter = new ThreadCounter();
 		ExecutorService es = Executors.newFixedThreadPool(processes);
