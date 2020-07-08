@@ -34,8 +34,8 @@ public class UAMMinDistanceStrategy implements UAMStrategy {
 	@Override
 	public UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime) {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
-		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility);
-		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility);
+		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility, toFacility);
+		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility, fromFacility);
 		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
 		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
 		String bestModeEgress = TransportMode.walk;

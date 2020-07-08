@@ -26,6 +26,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	private Set<String> availableAccessModes;
 	private UAMStrategyType routingStrategy = UAMStrategyType.MINACCESSTRAVELTIME;
 	private int parallelRouters = 2;
+	private boolean staticSearchRadius = true;
 	private double searchRadius = 5000; // maximum crow fly distance to origin/destination stations
 	// the uam access and egress mode, otherwise the fastest (car or pt)
 	private double walkDistance = 500; // if the access/egress distance is less than walkDistance, then walk will be
@@ -74,6 +75,16 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	@StringSetter("parallelRouters")
 	public void setParallelRouters(final String parallelRouters) {
 		this.parallelRouters = Integer.parseInt(parallelRouters);
+	}
+
+	@StringGetter("staticSearchRadius")
+	public boolean getStaticSearchRadius() {
+		return this.staticSearchRadius;
+	}
+
+	@StringSetter("staticSearchRadius")
+	public void setStaticSearchRadius(final String staticSearchRadius) {
+		this.staticSearchRadius = Boolean.parseBoolean(staticSearchRadius);
 	}
 
 	@StringGetter("searchRadius")
