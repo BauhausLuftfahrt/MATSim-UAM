@@ -31,7 +31,7 @@ public class UAMShutdownListener implements ShutdownListener {
 	private void writeUAMVehiclesFile(ShutdownEvent event) {
 		String configPath = event.getServices().getConfig().getContext().getPath();
 		int index = configPath.lastIndexOf('/');
-		configPath = configPath.substring(0, index + 1);
+		configPath = configPath.substring(0, index + 1).replace("%20", " ");
 
 		String uamFileName = event.getServices().getConfig().getModules().get("uam").getParams().get("inputUAMFile");
 
