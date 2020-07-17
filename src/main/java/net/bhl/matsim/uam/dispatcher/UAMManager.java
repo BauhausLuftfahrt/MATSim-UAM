@@ -144,11 +144,7 @@ public class UAMManager implements IterationStartsListener {
 		stationPersonmap = new HashMap<>();
 
 		for (UAMStation ls : stations.getUAMStations().values()) {
-
 			StationOccupancy so = new StationOccupancy();
-			so.landingSpace = ls.getLandingCapacity();
-			//so.parkingSpace = ls.getParkingCapacity();
-
 			availablespaceStations.put(ls.getId(), so);
 			stationsWithFreeLandingSpace.put(ls.getLocationLink().getCoord().getX(),
 					ls.getLocationLink().getCoord().getY(), ls);

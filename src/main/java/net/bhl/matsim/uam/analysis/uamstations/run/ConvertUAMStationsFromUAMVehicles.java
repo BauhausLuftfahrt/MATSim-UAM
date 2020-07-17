@@ -38,7 +38,7 @@ public class ConvertUAMStationsFromUAMVehicles {
 
 		Collection<UAMStationItem> uamData = new HashSet<>();
 		for (UAMStation station : uamStations.getUAMStations().values()) {
-			uamData.add(new UAMStationItem(station.getName(), station.getId(), station.getLandingCapacity(),
+			uamData.add(new UAMStationItem(station.getName(), station.getId(),
 					(int) station.getPreFlightTime(), (int) station.getPostFlightTime(),
 					(int) station.getDefaultWaitTime(), station.getLocationLink().getId().toString()));
 		}

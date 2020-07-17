@@ -54,13 +54,6 @@ public class UAMXMLReader extends MatsimXmlParser {
 			if (stationName == null)
 				stationName = id.toString();
 
-			// Get landing station capacity for simultaneous VTOL UNUSED
-			int landingCapacity = Integer.parseInt(atts.getValue("landingcap"));
-
-			// Get parking station capacity for simultaneous VTOL vehicle parking UNUSED
-			int parkingCapacity = 0;
-			// Integer.parseInt(atts.getValue("parkingcap"));
-
 			// Get station attributes: preFlighTime, postFlightTime, and defaultWaitTime
 			double preFlightTime = Double.parseDouble(atts.getValue("preflighttime"));
 			double postFlightTime = Double.parseDouble(atts.getValue("postflighttime"));
@@ -81,8 +74,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 			}
 
 			// Create UAm station and register it on station map
-			UAMStation ls = new UAMStationSimple(landingCapacity, parkingCapacity, preFlightTime, postFlightTime,
-					defaultWaitTime, link, id, stationName);
+			UAMStation ls = new UAMStationSimple(preFlightTime, postFlightTime, defaultWaitTime, link, id, stationName);
 			stations.put(id, ls);
 
 		} else if (name.equals("vehicleType")) {

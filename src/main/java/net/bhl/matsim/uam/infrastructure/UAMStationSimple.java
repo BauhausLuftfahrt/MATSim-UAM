@@ -11,8 +11,6 @@ import org.matsim.api.core.v01.network.Link;
 public class UAMStationSimple implements UAMStation {
 
 	// UAM infrastructure-specific properties
-	private final int landingCapacity;
-	private final int parkingCapacity;
 	private final Link locationLink;
 	private final Id<UAMStation> id;
 	private final String name;
@@ -21,16 +19,14 @@ public class UAMStationSimple implements UAMStation {
 	private final double postFlightTime;
 	private final double defaultWaitTime;
 
-	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
+	public UAMStationSimple(double preFlightTime, double postFlightTime,
 							double defaultWaitTime, Link locationLink, Id<UAMStation> id) {
-		this(landingCapacity, parkingCapacity, preFlightTime, postFlightTime, defaultWaitTime, locationLink, id,
+		this(preFlightTime, postFlightTime, defaultWaitTime, locationLink, id,
 				id.toString());
 	}
 
-	public UAMStationSimple(int landingCapacity, int parkingCapacity, double preFlightTime, double postFlightTime,
+	public UAMStationSimple(double preFlightTime, double postFlightTime,
 							double defaultWaitTime, Link locationLink, Id<UAMStation> id, String name) {
-		this.landingCapacity = landingCapacity;
-		this.parkingCapacity = parkingCapacity;
 		this.locationLink = locationLink;
 		this.id = id;
 		this.name = name;
@@ -42,16 +38,6 @@ public class UAMStationSimple implements UAMStation {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public int getLandingCapacity() {
-		return landingCapacity;
-	}
-
-	@Override
-	public int getParkingCapacity() {
-		return parkingCapacity;
 	}
 
 	@Override

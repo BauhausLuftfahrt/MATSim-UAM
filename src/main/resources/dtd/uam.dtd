@@ -1,12 +1,5 @@
 <?xml encoding="UTF-8"?>
 
-<!-- ============================================================ -->
-
-<!-- For further information or questions, please contact
-     Raoul Rothfeld (RRothfeld) at www.bauhaus-luftfahrt.net -->
-
-<!-- ============================================================ -->
-
 <!ELEMENT uam (stations,vehicleTypes,vehicles)>
 <!ELEMENT stations (station)*>
 <!ELEMENT vehicleTypes (vehicleType)*>
@@ -15,8 +8,6 @@
 <!ELEMENT station EMPTY>
 <!ATTLIST station	name 			CDATA	#IMPLIED
 					id				CDATA	#REQUIRED
-					landingcap 		CDATA 	#REQUIRED
-					parkingcap		CDATA	#IMPLIED
 					preflighttime	CDATA	#REQUIRED
 					postflighttime	CDATA	#REQUIRED
 					defaultwaittime	CDATA	#IMPLIED
@@ -73,17 +64,6 @@
 <!-- ATTRIBUTE id:
      Each station has to have a unique id.
      format := string -->
-     
-<!-- ATTRIBUTE landingcap:
-     Each station has to provide the maximum number of spots for
-     simultaneous take-offs or landings.
-     format := unsigned integer -->
-     
-<!-- ATTRIBUTE parkingcap:
-     Each station has to provide the maximum number of spots for
-     simultaneously parked vehicles.
-     status := unimplemented
-     format := unsigned integer -->
      
 <!-- ATTRIBUTE preflighttime:
      Each station has to provide the Time needed by the passenger

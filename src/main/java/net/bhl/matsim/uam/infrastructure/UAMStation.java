@@ -13,22 +13,6 @@ public interface UAMStation {
 	Id<UAMStation> getId();
 
 	/**
-	 * This method is used to retrieve the maximum number of simultaneously landed
-	 * VTOL vehicle on one landing stations at any given time.
-	 *
-	 * @return the landing station's capacity for landed VTOL vehicle
-	 */
-	int getLandingCapacity();
-
-	/**
-	 * This method is used to retrieve the maximum number of simultaneously parked
-	 * VTOL vehicle on one landing stations at any given time.
-	 *
-	 * @return the landing station's capacity for parked VTOL vehicle
-	 */
-	int getParkingCapacity();
-
-	/**
 	 * This method is used to retrieve the time needed by the passenger to get from
 	 * vertiport entry to his/her aircraft seat in seconds.
 	 *
