@@ -11,16 +11,18 @@ import org.matsim.api.core.v01.Id;
 public class UAMVehicleType {
 	private final Id<UAMVehicleType> id;
 	private final int capacity;
+	private final double range; // [m]
 	private final double cruiseSpeed; // [m/s]
 	private final double verticalSpeed; // [m/s]
 	private final double boardingTime; // [s]
 	private final double deboardingTime; // [s]
 	private final double turnAroundTime; // [s]
 
-	public UAMVehicleType(Id<UAMVehicleType> id, int capacity, double cruiseSpeed, double verticalSpeed,
+	public UAMVehicleType(Id<UAMVehicleType> id, int capacity, double range, double cruiseSpeed, double verticalSpeed,
 						  double boardingTime, double deboardingTime, double turnAroundTime) {
 		this.id = id;
 		this.capacity = capacity;
+		this.range = range;
 		this.cruiseSpeed = cruiseSpeed;
 		this.verticalSpeed = verticalSpeed;
 		this.boardingTime = boardingTime;
@@ -30,6 +32,10 @@ public class UAMVehicleType {
 
 	public int getCapacity() { // used only in the reader, given that the UAMVehicle superclass already has it
 		return this.capacity;
+	}
+
+	public double getRange() { // used only in the reader, given that the UAMVehicle superclass already has it
+		return this.range;
 	}
 
 	public double getCruiseSpeed() {
