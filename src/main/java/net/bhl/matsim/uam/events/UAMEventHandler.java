@@ -35,8 +35,7 @@ public class UAMEventHandler implements PersonDepartureEventHandler, PersonArriv
 		Network network = scenario.getNetwork();
 		// if the agent just arrived with uam, place the vehicle on the
 		// nearest station oto the arrival link, this should be the link where the
-		// station is located
-		// if there are multiple stations at the same link this will cause problems
+		// station is located if there are multiple stations at the same link this will cause problems
 		// balac feb '18
 		if (event.getLegMode().equals("uam")) {
 			Link link = network.getLinks().get(event.getLinkId());
@@ -51,10 +50,7 @@ public class UAMEventHandler implements PersonDepartureEventHandler, PersonArriv
 	public void handleEvent(PersonDepartureEvent event) {
 		Network network = scenario.getNetwork();
 		// if the agent is departing with the uam, we remove the vehicle from the
-		// station and
-		// free the space for landing, again if there are multiple stations at the same
-		// link this
-		// will cause problems balac feb '18
+		// station, if there are multiple stations at the same link this will cause problems balac feb '18
 		if (event.getLegMode().equals("uam")) {
 			Link link = network.getLinks().get(event.getLinkId());
 			UAMVehicle vehicle = this.manager.getReservedVehicle(event.getPersonId());
