@@ -13,9 +13,9 @@
 		<vehicleType id="VEHTYPE2" capacity="2" range="10000" cruisespeed="22.22222" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
 	</vehicleTypes>
 	<vehicles>
-		<vehicle id="uam_vh_t1-1" type="VEHTYPE1" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
-		<vehicle id="uam_vh_t1-2" type="VEHTYPE1" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
-		<vehicle id="uam_vh_t2-1" type="VEHTYPE2" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
-		<vehicle id="uam_vh_t2-2" type="VEHTYPE2" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="t1-1" type="VEHTYPE1" initialstation="00" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="t1-2" type="VEHTYPE1" initialstation="01" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="t2-1" type="VEHTYPE2" initialstation="04" starttime="00:00:00" endtime="30:00:00"/>
+		<vehicle id="t2-2" type="VEHTYPE2" initialstation="05" starttime="00:00:00" endtime="30:00:00"/>
 	</vehicles>
 </uam>

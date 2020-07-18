@@ -97,7 +97,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 				break;
 			}
 			case "vehicle": {
-				Id<DvrpVehicle> id = Id.create(atts.getValue("id"), DvrpVehicle.class);
+				Id<DvrpVehicle> id = Id.create("uam_vh_" + atts.getValue("id"), DvrpVehicle.class);
 				Id<UAMVehicleType> vehicleTypeId = Id.create(atts.getValue("type"), UAMVehicleType.class);
 
 				// gets starttime and endtime
