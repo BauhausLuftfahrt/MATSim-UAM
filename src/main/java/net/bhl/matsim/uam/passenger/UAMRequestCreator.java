@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
 import com.google.inject.Inject;
+import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.dispatcher.Dispatcher;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -25,8 +26,9 @@ public class UAMRequestCreator implements PassengerRequestCreator {
 	public PassengerRequest createRequest(Id<Request> id, MobsimPassengerAgent passenger, Link fromLink, Link toLink,
 										  double departureTime, double submissionTime) {
 
-		//we currently have only one dispatcher, this might change in the future
-		return new UAMRequest(id, passenger, fromLink, toLink, departureTime, submissionTime, dispatchers.get(0), 0.0);
+		// We currently have only one dispatcher, this might change in the future
+		// TODO ADD DISTANCE
+		return new UAMRequest(id, passenger, fromLink, toLink, departureTime, submissionTime, dispatchers.get(0), 0);
 	}
 
 }

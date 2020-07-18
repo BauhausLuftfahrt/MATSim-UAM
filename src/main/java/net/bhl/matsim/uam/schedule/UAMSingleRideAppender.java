@@ -36,7 +36,7 @@ public class UAMSingleRideAppender {
 	private TravelTime travelTime;
 
 	private List<AppendTask> tasks = new LinkedList<>();
-	private UAMStations landingStations;
+	private UAMStations stations;
 
 	/**
 	 * @param request UAM request
@@ -88,7 +88,7 @@ public class UAMSingleRideAppender {
 		} else {
 			startTime = stayTask.getBeginTime();
 		}
-		UAMStation stationDestination = landingStations.getNearestUAMStation(request.getToLink());
+		UAMStation stationDestination = stations.getNearestUAMStation(request.getToLink());
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
 				plainPickupPath, travelTime);
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
@@ -181,8 +181,8 @@ public class UAMSingleRideAppender {
 		 */
 	}
 
-	public void setLandingStations(UAMStations landingStations) {
-		this.landingStations = landingStations;
+	public void setStations(UAMStations stations) {
+		this.stations = stations;
 	}
 
 	private class AppendTask {

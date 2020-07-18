@@ -37,7 +37,7 @@ public class UAMClosestPooledDispatcher implements Dispatcher {
 	@Inject
 	public UAMClosestPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
 		this.appender = appender;
-		this.appender.setLandingStations(uamManager.getStations());
+		this.appender.setStations(uamManager.getStations());
 
 		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minX, minY, maxX, maxY
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);

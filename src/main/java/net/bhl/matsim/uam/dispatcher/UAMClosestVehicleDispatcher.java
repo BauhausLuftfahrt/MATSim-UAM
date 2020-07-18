@@ -42,7 +42,7 @@ public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener 
 	@Inject
 	public UAMClosestVehicleDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network) {
 		this.appender = appender;
-		this.appender.setLandingStations(uamManager.getStations());
+		this.appender.setStations(uamManager.getStations());
 
 		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values());
 		// minX, minY, maxX, maxY

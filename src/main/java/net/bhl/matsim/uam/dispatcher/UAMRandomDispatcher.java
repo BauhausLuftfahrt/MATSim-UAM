@@ -30,7 +30,7 @@ public class UAMRandomDispatcher implements Dispatcher {
 	@Inject
 	public UAMRandomDispatcher(UAMSingleRideAppender appender, UAMManager uamManager) {
 		this.appender = appender;
-		this.appender.setLandingStations(uamManager.getStations());
+		this.appender.setStations(uamManager.getStations());
 
 		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);
