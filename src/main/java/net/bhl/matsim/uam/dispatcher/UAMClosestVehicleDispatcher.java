@@ -43,11 +43,8 @@ public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener 
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
 
-		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minx,
-		// miny,
-		// maxx,
-		// maxy
-
+		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values());
+		// minX, minY, maxX, maxY
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
 		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
