@@ -12,7 +12,6 @@ import org.matsim.contrib.dvrp.fleet.DvrpVehicleSpecification;
  */
 public class UAMVehicle extends DvrpVehicleImpl {
 
-	// VTOL vehicle-specific properties
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
 
@@ -25,6 +24,10 @@ public class UAMVehicle extends DvrpVehicleImpl {
 
 	public Id<UAMStation> getInitialStationId() {
 		return initialStationId;
+	}
+
+	public double getRange() {
+		return vehicleType.getRange();
 	}
 
 	/**
