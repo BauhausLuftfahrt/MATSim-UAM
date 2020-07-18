@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.population.Person;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class UAMUtilitiesAccessEgress {
 	private Id<Person> person;
 	private Id<UAMStation> station;
