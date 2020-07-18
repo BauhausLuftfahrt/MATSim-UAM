@@ -114,8 +114,7 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 				if (vehicle.getCapacity() > 1)
 					enRouteToPickupVehicles.add(vehicle);
 			} else {
-				// TODO pooling disabled
-				//if (!findEligableEnRouteVehicle(request))
+				if (!findEligableEnRouteVehicle(request))
 					deferredRequests.add(request);
 			}
 		}
@@ -129,9 +128,7 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 	 * capacity constraint is met, otherwise false.
 	 */
 	private boolean findEligableEnRouteVehicle(UAMRequest request) {
-
 		for (UAMVehicle vehicle : enRouteToPickupVehicles) {
-
 			Schedule schedule = vehicle.getSchedule();
 			if (schedule.getCurrentTask() instanceof UAMFlyTask) {
 				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
@@ -145,7 +142,7 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3);
 						dropOff.getRequests().add(request);
 
-						if (vehicle.getCapacity() == dropOff.getRequests().size())
+						if (vehicle.getCapacity() >= dropOff.getRequests().size())
 							this.enRouteToPickupVehicles.remove(vehicle);
 
 						return true;
@@ -160,5 +157,4 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 
 		return false;
 	}
-
 }
