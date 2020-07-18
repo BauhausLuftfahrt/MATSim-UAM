@@ -27,6 +27,7 @@ import java.util.Queue;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 @Singleton
 public class UAMClosestVehicleDispatcher implements MobsimBeforeSimStepListener {
 
