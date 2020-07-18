@@ -9,7 +9,7 @@
 		<station id="05" name="station_05" preflighttime="600" postflighttime="120" defaultwaittime="0" link="uam_sl-uam_st_05_ga-uam_st_05_fa"/>
 	</stations>
 	<vehicleTypes>
-		<vehicleType id="VEHTYPE1" capacity="1" range="50000" cruisespeed="33.33333" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
+		<vehicleType id="VEHTYPE1" capacity="1" range="1000" cruisespeed="33.33333" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
 		<vehicleType id="VEHTYPE2" capacity="2" range="100000" cruisespeed="22.22222" verticalspeed="10" boardingtime="30" deboardingtime="30" turnaroundtime="300"/>
 	</vehicleTypes>
 	<vehicles>
