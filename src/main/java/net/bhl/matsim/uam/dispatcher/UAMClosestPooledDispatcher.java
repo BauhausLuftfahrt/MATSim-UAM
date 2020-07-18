@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMPooledDispatcher implements Dispatcher {
+public class UAMClosestPooledDispatcher implements Dispatcher {
 	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;
@@ -34,12 +34,11 @@ public class UAMPooledDispatcher implements Dispatcher {
 	private Map<UAMVehicle, Coord> locationVehicles = new HashMap<>();
 
 	@Inject
-	public UAMPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
+	public UAMClosestPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
 
-		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minx,
-
+		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minX, minY, maxX, maxY
 		availableVehiclesTree = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
 
 		for (DvrpVehicle veh : data.getVehicles().values()) {
@@ -52,7 +51,6 @@ public class UAMPooledDispatcher implements Dispatcher {
 
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), (UAMVehicle) veh);
 			locationVehicles.put((UAMVehicle) veh, coord);
-
 		}
 	}
 
@@ -93,21 +91,20 @@ public class UAMPooledDispatcher implements Dispatcher {
 			reoptimize = true;
 		} else if (task.getUAMTaskType() == UAMTask.UAMTaskType.PICKUP)
 			this.enRouteToPickupVehicles.remove(vehicle);
-
 	}
 
 	private void reoptimize(double now) {
-
 		// TODO: have pending requests per station
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
+
 			if (!findEligableEnRouteVehicle(request)) {
 				UAMVehicle vehicle = this.availableVehiclesTree.getClosest(request.getFromLink().getCoord().getX(),
 						request.getFromLink().getCoord().getY());
 				Coord coord = this.locationVehicles.get(vehicle);
 				this.availableVehiclesTree.remove(coord.getX(), coord.getY(), vehicle);
 				this.availableVehicles.remove(vehicle);
-				// UAMVehicle vehicle = availableVehicles.poll();
+
 				appender.schedule(request, vehicle, now);
 				if (vehicle.getCapacity() > 1)
 					this.enRouteToPickupVehicles.add(vehicle);
@@ -115,9 +112,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 		}
 
 		if (availableVehicles.size() == 0) {
-
 			while (pendingRequests.size() > 0) {
-
 				UAMRequest request = pendingRequests.peek();
 				if (!findEligableEnRouteVehicle(request))
 					break;
@@ -125,8 +120,6 @@ public class UAMPooledDispatcher implements Dispatcher {
 					pendingRequests.remove();
 			}
 		}
-
-		// reoptimize = false;
 	}
 
 	/**
@@ -157,7 +150,7 @@ public class UAMPooledDispatcher implements Dispatcher {
 						return true;
 					}
 				} else {
-					Logger log = Logger.getLogger(UAMPooledDispatcher.class);
+					Logger log = Logger.getLogger(UAMClosestPooledDispatcher.class);
 					log.warn("Task following a UAMFlyTask is unexpectedly not a UAMPickupTask for vehicle: "
 							+ vehicle.getId());
 				}

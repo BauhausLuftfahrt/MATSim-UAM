@@ -18,7 +18,7 @@ import java.util.Queue;
  */
 @Deprecated
 @Singleton
-public class UAMDispatcher implements Dispatcher {
+public class UAMRandomDispatcher implements Dispatcher {
 
 	@Inject
 	final private UAMSingleRideAppender appender;
@@ -28,7 +28,7 @@ public class UAMDispatcher implements Dispatcher {
 	private boolean reoptimize = false;
 
 	@Inject
-	public UAMDispatcher(UAMSingleRideAppender appender, UAMManager uamManager) {
+	public UAMRandomDispatcher(UAMSingleRideAppender appender, UAMManager uamManager) {
 		this.appender = appender;
 		this.appender.setLandingStations(uamManager.getStations());
 
