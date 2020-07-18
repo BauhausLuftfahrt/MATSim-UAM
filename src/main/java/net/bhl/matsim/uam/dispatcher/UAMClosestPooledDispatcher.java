@@ -23,6 +23,7 @@ import java.util.*;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class UAMClosestPooledDispatcher implements Dispatcher {
 	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	@Inject
