@@ -70,7 +70,7 @@ public class RunCreateUAMScenario {
 	static double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	private static double default_link_capacity = 99999; // vehicles per hour
-	static double max_link_freespeed = 50; // per second
+	static double max_link_freespeed = 350; // per second
 
 	private static double NO_LENGTH = -1;
 
@@ -490,16 +490,14 @@ public class RunCreateUAMScenario {
 
 				int i = 0;
 				String station_id = station[i++];
-				String station_name = station[i++];
-				String station_landing_cap = station[i];
-				i = 13;
+				String station_name = station[i];
+				i = 11;
 				String station_preflighttime = station[i++];
 				String station_postflighttime = station[i++];
 				String station_defaultwaittime = station[i];
 
 				atts.add(new Tuple<>("id", station_id));
 				atts.add(new Tuple<>("name", station_name));
-				atts.add(new Tuple<>("landingcap", station_landing_cap));
 				atts.add(new Tuple<>("preflighttime", station_preflighttime));
 				atts.add(new Tuple<>("postflighttime", station_postflighttime));
 				atts.add(new Tuple<>("defaultwaittime", station_defaultwaittime));
@@ -518,6 +516,7 @@ public class RunCreateUAMScenario {
 				String type = vehicle[i];
 				i = 4;
 				String capacity = vehicle[i++];
+				String range = vehicle[i++];
 				String cruisespeed = vehicle[i++];
 				String verticalspeed = vehicle[i++];
 				String boardingtime = vehicle[i++];
@@ -526,6 +525,7 @@ public class RunCreateUAMScenario {
 
 				List<Tuple<String, String>> atts = new ArrayList<>();
 				atts.add(new Tuple<>("id", type));
+				atts.add(new Tuple<>("range", range));
 				atts.add(new Tuple<>("capacity", capacity));
 				atts.add(new Tuple<>("cruisespeed", cruisespeed));
 				atts.add(new Tuple<>("verticalspeed", verticalspeed));
