@@ -40,7 +40,7 @@ List of all current features provided by MATSim-UAM with the version of feature 
 - Introduction of UAM routing strategies that aim to, e.g., minimize overall travel time or minimize access/egress distance; including predefined routing strategy where UAM trips (i.e access/egress modes and UAM stations) can be defined externally, e.g., by MITO. (v2.0)
 - Integration of option to skip public transport simulation and teleport its agents instead. (v1.0)
 
-### Miscellaneous:
+### Miscellaneous
 - Output plans will show expected distance and travel time for UAM legs. (v1.0)
 - Simulation-independent conversion from events to UAM demand (.CSV) file. (v2.1)
 - The input file for UAM Vehicles is written out into the output folder. (v2.1)
@@ -53,13 +53,13 @@ List of all current features provided by MATSim-UAM with the version of feature 
 
 ### v2.1
 General
-- updated documentation for scenario creation and travel time scripts
-- refactoring (e.g. replacement of "landing stations" with "stations")
-- removal of unused code and marking others as deprecated
+- Updated documentation for scenario creation and travel time scripts
+- Refactoring (e.g. replacement of "landing stations" with "stations")
+- Removal of unused code and marking others as deprecated
 
 UAM vehicles types and stations:
-- vehicle types must now include maximum range (applied per leg)
-- removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
+- Vehicle types must now include maximum range (applied per leg)
+- Removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
 - **No backwards compatibility of input uam files.**
 
 Dispatcher:
