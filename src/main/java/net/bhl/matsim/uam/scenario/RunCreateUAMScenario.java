@@ -488,7 +488,7 @@ public class RunCreateUAMScenario {
 				int i = 0;
 				String station_id = station[i++];
 				String station_name = station[i];
-				i = 10;
+				i = 11;
 				String station_preflighttime = station[i++];
 				String station_postflighttime = station[i++];
 				String station_defaultwaittime = station[i];
@@ -512,8 +512,8 @@ public class RunCreateUAMScenario {
 				int i = 0;
 				String type = vehicle[i];
 				i = 4;
-				String capacity = vehicle[i++];
 				String range = vehicle[i++];
+				String capacity = vehicle[i++];
 				String cruisespeed = vehicle[i++];
 				String verticalspeed = vehicle[i++];
 				String boardingtime = vehicle[i++];
