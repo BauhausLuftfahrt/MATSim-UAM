@@ -21,8 +21,8 @@ And the following to you maven pom.xml under `dependencies` for the latest versi
 ```
 Older versions can be used by replacing the version text with any of the listed tags on [GitHub MATSim-UAM tags](https://github.com/BauhausLuftfahrt/MATSim-UAM/tags).
 
-## Run-script Documentation
-See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md) for explanation of the in- and outputs of provided run scripts.
+## Documentation
+See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md) for, e.g., explanation of the in- and outputs of provided run scripts.
 
 ## Features
 List of all current features provided by MATSim-UAM with the version of feature introduction in parentheses.
