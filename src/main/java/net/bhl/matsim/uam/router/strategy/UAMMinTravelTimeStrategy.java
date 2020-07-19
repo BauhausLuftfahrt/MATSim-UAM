@@ -39,7 +39,7 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
 
 		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
-		// UAM flight time + access and egress travel time
+		// UAM flight time + access and egress travel time + process times
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		Set<String> modes = strategyUtils.getModes();
 		String bestModeEgress = TransportMode.walk;
@@ -47,18 +47,20 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 			for (UAMStation stationDestination : stationsDestination) {
 				if (stationOrigin == stationDestination)
 					continue;
+				// process times
+				double process = stationOrigin.getPreFlightTime() + stationDestination.getPostFlightTime();
 				// fly time between stations
 				double flyTime = strategyUtils.getFlightTime(stationOrigin, stationDestination);
 				// updates departureTime
 				double currentDepartureTime = departureTime
-						+ accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime;
+						+ accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime + process;
 				for (String mode : modes) {
 					// Calculates the time travel for the egress routes
 					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
 							stationDestination, mode).travelTime;
 					// Calculates the minimum total time
 					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime
-							+ egressTravelTime;
+							+ process + egressTravelTime;
 					if (totalTime < minTotalTime) {
 						bestStationOrigin = stationOrigin;
 						bestStationDestination = stationDestination;

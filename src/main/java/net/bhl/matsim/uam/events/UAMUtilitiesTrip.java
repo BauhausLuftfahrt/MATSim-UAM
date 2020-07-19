@@ -11,6 +11,7 @@ import org.matsim.api.core.v01.population.Person;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class UAMUtilitiesTrip {
 	public Id<Person> person;
 	public Id<Link> originLink;

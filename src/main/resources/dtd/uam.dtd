@@ -6,20 +6,21 @@
 <!ELEMENT vehicles (vehicle)*>
 
 <!ELEMENT station EMPTY>
-<!ATTLIST station	name 			CDATA	#IMPLIED
-					id				CDATA	#REQUIRED
+<!ATTLIST station	id				CDATA	#REQUIRED
+					link  			CDATA	#REQUIRED
+					x				CDATA	#IMPLIED
+					y				CDATA	#IMPLIED
+					name 			CDATA	#IMPLIED
 					preflighttime	CDATA	#REQUIRED
 					postflighttime	CDATA	#REQUIRED
-					defaultwaittime	CDATA	#IMPLIED
-					link  			CDATA	#IMPLIED
-					x				CDATA	#IMPLIED
-					y				CDATA	#IMPLIED>
+					defaultwaittime	CDATA	#REQUIRED>
 					
 <!ELEMENT vehicleType EMPTY>
 <!ATTLIST vehicleType	id				CDATA	#REQUIRED
+						range			CDATA	#REQUIRED
 						capacity		CDATA	#REQUIRED
-						cruisespeed		CDATA	#IMPLIED
-						verticalspeed	CDATA	#IMPLIED
+						cruisespeed		CDATA	#REQUIRED
+						verticalspeed	CDATA	#REQUIRED
 						turnaroundtime	CDATA	#REQUIRED
 						boardingtime	CDATA	#REQUIRED
 						deboardingtime	CDATA	#REQUIRED>
@@ -27,12 +28,9 @@
 <!ELEMENT vehicle EMPTY>
 <!ATTLIST vehicle	id				CDATA	#REQUIRED
 					type			CDATA	#REQUIRED
-					length			CDATA	#IMPLIED
-					width	 		CDATA	#IMPLIED
-					range			CDATA	#IMPLIED
-					starttime		CDATA	#REQUIRED
-					endtime			CDATA	#REQUIRED
-					initialstation	CDATA	#REQUIRED>
+					initialstation	CDATA	#REQUIRED
+					starttime		CDATA	#IMPLIED
+					endtime			CDATA	#IMPLIED>
 
 <!-- ============================================================ -->
 
@@ -152,18 +150,6 @@
 <!-- ATTRIBUTE type:
      Each vehicle has to have a type.
      format := string -->
-     
-<!-- ATTRIBUTE length:
-     Each vehicle has to have a vehicle length.
-     status := unimplemented
-     format := double
-     units  := meter -->
-    
-<!-- ATTRIBUTE width:
-     Each vehicle has to have a vehicle width.
-     status := unimplemented
-     format := double
-     units  := meter -->
      
 <!-- ATTRIBUTE starttime:
      Each vehicle has to have the time of day of first possible vehicle usage.

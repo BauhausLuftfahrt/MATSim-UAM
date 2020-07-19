@@ -18,11 +18,8 @@ public class UAMDispatcherListener implements MobsimBeforeSimStepListener {
 
 	@Override
 	public void notifyMobsimBeforeSimStep(MobsimBeforeSimStepEvent e) {
-
 		for (Dispatcher d : dispatchers) {
 			d.onNextTimeStep(e.getSimulationTime());
 		}
-
 	}
-
 }
