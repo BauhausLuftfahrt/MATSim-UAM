@@ -32,7 +32,6 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// we request uam when the agent starts its access leg to the nearest station
 		if (agent instanceof PlanAgent) {
-			String test = agent.getMode();
 			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
