@@ -84,13 +84,13 @@ public class UAMClosestPooledDispatcher implements Dispatcher {
 	@Override
 	public void onNextTaskStarted(UAMVehicle vehicle) {
 		UAMTask task = (UAMTask) vehicle.getSchedule().getCurrentTask();
-		if (task instanceof UAMStayTask) {
+		if (task.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
 			availableVehicles.add(vehicle);
 			Coord coord = ((UAMStayTask) task).getLink().getCoord();
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), vehicle);
 			this.locationVehicles.put(vehicle, coord);
 			reoptimize = true;
-		} else if (task instanceof UAMPickupTask)
+		} else if (task.getUAMTaskType() == UAMTask.UAMTaskType.PICKUP)
 			this.enRouteToPickupVehicles.remove(vehicle);
 	}
 
