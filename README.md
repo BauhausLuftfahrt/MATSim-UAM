@@ -96,15 +96,18 @@ Logging:
 
 ## Publications
 The following list provides a reverse-chronological overview of publications related to or based on or related to the UAM-Extension:
-* M. Balac, R. Rothfeld, S. Hörl, "The Prospects of Urban Air Mobility in Zurich, Switzerland", IEEE-ITSC 2019, Auckland, New Zealand, 2019.
-* M. Balac, A. R. Vetrella, R. Rothfeld and B. Schmid, "Demand Estimation for Aerial Vehicles in Urban Settings," in IEEE Intelligent Transportation Systems Magazine, vol. 11, no. 3, pp. 105-116, 2019.
-* A. Straubinger, R. Rothfeld, M. Shamiyeh, K.-D. Buechter, J. Kaiser, K.O. Ploetner, "An Overview of Current Research and Developments in Urban Air Mobility - Setting the Scene for UAM Introduction", ATRS 2019, Amsterdam, NL, 2019.
-* M. Balac, R. Rothfeld and S. Hörl, "Simulation of Urban Air Mobility", MATSim User Meeting 2019, Leuven, Belgium, 2019.
-* Fu, M., Rothfeld, R., & Antoniou, C, "Exploring Preferences for TransportationModes in an Urban Air Mobility Environment: Munich Case Study", Transportation Research Record, Washington D.C., USA, 2019.
-* M. Shamiyeh, R. Rothfeld, M. Hornung, "A Performance Benchmark of Recent Personal Air Vehicle Concepts for Urban Air Mobility", 31st Congress of the International Council of the Aeronautical Sciences, Belo Horizonte, Brasil, 2018.
-* R. Rothfeld, M. Balac, C. Antoniou, "Modelling and evaluating urban air mobility – an early research approach", mobil.TUM 2018, München, 2018.
-* R. Rothfeld, M. Balac, K. O. Ploetner, C. Antoniou, "Agent-based Simulation of Urban Air Mobility", MATSim User Meeting 2018, Atlanta, Georgia, US, 2018.
-* Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. In 2018 Modeling and Simulation Technologies Conference (p. 3891).
-* Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Initial Analysis of Urban Air Mobility’s Transport Performance in Sioux Falls. In 2018 Aviation Technology, Integration, and Operations Conference (p. 2886).
-* A. Straubinger, R. Rothfeld, "Identification of Relevant Aspects for Personal Air Transport System Integration in Urban Mobility Modelling", 7th Transport Research Arena (TRA), Vienna, Austria, 2018.
+* Rothfeld, R., Fu, M., Balac, M., & Antoniou, C. (2020). Potential Urban Air Mobility Travel Time Savings: An Exploratory Analysis of Munich, Paris, and San Francisco. Submitted to Transportation Research Part C, Special Issue: “Embracing Urban Air Mobility.”
+* Straubinger, A., Rothfeld, R., Shamiyeh, M., Buechter, K.-D., Kaiser, J., & Ploetner, K. O. (2020). An Overview of Current Research and Developments in Urban Air Mobility - Setting the Scene for UAM Introduction. Journal of Air Transport Management, 87(101852). https://doi.org/10.1016/j.jairtraman.2020.101852
+* Ploetner, K., Rothfeld, R., Shamiyeh, M., Kabel, S., Frank, F., Straubinger, A., Llorca, C., Fu, M., Moreno, A., Pukhova, A., Zhang, Q., Al Haddad, C., Wagner, H., Antoniou, C., & Moeckel, R. (2020). Long-term Application Potential of Urban Air Mobility Complementing Public Transport: An Upper Bavaria Example. CEAS Aeronautical Journal: An Official Journal of the Council of European Aerospace Societies.
+* Rothfeld, R., Straubinger, A., Fu, M., Al Haddad, C., & Antoniou, C. (2020). Urban air mobility. In C. Antoniou, D. Efthymiou, & E. Chaniotakis (Eds.), Demand for Emerging Transportation Systems - Modeling Adoption, Satisfaction, and Mobility Patterns (1st ed., pp. 267–284). Elsevier.
+* Balac, M., Rothfeld, R. L., & Horl, S. (2019). The Prospects of on-demand Urban Air Mobility in Zurich, Switzerland. 2019 IEEE Intelligent Transportation Systems Conference, ITSC 2019, 906–913. https://doi.org/10.1109/ITSC.2019.8916972
+* Rothfeld, R., Straubinger, A., Paul, A., & Antoniou, C. (2019). Analysis of European airports’ access and egress travel times using Google Maps. Transport Policy, 81(May), 148–162. https://doi.org/10.1016/j.tranpol.2019.05.021
+* Balac, M., Rothfeld, R. L., & Horl, S. (2019). The Prospects of on-demand Urban Air Mobility in Zurich, Switzerland. 2019 IEEE Intelligent Transportation Systems Conference, ITSC 2019, 906–913. https://doi.org/10.1109/ITSC.2019.8916972
+* Balac, M., Vetrella, A. R., Rothfeld, R., & Schmid, B. (2019). Demand Estimation for Aerial Vehicles in Urban Settings. IEEE Intelligent Transportation Systems Magazine, 11(3), 105–116. https://doi.org/10.1109/MITS.2019.2919500
+* Fu, M., Rothfeld, R., & Antoniou, C. (2019). Exploring Preferences for Transportation Modes in an Urban Air Mobility Environment: Munich Case Study. Transportation Research Record. https://doi.org/10.1177/0361198119843858
+* Rothfeld, R. L., Fu, M., & Antoniou, C. (2019). Analysis of Urban Air Mobility’s Transport Performance in Munich Metropolitan Region. In mobil.TUM 2019. https://doi.org/10.13140/RG.2.2.15444.42886
+* Straubinger, A., & Rothfeld, R. (2018). Identification of Relevant Aspects for Personal Air Transport System Integration in Urban Mobility Modelling. Transport Research Arena TRA.
+* Rothfeld, R. L., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. 2018 Modeling and Simulation Technologies Conference, 1–10. https://doi.org/10.2514/6.2018-3891
+* Rothfeld, R. L., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Initial Analysis of Urban Air Mobility’s Transport Performance in Sioux Falls. 2018 Aviation Technology, Integration, and Operations Conference, 1–13. https://doi.org/10.2514/6.2018-2886
+* Shamiyeh, M., Rothfeld, R., & Hornung, M. (2018). A performance benchmark of recent personal air vehicle concepts for urban air mobility. 31st Congress of the International Council of the Aeronautical Sciences, ICAS.
 * M. Balac, A. Vetrella, & K.W. Axhausen (2018). "Towards the integration of aerial transportation in urban settings", 97th Transportation Research Board Conference, Washington D.C.,USA, 2018.
