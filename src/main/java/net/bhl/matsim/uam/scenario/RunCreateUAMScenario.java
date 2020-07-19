@@ -173,9 +173,9 @@ public class RunCreateUAMScenario {
 			List<Id<Node>> flightAccesses = new ArrayList<>();
 			for (String[] line : Iterables.skip(stations, 1)) { // skip CSV header
 				Id<Node> node_id = Id.createNodeId(name_uam_nodes + line[0] + name_uam_station_flight_level);
-				double node_x = Double.parseDouble(line[3]);
-				double node_y = Double.parseDouble(line[4]);
-				double node_z = Double.parseDouble(line[6]);
+				double node_x = Double.parseDouble(line[2]);
+				double node_y = Double.parseDouble(line[3]);
+				double node_z = Double.parseDouble(line[5]);
 
 				addNode(network, node_id, node_x, node_y, node_z);
 				flightAccesses.add(node_id);
@@ -224,15 +224,12 @@ public class RunCreateUAMScenario {
 			int i = 0;
 			String station_id = line[i++];
 			i++; // skip station_name
-			i++; // skip station_landing_cap
 			double station_x = Double.parseDouble(line[i++]);
 			double station_y = Double.parseDouble(line[i++]);
 			double station_z = Double.parseDouble(line[i++]);
 			double vtol_z = Double.parseDouble(line[i++]);
 			double road_access_capacity = Double.parseDouble(line[i++]);
 			double road_access_freespeed = Double.parseDouble(line[i++]);
-			double station_capacity = Double.parseDouble(line[i++]);
-			double station_freespeed = Double.parseDouble(line[i++]);
 			double flight_access_capacity = Double.parseDouble(line[i++]);
 			double flight_access_freespeed = Double.parseDouble(line[i]);
 
@@ -276,8 +273,8 @@ public class RunCreateUAMScenario {
 			modes.add(mode_uam);
 			modes.add(mode_car);
 			try {
-				addLink(network, node_ga_id, node_fa_id, modes, station_capacity, station_freespeed);
-				addLink(network, node_fa_id, node_ga_id, modes, station_capacity, station_freespeed);
+				addLink(network, node_ga_id, node_fa_id, modes, default_link_capacity, max_link_freespeed);
+				addLink(network, node_fa_id, node_ga_id, modes, default_link_capacity, max_link_freespeed);
 
 				// flight access links
 				addLink(network, node_fa_id, uamNode.getId(), modesUam, flight_access_capacity, flight_access_freespeed,
@@ -491,7 +488,7 @@ public class RunCreateUAMScenario {
 				int i = 0;
 				String station_id = station[i++];
 				String station_name = station[i];
-				i = 11;
+				i = 10;
 				String station_preflighttime = station[i++];
 				String station_postflighttime = station[i++];
 				String station_defaultwaittime = station[i];
