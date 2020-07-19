@@ -74,7 +74,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 		while (index < tasks.size()) {
 			indexTask = (UAMTask) tasks.get(index);
 
-			if (indexTask.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
+			if (indexTask instanceof UAMStayTask) {
 				if (indexTask.getEndTime() < startTime)
 					indexTask.setEndTime(startTime);
 			} else {
@@ -108,7 +108,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 	private void ensureNonFinishingSchedule(Schedule schedule) {
 		UAMTask lastTask = (UAMTask) Schedules.getLastTask(schedule);
 
-		if (lastTask.getUAMTaskType() != UAMTask.UAMTaskType.STAY) {
+		if (lastTask instanceof UAMStayTask) {
 			throw new IllegalStateException("A UAM schedule should always end with a STAY task");
 		}
 
