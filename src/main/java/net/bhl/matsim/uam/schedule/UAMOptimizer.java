@@ -108,7 +108,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 	private void ensureNonFinishingSchedule(Schedule schedule) {
 		UAMTask lastTask = (UAMTask) Schedules.getLastTask(schedule);
 
-		if (lastTask instanceof UAMStayTask) {
+		if (!(lastTask instanceof UAMStayTask)) {
 			throw new IllegalStateException("A UAM schedule should always end with a STAY task");
 		}
 
