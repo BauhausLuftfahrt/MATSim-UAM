@@ -57,7 +57,7 @@ General
 - removal of unused code and marking others as deprecated
 
 UAM vehicles types and stations:
-- vehicle types must now include maximum range (applied per leg)
+- vehicle types must now include maximum range (applied per leg) **No backwards compatibility of input uam files.**
 - removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
 
 Dispatcher:
