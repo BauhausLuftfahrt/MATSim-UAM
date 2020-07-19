@@ -1,34 +1,26 @@
 <?xml encoding="UTF-8"?>
 
-<!-- ============================================================ -->
-
-<!-- For further information or questions, please contact
-     Raoul Rothfeld (RRothfeld) at www.bauhaus-luftfahrt.net -->
-
-<!-- ============================================================ -->
-
 <!ELEMENT uam (stations,vehicleTypes,vehicles)>
 <!ELEMENT stations (station)*>
 <!ELEMENT vehicleTypes (vehicleType)*>
 <!ELEMENT vehicles (vehicle)*>
 
 <!ELEMENT station EMPTY>
-<!ATTLIST station	name 			CDATA	#IMPLIED
-					id				CDATA	#REQUIRED
-					landingcap 		CDATA 	#REQUIRED
-					parkingcap		CDATA	#IMPLIED
+<!ATTLIST station	id				CDATA	#REQUIRED
+					link  			CDATA	#REQUIRED
+					x				CDATA	#IMPLIED
+					y				CDATA	#IMPLIED
+					name 			CDATA	#IMPLIED
 					preflighttime	CDATA	#REQUIRED
 					postflighttime	CDATA	#REQUIRED
-					defaultwaittime	CDATA	#IMPLIED
-					link  			CDATA	#IMPLIED
-					x				CDATA	#IMPLIED
-					y				CDATA	#IMPLIED>
+					defaultwaittime	CDATA	#REQUIRED>
 					
 <!ELEMENT vehicleType EMPTY>
 <!ATTLIST vehicleType	id				CDATA	#REQUIRED
+						range			CDATA	#REQUIRED
 						capacity		CDATA	#REQUIRED
-						cruisespeed		CDATA	#IMPLIED
-						verticalspeed	CDATA	#IMPLIED
+						cruisespeed		CDATA	#REQUIRED
+						verticalspeed	CDATA	#REQUIRED
 						turnaroundtime	CDATA	#REQUIRED
 						boardingtime	CDATA	#REQUIRED
 						deboardingtime	CDATA	#REQUIRED>
@@ -36,12 +28,9 @@
 <!ELEMENT vehicle EMPTY>
 <!ATTLIST vehicle	id				CDATA	#REQUIRED
 					type			CDATA	#REQUIRED
-					length			CDATA	#IMPLIED
-					width	 		CDATA	#IMPLIED
-					range			CDATA	#IMPLIED
-					starttime		CDATA	#REQUIRED
-					endtime			CDATA	#REQUIRED
-					initialstation	CDATA	#REQUIRED>
+					initialstation	CDATA	#REQUIRED
+					starttime		CDATA	#IMPLIED
+					endtime			CDATA	#IMPLIED>
 
 <!-- ============================================================ -->
 
@@ -73,17 +62,6 @@
 <!-- ATTRIBUTE id:
      Each station has to have a unique id.
      format := string -->
-     
-<!-- ATTRIBUTE landingcap:
-     Each station has to provide the maximum number of spots for
-     simultaneous take-offs or landings.
-     format := unsigned integer -->
-     
-<!-- ATTRIBUTE parkingcap:
-     Each station has to provide the maximum number of spots for
-     simultaneously parked vehicles.
-     status := unimplemented
-     format := unsigned integer -->
      
 <!-- ATTRIBUTE preflighttime:
      Each station has to provide the Time needed by the passenger
@@ -172,18 +150,6 @@
 <!-- ATTRIBUTE type:
      Each vehicle has to have a type.
      format := string -->
-     
-<!-- ATTRIBUTE length:
-     Each vehicle has to have a vehicle length.
-     status := unimplemented
-     format := double
-     units  := meter -->
-    
-<!-- ATTRIBUTE width:
-     Each vehicle has to have a vehicle width.
-     status := unimplemented
-     format := double
-     units  := meter -->
      
 <!-- ATTRIBUTE starttime:
      Each vehicle has to have the time of day of first possible vehicle usage.

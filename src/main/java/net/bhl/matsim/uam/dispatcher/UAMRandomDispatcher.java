@@ -16,8 +16,9 @@ import java.util.Queue;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 @Singleton
-public class UAMDispatcher implements Dispatcher {
+public class UAMRandomDispatcher implements Dispatcher {
 
 	@Inject
 	final private UAMSingleRideAppender appender;
@@ -27,9 +28,9 @@ public class UAMDispatcher implements Dispatcher {
 	private boolean reoptimize = false;
 
 	@Inject
-	public UAMDispatcher(UAMSingleRideAppender appender, UAMManager uamManager) {
+	public UAMRandomDispatcher(UAMSingleRideAppender appender, UAMManager uamManager) {
 		this.appender = appender;
-		this.appender.setLandingStations(uamManager.getStations());
+		this.appender.setStations(uamManager.getStations());
 
 		for (DvrpVehicle veh : uamManager.getVehicles().values()) {
 			this.availableVehicles.add((UAMVehicle) veh);

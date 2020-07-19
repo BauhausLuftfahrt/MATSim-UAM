@@ -20,6 +20,7 @@ import java.util.List;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class TaxiRoutingModule implements RoutingModule {
 
 	private LeastCostPathCalculator plcpccar;

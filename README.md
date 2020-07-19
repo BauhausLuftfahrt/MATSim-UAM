@@ -27,34 +27,42 @@ Older versions can be used by replacing the version text with any of the listed 
 List of all current features provided by MATSim-UAM with the version of feature introduction in parentheses.
 
 ### Infrastructure
-- UAM Vehicle Types: The vehicle type contains the capacity, cruisespeed, vertical speed, (de)boarding and turn around times. (v1)
+- UAM Vehicle Types: The vehicle type contains the capacity, range, cruisespeed, vertical speed, (de)boarding and turn around times. (last changed: v2.1)
 - UAM Vehicles: Contains information about the UAM Vehicle Type, initial UAM Station and start/end time of operation. (v1)
-- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location. (v1)
-- UAM Flight Network: Similar to conventional MATSim links, UAM flight links allow for the definition of flight routes with different flight segments. (v1)
+- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location. (v2.1)
+- UAM Flight Network: Similar to conventional MATSim links, UAM flight links allow for the definition of flight routes with different flight segments. (v2.0)
 
 ### Simulation
 - UAM Vehicles follow a schedule that has the following sequence, starting and ending with StayTask: PickUpDriveTask, PickUpTask, DropOffDriveTask, DropOffTask, TurnAroundTask, StayTask. (v1)
 - UAM Passengers have the following sequence of activities: Access trip, preFlightTime, PickUpTask, UAM leg (UAMVehicle DropOffDriveTask), DropOffTask, PostFlightTime, Egress Trip. (v1)
-- Dispatching strategy: MATSim-UAM uses a pooled dispatcher that allows for shared rides if trip origin and destination are the same, and if vehicle capacity constraint is met. (v1)
-- Introduction of UAM routing strategies that aim to, e.g., maximize overral UAM trip utility, or minimize access/egress distance; including predefined routing strategy where UAM trips (i.e access/egress modes and UAM stations) can be defined externally, e.g. by MITO. (v1)
+- Dispatching strategy: MATSim-UAM uses a closest-available, ranged, and pooled dispatcher that dispatches UAM Vehicles on a first-come first-serve (queue) basis for passenger requests given that the available vehicle type meets the request's required range. The dispatcher allows for shared rides if trip origin and destination are the same, given the vehicle type's capacity constraint. (v2.1)
+- Introduction of UAM routing strategies that aim to, e.g., minimize overall travel time or minimize access/egress distance; including predefined routing strategy where UAM trips (i.e access/egress modes and UAM stations) can be defined externally, e.g., by MITO. (v2.0)
 - Integration of option to skip public transport simulation and teleport its agents instead. (v1)
 
 ### Miscellaneous:
-- Conversion of MATSim events into CSV files will display distances in the scenario's CRS, instead of assuming a metre-based CRS and storing distances as KM. (v1)
 - Output plans will show expected distance and travel time for UAM legs. (v1)
-- Simulation-independent conversion from events to UAM demand (.CSV) file. (v1)
-- Warning log message when no age is given for an agent, so default age is being assumed in mode choice for cycling. (v1)
-- The input file for UAM Vehicles is written out into the output folder. (v1)
+- Simulation-independent conversion from events to UAM demand (.CSV) file. (v2.1)
+- The input file for UAM Vehicles is written out into the output folder. (v2.1)
 - Included interface to interact with [MITO](https://www.msm.bgu.tum.de/en/research/modeling/mito/) (Microscopic Transport Orchestrator). (v1)
-- Included external public transport and car router for calculating travel times for a list of origins and destinations. (v1)
+- Included external public transport, car, and UAM router for calculating travel times for a list of origins and destinations. (v2.0)
 - Included external UAM station router for calculating travel times and distances between all UAM stations. (v1)
 - Included documentation about analysis and utility scripts. See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md). (v1)  
 
 ## Versions and Change Log
 
-### v2.1 _(work in progress)_
-TODO:
-- update documentation for scenario creation and travel time scripts
+### v2.1
+General
+- updated documentation for scenario creation and travel time scripts
+- refactoring (e.g. replacement of "landing stations" with "stations")
+- removal of unused code and marking others as deprecated
+
+UAM vehicles types and stations:
+- vehicle types must now include maximum range (applied per leg)
+- removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
+
+Dispatcher:
+- Now separately stores available UAM vehicles based on vehicle type
+- Requests remain being resolved in a queue but based on requested range and vehicle type (if the required ranged vehicle type is unavailable, the request is being deferred, other requests may still be resolved if a vehicle of their required type is available)
 
 Station selection:
 - Introduction of isStaticSearchRadius config parameter (default: true), if set to false, the search radius is not an absolut distance for possible UAM stations from any given location but is read as a percentage which is being applied to the beeline distance between origin and destination location.
@@ -86,15 +94,18 @@ Logging:
 
 ## Publications
 The following list provides a reverse-chronological overview of publications related to or based on or related to the UAM-Extension:
-* M. Balac, R. Rothfeld, S. Hörl, "The Prospects of Urban Air Mobility in Zurich, Switzerland", IEEE-ITSC 2019, Auckland, New Zealand, 2019.
-* M. Balac, A. R. Vetrella, R. Rothfeld and B. Schmid, "Demand Estimation for Aerial Vehicles in Urban Settings," in IEEE Intelligent Transportation Systems Magazine, vol. 11, no. 3, pp. 105-116, 2019.
-* A. Straubinger, R. Rothfeld, M. Shamiyeh, K.-D. Buechter, J. Kaiser, K.O. Ploetner, "An Overview of Current Research and Developments in Urban Air Mobility - Setting the Scene for UAM Introduction", ATRS 2019, Amsterdam, NL, 2019.
-* M. Balac, R. Rothfeld and S. Hörl, "Simulation of Urban Air Mobility", MATSim User Meeting 2019, Leuven, Belgium, 2019.
-* Fu, M., Rothfeld, R., & Antoniou, C, "Exploring Preferences for TransportationModes in an Urban Air Mobility Environment: Munich Case Study", Transportation Research Record, Washington D.C., USA, 2019.
-* M. Shamiyeh, R. Rothfeld, M. Hornung, "A Performance Benchmark of Recent Personal Air Vehicle Concepts for Urban Air Mobility", 31st Congress of the International Council of the Aeronautical Sciences, Belo Horizonte, Brasil, 2018.
-* R. Rothfeld, M. Balac, C. Antoniou, "Modelling and evaluating urban air mobility – an early research approach", mobil.TUM 2018, München, 2018.
-* R. Rothfeld, M. Balac, K. O. Ploetner, C. Antoniou, "Agent-based Simulation of Urban Air Mobility", MATSim User Meeting 2018, Atlanta, Georgia, US, 2018.
-* Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. In 2018 Modeling and Simulation Technologies Conference (p. 3891).
-* Rothfeld, R., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Initial Analysis of Urban Air Mobility’s Transport Performance in Sioux Falls. In 2018 Aviation Technology, Integration, and Operations Conference (p. 2886).
-* A. Straubinger, R. Rothfeld, "Identification of Relevant Aspects for Personal Air Transport System Integration in Urban Mobility Modelling", 7th Transport Research Arena (TRA), Vienna, Austria, 2018.
+* Rothfeld, R., Fu, M., Balac, M., & Antoniou, C. (2020). Potential Urban Air Mobility Travel Time Savings: An Exploratory Analysis of Munich, Paris, and San Francisco. Submitted to Transportation Research Part C, Special Issue: “Embracing Urban Air Mobility.”
+* Straubinger, A., Rothfeld, R., Shamiyeh, M., Buechter, K.-D., Kaiser, J., & Ploetner, K. O. (2020). An Overview of Current Research and Developments in Urban Air Mobility - Setting the Scene for UAM Introduction. Journal of Air Transport Management, 87(101852). https://doi.org/10.1016/j.jairtraman.2020.101852
+* Ploetner, K., Rothfeld, R., Shamiyeh, M., Kabel, S., Frank, F., Straubinger, A., Llorca, C., Fu, M., Moreno, A., Pukhova, A., Zhang, Q., Al Haddad, C., Wagner, H., Antoniou, C., & Moeckel, R. (2020). Long-term Application Potential of Urban Air Mobility Complementing Public Transport: An Upper Bavaria Example. CEAS Aeronautical Journal: An Official Journal of the Council of European Aerospace Societies.
+* Rothfeld, R., Straubinger, A., Fu, M., Al Haddad, C., & Antoniou, C. (2020). Urban air mobility. In C. Antoniou, D. Efthymiou, & E. Chaniotakis (Eds.), Demand for Emerging Transportation Systems - Modeling Adoption, Satisfaction, and Mobility Patterns (1st ed., pp. 267–284). Elsevier.
+* Balac, M., Rothfeld, R. L., & Horl, S. (2019). The Prospects of on-demand Urban Air Mobility in Zurich, Switzerland. 2019 IEEE Intelligent Transportation Systems Conference, ITSC 2019, 906–913. https://doi.org/10.1109/ITSC.2019.8916972
+* Rothfeld, R., Straubinger, A., Paul, A., & Antoniou, C. (2019). Analysis of European airports’ access and egress travel times using Google Maps. Transport Policy, 81(May), 148–162. https://doi.org/10.1016/j.tranpol.2019.05.021
+* Balac, M., Rothfeld, R. L., & Horl, S. (2019). The Prospects of on-demand Urban Air Mobility in Zurich, Switzerland. 2019 IEEE Intelligent Transportation Systems Conference, ITSC 2019, 906–913. https://doi.org/10.1109/ITSC.2019.8916972
+* Balac, M., Vetrella, A. R., Rothfeld, R., & Schmid, B. (2019). Demand Estimation for Aerial Vehicles in Urban Settings. IEEE Intelligent Transportation Systems Magazine, 11(3), 105–116. https://doi.org/10.1109/MITS.2019.2919500
+* Fu, M., Rothfeld, R., & Antoniou, C. (2019). Exploring Preferences for Transportation Modes in an Urban Air Mobility Environment: Munich Case Study. Transportation Research Record. https://doi.org/10.1177/0361198119843858
+* Rothfeld, R. L., Fu, M., & Antoniou, C. (2019). Analysis of Urban Air Mobility’s Transport Performance in Munich Metropolitan Region. In mobil.TUM 2019. https://doi.org/10.13140/RG.2.2.15444.42886
+* Straubinger, A., & Rothfeld, R. (2018). Identification of Relevant Aspects for Personal Air Transport System Integration in Urban Mobility Modelling. Transport Research Arena TRA.
+* Rothfeld, R. L., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. 2018 Modeling and Simulation Technologies Conference, 1–10. https://doi.org/10.2514/6.2018-3891
+* Rothfeld, R. L., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Initial Analysis of Urban Air Mobility’s Transport Performance in Sioux Falls. 2018 Aviation Technology, Integration, and Operations Conference, 1–13. https://doi.org/10.2514/6.2018-2886
+* Shamiyeh, M., Rothfeld, R., & Hornung, M. (2018). A performance benchmark of recent personal air vehicle concepts for urban air mobility. 31st Congress of the International Council of the Aeronautical Sciences, ICAS.
 * M. Balac, A. Vetrella, & K.W. Axhausen (2018). "Towards the integration of aerial transportation in urban settings", 97th Transportation Research Board Conference, Washington D.C.,USA, 2018.
