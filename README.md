@@ -52,9 +52,19 @@ List of all current features provided by MATSim-UAM with the version of feature 
 
 ## Versions and Change Log
 
-### v2.1 _(work in progress)_
+### v2.1
 TODO:
 - update documentation for scenario creation and travel time scripts
+
+UAM vehicles types:
+- must now include maximum range (applied per leg)
+
+UAM stations:
+- removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
+
+Dispatcher:
+- Now separately stores available UAM vehicles based on vehicle type
+- Requests remain being resolved in a queue but based on requested range and vehicle type (if the required ranged vehicle type is unavailable, the request is being deferred, other requests may still be resolved if a vehicle of their required type is available)
 
 Station selection:
 - Introduction of isStaticSearchRadius config parameter (default: true), if set to false, the search radius is not an absolut distance for possible UAM stations from any given location but is read as a percentage which is being applied to the beeline distance between origin and destination location.
