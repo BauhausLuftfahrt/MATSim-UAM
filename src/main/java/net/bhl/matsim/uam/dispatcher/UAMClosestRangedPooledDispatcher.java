@@ -78,12 +78,6 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 			return;
 		}
 
-		int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
-		if (index <= 0)
-			return;
-
-		UAMTask preTask = (UAMTask) schedule.getTasks().get(index - 1);
-		//TODO when closing when flying with previous pickup, vehicle never flies...
 		if (task instanceof UAMPickupTask)
 			this.enRouteOrAwaitingPickupVehicles.remove(vehicle);
 	}
