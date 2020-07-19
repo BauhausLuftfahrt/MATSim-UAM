@@ -57,8 +57,9 @@ General
 - removal of unused code and marking others as deprecated
 
 UAM vehicles types and stations:
-- vehicle types must now include maximum range (applied per leg) **No backwards compatibility of input uam files.**
+- vehicle types must now include maximum range (applied per leg)
 - removal of all landing and parking space capacity fragments (their inclusion would warant new implementation)
+- **No backwards compatibility of input uam files.**
 
 Dispatcher:
 - Now separately stores available UAM vehicles based on vehicle type
@@ -83,7 +84,7 @@ Updates the extension to MATSim version 11 and current DVRP version. Major chang
 
 ### v1.1
 Input/output:
-- UAM-enabled MATSim networks are required to provide an flight attribute indicating every flight links' flight segment (e.g. vertical or horizontal). **No backwards compatibility of input network files.**
+- UAM-enabled MATSim networks are required to provide an flight attribute indicating every flight links' flight segment (e.g. vertical or horizontal) - **No backwards compatibility of input network files.**
 - Included script for generating networkChangeEvents (files) from simulation results
 
 Logging:
