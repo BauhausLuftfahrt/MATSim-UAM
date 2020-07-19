@@ -46,7 +46,6 @@ public class RunCreateUAMScenario {
 
 	private static boolean use_z_values = false;
 
-	private static String name_uam_vehicles = "uam_vh_";
 	private static String name_uam_nodes = "uam_st_";
 	private static String name_uam_waypoints = "uam_wp_";
 	private static String name_uam_ground_link = "uam_gl-";
@@ -545,7 +544,7 @@ public class RunCreateUAMScenario {
 				for (String[] station : Iterables.skip(stations, 1)) {
 					for (int j = 0; j < vehiclesperstation; j++) {
 						List<Tuple<String, String>> atts = new ArrayList<>();
-						atts.add(new Tuple<>("id", name_uam_vehicles + station[0] + "-" + j));
+						atts.add(new Tuple<>("id", "st" + station[0] + "-" + j));
 						atts.add(new Tuple<>("type", type));
 						atts.add(new Tuple<>("initialstation", station[0]));
 						atts.add(new Tuple<>("starttime", starttime));
