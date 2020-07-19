@@ -9,7 +9,6 @@ import net.bhl.matsim.uam.schedule.*;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
-import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.fleet.Fleet;
@@ -25,7 +24,7 @@ import java.util.*;
  * @author RRothfeld (Raoul Rothfeld)
  */
 public class UAMClosestRangedPooledDispatcher implements Dispatcher {
-	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
+	final Set<UAMVehicle> enRouteOrAwaitingPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;
 	final private Queue<UAMRequest> pendingRequests = new LinkedList<>();
@@ -69,14 +68,24 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 
 	@Override
 	public void onNextTaskStarted(UAMVehicle vehicle) {
-		UAMTask task = (UAMTask) vehicle.getSchedule().getCurrentTask();
-		if (task.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
+		Schedule schedule = vehicle.getSchedule();
+		UAMTask task = (UAMTask) schedule.getCurrentTask();
+
+		if (task instanceof UAMStayTask) {
 			Coord coord = ((UAMStayTask) task).getLink().getCoord();
 			this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(), vehicle);
 			this.availableVehicleLocations.put(vehicle, coord);
+			return;
+		}
 
-		} else if (task.getUAMTaskType() == UAMTask.UAMTaskType.PICKUP)
-			this.enRouteToPickupVehicles.remove(vehicle);
+		int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
+		if (index <= 0)
+			return;
+
+		UAMTask preTask = (UAMTask) schedule.getTasks().get(index - 1);
+		//TODO when closing when flying with previous pickup, vehicle never flies...
+		if (task instanceof UAMPickupTask)
+			this.enRouteOrAwaitingPickupVehicles.remove(vehicle);
 	}
 
 	private void reoptimize(double now) {
@@ -112,14 +121,14 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 
 				appender.schedule(request, vehicle, now);
 				if (vehicle.getCapacity() > 1)
-					enRouteToPickupVehicles.add(vehicle);
+					enRouteOrAwaitingPickupVehicles.add(vehicle);
 			} else {
 				if (!findEligableEnRouteVehicle(request))
 					deferredRequests.add(request);
 			}
 		}
 
-		this.pendingRequests.addAll(pendingRequests);
+		this.pendingRequests.addAll(deferredRequests);
 	}
 
 	/**
@@ -128,31 +137,30 @@ public class UAMClosestRangedPooledDispatcher implements Dispatcher {
 	 * capacity constraint is met, otherwise false.
 	 */
 	private boolean findEligableEnRouteVehicle(UAMRequest request) {
-		for (UAMVehicle vehicle : enRouteToPickupVehicles) {
+		for (UAMVehicle vehicle : enRouteOrAwaitingPickupVehicles) {
 			Schedule schedule = vehicle.getSchedule();
-			if (schedule.getCurrentTask() instanceof UAMFlyTask) {
-				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
+			int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
 
-				if (schedule.getTasks().get(index + 1) instanceof UAMPickupTask) {
-					UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index + 1);
-					UAMRequest oldReq = (UAMRequest) pickupTask.getRequests().toArray()[0];
-					if (oldReq.getToLink() == request.getToLink() && oldReq.getFromLink() == request.getFromLink()) {
-						request.setDistance(oldReq.getDistance());
-						pickupTask.getRequests().add(request);
-						UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 3);
-						dropOff.getRequests().add(request);
-
-						if (vehicle.getCapacity() >= dropOff.getRequests().size())
-							this.enRouteToPickupVehicles.remove(vehicle);
-
-						return true;
-					}
-				} else {
-					Logger log = Logger.getLogger(UAMClosestRangedPooledDispatcher.class);
-					log.warn("Task following a UAMFlyTask is unexpectedly not a UAMPickupTask for vehicle: "
-							+ vehicle.getId());
-				}
+			if (!(schedule.getTasks().get(index) instanceof UAMPickupTask)) {
+				index++;
+				if (index >= schedule.getTaskCount() || !(schedule.getTasks().get(index) instanceof UAMPickupTask))
+					continue;
 			}
+
+			UAMPickupTask pickupTask = (UAMPickupTask) schedule.getTasks().get(index);
+			UAMRequest oldReq = (UAMRequest) pickupTask.getRequests().toArray()[0];
+			if (oldReq.getToLink() == request.getToLink() && oldReq.getFromLink() == request.getFromLink()) {
+				request.setDistance(oldReq.getDistance());
+				pickupTask.getRequests().add(request);
+				UAMDropoffTask dropOff = (UAMDropoffTask) schedule.getTasks().get(index + 2);
+				dropOff.getRequests().add(request);
+
+				if (vehicle.getCapacity() <= dropOff.getRequests().size())
+					this.enRouteOrAwaitingPickupVehicles.remove(vehicle);
+
+				return true;
+			}
+
 		}
 
 		return false;

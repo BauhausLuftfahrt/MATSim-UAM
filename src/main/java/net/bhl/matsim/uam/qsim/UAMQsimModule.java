@@ -63,9 +63,6 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Override
 	protected void configureQSim() {
-		install(new VrpAgentSourceQSimModule(getMode()));
-		install(new PassengerEngineQSimModule(getMode()));
-
 		bindModal(PassengerRequestCreator.class).to(UAMRequestCreator.class);
 		bindModal(DynActionCreator.class).to(UAMActionCreator.class);
 		bindModal(VrpOptimizer.class).to(UAMOptimizer.class);
@@ -84,6 +81,9 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
+
+		install(new VrpAgentSourceQSimModule(getMode()));
+		install(new PassengerEngineQSimModule(getMode()));
 	}
 
 	@Provides
