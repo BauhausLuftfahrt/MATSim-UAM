@@ -52,7 +52,7 @@ List of all current features provided by MATSim-UAM with the version of feature 
 ## Versions and Change Log
 
 ### v2.1
-General
+General:
 - Updated documentation for scenario creation and travel time scripts
 - Refactoring (e.g. replacement of "landing stations" with "stations")
 - Removal of unused code and marking others as deprecated
