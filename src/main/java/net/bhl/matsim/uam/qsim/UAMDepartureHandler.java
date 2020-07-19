@@ -32,7 +32,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// we request uam when the agent starts its access leg to the nearest station
 		if (agent instanceof PlanAgent) {
-			if (agent.getMode().startsWith("access_uam")) {
+			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
@@ -45,7 +45,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 			} else if (agent.getMode().equals("transit_walk") || agent.getMode().equals("access_walk")) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-				if (isuamtrip(plan, planElementsIndex)) {
+				if (isUamTrip(plan, planElementsIndex)) {
 					if (!bookedTrips.contains(agent.getId())) {
 						double travelTime = getTravelTime(plan, planElementsIndex);
 						final Leg uamLeg = getUamLeg(plan, planElementsIndex);
@@ -57,7 +57,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 					}
 				}
 
-			} else if (agent.getMode().equals("uam"))
+			} else if (agent.getMode().equals(UAMModes.UAM_MODE))
 				bookedTrips.remove(agent.getId());
 		}
 
@@ -65,12 +65,10 @@ public class UAMDepartureHandler implements DepartureHandler {
 	}
 
 	private Leg getUamLeg(Plan plan, Integer planElementsIndex) {
-
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(planElementsIndex);
-
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals("uam"))
+				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
 					return (Leg) pe;
 			}
 			planElementsIndex++;
@@ -78,33 +76,28 @@ public class UAMDepartureHandler implements DepartureHandler {
 	}
 
 	private double getTravelTime(Plan plan, Integer planElementsIndex) {
-
 		boolean found = false;
 		int index = planElementsIndex;
 		double travelTime = 0.0;
 		while (!found) {
 			PlanElement pe = plan.getPlanElements().get(index);
-
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals("uam"))
+				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
 					found = true;
 				else
 					travelTime += ((Leg) pe).getTravelTime();
 			}
 			index++;
-
 		}
-
 		return travelTime;
 	}
 
-	private boolean isuamtrip(Plan plan, Integer planElementsIndex) {
-
+	private boolean isUamTrip(Plan plan, Integer planElementsIndex) {
 		int index = planElementsIndex + 1;
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(index);
 			if (pe instanceof Activity) {
-				if (((Activity) pe).getType().equals("uam_interaction"))
+				if (((Activity) pe).getType().equals(UAMModes.UAM_INTERACTION))
 					return true;
 				else if (((Activity) pe).getType().equals("pt interaction")) {
 					index++;
