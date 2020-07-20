@@ -75,84 +75,68 @@ public class UAMSingleRideAppender {
 		UAMRequest request = task.request;
 		UAMVehicle vehicle = task.vehicle;
 		double now = task.time;
-
 		Schedule schedule = vehicle.getSchedule();
 
-		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
-		// and create a stayTask with it
-		double startTime = 0.0;
+		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule);
+		boolean requiresPickupFlight = !stayTask.getLink().getId().equals(request.getFromLink().getId());
+
+		double startTime = stayTask.getStatus() == Task.TaskStatus.STARTED ? now : stayTask.getBeginTime();
 		double scheduleEndTime = schedule.getEndTime();
 
-		if (stayTask.getStatus() == Task.TaskStatus.STARTED) {
-			startTime = now;
-		} else {
-			startTime = stayTask.getBeginTime();
-		}
-		UAMStation stationDestination = stations.getNearestUAMStation(request.getToLink());
-		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(), startTime,
-				plainPickupPath, travelTime);
-		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
-				pickupPath.getArrivalTime() + vehicle.getBoardingTime(), plainDropoffPath, travelTime); // departure
-		// time =
-		// arrival time
-		// + boarding
-		// time
+		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(),
+				startTime, plainPickupPath, travelTime);
+		UAMFlyTask pickupFlyTask = new UAMFlyTask(pickupPath);
 
-		UAMFlyTask pickupDriveTask = new UAMFlyTask(pickupPath); // Vehicle flies to pick up the passenger
-		double pickUpTaskStartTime = startTime;
-		//For the case when the Aircraft is already at the station there will be no pickUpDriveTask
-		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
-			pickUpTaskStartTime = pickupPath.getArrivalTime();
-		}
+		double pickUpTaskStartTime = request.getEarliestStartTime();
+		// For the case when the Aircraft is not already at the correct station:
+		if (requiresPickupFlight)
+			pickUpTaskStartTime = Math.max(pickUpTaskStartTime, pickupPath.getArrivalTime());
 
-		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, // Vehicle picks up the passenger at
-				// the station
-				pickUpTaskStartTime + vehicle.getBoardingTime(), // end time = arrival time + boarding time
+		double flyTaskStartTime = pickUpTaskStartTime + vehicle.getBoardingTime();
+		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, flyTaskStartTime,
 				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
 
-		UAMFlyTask dropoffDriveTask = new UAMFlyTask(dropoffPath, Arrays.asList(request)); // Vehicle flies to drop off
-		// the passenger
-		UAMDropoffTask dropoffTask = new UAMDropoffTask(dropoffPath.getArrivalTime(), // Vehicle drops off the passenger
-				// at the station
-				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime(), // Dropoff task lasts according to the
-				// Deboarding time selected.
+		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
+				flyTaskStartTime, plainDropoffPath, travelTime);
+		UAMFlyTask dropoffFlyTask = new UAMFlyTask(dropoffPath, Arrays.asList(request));
+
+		double dropOffStartTime =  flyTaskStartTime + dropoffPath.getTravelTime();
+		double tatStartTime = dropOffStartTime + vehicle.getDeboardingTime();
+		UAMDropoffTask dropoffTask = new UAMDropoffTask(dropOffStartTime, tatStartTime,
 				request.getToLink(), vehicle.getDeboardingTime(), Arrays.asList(request));
 
-		UAMTurnAroundTask turnAroundTask = new UAMTurnAroundTask(
-				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime(), // Vehicle has a TurnAround time after
-				// DropOff task
-				dropoffPath.getArrivalTime() + vehicle.getDeboardingTime() + vehicle.getTurnAroundTime(),
+		double tatEndTime = tatStartTime + vehicle.getTurnAroundTime();
+		UAMTurnAroundTask turnAroundTask = new UAMTurnAroundTask(tatStartTime, tatEndTime,
 				request.getToLink(), Arrays.asList(request));
 
 		if (stayTask.getStatus() == Task.TaskStatus.STARTED) {
-			stayTask.setEndTime(startTime);
-		} else {
-			schedule.removeLastTask();
-		}
+			double stayEndTime = pickUpTaskStartTime;
+			if (requiresPickupFlight)
+				stayEndTime = startTime;
+			stayTask.setEndTime(stayEndTime);
 
-		if (!stayTask.getLink().getId().equals(request.getFromLink().getId())) {
-			schedule.addTask(pickupDriveTask);
-		}
+			if (requiresPickupFlight)
+				schedule.addTask(pickupFlyTask);
+		} else
+			schedule.removeLastTask();
+
 		schedule.addTask(pickupTask);
-		schedule.addTask(dropoffDriveTask);
+		schedule.addTask(dropoffFlyTask);
 		schedule.addTask(dropoffTask);
 		schedule.addTask(turnAroundTask);
 
 		double distance = 0.0;
-		for (int i = 0; i < dropoffPath.getLinkCount(); i++) {
+		for (int i = 0; i < dropoffPath.getLinkCount(); i++)
 			distance += dropoffPath.getLink(i).getLength();
-		}
-
 		request.setDistance(distance);
 
-		if (turnAroundTask.getEndTime() < scheduleEndTime) {
+		/*
+		 * If TurnAround task ends before the scheduleEndTime, a new StayTask is created
+		 * and added, beginning at the end of TurnAround Task and ending at
+		 * scheduleEndTime. Why(What is the case that this would happen?)??
+		 */
+		if (turnAroundTask.getEndTime() < scheduleEndTime)
 			schedule.addTask(new UAMStayTask(turnAroundTask.getEndTime(), scheduleEndTime, turnAroundTask.getLink()));
-			/*
-			 * If TurnAround task ends before the scheduleEndTime, a new StayTask is created
-			 * and added, beginning at the end of TurnAround Task and ending at
-			 * scheduleEndTime. Why(What is the case that this would happen?)??
-			 */
-		}
 	}
 
 	public void update() {
