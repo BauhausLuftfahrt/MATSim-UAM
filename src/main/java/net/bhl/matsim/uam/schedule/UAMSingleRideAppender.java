@@ -72,9 +72,6 @@ public class UAMSingleRideAppender {
 		Future<Path> pickup = router.calcLeastCostPath(stayTask.getLink().getToNode(),
 				request.getFromLink().getFromNode(), startTime, null, null);
 
-		if (stayTask.getLink().getToNode() != pickup.get().links.get(0).getFromNode())
-			System.err.print("ss");
-
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(),
 				startTime, pickup.get(), travelTime);
 		UAMFlyTask pickupFlyTask = new UAMFlyTask(pickupPath);
