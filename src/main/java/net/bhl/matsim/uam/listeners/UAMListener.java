@@ -50,7 +50,7 @@ public class UAMListener implements IterationEndsListener {
 			e.printStackTrace();
 		}
 
-		// UAMUtilitiesData
+/*		// UAMUtilitiesData
 		if (!UAMUtilitiesData.tripOptions.isEmpty()) {
 			BufferedWriter writerTrip = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamTripUtilities.csv"));
 
@@ -103,6 +103,6 @@ public class UAMListener implements IterationEndsListener {
 					e.printStackTrace();
 				}
 			}
-		}
+		}*/
 	}
 }
