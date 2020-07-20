@@ -48,21 +48,7 @@ public class UAMSingleRideAppender {
 	 *                AppendTask is added to the AppendTask list.
 	 */
 	public void schedule(UAMRequest request, UAMVehicle vehicle, double now) {
-		Schedule schedule = vehicle.getSchedule();
-		UAMStayTask stayTask = (UAMStayTask) Schedules.getLastTask(schedule); // selects the last task in the schedule
-		Future<Path> pickup = router.calcLeastCostPath(stayTask.getLink().getToNode(), // pickup path is from downstream
-				// node of stayTask Link to
-				// upstream node from request
-				// origin Link.
-				request.getFromLink().getFromNode(), now, null, null);
-		Future<Path> dropoff = router.calcLeastCostPath(request.getFromLink().getToNode(), // dropoff path is from
-				// downstream node of
-				// request origin link to
-				// upstream node from
-				// request destination Link.
-				request.getToLink().getFromNode(), now, null, null);
-
-		tasks.add(new AppendTask(request, vehicle, now, pickup, dropoff)); // adds the task to the tasks list
+		tasks.add(new AppendTask(request, vehicle, now)); // adds the task to the tasks list
 	}
 
 	// There is a difference between an AppendTask and a Task that implements the
@@ -71,7 +57,7 @@ public class UAMSingleRideAppender {
 	// Uses the AppendTasks from the list containing the paths to generate the Tasks
 	// (Tasks that implements the Task interface) and add them in order to the
 	// vehicle schedule
-	public void schedule(AppendTask task, Path plainPickupPath, Path plainDropoffPath) {
+	public void schedule(AppendTask task) throws ExecutionException, InterruptedException {
 		UAMRequest request = task.request;
 		UAMVehicle vehicle = task.vehicle;
 		double now = task.time;
@@ -83,8 +69,14 @@ public class UAMSingleRideAppender {
 		double startTime = stayTask.getStatus() == Task.TaskStatus.STARTED ? now : stayTask.getBeginTime();
 		double scheduleEndTime = schedule.getEndTime();
 
+		Future<Path> pickup = router.calcLeastCostPath(stayTask.getLink().getToNode(),
+				request.getFromLink().getFromNode(), startTime, null, null);
+
+		if (stayTask.getLink().getToNode() != pickup.get().links.get(0).getFromNode())
+			System.err.print("ss");
+
 		VrpPathWithTravelData pickupPath = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(),
-				startTime, plainPickupPath, travelTime);
+				startTime, pickup.get(), travelTime);
 		UAMFlyTask pickupFlyTask = new UAMFlyTask(pickupPath);
 
 		double pickUpTaskStartTime = request.getEarliestStartTime();
@@ -96,8 +88,11 @@ public class UAMSingleRideAppender {
 		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, flyTaskStartTime,
 				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
 
+		Future<Path> dropoff = router.calcLeastCostPath(request.getFromLink().getToNode(),
+				request.getToLink().getFromNode(), flyTaskStartTime, null, null);
+
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
-				flyTaskStartTime, plainDropoffPath, travelTime);
+				flyTaskStartTime, dropoff.get(), travelTime);
 		UAMFlyTask dropoffFlyTask = new UAMFlyTask(dropoffPath, Arrays.asList(request));
 
 		double dropOffStartTime =  flyTaskStartTime + dropoffPath.getTravelTime();
@@ -109,34 +104,24 @@ public class UAMSingleRideAppender {
 		UAMTurnAroundTask turnAroundTask = new UAMTurnAroundTask(tatStartTime, tatEndTime,
 				request.getToLink(), Arrays.asList(request));
 
-		if (stayTask.getStatus() == Task.TaskStatus.STARTED) {
-			double stayEndTime = pickUpTaskStartTime;
-			if (requiresPickupFlight)
-				stayEndTime = startTime;
-			stayTask.setEndTime(stayEndTime);
+		double stayEndTime = pickUpTaskStartTime;
+		if (requiresPickupFlight)
+			stayEndTime = startTime;
+		stayTask.setEndTime(stayEndTime);
 
-			if (requiresPickupFlight)
-				schedule.addTask(pickupFlyTask);
-		} else
-			schedule.removeLastTask();
+		if (requiresPickupFlight) {
+			schedule.addTask(pickupFlyTask);
+
+			UAMStayTask uamStayTask = new UAMStayTask(pickupFlyTask.getEndTime(), pickUpTaskStartTime,
+					pickupFlyTask.getPath().getToLink());
+			schedule.addTask(uamStayTask);
+		}
 
 		schedule.addTask(pickupTask);
 		schedule.addTask(dropoffFlyTask);
 		schedule.addTask(dropoffTask);
 		schedule.addTask(turnAroundTask);
-
-		double distance = 0.0;
-		for (int i = 0; i < dropoffPath.getLinkCount(); i++)
-			distance += dropoffPath.getLink(i).getLength();
-		request.setDistance(distance);
-
-		/*
-		 * If TurnAround task ends before the scheduleEndTime, a new StayTask is created
-		 * and added, beginning at the end of TurnAround Task and ending at
-		 * scheduleEndTime. Why(What is the case that this would happen?)??
-		 */
-		if (turnAroundTask.getEndTime() < scheduleEndTime)
-			schedule.addTask(new UAMStayTask(turnAroundTask.getEndTime(), scheduleEndTime, turnAroundTask.getLink()));
+		schedule.addTask(new UAMStayTask(turnAroundTask.getEndTime(), scheduleEndTime, turnAroundTask.getLink()));
 	}
 
 	public void update() {
@@ -144,25 +129,14 @@ public class UAMSingleRideAppender {
 		// just been added and which ones are still
 		// to be processed. Depends mainly on if "update" is called before new
 		// tasks are submitted or after ...
-
 		try {
-			for (AppendTask task : tasks) {
-				schedule(task, task.pickup.get(), task.dropoff.get());
-			}
+			for (AppendTask task : tasks)
+				schedule(task);
 		} catch (ExecutionException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 
 		tasks.clear();
-
-		/*
-		 * Iterator<AppendTask> iterator = tasks.iterator();
-		 *
-		 * while (iterator.hasNext()) { AppendTask task = iterator.r();
-		 *
-		 * if (task.pickup.isDone() && task.dropoff.isDone()) { schedule(task);
-		 * iterator.remove(); } }
-		 */
 	}
 
 	public void setStations(UAMStations stations) {
@@ -173,17 +147,11 @@ public class UAMSingleRideAppender {
 		final public UAMRequest request;
 		final public UAMVehicle vehicle;
 
-		final public Future<Path> pickup;
-		final public Future<Path> dropoff;
-
 		final public double time;
 
-		public AppendTask(UAMRequest request, UAMVehicle vehicle, double time, Future<Path> pickup,
-						  Future<Path> dropoff) {
+		public AppendTask(UAMRequest request, UAMVehicle vehicle, double time) {
 			this.request = request;
 			this.vehicle = vehicle;
-			this.pickup = pickup;
-			this.dropoff = dropoff;
 			this.time = time;
 		}
 	}
