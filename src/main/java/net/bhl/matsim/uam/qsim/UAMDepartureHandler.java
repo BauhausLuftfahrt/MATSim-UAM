@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.qsim;
 
 import com.google.inject.Inject;
+import net.bhl.matsim.uam.events.UAMPrebookVehicle;
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -10,9 +11,11 @@ import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
 import org.matsim.core.mobsim.framework.PlanAgent;
+import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,9 +31,31 @@ public class UAMDepartureHandler implements DepartureHandler {
 	@DvrpMode(UAMModes.UAM_MODE)
 	private PassengerEngine passengerEngine;
 
+	@Inject
+	private QSim qsim;
+
+	private Set<String> modesRequiringManualUAMPrebooking = new HashSet<>();
+
+	public void initiateUAMDepartureHandler() {
+		if (modesRequiringManualUAMPrebooking.isEmpty()) {
+			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(qsim.getScenario(), this));
+			String[] split = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode").split(",");
+			modesRequiringManualUAMPrebooking.addAll(Arrays.asList(split));
+		}
+		// else: already initiated
+	}
+
+	public void manualUAMPrebooking(String mode, double now, Id<Person> id, Id<Link> linkId) {
+		if (modesRequiringManualUAMPrebooking.contains(mode))
+			handleDeparture(now, qsim.getAgents().get(id), linkId);
+	}
+
 	@Override
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
-		// we request uam when the agent starts its access leg to the nearest station
+		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
+		initiateUAMDepartureHandler();
+
+		// TODO WORKING FOR PT?
 		if (agent instanceof PlanAgent) {
 			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
