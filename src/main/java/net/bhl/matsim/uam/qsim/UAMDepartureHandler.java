@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import net.bhl.matsim.uam.events.UAMPrebookVehicle;
 import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
@@ -14,6 +15,7 @@ import org.matsim.core.mobsim.framework.PlanAgent;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
+import sun.rmi.transport.Transport;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,8 +41,12 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public void initiateUAMDepartureHandler() {
 		if (modesRequiringManualUAMPrebooking.isEmpty()) {
 			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(qsim.getScenario(), this));
-			String[] split = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode").split(",");
-			modesRequiringManualUAMPrebooking.addAll(Arrays.asList(split));
+
+			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
+			if (mainMode.contains(UAMModes.UAM_ACCESS + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_ACCESS + TransportMode.car);
+			if (mainMode.contains(UAMModes.UAM_EGRESS + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_EGRESS + TransportMode.car);
 		}
 		// else: already initiated
 	}
@@ -55,6 +61,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
 		initiateUAMDepartureHandler();
 
+		// TODO ONLY WORKS IF FORCE INITIALISATION BEFORE QSIM STARTS?
 		// TODO WORKING FOR PT?
 		if (agent instanceof PlanAgent) {
 			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
