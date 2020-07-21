@@ -15,9 +15,7 @@ import org.matsim.core.mobsim.framework.PlanAgent;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
-import sun.rmi.transport.Transport;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,12 +34,13 @@ public class UAMDepartureHandler implements DepartureHandler {
 	@Inject
 	private QSim qsim;
 
-	private Set<String> modesRequiringManualUAMPrebooking = new HashSet<>();
+	private Set<String> modesRequiringManualUAMPrebooking;
 
 	public void initiateUAMDepartureHandler() {
-		if (modesRequiringManualUAMPrebooking.isEmpty()) {
+		if (modesRequiringManualUAMPrebooking == null) {
 			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(qsim.getScenario(), this));
 
+			modesRequiringManualUAMPrebooking = new HashSet<>();
 			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
 			if (mainMode.contains(UAMModes.UAM_ACCESS + TransportMode.car))
 				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_ACCESS + TransportMode.car);
@@ -60,9 +59,8 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
 		initiateUAMDepartureHandler();
+		// TODO is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
 
-		// TODO ONLY WORKS IF FORCE INITIALISATION BEFORE QSIM STARTS?
-		// TODO WORKING FOR PT?
 		if (agent instanceof PlanAgent) {
 			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
@@ -74,7 +72,8 @@ public class UAMDepartureHandler implements DepartureHandler {
 						leg.getRoute().getEndLinkId(), now + uam_interaction.getMaximumDuration()
 								+ (accessLeg.getTravelTime() <= 0 ? 1 : accessLeg.getTravelTime()));
 
-			} else if (agent.getMode().equals("transit_walk") || agent.getMode().equals("access_walk")) {
+			} else if (agent.getMode().equals(TransportMode.transit_walk)
+					|| agent.getMode().equals(TransportMode.access_walk)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				if (isUamTrip(plan, planElementsIndex)) {
