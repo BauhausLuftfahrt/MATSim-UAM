@@ -38,7 +38,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 	public void initiateUAMDepartureHandler() {
 		if (modesRequiringManualUAMPrebooking == null) {
-			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(qsim.getScenario(), this));
+			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(this));
 
 			modesRequiringManualUAMPrebooking = new HashSet<>();
 			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
