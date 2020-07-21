@@ -86,7 +86,6 @@ public class UAMModule extends AbstractModule {
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
-		// addEventHandlerBinding().to(UAMEventHandler.class);
 
 		// we need to bind our router for the uam trips
 		addRoutingModuleBinding(UAMModes.UAM_MODE).toProvider(UAMRoutingModuleProvider.class);
@@ -111,7 +110,6 @@ public class UAMModule extends AbstractModule {
 
 		bind(Network.class).annotatedWith(Names.named("uam"))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
-
 	}
 
 	@Provides
