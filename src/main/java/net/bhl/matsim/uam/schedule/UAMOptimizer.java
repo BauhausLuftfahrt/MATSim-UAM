@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.schedule;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.network.Link;
@@ -27,7 +27,7 @@ import java.util.List;
 @Singleton
 public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
-	private Dispatcher dispatcher;
+	private UAMDispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
 
