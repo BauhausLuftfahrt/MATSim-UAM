@@ -24,7 +24,7 @@ import java.util.*;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Deprecated
-public class UAMClosestPooledDispatcher implements Dispatcher {
+public class UAMClosestPooledDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;

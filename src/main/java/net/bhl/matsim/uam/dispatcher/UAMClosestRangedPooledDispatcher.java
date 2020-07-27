@@ -6,7 +6,6 @@ import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.*;
-import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
@@ -23,7 +22,7 @@ import java.util.*;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class UAMClosestRangedPooledDispatcher implements Dispatcher {
+public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteOrAwaitingPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;

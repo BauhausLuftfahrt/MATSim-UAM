@@ -18,7 +18,7 @@ import java.util.Queue;
  */
 @Deprecated
 @Singleton
-public class UAMRandomDispatcher implements Dispatcher {
+public class UAMRandomDispatcher implements UAMDispatcher {
 
 	@Inject
 	final private UAMSingleRideAppender appender;

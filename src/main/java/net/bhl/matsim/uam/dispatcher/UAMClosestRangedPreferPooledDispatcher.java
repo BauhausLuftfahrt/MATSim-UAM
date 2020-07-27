@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class UAMClosestRangedPreferPooledDispatcher implements Dispatcher {
+public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteOrAwaitingPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;

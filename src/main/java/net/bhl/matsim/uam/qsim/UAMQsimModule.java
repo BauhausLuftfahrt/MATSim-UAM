@@ -4,7 +4,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPreferPooledDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
@@ -103,12 +103,12 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Provides
 	@Singleton
-	List<Dispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-										@Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
+                                           @Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
 
-		Dispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
+		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
 
-		List<Dispatcher> dispatchers = new ArrayList<>();
+		List<UAMDispatcher> dispatchers = new ArrayList<>();
 		dispatchers.add(dispatcher);
 		return dispatchers;
 	}
