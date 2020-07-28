@@ -141,7 +141,6 @@ public class UAMStrategyUtils {
 		}
 
 		switch (mode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				if (carNetwork.getLinks().get(from.getId()) != null)
 					from = carNetwork.getLinks().get(from.getId());

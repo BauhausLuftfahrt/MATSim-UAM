@@ -110,7 +110,6 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		double currentTime = departureTime;
 
 		switch (uamRoute.accessMode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				Link accessOriginLink = carNetwork.getLinks().get(fromFacility.getLinkId());
 				if (accessOriginLink == null)
@@ -218,7 +217,6 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 		/* egress leg */
 		switch (uamRoute.egressMode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				Link egressDestinationLink = carNetwork.getLinks().get(toFacility.getLinkId());
 				if (egressDestinationLink == null)
