@@ -36,6 +36,7 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunCreateUAMPersonAttributes {
 	public static void main(final String[] args) {
 		// cmd-line input: input-config

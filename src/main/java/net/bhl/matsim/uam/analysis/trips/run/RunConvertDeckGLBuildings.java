@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.utils;
+package net.bhl.matsim.uam.analysis.trips.run;
 
 import java.io.*;
 

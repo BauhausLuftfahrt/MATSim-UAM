@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.scenario;
+package net.bhl.matsim.uam.scenario.utils;
 
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
@@ -19,6 +19,7 @@ import org.matsim.core.scenario.ScenarioUtils;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunSamplePopulation {
 	public static void main(final String[] args) {
 		RunSamplePopulation app = new RunSamplePopulation();

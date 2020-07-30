@@ -258,7 +258,7 @@ Executes [BatchConvertUAMStationsFromUAMVehicles](#batchconvertuamstationsfromua
 ## 4. Other Utility Scripts
 ### RunConvertDeckGLBuildings
 Convert QGIS geojson file from OSM buildings to deck.gl-readable buildings input file.
-* Location: net.bhl.matsim.uam.utils.RunConvertDeckGLBuildings
+* Location: net.bhl.matsim.uam.analysis.trips.run.RunConvertDeckGLBuildings
 * Arguments: GEOJSON-File
 
 ### ConvertDeckGLTripsFromEvents

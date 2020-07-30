@@ -20,6 +20,7 @@ import java.util.Random;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunAddPopulationAttributes {
 
 	private double carOwnsershipPercent = 0.75;

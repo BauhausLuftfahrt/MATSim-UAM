@@ -19,6 +19,7 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunAddModeToNetwork {
 
 	private static final String searchMode = "car";

@@ -26,6 +26,7 @@ import java.util.*;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunNetworkToSHP {
 
 	public static void main(String[] args) throws Exception {

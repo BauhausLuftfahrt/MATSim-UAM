@@ -122,7 +122,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 					accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
 				Link accessDestinationLink = carNetwork.getLinks()
 						.get(uamRoute.bestOriginStation.getLocationLink().getId());
-				String mode = "access_uam_car";
+				String mode = UAMModes.UAM_ACCESS + "car";
 				Leg carLeg = createCarLeg(accessOriginLink, accessDestinationLink, departureTime, person, routeFactory,
 						populationFactory, mode);
 				currentTime += carLeg.getTravelTime();
@@ -262,7 +262,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 						.get(uamRoute.bestDestinationStation.getLocationLink().getId());
 
 				Leg carLeg = createCarLeg(egressOriginLink, egressDestinationLink, currentTime, person, routeFactory,
-						populationFactory, "egress_uam_car");
+						populationFactory, UAMModes.UAM_EGRESS + "car");
 				trip.add(carLeg);
 				break;
 			case TransportMode.pt:

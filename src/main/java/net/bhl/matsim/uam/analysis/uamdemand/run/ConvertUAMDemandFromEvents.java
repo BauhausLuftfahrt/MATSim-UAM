@@ -43,7 +43,7 @@ public class ConvertUAMDemandFromEvents {
 				UAMModes.UAM_INTERACTION);
 
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());
-		Collection<String> networkRouteModes = Arrays.asList("car", UAMModes.UAM_MODE, "access_uam_car", "egress_uam_car");
+		Collection<String> networkRouteModes = Arrays.asList("car", UAMModes.UAM_MODE, UAMModes.UAM_ACCESS + "car", UAMModes.UAM_EGRESS + "car");
 
 		UAMListener uamListener = new UAMListener(netw, uamVehicles, stageActivityTypes, mainModeIdentifier,
 				networkRouteModes);
