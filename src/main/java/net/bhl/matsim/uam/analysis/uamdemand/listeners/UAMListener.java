@@ -54,7 +54,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 		this.network = network;
 		this.stageActivityTypes = stageActivityTypes;
 		Set<String> modes = new HashSet<>();
-		modes.add("uam");
+		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter = new TransportModeNetworkFilter(this.network);
 		filter.filter(networkUAM, modes);

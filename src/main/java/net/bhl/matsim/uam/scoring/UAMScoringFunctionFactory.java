@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.scoring;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
@@ -25,7 +26,7 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	final private Network network;
 
 	@Inject
-	public UAMScoringFunctionFactory(Scenario scenario, @Named("uam") Network network) {
+	public UAMScoringFunctionFactory(Scenario scenario, @Named(UAMModes.UAM_MODE) Network network) {
 		params = new SubpopulationScoringParameters(scenario);
 		standardFactory = new CharyparNagelScoringFunctionFactory(scenario);
 		this.network = network;
@@ -34,22 +35,6 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	@Override
 	public ScoringFunction createNewScoringFunction(Person person) {
 		SumScoringFunction sf = (SumScoringFunction) standardFactory.createNewScoringFunction(person);
-
-		double marginalDisutilityOfDistance = 0.0;
-		double marginalUtilityOfTraveling = 0.0;
-
-		// double marginalDisutilityOfDistance =
-		// params.getScoringParameters(person).marginalUtilityOfMoney
-		// *
-		// params.getScoringParameters(person).modeParams.get("uam").monetaryDistanceCostRate;
-		// double marginalUtilityOfTraveling =
-		// params.getScoringParameters(person).modeParams
-		// .get("uam").marginalUtilityOfTraveling_s;
-
-		// sf.addScoringFunction(
-		// new UAMScoringFunction(person, marginalDisutilityOfDistance,
-		// marginalUtilityOfTraveling, this.network));
-
 		return sf;
 	}
 }

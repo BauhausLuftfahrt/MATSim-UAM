@@ -6,6 +6,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
@@ -51,7 +52,7 @@ public class RunCreateUAMPersonAttributes {
 		Network network = scenario.getNetwork();
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(scenario.getNetwork());
 		Set<String> modes = new HashSet<>();
-		modes.add("uam");
+		modes.add(UAMModes.UAM_MODE);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 

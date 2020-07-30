@@ -6,6 +6,7 @@ import com.google.inject.name.Named;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
+import net.bhl.matsim.uam.router.UAMModes;
 import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
 import org.matsim.contrib.dvrp.schedule.Schedule;
@@ -28,11 +29,11 @@ import java.util.concurrent.Future;
  */
 public class UAMSingleRideAppender {
 	@Inject
-	@Named("uam")
+	@Named(UAMModes.UAM_MODE)
 	private ParallelLeastCostPathCalculator router;
 
 	@Inject
-	@Named("uam")
+	@Named(UAMModes.UAM_MODE)
 	private TravelTime travelTime;
 
 	private List<AppendTask> tasks = new LinkedList<>();

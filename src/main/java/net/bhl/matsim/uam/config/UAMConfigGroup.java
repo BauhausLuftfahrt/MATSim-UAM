@@ -1,5 +1,6 @@
 package net.bhl.matsim.uam.config;
 
+import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
 import org.apache.log4j.Logger;
@@ -19,7 +20,7 @@ import java.util.Set;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMConfigGroup extends ReflectiveConfigGroup {
-	public static final String GROUP_NAME = "uam";
+	public static final String GROUP_NAME = UAMModes.UAM_MODE;
 	// teleportation
 	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 	private String inputUAMFile;

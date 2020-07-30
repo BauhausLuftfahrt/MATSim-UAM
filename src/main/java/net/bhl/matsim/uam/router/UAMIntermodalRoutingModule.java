@@ -150,7 +150,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
 						network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-						uamRoute.accessMode, "access_uam_" + uamRoute.accessMode);
+						uamRoute.accessMode, UAMModes.UAM_ACCESS + uamRoute.accessMode);
 				currentTime += uavAccessLeg.getTravelTime();
 				trip.add(uavAccessLeg);
 		}
@@ -283,7 +283,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
 						uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
-						uamRoute.egressMode, "egress_uam_" + uamRoute.egressMode);
+						uamRoute.egressMode, UAMModes.UAM_EGRESS + uamRoute.egressMode);
 				trip.add(uavEgressLeg);
 		}
 
@@ -328,7 +328,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	@Override
 	public StageActivityTypes getStageActivityTypes() {
 		final CompositeStageActivityTypes stageTypes = new CompositeStageActivityTypes();
-		stageTypes.addActivityTypes(new StageActivityTypesImpl("uam_interaction"));
+		stageTypes.addActivityTypes(new StageActivityTypesImpl(UAMModes.UAM_INTERACTION));
 		return stageTypes;
 	}
 

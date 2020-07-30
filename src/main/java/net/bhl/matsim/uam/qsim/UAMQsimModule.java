@@ -104,7 +104,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	@Provides
 	@Singleton
 	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-                                           @Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+                                           @Named(UAMModes.UAM_MODE) Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
 
 		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
 

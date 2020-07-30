@@ -40,7 +40,7 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject
 	private UAMManager uamManager;
 	@Inject
-	@Named("uam")
+	@Named(UAMModes.UAM_MODE)
 	private ParallelLeastCostPathCalculator plcpc;
 	@Inject
 	private LeastCostPathCalculatorFactory lcpcf;

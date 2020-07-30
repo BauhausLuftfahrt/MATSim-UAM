@@ -41,7 +41,7 @@ public class ConfigAddUAMParameters {
 
 		// UAM planCalcScore activities
 		ConfigGroup uamInteractionParam = config.getModules().get("planCalcScore").createParameterSet("activityParams");
-		uamInteractionParam.addParam("activityType", "uam_interaction");
+		uamInteractionParam.addParam("activityType", UAMModes.UAM_INTERACTION);
 		uamInteractionParam.addParam("scoringThisActivityAtAll", "false");
 		config.getModules().get("planCalcScore").addParameterSet(uamInteractionParam);
 

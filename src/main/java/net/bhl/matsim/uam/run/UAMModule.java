@@ -81,7 +81,7 @@ public class UAMModule extends AbstractModule {
 		addControlerListenerBinding().to(WaitingStationData.class);
 
 		addControlerListenerBinding()
-				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named("uam")));
+				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named(UAMModes.UAM_MODE)));
 
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
@@ -96,27 +96,27 @@ public class UAMModule extends AbstractModule {
 		bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
-		bind(VehicleType.class).annotatedWith(Names.named("uam")).toInstance(VehicleUtils.getDefaultVehicleType());
+		bind(VehicleType.class).annotatedWith(Names.named(UAMModes.UAM_MODE)).toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
 				.toInstance(VehicleUtils.getDefaultVehicleType());
 
-		bind(TravelTime.class).annotatedWith(Names.named("uam"))
+		bind(TravelTime.class).annotatedWith(Names.named(UAMModes.UAM_MODE))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
 
 		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING))
 				.toInstance(this.networkUAM);
 		bind(Network.class).annotatedWith(Names.named("car")).toInstance(this.networkCar);
 
-		bind(Network.class).annotatedWith(Names.named("uam"))
+		bind(Network.class).annotatedWith(Names.named(UAMModes.UAM_MODE))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 	}
 
 	@Provides
 	@Singleton
-	@Named("uam")
+	@Named(UAMModes.UAM_MODE)
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-																				   @Named("uam") TravelTime travelTime) {
+																				   @Named(UAMModes.UAM_MODE) TravelTime travelTime) {
 		int parallelRouters = uamConfig.getParallelRouters();
 		if (1 == parallelRouters) {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(networkUAM,
@@ -129,15 +129,15 @@ public class UAMModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	@Named("uam")
+	@Named(UAMModes.UAM_MODE)
 	private ParallelLeastCostPathCalculatorShutdownListener provideParallelLeastCostPathCalculatorShutdownListener(
-			@Named("uam") ParallelLeastCostPathCalculator calculator) {
+			@Named(UAMModes.UAM_MODE) ParallelLeastCostPathCalculator calculator) {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
 
 	@Provides
 	@Singleton
-	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named("uam") ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.UAM_MODE) ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, plcpc);
 	}
 
