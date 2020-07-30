@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.scenario.utils;
+package net.bhl.matsim.uam.scenario.population;
 
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;

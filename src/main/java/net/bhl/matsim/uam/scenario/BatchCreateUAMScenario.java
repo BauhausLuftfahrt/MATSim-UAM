@@ -15,6 +15,7 @@ import java.util.HashSet;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class BatchCreateUAMScenario {
 	// PROVIDE PARENT FOLDER OF OUTPUT FOLDERS
 	private static String stationsString = "stations";
