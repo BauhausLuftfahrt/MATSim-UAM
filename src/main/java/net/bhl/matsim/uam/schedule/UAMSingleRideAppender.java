@@ -15,6 +15,7 @@ import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelTime;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -82,23 +83,23 @@ public class UAMSingleRideAppender {
 
 		double flyTaskStartTime = pickUpTaskStartTime + vehicle.getBoardingTime();
 		UAMPickupTask pickupTask = new UAMPickupTask(pickUpTaskStartTime, flyTaskStartTime,
-				request.getFromLink(), vehicle.getBoardingTime(), Arrays.asList(request));
+				request.getFromLink(), vehicle.getBoardingTime(), Collections.singletonList(request));
 
 		Future<Path> dropoff = router.calcLeastCostPath(request.getFromLink().getToNode(),
 				request.getToLink().getFromNode(), flyTaskStartTime, null, null);
 
 		VrpPathWithTravelData dropoffPath = VrpPaths.createPath(request.getFromLink(), request.getToLink(),
 				flyTaskStartTime, dropoff.get(), travelTime);
-		UAMFlyTask dropoffFlyTask = new UAMFlyTask(dropoffPath, Arrays.asList(request));
+		UAMFlyTask dropoffFlyTask = new UAMFlyTask(dropoffPath, Collections.singletonList(request));
 
 		double dropOffStartTime =  flyTaskStartTime + dropoffPath.getTravelTime();
 		double tatStartTime = dropOffStartTime + vehicle.getDeboardingTime();
 		UAMDropoffTask dropoffTask = new UAMDropoffTask(dropOffStartTime, tatStartTime,
-				request.getToLink(), vehicle.getDeboardingTime(), Arrays.asList(request));
+				request.getToLink(), vehicle.getDeboardingTime(), Collections.singletonList(request));
 
 		double tatEndTime = tatStartTime + vehicle.getTurnAroundTime();
 		UAMTurnAroundTask turnAroundTask = new UAMTurnAroundTask(tatStartTime, tatEndTime,
-				request.getToLink(), Arrays.asList(request));
+				request.getToLink(), Collections.singletonList(request));
 
 		double stayEndTime = pickUpTaskStartTime;
 		if (requiresPickupFlight)

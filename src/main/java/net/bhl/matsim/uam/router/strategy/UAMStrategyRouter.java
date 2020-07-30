@@ -72,8 +72,6 @@ public class UAMStrategyRouter {
 	/**
 	 * This method instantiate the strategy according to the parameter set in the Config file. Any new strategy class
 	 * created has to be added here.
-	 *
-	 * @throws Exception
 	 */
 	private void setStrategy() {
 		UAMStrategyUtils strategyUtils = new UAMStrategyUtils(this.landingStations, this.uamConfig, this.scenario,

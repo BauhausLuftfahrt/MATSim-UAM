@@ -53,7 +53,7 @@ public class RunAddPopulationAttributes {
 			p.getAttributes().putAttribute("bikeAvailability",
 					new Random().nextDouble() < bikeOwnsershipPercent ? "always" : "never");
 
-			Double rand = new Random().nextDouble();
+			double rand = new Random().nextDouble();
 			p.getAttributes().putAttribute("hasLicense", rand < carOwnsershipPercent ? "true" : "false"); // excepted as
 			// string
 			// instead

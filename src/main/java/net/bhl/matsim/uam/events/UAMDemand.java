@@ -234,6 +234,5 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 		double endTime;
 		Link originLink;
 		Link destinationLink;
-
 	}
 }

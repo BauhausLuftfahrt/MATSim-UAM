@@ -46,8 +46,7 @@ public class ConvertLinkStatsFromEvents {
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
 
 		Set<String> modes = new HashSet<>();
-		for (String mode : analyzedModes)
-			modes.add(mode);
+		modes.addAll(Arrays.asList(analyzedModes));
 		tconfig.setAnalyzedModes(modes); // TODO does nothing?
 		tconfig.setFilterModes(filterModes); // TODO does nothing?
 
@@ -70,7 +69,7 @@ public class ConvertLinkStatsFromEvents {
 		TravelTime tts = ttc.getLinkTravelTimes();
 		for (Link link : netw.getLinks().values()) {
 			Map<Integer, Double> timeDependantSpeeds = new HashMap<>();
-			for (int time = 0 + timeBinSize / 2; time < maxTime; time += timeBinSize) {
+			for (int time = timeBinSize / 2; time < maxTime; time += timeBinSize) {
 				timeDependantSpeeds.put(time, link.getLength() / tts.getLinkTravelTime(link, time, null, null));
 			}
 

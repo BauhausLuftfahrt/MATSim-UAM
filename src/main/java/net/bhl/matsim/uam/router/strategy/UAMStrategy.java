@@ -17,8 +17,6 @@ public interface UAMStrategy {
 
 	/**
 	 * @return The UAMRoute for the passenger based on the selected UAMStrategy
-	 * @throws ExecutionException
-	 * @throws InterruptedException
 	 */
 	UAMRoute getRoute(Person person, Facility fromFacility, Facility toFacility, double departureTime);
 

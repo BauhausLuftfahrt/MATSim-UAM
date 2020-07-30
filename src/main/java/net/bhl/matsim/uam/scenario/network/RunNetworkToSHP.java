@@ -42,8 +42,7 @@ public class RunNetworkToSHP {
 		if (args.length == 3) {
 			TransportModeNetworkFilter filter = new
 					TransportModeNetworkFilter(network);
-			Set<String> modes = new HashSet<>();
-			modes.addAll(new ArrayList<>(Arrays.asList(args[2].split(","))));
+			Set<String> modes = new HashSet<>(new ArrayList<>(Arrays.asList(args[2].split(","))));
 			Network newNetwork = NetworkUtils.createNetwork();
 			filter.filter(newNetwork,
 					modes);

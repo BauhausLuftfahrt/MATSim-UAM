@@ -32,7 +32,7 @@ public class ConvertDeckGLTripsFromEvents {
 	private static String outCRS = "EPSG:4326";
 	private static long deckGLanimationSpeed = 1;
 	private static long minTime = 21600;
-	private static long maxTime = minTime + (1 * 3600);
+	private static long maxTime = minTime + (3600);
 
 	static public void main(String[] args) throws IOException { // PROVIDE:
 		// NETWORK EVENTS INPUT_CRS*

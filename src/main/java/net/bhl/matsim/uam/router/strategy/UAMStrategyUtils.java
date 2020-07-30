@@ -88,8 +88,6 @@ public class UAMStrategyUtils {
 	 * @param facility the origin of the trip (if access leg); the trip final
 	 *                 destination (if egress leg).
 	 * @return a map with station Id's as keys and UAMAccessRouteData as values.
-	 * @throws ExecutionException
-	 * @throws InterruptedException
 	 */
 	Map<Id<UAMStation>, UAMAccessOptions> getAccessOptions(boolean access, Collection<UAMStation> stations,
 														   Facility facility, double departureTime) {

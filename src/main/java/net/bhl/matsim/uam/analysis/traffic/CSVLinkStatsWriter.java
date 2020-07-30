@@ -43,9 +43,7 @@ public class CSVLinkStatsWriter {
 
 		timeHeaders = new TreeSet<>();
 		for (LinkStatsItem link : links) {
-			for (Integer i : link.timeDependantSpeed.keySet()) {
-				timeHeaders.add(i);
-			}
+			timeHeaders.addAll(link.timeDependantSpeed.keySet());
 		}
 
 		for (Integer timeHead : timeHeaders) {

@@ -29,7 +29,7 @@ public class RunSamplePopulation {
 		String inputPopFilename = null;
 		String outputPopFilename = null;
 		String netFilename = null;
-		Double percentage = 0.1;
+		double percentage = 0.1;
 
 		if (args != null) {
 			if (!(args.length == 3 || args.length == 4)) {

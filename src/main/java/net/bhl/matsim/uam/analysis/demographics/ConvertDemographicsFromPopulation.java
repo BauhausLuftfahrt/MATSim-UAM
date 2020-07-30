@@ -91,8 +91,7 @@ public class ConvertDemographicsFromPopulation {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile)));
 
 		// Make columns into ordered list, write header
-		List<String> columnList = new ArrayList<>();
-		columnList.addAll(columns);
+		List<String> columnList = new ArrayList<>(columns);
 		Collections.sort(columnList);
 		System.out.println(columnList);
 
