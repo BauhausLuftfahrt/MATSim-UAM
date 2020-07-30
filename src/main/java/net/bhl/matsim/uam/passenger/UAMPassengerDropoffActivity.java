@@ -20,7 +20,7 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 	private final Set<? extends PassengerRequest> requests;
 	private final String activityType;
 
-	private double endTime = 0.0;
+	private double endTime;
 
 	public UAMPassengerDropoffActivity(PassengerEngine passengerEngine, DynAgent driver, DvrpVehicle vehicle, StayTask dropoffTask,
 									   Set<? extends PassengerRequest> requests, double dropoffDuration, String activityType) {

@@ -32,7 +32,7 @@ public class ConvertDemographicsFromPopulation {
 		int i = 0;
 		new PopulationReader(scenario).readFile(args[i++]);
 		new HouseholdsReaderV10(scenario.getHouseholds()).readFile(args[i++]);
-		String outfile = args[i++];
+		String outfile = args[i];
 
 		Map<Id<Person>, Id<Household>> householdMap = new HashMap<>();
 		for (Household household : scenario.getHouseholds().getHouseholds().values()) {

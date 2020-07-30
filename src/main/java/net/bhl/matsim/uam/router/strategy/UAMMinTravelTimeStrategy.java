@@ -36,9 +36,8 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility, toFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility, fromFacility);
-		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
-
-		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
+		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = strategyUtils.getAccessOptions(true,
+				stationsOrigin, fromFacility, departureTime);
 		// UAM flight time + access and egress travel time + process times
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		Set<String> modes = strategyUtils.getModes();

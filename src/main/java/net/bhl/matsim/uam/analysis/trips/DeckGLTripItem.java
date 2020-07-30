@@ -39,7 +39,7 @@ public class DeckGLTripItem {
 	public String convert(String inputEPSGCode, String outputEPSGCode, long timeMultiplier) {
 		Coordinate convertedSource = null;
 
-		CoordinateReferenceSystem crsIn = null;
+		CoordinateReferenceSystem crsIn;
 		CoordinateReferenceSystem crsOut = null;
 		try {
 			crsIn = MGC.getCRS(inputEPSGCode); // EPSG:code crsOut =

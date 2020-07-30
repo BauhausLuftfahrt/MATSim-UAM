@@ -12,7 +12,7 @@ public class WaitingData {
 
 	int[] count = new int[60];
 
-	private double defaultWaitTime = 0.0;
+	private double defaultWaitTime;
 
 	public WaitingData(double defaultWaitTime) {
 		this.defaultWaitTime = defaultWaitTime;
