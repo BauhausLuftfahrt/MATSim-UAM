@@ -33,7 +33,7 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 	}
 
 	public DeckGLTripListener(Network network, long minTime, long maxTime) {
-		this.deckGLTrips = new HashMap<Id<Vehicle>, List<DeckGLTripItem>>();
+		this.deckGLTrips = new HashMap<>();
 		this.network = network;
 		this.minTime = minTime;
 		this.maxTime = maxTime;
@@ -53,12 +53,7 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 		long time = (long) event.getTime();
 
 		if (minTime <= time && time <= maxTime) {
-			List<DeckGLTripItem> trips = deckGLTrips.get(event.getVehicleId());
-
-			if (trips == null) {
-				trips = new LinkedList<DeckGLTripItem>();
-				deckGLTrips.put(event.getVehicleId(), trips);
-			}
+			List<DeckGLTripItem> trips = deckGLTrips.computeIfAbsent(event.getVehicleId(), k -> new LinkedList<>());
 
 			Coord location = network.getLinks().get(event.getLinkId()).getFromNode().getCoord();
 			trips.add(new DeckGLTripItem(location, time, minTime));
@@ -70,12 +65,7 @@ public class DeckGLTripListener implements LinkEnterEventHandler, LinkLeaveEvent
 		long time = (long) event.getTime();
 
 		if (minTime <= time && time <= maxTime) {
-			List<DeckGLTripItem> trips = deckGLTrips.get(event.getVehicleId());
-
-			if (trips == null) {
-				trips = new LinkedList<DeckGLTripItem>();
-				deckGLTrips.put(event.getVehicleId(), trips);
-			}
+			List<DeckGLTripItem> trips = deckGLTrips.computeIfAbsent(event.getVehicleId(), k -> new LinkedList<>());
 
 			Coord location = network.getLinks().get(event.getLinkId()).getToNode().getCoord();
 			trips.add(new DeckGLTripItem(location, time, minTime));

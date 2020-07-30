@@ -39,7 +39,7 @@ public class TaxiRoutingModule implements RoutingModule {
 												 Person person) {
 		PopulationFactory populationFactory = scenario.getPopulation().getFactory();
 		RouteFactories routeFactory = populationFactory.getRouteFactories();
-		final List<PlanElement> trip = new ArrayList<PlanElement>();
+		final List<PlanElement> trip = new ArrayList<>();
 
 		Link originLink = this.carNetwork.getLinks().get(fromFacility.getLinkId());
 
@@ -66,9 +66,8 @@ public class TaxiRoutingModule implements RoutingModule {
 
 	@Override
 	public StageActivityTypes getStageActivityTypes() {
-		final CompositeStageActivityTypes stageTypes = new CompositeStageActivityTypes();
 
-		return stageTypes;
+		return new CompositeStageActivityTypes();
 	}
 
 }

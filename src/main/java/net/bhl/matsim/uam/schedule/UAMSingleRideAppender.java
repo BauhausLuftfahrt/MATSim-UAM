@@ -3,7 +3,6 @@ package net.bhl.matsim.uam.schedule;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;

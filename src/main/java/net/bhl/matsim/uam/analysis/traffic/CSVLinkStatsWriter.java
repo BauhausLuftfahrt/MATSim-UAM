@@ -41,7 +41,7 @@ public class CSVLinkStatsWriter {
 		header.add("length_m");
 		header.add("freespeed_ms");
 
-		timeHeaders = new TreeSet<Integer>();
+		timeHeaders = new TreeSet<>();
 		for (LinkStatsItem link : links) {
 			for (Integer i : link.timeDependantSpeed.keySet()) {
 				timeHeaders.add(i);

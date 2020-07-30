@@ -31,7 +31,7 @@ public class RunAddModeToNetwork {
 		Network network = scenario.getNetwork();
 
 		for (Link l : network.getLinks().values()) {
-			Set<String> modes = new HashSet<String>();
+			Set<String> modes = new HashSet<>();
 			modes.addAll(l.getAllowedModes());
 			if (modes.contains(searchMode)) {
 				modes.add(addedMode);

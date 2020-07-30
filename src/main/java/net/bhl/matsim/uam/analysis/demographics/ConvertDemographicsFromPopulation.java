@@ -39,10 +39,10 @@ public class ConvertDemographicsFromPopulation {
 			household.getMemberIds().forEach(id -> householdMap.put(id, household.getId()));
 		}
 
-		Set<String> columns = new HashSet<String>();
-		Set<Map<String, String>> population = new HashSet<Map<String, String>>();
+		Set<String> columns = new HashSet<>();
+		Set<Map<String, String>> population = new HashSet<>();
 		for (Person person : scenario.getPopulation().getPersons().values()) {
-			Map<String, String> personAttrMap = new HashMap<String, String>();
+			Map<String, String> personAttrMap = new HashMap<>();
 
 			personAttrMap.put("ID", person.getId().toString());
 			columns.add("ID");
@@ -91,7 +91,7 @@ public class ConvertDemographicsFromPopulation {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile)));
 
 		// Make columns into ordered list, write header
-		List<String> columnList = new ArrayList<String>();
+		List<String> columnList = new ArrayList<>();
 		columnList.addAll(columns);
 		Collections.sort(columnList);
 		System.out.println(columnList);

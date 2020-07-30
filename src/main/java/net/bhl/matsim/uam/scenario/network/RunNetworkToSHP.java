@@ -43,7 +43,7 @@ public class RunNetworkToSHP {
 			TransportModeNetworkFilter filter = new
 					TransportModeNetworkFilter(network);
 			Set<String> modes = new HashSet<>();
-			modes.addAll(new ArrayList<String>(Arrays.asList(args[2].split(","))));
+			modes.addAll(new ArrayList<>(Arrays.asList(args[2].split(","))));
 			Network newNetwork = NetworkUtils.createNetwork();
 			filter.filter(newNetwork,
 					modes);
@@ -61,7 +61,7 @@ public class RunNetworkToSHP {
 			System.exit(1);
 		}
 
-		Collection<SimpleFeature> features = new ArrayList<SimpleFeature>();
+		Collection<SimpleFeature> features = new ArrayList<>();
 		PolylineFeatureFactory linkFactory = new
 				PolylineFeatureFactory.Builder().setCrs(crs).setName("link")
 				.addAttribute("ID", String.class).addAttribute("fromID", String.class)
@@ -89,7 +89,7 @@ public class RunNetworkToSHP {
 		}
 		ShapeFileWriter.writeGeometries(features, args[0] + "_links.shp");
 
-		features = new ArrayList<SimpleFeature>();
+		features = new ArrayList<>();
 		PointFeatureFactory nodeFactory =
 				new PointFeatureFactory.Builder().setCrs(crs).setName("nodes")
 						.addAttribute("ID", String.class).create();

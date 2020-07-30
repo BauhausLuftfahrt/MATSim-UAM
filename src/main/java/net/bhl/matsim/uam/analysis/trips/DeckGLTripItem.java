@@ -52,13 +52,11 @@ public class DeckGLTripItem {
 			System.err.println("Old geotools version is not compatible with Java 9");
 			e.printStackTrace();
 			System.exit(1);
-		} catch (FactoryException e) {
-			e.printStackTrace();
-		} catch (TransformException e) {
+		} catch (FactoryException | TransformException e) {
 			e.printStackTrace();
 		}
 
-		return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
+        return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
 	}
 
 }
