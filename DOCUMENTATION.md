@@ -121,7 +121,7 @@ Starts UAM-enabled MATSim simulation.
 ## 2. Scenario Scripts
 ### RunCreateUAMScenario
 Creates UAM-including MATSim network and corresponding uam-vehicles file, which are prerequisites for running a UAM-enabled MATSim simulation.
-* Location: net.bhl.matsim.uam.scenario.RunCreateUAMScenario
+* Location: net.bhl.matsim.uam.scenario.RunCreateUAMRoutedScenario
 * Arguments (optional): `PATH network.xml(.gz) uam-stations.csv (detour-factor) (uam-vehicles.csv) (flight-nodes.csv flight-links.csv)`
 	* uam-stations.csv header [format]: station_id [`String`], station_name [`String`], station_uam_parking_capacity [`double`], station_x [`double`], station_y [`double`], station_z [`double` m], vtol_z [`double` m], road_access_capacity [`double`], road_access_freespeed [`double` m/s], station_capacity [`double`], station_freespeed [`double` m/s], flight_access_capacity [`double`], flight_access_freespeed [`double` m/s], station_preflighttime [`double` s], station_postflighttime [`double` s], station_defaultwaittime [`double` s]
 	* (optional) detour-factor: type `double`, default: `1.0`
