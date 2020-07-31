@@ -53,18 +53,15 @@ public class RunUAMScenario {
 
 	public static void parseArguments(String[] args) {
 		try {
-			cmd = new CommandLine.Builder(args) //
-					.allowPositionalArguments(false) //
-					.allowOptions("config-path") //
+			cmd = new CommandLine.Builder(args)
+					.allowOptions("config-path")
 					.build();
 
 			if (cmd.hasOption("config-path"))
 				path = cmd.getOption("config-path").get();
 			else
 				path = args[0];
-
 		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		uamConfigGroup = new UAMConfigGroup();
