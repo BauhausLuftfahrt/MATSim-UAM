@@ -21,34 +21,6 @@ And the following to you maven pom.xml under `dependencies` for the latest versi
 ```
 Older versions can be used by replacing the version text with any of the listed tags on [GitHub MATSim-UAM tags](https://github.com/BauhausLuftfahrt/MATSim-UAM/tags).
 
-## Documentation
-See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md) for, e.g., explanation of the in- and outputs of provided run scripts.
-
-## Features
-List of all current features provided by MATSim-UAM with the version of feature introduction in parentheses.
-
-### Infrastructure
-- UAM Vehicle Types: The vehicle type contains the capacity, range, cruisespeed, vertical speed, (de)boarding and turn around times. (last changed: v2.1)
-- UAM Vehicles: Contains information about the UAM Vehicle Type, initial UAM Station and start/end time of operation. (v1.0)
-- UAM Station: UAM Stations contain a predefined pre/post flight time for UAM Vehicles, default waiting time and the station link location. (v2.1)
-- UAM Flight Network: Similar to conventional MATSim links, UAM flight links allow for the definition of flight routes with different flight segments. (v2.0)
-
-### Simulation
-- UAM Vehicles follow a schedule that has the following sequence, starting and ending with StayTask: PickUpDriveTask, PickUpTask, DropOffDriveTask, DropOffTask, TurnAroundTask, StayTask. (v1.0)
-- UAM Passengers have the following sequence of activities: Access trip, preFlightTime, PickUpTask, UAM leg (UAMVehicle DropOffDriveTask), DropOffTask, PostFlightTime, Egress Trip. (v1.0)
-- Dispatching strategy: MATSim-UAM uses a closest-available, ranged, and pooled dispatcher that dispatches UAM Vehicles on a first-come first-serve (queue) basis for passenger requests given that the available vehicle type meets the request's required range. The dispatcher allows for shared rides if trip origin and destination are the same, given the vehicle type's capacity constraint. With regards to vehicle speed, the dispatcher does not yet make any distinctions. (v2.1)
-- Introduction of UAM routing strategies that aim to, e.g., minimize overall travel time or minimize access/egress distance; including predefined routing strategy where UAM trips (i.e access/egress modes and UAM stations) can be defined externally, e.g., by MITO. (v2.0)
-- Integration of option to skip public transport simulation and teleport its agents instead. (v1.0)
-
-### Miscellaneous
-- Output plans will show expected distance and travel time for UAM legs. (v1.0)
-- Simulation-independent conversion from events to UAM demand (.CSV) file. (v2.1)
-- The input file for UAM Vehicles is written out into the output folder. (v2.1)
-- Included interface to interact with [MITO](https://www.msm.bgu.tum.de/en/research/modeling/mito/) (Microscopic Transport Orchestrator). (v1.0)
-- Included external public transport, car, and UAM router for calculating travel times for a list of origins and destinations. (v2.0)
-- Included external UAM station router for calculating travel times and distances between all UAM stations. (v1.0)
-- Included documentation about analysis and utility scripts. See [DOCUMENTATION](https://github.com/BauhausLuftfahrt/MATSim-UAM/blob/master/DOCUMENTATION.md). (v1.0)  
-
 ## Versions and Change Log
 
 ### v2.1
@@ -70,8 +42,9 @@ Station selection:
 - Introduction of isStaticSearchRadius config parameter (default: true), if set to false, the search radius is not an absolut distance for possible UAM stations from any given location but is read as a percentage which is being applied to the beeline distance between origin and destination location.
 
 Scenario creation:
-- Added batch scenario creator
-- Simplified input parameters of existing UAM scenario creator
+- Rework of scenario creation with separation into beeline and routes scenario creator
+- Simplification of input parameters for scenario creation via input config
+- Integration of non-uam config to uam-enabled config conversion into scenario creation
 
 ### v2.0
 Travel time scripts:
