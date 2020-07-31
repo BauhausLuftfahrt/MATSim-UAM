@@ -55,12 +55,12 @@ public class RunCreateUAMRoutedScenario {
 	private static final double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	// LATERALS
-	private static final String name_uam_nodes = UAMModes.UAM_MODE + "_st_";
-	private static final String name_uam_waypoints = UAMModes.UAM_MODE + "_wp_";
-	private static final String name_uam_ground_link = UAMModes.UAM_MODE + "_gl-";
-	private static final String name_uam_station_link = UAMModes.UAM_MODE + "_sl-";
-	private static final String name_uam_vertical_link = UAMModes.UAM_MODE + "_vl-";
-	private static final String name_uam_horizontal_link = UAMModes.UAM_MODE + "_hl-";
+	private static final String name_uam_nodes = UAMModes.uam + "_st_";
+	private static final String name_uam_waypoints = UAMModes.uam + "_wp_";
+	private static final String name_uam_ground_link = UAMModes.uam + "_gl-";
+	private static final String name_uam_station_link = UAMModes.uam + "_sl-";
+	private static final String name_uam_vertical_link = UAMModes.uam + "_vl-";
+	private static final String name_uam_horizontal_link = UAMModes.uam + "_hl-";
 	private static final String name_uam_station_ground_access = "_ga";
 	private static final String name_uam_station_flight_access = "_fa";
 	private static final String name_uam_station_flight_level = "_fl";
@@ -144,7 +144,7 @@ public class RunCreateUAMRoutedScenario {
 					uamMaxLinkSpeed = freespeed;
 
 				Set<String> modesUam = new HashSet<>();
-				modesUam.add(UAMModes.UAM_MODE);
+				modesUam.add(UAMModes.uam);
 
 				addLink(network, from, to, modesUam, capacity, freespeed);
 			}
@@ -170,7 +170,7 @@ public class RunCreateUAMRoutedScenario {
 					Id<Node> from = flightAccesses.get(k);
 
 					Set<String> mode = new HashSet<>();
-					mode.add(UAMModes.UAM_MODE);
+					mode.add(UAMModes.uam);
 
 					addLink(network, to, from, mode);
 					addLink(network, from, to, mode);
@@ -182,7 +182,7 @@ public class RunCreateUAMRoutedScenario {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Network networkUAM = NetworkUtils.createNetwork();
 		Set<String> modesUam = new HashSet<>();
-		modesUam.add(UAMModes.UAM_MODE);
+		modesUam.add(UAMModes.uam);
 		filter.filter(networkUAM, modesUam);
 
 		// clean up UAM network
@@ -241,7 +241,7 @@ public class RunCreateUAMRoutedScenario {
 
 			// station links
 			Set<String> modes = new HashSet<>();
-			modes.add(UAMModes.UAM_MODE);
+			modes.add(UAMModes.uam);
 			modes.add(TransportMode.car);
 
 			addLink(network, node_ga_id, node_fa_id, modes);
@@ -267,7 +267,7 @@ public class RunCreateUAMRoutedScenario {
 
 		// WRITE STATION DISTANCE CSV
 		try {
-			calculateStationDistances(network, stationIDs, path + "\\" + UAMModes.UAM_MODE + "_distances.csv");
+			calculateStationDistances(network, stationIDs, path + "\\" + UAMModes.uam + "_distances.csv");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -276,13 +276,13 @@ public class RunCreateUAMRoutedScenario {
 		// ADD UAM VEHICLES
 		String vehiclesFileName = "<REPLACE WITH UAM VEHICLES FILE NAME>";
 		if (vehicleInput != null) {
-			vehiclesFileName = UAMModes.UAM_MODE + "_vehicles.xml.gz";
+			vehiclesFileName = UAMModes.uam + "_vehicles.xml.gz";
 			UAMVehiclesXmlWriter vehwriter = new UAMVehiclesXmlWriter();
 			vehwriter.write(path + "\\" + vehiclesFileName, stations, vehicles);
 		}
 
 		// UPDATE CONFIG
-		String networkFileName = UAMModes.UAM_MODE + (nodesInput != null ? "_routed" : "") + "_network.xml.gz";
+		String networkFileName = UAMModes.uam + (nodesInput != null ? "_routed" : "") + "_network.xml.gz";
 		NetworkConfigGroup networkConfigGroup = (NetworkConfigGroup) config.getModules().get("network");
 		networkConfigGroup.setInputFile(networkFileName);
 		ConfigAddUAMParameters.addUAMParameters(config, vehiclesFileName, "car,walk", 2, 9999,
@@ -290,11 +290,11 @@ public class RunCreateUAMRoutedScenario {
 
 		// WRITE UAM CONFIG
 		ConfigWriter configWriter = new ConfigWriter(config);
-		configWriter.write(path + "\\" + UAMModes.UAM_MODE + "_config.xml");
+		configWriter.write(path + "\\" + UAMModes.uam + "_config.xml");
 
 		// WRITE UAM NETWORK
-		network.setName((network.getName().isEmpty() ? "" : network.getName() + "-") + UAMModes.UAM_MODE);
-		network.getAttributes().putAttribute(UAMModes.UAM_MODE + "MaxLinkFreeSpeed", uamMaxLinkSpeed);
+		network.setName((network.getName().isEmpty() ? "" : network.getName() + "-") + UAMModes.uam);
+		network.getAttributes().putAttribute(UAMModes.uam + "MaxLinkFreeSpeed", uamMaxLinkSpeed);
 		NetworkWriter netwriter = new NetworkWriter(network);
 		netwriter.write(path + "\\" + networkFileName);
 
@@ -305,7 +305,7 @@ public class RunCreateUAMRoutedScenario {
 			throws IOException, InterruptedException, ExecutionException {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add(UAMModes.UAM_MODE);
+		modes.add(UAMModes.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 
@@ -405,7 +405,7 @@ public class RunCreateUAMRoutedScenario {
 		} else {
 			System.err.println("WARN: Unknown link type for link between nodes: " + from.toString()
 					+ " and " + to.toString());
-			id = Id.createLinkId(UAMModes.UAM_MODE + from + "-" + to);
+			id = Id.createLinkId(UAMModes.uam + from + "-" + to);
 		}
 
 		if (length == NO_LENGTH)
@@ -446,11 +446,11 @@ public class RunCreateUAMRoutedScenario {
 	private static void networkAlreadyContainsUam(Exception e) {
 		e.printStackTrace();
 		System.err.println("#---------------------------------------------------------------------------------------#");
-		System.err.println("ERROR: Could not create " + UAMModes.UAM_MODE
-				+ " network, the input network already contains " + UAMModes.UAM_MODE
+		System.err.println("ERROR: Could not create " + UAMModes.uam
+				+ " network, the input network already contains " + UAMModes.uam
 				+ " nodes/links.");
 		System.err.println("FIX: Make sure your input network does not already contain "
-				+ UAMModes.UAM_MODE + ", e.g. by deleting all " + UAMModes.UAM_MODE + "nodes and links.");
+				+ UAMModes.uam + ", e.g. by deleting all " + UAMModes.uam + "nodes and links.");
 		System.err.println("#---------------------------------------------------------------------------------------#");
 		System.exit(-1);
 	}
@@ -460,8 +460,8 @@ public class RunCreateUAMRoutedScenario {
 		public void write(String file, List<String[]> stations, List<String[]> vehicles) {
 			openFile(file);
 			writeXmlHead();
-			writeDoctype(UAMModes.UAM_MODE, name_uam_dtd);
-			writeStartTag(UAMModes.UAM_MODE, Collections.emptyList());
+			writeDoctype(UAMModes.uam, name_uam_dtd);
+			writeStartTag(UAMModes.uam, Collections.emptyList());
 
 			writeStartTag("stations", Collections.emptyList());
 			writeStations(stations);
@@ -475,7 +475,7 @@ public class RunCreateUAMRoutedScenario {
 			writeVehicles(stations, vehicles);
 			writeEndTag("vehicles");
 
-			writeEndTag(UAMModes.UAM_MODE);
+			writeEndTag(UAMModes.uam);
 			close();
 		}
 

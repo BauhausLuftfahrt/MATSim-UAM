@@ -22,12 +22,12 @@ public class UAMMainModeIdentifier implements MainModeIdentifier {
 	@Override
 	public String identifyMainMode(List<? extends PlanElement> tripElements) {
 		for (PlanElement pe : tripElements) {
-			if (pe instanceof Leg && (((Leg) pe).getMode().equals(UAMModes.UAM_MODE)
-					|| ((Leg) pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.walk)
-					|| ((Leg) pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.walk)
-					|| ((Leg) pe).getMode().equals(UAMModes.UAM_ACCESS + TransportMode.bike)
-					|| ((Leg) pe).getMode().equals(UAMModes.UAM_EGRESS + TransportMode.bike))) {
-				return UAMModes.UAM_MODE;
+			if (pe instanceof Leg && (((Leg) pe).getMode().equals(UAMModes.uam)
+					|| ((Leg) pe).getMode().equals(UAMModes.access + TransportMode.walk)
+					|| ((Leg) pe).getMode().equals(UAMModes.egress + TransportMode.walk)
+					|| ((Leg) pe).getMode().equals(UAMModes.access + TransportMode.bike)
+					|| ((Leg) pe).getMode().equals(UAMModes.egress + TransportMode.bike))) {
+				return UAMModes.uam;
 			}
 		}
 		// if the trip doesn't contain a uam leg,

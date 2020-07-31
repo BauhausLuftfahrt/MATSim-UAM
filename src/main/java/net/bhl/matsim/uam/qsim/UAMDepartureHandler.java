@@ -28,7 +28,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 	Set<Id<Person>> bookedTrips = new HashSet<>();
 	@Inject
-	@DvrpMode(UAMModes.UAM_MODE)
+	@DvrpMode(UAMModes.uam)
 	private PassengerEngine passengerEngine;
 
 	@Inject
@@ -42,10 +42,10 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 			modesRequiringManualUAMPrebooking = new HashSet<>();
 			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
-			if (mainMode.contains(UAMModes.UAM_ACCESS + TransportMode.car))
-				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_ACCESS + TransportMode.car);
-			if (mainMode.contains(UAMModes.UAM_EGRESS + TransportMode.car))
-				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_EGRESS + TransportMode.car);
+			if (mainMode.contains(UAMModes.access + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMModes.access + TransportMode.car);
+			if (mainMode.contains(UAMModes.egress + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMModes.egress + TransportMode.car);
 		}
 		// else: already initiated
 	}
@@ -62,7 +62,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		// TODO is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
 
 		if (agent instanceof PlanAgent) {
-			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
+			if (agent.getMode().startsWith(UAMModes.access)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
@@ -88,7 +88,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 					}
 				}
 
-			} else if (agent.getMode().equals(UAMModes.UAM_MODE))
+			} else if (agent.getMode().equals(UAMModes.uam))
 				bookedTrips.remove(agent.getId());
 		}
 
@@ -99,7 +99,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(planElementsIndex);
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
+				if (((Leg) pe).getMode().equals(UAMModes.uam))
 					return (Leg) pe;
 			}
 			planElementsIndex++;
@@ -113,7 +113,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (!found) {
 			PlanElement pe = plan.getPlanElements().get(index);
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
+				if (((Leg) pe).getMode().equals(UAMModes.uam))
 					found = true;
 				else
 					travelTime += ((Leg) pe).getTravelTime();
@@ -128,7 +128,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(index);
 			if (pe instanceof Activity) {
-				if (((Activity) pe).getType().equals(UAMModes.UAM_INTERACTION))
+				if (((Activity) pe).getType().equals(UAMModes.interaction))
 					return true;
 				else if (((Activity) pe).getType().equals("pt interaction")) {
 					index++;

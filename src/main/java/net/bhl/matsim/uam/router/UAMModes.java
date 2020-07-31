@@ -8,10 +8,10 @@ package net.bhl.matsim.uam.router;
  * @author RRothfeld (Raoul Rothfeld)
  */
 public class UAMModes {
-	public static final String UAM_MODE = "uam";
+	public static final String uam = "uam";
 
-	public static final String UAM_ACCESS = "access_" + UAM_MODE + "_";
-	public static final String UAM_EGRESS = "egress_" + UAM_MODE + "_";
+	public static final String access = "access_" + uam + "_";
+	public static final String egress = "egress_" + uam + "_";
 
-	public static final String UAM_INTERACTION = UAM_MODE + "_interaction";
+	public static final String interaction = uam + "_interaction";
 }

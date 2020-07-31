@@ -82,7 +82,7 @@ public class RunGenerateNetworkChangeEventsFile {
 		for (Link l : network.getLinks().values()) {
 
 			// skip UAM links
-			if (l.getAllowedModes().contains(UAMModes.UAM_MODE)) continue;
+			if (l.getAllowedModes().contains(UAMModes.uam)) continue;
 
 			double length = l.getLength();
 			double previousTravelTime = l.getLength() / l.getFreespeed();

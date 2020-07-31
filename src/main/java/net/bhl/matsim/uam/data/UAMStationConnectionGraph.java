@@ -30,7 +30,7 @@ public class UAMStationConnectionGraph {
 	final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
 	private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;
 
-	public UAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.UAM_MODE) ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.uam) ParallelLeastCostPathCalculator plcpc) {
 		log.info("Calculating travel times and distances between all UAM stations.");
 
 		legs = new HashMap<>();

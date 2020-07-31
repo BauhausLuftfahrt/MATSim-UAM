@@ -26,7 +26,7 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	final private Network network;
 
 	@Inject
-	public UAMScoringFunctionFactory(Scenario scenario, @Named(UAMModes.UAM_MODE) Network network) {
+	public UAMScoringFunctionFactory(Scenario scenario, @Named(UAMModes.uam) Network network) {
 		params = new SubpopulationScoringParameters(scenario);
 		standardFactory = new CharyparNagelScoringFunctionFactory(scenario);
 		this.network = network;

@@ -39,7 +39,7 @@ public class ConvertTripsFromPopulation {
 
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
-				UAMModes.UAM_INTERACTION);
+				UAMModes.interaction);
 
 		HomeActivityTypes homeActivityTypes = new BasicHomeActivityTypes();
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());

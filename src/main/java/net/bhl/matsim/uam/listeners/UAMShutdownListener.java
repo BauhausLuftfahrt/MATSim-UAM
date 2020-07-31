@@ -34,7 +34,7 @@ public class UAMShutdownListener implements ShutdownListener {
 		int index = configPath.lastIndexOf('/');
 		configPath = configPath.substring(0, index + 1).replace("%20", " ");
 
-		String uamFileName = event.getServices().getConfig().getModules().get(UAMModes.UAM_MODE).getParams().get("inputUAMFile");
+		String uamFileName = event.getServices().getConfig().getModules().get(UAMModes.uam).getParams().get("inputUAMFile");
 
 		InputStream fromStream = IOUtils.getInputStream(configPath + uamFileName);
 		OutputStream toStream = IOUtils.getOutputStream(controlerIO.getOutputFilename("output_uam_vehicles.xml.gz"));

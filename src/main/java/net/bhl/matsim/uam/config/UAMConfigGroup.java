@@ -20,7 +20,7 @@ import java.util.Set;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMConfigGroup extends ReflectiveConfigGroup {
-	public static final String GROUP_NAME = UAMModes.UAM_MODE;
+	public static final String GROUP_NAME = UAMModes.uam;
 	// teleportation
 	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 	private String inputUAMFile;

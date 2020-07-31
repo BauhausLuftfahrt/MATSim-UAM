@@ -69,7 +69,7 @@ public class ConvertDeckGLTripsFromEvents {
 
 			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext(); ) {
 				Id<Vehicle> id = it.next();
-				int vendor = id.toString().contains(UAMModes.UAM_MODE) ? 1 : 0;
+				int vendor = id.toString().contains(UAMModes.uam) ? 1 : 0;
 				bw.write("{\"vendor\": " + vendor + ", ");
 				bw.write("\"segments\": [");
 
