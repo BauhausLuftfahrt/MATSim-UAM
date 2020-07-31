@@ -134,8 +134,8 @@
 			<param name="teleportedModeSpeed" value="2.2" />
 			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
-		<!-- When simulating UAM: only use this parameterset when not simulating PT. If simulating PT do not use it. -->
-	<parameterset type="teleportedModeParameters">
+		<!-- When simulating UAM: only use this parameterset when not simulating PT. If simulating PT must remove it. -->
+		<parameterset type="teleportedModeParameters">
 			<param name="mode" value="pt" />
 			<param name="teleportedModeSpeed" value="10.0" />
 			<param name="beelineDistanceFactor" value="1.0" />
