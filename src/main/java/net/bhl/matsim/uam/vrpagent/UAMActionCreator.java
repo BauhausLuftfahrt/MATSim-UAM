@@ -26,7 +26,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String STAY_ACTIVITY_TYPE = "UAMStay";
 	public static final String TURNAROUND_ACTIVITY_TYPE = "UAMTurnAround";
 	@Inject
-	@DvrpMode(UAMModes.UAM_MODE)
+	@DvrpMode(UAMModes.uam)
 	private PassengerEngine passengerEngine;
 
 	@Inject

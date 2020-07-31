@@ -84,7 +84,7 @@ public class RunCalculateUAMTravelTimes {
 		// CREATE CAR/UAM NETWORK
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add(UAMModes.UAM_MODE);
+		modes.add(UAMModes.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 		Network networkCar = NetworkUtils.createNetwork();
@@ -244,7 +244,7 @@ public class RunCalculateUAMTravelTimes {
 			Facility fromFacility = new LinkWrapperFacility(from);
 			Facility toFacility = new LinkWrapperFacility(to);
 
-			UAMConfigGroup uamConfig = (UAMConfigGroup) config.getModules().get(UAMModes.UAM_MODE);
+			UAMConfigGroup uamConfig = (UAMConfigGroup) config.getModules().get(UAMModes.uam);
 			UAMStrategyUtils strategyUtils = new UAMStrategyUtils(uamManager.getStations(), uamConfig,
 					scenario, stationConnectionutilities, networkCar, transitRouter, pathCalculator, plcpccar);
 			UAMStrategy strategy = null;

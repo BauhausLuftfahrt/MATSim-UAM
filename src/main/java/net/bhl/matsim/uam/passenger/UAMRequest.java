@@ -99,7 +99,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public String getMode() {
-		return UAMModes.UAM_MODE;
+		return UAMModes.uam;
 	}
 
 	public UAMDropoffTask getDropoffTask() {

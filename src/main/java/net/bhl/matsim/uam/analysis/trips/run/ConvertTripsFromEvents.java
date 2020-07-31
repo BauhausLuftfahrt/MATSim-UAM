@@ -41,12 +41,12 @@ public class ConvertTripsFromEvents {
 
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
-				UAMModes.UAM_INTERACTION);
+				UAMModes.interaction);
 
 		HomeActivityTypes homeActivityTypes = new BasicHomeActivityTypes();
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());
-		Collection<String> networkRouteModes = Arrays.asList("car", UAMModes.UAM_MODE,
-				UAMModes.UAM_ACCESS + "car", UAMModes.UAM_EGRESS + "car");
+		Collection<String> networkRouteModes = Arrays.asList("car", UAMModes.uam,
+				UAMModes.access + "car", UAMModes.egress + "car");
 
 		TripListener tripListener = new TripListener(netw, stageActivityTypes, homeActivityTypes, mainModeIdentifier,
 				networkRouteModes);

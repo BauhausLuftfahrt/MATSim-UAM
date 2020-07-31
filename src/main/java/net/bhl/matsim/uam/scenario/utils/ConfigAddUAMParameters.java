@@ -31,19 +31,19 @@ public class ConfigAddUAMParameters {
 				Integer.parseInt(args[i++]), UAMStrategy.UAMStrategyType.valueOf(args[i++].toUpperCase()),
 				Boolean.parseBoolean(args[i]));
 		ConfigWriter configWriter = new ConfigWriter(config);
-		configWriter.write(args[0] + "." + UAMModes.UAM_MODE + ".xml");
+		configWriter.write(args[0] + "." + UAMModes.uam + ".xml");
 	}
 
 	public static void addUAMParameters(Config config, String inputUAMFile, String modes, int threads, int searchRadius,
 										int walkDistance, UAMStrategy.UAMStrategyType routingStrategy, boolean ptSimulation) {
-		config.getModules().put(UAMModes.UAM_MODE, new UAMConfigGroup());
-		config.getModules().get(UAMModes.UAM_MODE).addParam("inputUAMFile", inputUAMFile);
-		config.getModules().get(UAMModes.UAM_MODE).addParam("availableAccessModes", modes);
-		config.getModules().get(UAMModes.UAM_MODE).addParam("parallelRouters", "" + threads);
-		config.getModules().get(UAMModes.UAM_MODE).addParam("searchRadius", "" + searchRadius);
-		config.getModules().get(UAMModes.UAM_MODE).addParam("walkDistance", "" + walkDistance);
-		config.getModules().get(UAMModes.UAM_MODE).addParam("routingStrategy", routingStrategy.toString());
-		config.getModules().get(UAMModes.UAM_MODE).addParam("ptSimulation", String.valueOf(ptSimulation));
+		config.getModules().put(UAMModes.uam, new UAMConfigGroup());
+		config.getModules().get(UAMModes.uam).addParam("inputUAMFile", inputUAMFile);
+		config.getModules().get(UAMModes.uam).addParam("availableAccessModes", modes);
+		config.getModules().get(UAMModes.uam).addParam("parallelRouters", "" + threads);
+		config.getModules().get(UAMModes.uam).addParam("searchRadius", "" + searchRadius);
+		config.getModules().get(UAMModes.uam).addParam("walkDistance", "" + walkDistance);
+		config.getModules().get(UAMModes.uam).addParam("routingStrategy", routingStrategy.toString());
+		config.getModules().get(UAMModes.uam).addParam("ptSimulation", String.valueOf(ptSimulation));
 
 		// If PT simulation is desired (true), PT may not be listed under teleportedModeParameters, else it must be
 		ConfigGroup planscalcroute = config.getModules().get("planscalcroute");
@@ -75,19 +75,19 @@ public class ConfigAddUAMParameters {
 
 		// UAM planCalcScore activities
 		ConfigGroup uamInteractionParam = config.getModules().get("planCalcScore").createParameterSet("activityParams");
-		uamInteractionParam.addParam("activityType", UAMModes.UAM_INTERACTION);
+		uamInteractionParam.addParam("activityType", UAMModes.interaction);
 		uamInteractionParam.addParam("scoringThisActivityAtAll", "false");
 		config.getModules().get("planCalcScore").addParameterSet(uamInteractionParam);
 
 		String mainMode = config.getModules().get("qsim").getParams().get("mainMode");
 		config.getModules().get("qsim").addParam("mainMode",
-				mainMode + "," + UAMModes.UAM_ACCESS + "," + UAMModes.UAM_EGRESS);
+				mainMode + "," + UAMModes.access + "," + UAMModes.egress);
 
 		// UAM planCalcScore modes
-		String[] modeScores = {UAMModes.UAM_MODE,
-				UAMModes.UAM_ACCESS + "walk", UAMModes.UAM_EGRESS + "walk",
-				UAMModes.UAM_ACCESS + "car", UAMModes.UAM_EGRESS + "car",
-				UAMModes.UAM_ACCESS + "bike", UAMModes.UAM_EGRESS + "bike"};
+		String[] modeScores = {UAMModes.uam,
+				UAMModes.access + "walk", UAMModes.egress + "walk",
+				UAMModes.access + "car", UAMModes.egress + "car",
+				UAMModes.access + "bike", UAMModes.egress + "bike"};
 		for (String modeScore : modeScores) {
 			ConfigGroup modeParam = config.getModules().get("planCalcScore").createParameterSet("modeParams");
 			modeParam.addParam("mode", modeScore);

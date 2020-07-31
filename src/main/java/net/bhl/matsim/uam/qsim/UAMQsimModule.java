@@ -54,14 +54,14 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	private UAMXMLReader uamReader;
 
 	public UAMQsimModule(UAMXMLReader uamReader, UAMManager uamManager) {
-		super(UAMModes.UAM_MODE);
+		super(UAMModes.uam);
 		this.uamReader = uamReader;
 		this.uamManager = uamManager;
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
 		DynActivityEngineModule.configureComponents(components);
-		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
+		components.addComponent(DvrpModes.mode(UAMModes.uam));
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Provides
 	@Singleton
-	VrpLegFactory provideLegCreator(@DvrpMode(UAMModes.UAM_MODE) VrpOptimizer optimizer, QSim qSim) {
+	VrpLegFactory provideLegCreator(@DvrpMode(UAMModes.uam) VrpOptimizer optimizer, QSim qSim) {
 		return new VrpLegFactory() {
 			@Override
 			public VrpLeg create(DvrpVehicle vehicle) {
@@ -104,7 +104,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	@Provides
 	@Singleton
 	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-                                           @Named(UAMModes.UAM_MODE) Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+                                           @Named(UAMModes.uam) Network network, @DvrpMode(UAMModes.uam) Fleet data) {
 
 		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
 

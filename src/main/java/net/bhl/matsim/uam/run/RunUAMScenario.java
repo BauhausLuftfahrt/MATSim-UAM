@@ -100,7 +100,7 @@ public class RunUAMScenario {
 		Network network = controler.getScenario().getNetwork();
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add(UAMModes.UAM_MODE);
+		modes.add(UAMModes.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 

@@ -43,7 +43,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 		for (int i = 0; i < elements.size() - 2; i += 2) {
 			Activity endingActivity = (Activity) elements.get(i);
 
-			if (endingActivity.getType().equals(UAMModes.UAM_INTERACTION))
+			if (endingActivity.getType().equals(UAMModes.interaction))
 				continue;
 
 			if (endingActivity.getEndTime() == departureTime) {

@@ -15,7 +15,6 @@ import org.matsim.contrib.dvrp.schedule.Task;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.router.util.TravelTime;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,11 +28,11 @@ import java.util.concurrent.Future;
  */
 public class UAMSingleRideAppender {
 	@Inject
-	@Named(UAMModes.UAM_MODE)
+	@Named(UAMModes.uam)
 	private ParallelLeastCostPathCalculator router;
 
 	@Inject
-	@Named(UAMModes.UAM_MODE)
+	@Named(UAMModes.uam)
 	private TravelTime travelTime;
 
 	private List<AppendTask> tasks = new LinkedList<>();

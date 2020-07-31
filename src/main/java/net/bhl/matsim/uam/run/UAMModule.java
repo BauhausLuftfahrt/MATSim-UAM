@@ -61,7 +61,7 @@ public class UAMModule extends AbstractModule {
 
 	@Override
 	public void install() {
-		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.UAM_MODE))
+		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.uam))
 				.toInstance(new DefaultPassengerRequestValidator());
 		installQSimModule(new UAMQsimModule(uamReader, uamManager));
 		installQSimModule(new DynActivityEngineModule());
@@ -81,14 +81,14 @@ public class UAMModule extends AbstractModule {
 		addControlerListenerBinding().to(WaitingStationData.class);
 
 		addControlerListenerBinding()
-				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named(UAMModes.UAM_MODE)));
+				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named(UAMModes.uam)));
 
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
 
 		// we need to bind our router for the uam trips
-		addRoutingModuleBinding(UAMModes.UAM_MODE).toProvider(UAMRoutingModuleProvider.class);
+		addRoutingModuleBinding(UAMModes.uam).toProvider(UAMRoutingModuleProvider.class);
 
 		// we still need to provide a way to identify our trips
 		// as being uam trips.
@@ -96,27 +96,27 @@ public class UAMModule extends AbstractModule {
 		bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
-		bind(VehicleType.class).annotatedWith(Names.named(UAMModes.UAM_MODE)).toInstance(VehicleUtils.getDefaultVehicleType());
+		bind(VehicleType.class).annotatedWith(Names.named(UAMModes.uam)).toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
 				.toInstance(VehicleUtils.getDefaultVehicleType());
 
-		bind(TravelTime.class).annotatedWith(Names.named(UAMModes.UAM_MODE))
+		bind(TravelTime.class).annotatedWith(Names.named(UAMModes.uam))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
 
 		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING))
 				.toInstance(this.networkUAM);
 		bind(Network.class).annotatedWith(Names.named("car")).toInstance(this.networkCar);
 
-		bind(Network.class).annotatedWith(Names.named(UAMModes.UAM_MODE))
+		bind(Network.class).annotatedWith(Names.named(UAMModes.uam))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 	}
 
 	@Provides
 	@Singleton
-	@Named(UAMModes.UAM_MODE)
+	@Named(UAMModes.uam)
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-																				   @Named(UAMModes.UAM_MODE) TravelTime travelTime) {
+																				   @Named(UAMModes.uam) TravelTime travelTime) {
 		int parallelRouters = uamConfig.getParallelRouters();
 		if (1 == parallelRouters) {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(networkUAM,
@@ -129,15 +129,15 @@ public class UAMModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	@Named(UAMModes.UAM_MODE)
+	@Named(UAMModes.uam)
 	private ParallelLeastCostPathCalculatorShutdownListener provideParallelLeastCostPathCalculatorShutdownListener(
-			@Named(UAMModes.UAM_MODE) ParallelLeastCostPathCalculator calculator) {
+			@Named(UAMModes.uam) ParallelLeastCostPathCalculator calculator) {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
 
 	@Provides
 	@Singleton
-	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.UAM_MODE) ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.uam) ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, plcpc);
 	}
 
