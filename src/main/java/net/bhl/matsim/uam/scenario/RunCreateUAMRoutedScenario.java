@@ -70,8 +70,8 @@ public class RunCreateUAMRoutedScenario {
 	private static final double min_link_length = 1;
 	private static final double NO_LENGTH = -1;
 
-	private static double uamMaxLinkSpeed;
-	private static double uamLinkCapacity;
+	private static double uamMaxLinkSpeed = 100;
+	private static double uamLinkCapacity = 999;
 
 	public static void main(String[] args) {
 		System.out.println("ARGS: config.xml* uam-stations.csv* flight-nodes.csv* flight-links.csv* uam-vehicles.csv");
@@ -196,7 +196,6 @@ public class RunCreateUAMRoutedScenario {
 
 		// temp. storage of all UAM stations
 		Set<Id<Node>> stationIDs = new HashSet<>();
-
 		for (String[] line : Iterables.skip(stations, 1)) { // skip CSV header
 			int i = 0;
 			String station_id = line[i++];
@@ -245,8 +244,8 @@ public class RunCreateUAMRoutedScenario {
 			modes.add(UAMModes.UAM_MODE);
 			modes.add(TransportMode.car);
 
-			addLink(network, node_ga_id, node_fa_id, modes, uamLinkCapacity, uamMaxLinkSpeed);
-			addLink(network, node_fa_id, node_ga_id, modes, uamLinkCapacity, uamMaxLinkSpeed);
+			addLink(network, node_ga_id, node_fa_id, modes);
+			addLink(network, node_fa_id, node_ga_id, modes);
 
 			// flight access links
 			addLink(network, node_fa_id, uamNode.getId(), modesUam, flight_access_capacity, flight_access_freespeed,
@@ -316,7 +315,7 @@ public class RunCreateUAMRoutedScenario {
 				new DijkstraFactory(), networkUAM, new OnlyTimeDependentTravelDisutility(travelTime), travelTime);
 
 		FileWriter csvWriter = new FileWriter(filename);
-		csvWriter.append("fromStation,fromNode,toStation,toNode,cruisedistance_m,vtoldistance_m\n");
+		csvWriter.append("fromStation,fromNode,toStation,toNode,cruisedistance,vtoldistance\n");
 
 		for (Id<Node> uamStationOrigin : stations) {
 			for (Id<Node> uamStationDestination : stations) {
