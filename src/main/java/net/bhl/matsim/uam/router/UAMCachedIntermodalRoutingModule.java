@@ -164,9 +164,8 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 		try {
 			// TODO: Rework this section and make it more efficient.
-			int index = (int) Math.floor(departureTime / UAMConstants.waitingTimeBinSize);
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
-					.getWaitingTimes()[index];
+					.getWaitingTime(departureTime);
 			currentTime += waitTime;
 		} catch (IndexOutOfBoundsException e) {
 			if (counterWarningWaitingTimeSlot < counterLimit)

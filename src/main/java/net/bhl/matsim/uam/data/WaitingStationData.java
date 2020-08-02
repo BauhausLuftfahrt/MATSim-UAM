@@ -5,8 +5,11 @@ import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.WaitingData;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.Scenario;
+import org.matsim.core.config.Config;
 import org.matsim.core.controler.events.BeforeMobsimEvent;
 import org.matsim.core.controler.listener.BeforeMobsimListener;
+import org.matsim.core.mobsim.qsim.QSim;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +22,12 @@ import java.util.Map;
 public class WaitingStationData implements BeforeMobsimListener {
 
 	Map<Id<UAMStation>, WaitingData> waitingData = new HashMap<>();
+
 	@Inject
 	private UAMManager uamManager;
+
+	@Inject
+	private Config config;
 
 	public Map<Id<UAMStation>, WaitingData> getWaitingData() {
 		return waitingData;
@@ -33,7 +40,10 @@ public class WaitingStationData implements BeforeMobsimListener {
 	@Override
 	public void notifyBeforeMobsim(BeforeMobsimEvent event) {
 		waitingData.clear();
+
+		int simulationEndTime = Integer.parseInt(config.getModules().get("qsim").getParams().get("endTime").substring(0,2));
 		for (UAMStation station : uamManager.getStations().getUAMStations().values())
-			waitingData.put(station.getId(), new WaitingData(station.getDefaultWaitTime()));
+			waitingData.put(station.getId(), new WaitingData(simulationEndTime * 3600,
+					station.getDefaultWaitTime()));
 	}
 }
