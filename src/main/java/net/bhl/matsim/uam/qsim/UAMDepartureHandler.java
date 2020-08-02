@@ -60,7 +60,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
 		initiateUAMDepartureHandler();
-		// TODO is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
+		// TODO: Is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
 
 		if (agent instanceof PlanAgent) {
 			if (agent.getMode().startsWith(UAMConstants.access)) {

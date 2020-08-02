@@ -21,7 +21,7 @@ public class WaitingData {
 
 	public void addWaitingTime(double waitingTime, double arrivalTime) {
 		//int simulationEnd = Integer.parseInt(scenario.getConfig().getModules().get("qsim").getParams().get("endTime").substring(0,2));
-		if (arrivalTime < 30 * 3600.0) {
+		if (arrivalTime < 30 * 3600.0) { // TODO
 			int index = (int) Math.floor(arrivalTime / UAMConstants.waitingTimeBinSize);
 
 			cumWaitingTimes[index] += waitingTime;

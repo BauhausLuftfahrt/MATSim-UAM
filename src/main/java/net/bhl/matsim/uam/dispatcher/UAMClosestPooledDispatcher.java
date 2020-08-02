@@ -95,7 +95,7 @@ public class UAMClosestPooledDispatcher implements UAMDispatcher {
 	}
 
 	private void reoptimize(double now) {
-		// TODO: have pending requests per station
+		// TODO: Have pending requests per station.
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
 

@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.transit.simulation;
+package net.bhl.matsim.uam.transit;
 
 import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
 import ch.ethz.matsim.baseline_scenario.transit.routing.EnrichedTransitRoute;

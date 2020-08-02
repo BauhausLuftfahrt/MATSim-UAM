@@ -35,7 +35,7 @@ public class UAMStationConnectionGraph {
 
 		legs = new HashMap<>();
 
-		//TODO for now it assumes there only being one singular UAM vehicle type, enhancing this would be part of future work
+		//TODO: For now it assumes there only being one singular UAM vehicle type, enhancing this would be part of future work.
 		double horizontalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getCruiseSpeed();
 		double verticalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getVerticalSpeed();
 

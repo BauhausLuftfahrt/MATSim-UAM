@@ -163,7 +163,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		// affect events
 
 		try {
-			// TODO REWORK
+			// TODO: Rework this section and make it more efficient.
 			int index = (int) Math.floor(departureTime / UAMConstants.waitingTimeBinSize);
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
 					.getWaitingTimes()[index];
