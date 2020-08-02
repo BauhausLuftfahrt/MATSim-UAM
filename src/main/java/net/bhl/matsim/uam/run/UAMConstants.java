@@ -16,6 +16,4 @@ public class UAMConstants {
 	public static final String interaction = uam + "_interaction";
 
 	public static final String vehicle = uam + "_vh_";
-
-	public static final double waitingTimeBinSize = 1800.0; // [s]
 }
