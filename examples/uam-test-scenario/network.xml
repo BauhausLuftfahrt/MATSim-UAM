@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE network SYSTEM "http://www.matsim.org/files/dtd/network_v2.dtd">
-<network name="uam-test-scenario-uam">
+<network name="test-scenario-uam">
 
 	<attributes>
 		<attribute name="coordinateReferenceSystem" class="java.lang.String" >Atlantis</attribute>
