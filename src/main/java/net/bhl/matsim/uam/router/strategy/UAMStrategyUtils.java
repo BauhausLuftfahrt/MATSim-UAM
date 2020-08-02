@@ -24,7 +24,6 @@ import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This class provides the methods used for different UAMStrategies.
@@ -78,8 +77,7 @@ public class UAMStrategyUtils {
 		if (!uamConfig.getStaticSearchRadius())
 			radius *= CoordUtils.calcEuclideanDistance(fromFacility.getCoord(), toFacility.getCoord());
 
-		return landingStations.spatialStations.getDisk(fromFacility.getCoord().getX(),
-				fromFacility.getCoord().getY(), radius);
+		return landingStations.getUAMStationsInRadius(fromFacility.getCoord(), radius);
 	}
 
 	/**
@@ -88,8 +86,6 @@ public class UAMStrategyUtils {
 	 * @param facility the origin of the trip (if access leg); the trip final
 	 *                 destination (if egress leg).
 	 * @return a map with station Id's as keys and UAMAccessRouteData as values.
-	 * @throws ExecutionException
-	 * @throws InterruptedException
 	 */
 	Map<Id<UAMStation>, UAMAccessOptions> getAccessOptions(boolean access, Collection<UAMStation> stations,
 														   Facility facility, double departureTime) {
@@ -141,7 +137,6 @@ public class UAMStrategyUtils {
 		}
 
 		switch (mode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				if (carNetwork.getLinks().get(from.getId()) != null)
 					from = carNetwork.getLinks().get(from.getId());

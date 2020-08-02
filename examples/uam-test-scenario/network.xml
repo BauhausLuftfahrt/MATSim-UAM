@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE network SYSTEM "http://www.matsim.org/files/dtd/network_v2.dtd">
-<network name="uam-test-scenario">
+<network name="test-scenario-uam">
 
+	<attributes>
+		<attribute name="coordinateReferenceSystem" class="java.lang.String" >Atlantis</attribute>
+		<attribute name="uamMaxLinkFreeSpeed" class="java.lang.Double" >100.0</attribute>
+	</attributes>
 <!-- ====================================================================== -->
 
 	<nodes>
@@ -49,9 +53,9 @@
 		</node>
 		<node id="uam_wp_01_fl" x="6020.0" y="-500.0" >
 		</node>
-		<node id="uam_wp_02_fl" x="7515.0" y="0.0" >
+		<node id="uam_wp_02_fl" x="7515.0" y="250.0" >
 		</node>
-		<node id="uam_wp_03_fl" x="12525.0" y="0.0" >
+		<node id="uam_wp_03_fl" x="12525.0" y="-250.0" >
 		</node>
 		<node id="uam_wp_04_fl" x="14020.0" y="500.0" >
 		</node>
@@ -122,92 +126,92 @@
 		</link>
 		<link id="uam_gl-uam_st_05_ga-06B" from="uam_st_05_ga" to="06B" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="car" >
 		</link>
-		<link id="uam_hl-uam_wp_00_fl-uam_wp_02_fl" from="uam_wp_00_fl" to="uam_wp_02_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_00_fl-uam_wp_02_fl" from="uam_wp_00_fl" to="uam_wp_02_fl" length="1515.7588858390375" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_01_fl-uam_wp_02_fl" from="uam_wp_01_fl" to="uam_wp_02_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_01_fl-uam_wp_02_fl" from="uam_wp_01_fl" to="uam_wp_02_fl" length="1672.5803418670207" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_02_fl-uam_wp_00_fl" from="uam_wp_02_fl" to="uam_wp_00_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_02_fl-uam_wp_00_fl" from="uam_wp_02_fl" to="uam_wp_00_fl" length="1515.7588858390375" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_02_fl-uam_wp_01_fl" from="uam_wp_02_fl" to="uam_wp_01_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_02_fl-uam_wp_01_fl" from="uam_wp_02_fl" to="uam_wp_01_fl" length="1672.5803418670207" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_02_fl-uam_wp_03_fl" from="uam_wp_02_fl" to="uam_wp_03_fl" length="5010.0" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_02_fl-uam_wp_03_fl" from="uam_wp_02_fl" to="uam_wp_03_fl" length="5034.888280786377" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_03_fl-uam_wp_02_fl" from="uam_wp_03_fl" to="uam_wp_02_fl" length="5010.0" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_03_fl-uam_wp_02_fl" from="uam_wp_03_fl" to="uam_wp_02_fl" length="5034.888280786377" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_03_fl-uam_wp_04_fl" from="uam_wp_03_fl" to="uam_wp_04_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_03_fl-uam_wp_04_fl" from="uam_wp_03_fl" to="uam_wp_04_fl" length="1672.5803418670207" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_03_fl-uam_wp_05_fl" from="uam_wp_03_fl" to="uam_wp_05_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_03_fl-uam_wp_05_fl" from="uam_wp_03_fl" to="uam_wp_05_fl" length="1515.7588858390375" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_04_fl-uam_wp_03_fl" from="uam_wp_04_fl" to="uam_wp_03_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_04_fl-uam_wp_03_fl" from="uam_wp_04_fl" to="uam_wp_03_fl" length="1672.5803418670207" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_hl-uam_wp_05_fl-uam_wp_03_fl" from="uam_wp_05_fl" to="uam_wp_03_fl" length="1576.3962065419976" freespeed="100.0" capacity="999999.0" permlanes="1.0" oneway="1" modes="uam" >
+		<link id="uam_hl-uam_wp_05_fl-uam_wp_03_fl" from="uam_wp_05_fl" to="uam_wp_03_fl" length="1515.7588858390375" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_horizontal</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_00_fa-uam_st_00_ga" from="uam_st_00_fa" to="uam_st_00_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_00_fa-uam_st_00_ga" from="uam_st_00_fa" to="uam_st_00_ga" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_00_ga-uam_st_00_fa" from="uam_st_00_ga" to="uam_st_00_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_00_ga-uam_st_00_fa" from="uam_st_00_ga" to="uam_st_00_fa" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_01_fa-uam_st_01_ga" from="uam_st_01_fa" to="uam_st_01_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_01_fa-uam_st_01_ga" from="uam_st_01_fa" to="uam_st_01_ga" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_01_ga-uam_st_01_fa" from="uam_st_01_ga" to="uam_st_01_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_01_ga-uam_st_01_fa" from="uam_st_01_ga" to="uam_st_01_fa" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_04_fa-uam_st_04_ga" from="uam_st_04_fa" to="uam_st_04_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_04_fa-uam_st_04_ga" from="uam_st_04_fa" to="uam_st_04_ga" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_04_ga-uam_st_04_fa" from="uam_st_04_ga" to="uam_st_04_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_04_ga-uam_st_04_fa" from="uam_st_04_ga" to="uam_st_04_fa" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_05_fa-uam_st_05_ga" from="uam_st_05_fa" to="uam_st_05_ga" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_05_fa-uam_st_05_ga" from="uam_st_05_fa" to="uam_st_05_ga" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>
 		</link>
-		<link id="uam_sl-uam_st_05_ga-uam_st_05_fa" from="uam_st_05_ga" to="uam_st_05_fa" length="1.0" freespeed="100.0" capacity="99999.0" permlanes="1.0" oneway="1" modes="uam,car" >
+		<link id="uam_sl-uam_st_05_ga-uam_st_05_fa" from="uam_st_05_ga" to="uam_st_05_fa" length="1.0" freespeed="100.0" capacity="999.0" permlanes="1.0" oneway="1" modes="uam,car" >
 			<attributes>
 				<attribute name="type" class="java.lang.String" >uam_vertical</attribute>
 			</attributes>

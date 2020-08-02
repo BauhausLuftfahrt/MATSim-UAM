@@ -39,7 +39,7 @@ public class DeckGLTripItem {
 	public String convert(String inputEPSGCode, String outputEPSGCode, long timeMultiplier) {
 		Coordinate convertedSource = null;
 
-		CoordinateReferenceSystem crsIn = null;
+		CoordinateReferenceSystem crsIn;
 		CoordinateReferenceSystem crsOut = null;
 		try {
 			crsIn = MGC.getCRS(inputEPSGCode); // EPSG:code crsOut =
@@ -52,13 +52,11 @@ public class DeckGLTripItem {
 			System.err.println("Old geotools version is not compatible with Java 9");
 			e.printStackTrace();
 			System.exit(1);
-		} catch (FactoryException e) {
-			e.printStackTrace();
-		} catch (TransformException e) {
+		} catch (FactoryException | TransformException e) {
 			e.printStackTrace();
 		}
 
-		return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
+        return "[" + convertedSource.x + "," + convertedSource.y + "," + ((time - timeShift) * timeMultiplier) + "]";
 	}
 
 }

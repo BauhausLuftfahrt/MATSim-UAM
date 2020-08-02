@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.schedule;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import net.bhl.matsim.uam.dispatcher.Dispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMRequest;
 import org.matsim.api.core.v01.network.Link;
@@ -27,7 +27,7 @@ import java.util.List;
 @Singleton
 public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, MobsimBeforeSimStepListener {
 	private double now;
-	private Dispatcher dispatcher;
+	private UAMDispatcher dispatcher;
 	@Inject
 	private EventsManager eventsManager;
 
@@ -58,8 +58,8 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 
 		List<? extends Task> tasks = schedule.getTasks();
 		int index = currentTask.getTaskIdx() + 1;
-		UAMTask nextTask = null;
 
+		UAMTask nextTask;
 		if (index < tasks.size()) {
 			nextTask = (UAMTask) tasks.get(index);
 		} else {
@@ -74,7 +74,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 		while (index < tasks.size()) {
 			indexTask = (UAMTask) tasks.get(index);
 
-			if (indexTask.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
+			if (indexTask instanceof UAMStayTask) {
 				if (indexTask.getEndTime() < startTime)
 					indexTask.setEndTime(startTime);
 			} else {
@@ -96,7 +96,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 			}
 		}
 
-		if (nextTask != null && nextTask instanceof UAMDropoffTask) {
+		if (nextTask instanceof UAMDropoffTask) {
 			// throws a transit event in order to let us know that the drop off
 			// has been performed
 			// this is used later in the analysis to know which person was
@@ -108,7 +108,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 	private void ensureNonFinishingSchedule(Schedule schedule) {
 		UAMTask lastTask = (UAMTask) Schedules.getLastTask(schedule);
 
-		if (lastTask.getUAMTaskType() != UAMTask.UAMTaskType.STAY) {
+		if (!(lastTask instanceof UAMStayTask)) {
 			throw new IllegalStateException("A UAM schedule should always end with a STAY task");
 		}
 

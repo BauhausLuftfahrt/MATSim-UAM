@@ -24,7 +24,7 @@ import java.util.*;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 @Deprecated
-public class UAMClosestPooledDispatcher implements Dispatcher {
+public class UAMClosestPooledDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteToPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;
@@ -84,18 +84,18 @@ public class UAMClosestPooledDispatcher implements Dispatcher {
 	@Override
 	public void onNextTaskStarted(UAMVehicle vehicle) {
 		UAMTask task = (UAMTask) vehicle.getSchedule().getCurrentTask();
-		if (task.getUAMTaskType() == UAMTask.UAMTaskType.STAY) {
+		if (task instanceof UAMStayTask) {
 			availableVehicles.add(vehicle);
 			Coord coord = ((UAMStayTask) task).getLink().getCoord();
 			this.availableVehiclesTree.put(coord.getX(), coord.getY(), vehicle);
 			this.locationVehicles.put(vehicle, coord);
 			reoptimize = true;
-		} else if (task.getUAMTaskType() == UAMTask.UAMTaskType.PICKUP)
+		} else if (task instanceof UAMPickupTask)
 			this.enRouteToPickupVehicles.remove(vehicle);
 	}
 
 	private void reoptimize(double now) {
-		// TODO: have pending requests per station
+		// TODO: Have pending requests per station.
 		while (availableVehicles.size() > 0 && pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
 

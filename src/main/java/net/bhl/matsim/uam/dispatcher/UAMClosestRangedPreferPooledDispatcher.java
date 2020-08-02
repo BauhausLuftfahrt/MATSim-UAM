@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
+public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteOrAwaitingPickupVehicles = new HashSet<>();
 	@Inject
 	final private UAMSingleRideAppender appender;
@@ -32,7 +32,7 @@ public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 	final boolean reoptimize = true;
 
 	@Inject
-	public UAMClosestRangedPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
+	public UAMClosestRangedPreferPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager, Network network, Fleet data) {
 		this.appender = appender;
 		this.appender.setStations(uamManager.getStations());
 
@@ -85,6 +85,11 @@ public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 		Queue<UAMRequest> deferredRequests = new LinkedList<>();
 		while (pendingRequests.size() > 0) {
 			UAMRequest request = pendingRequests.poll();
+
+			// Prefer pooling instead of waiting for one's own vehicle
+			if (findEligableEnRouteVehicle(request))
+				continue;
+
 			Coord requestCoord = request.getFromLink().getCoord();
 
 			Set<UAMVehicleType> sufficientRangeTypes = new HashSet<>();
@@ -116,8 +121,7 @@ public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 				if (vehicle.getCapacity() > 1)
 					enRouteOrAwaitingPickupVehicles.add(vehicle);
 			} else {
-				if (!findEligableEnRouteVehicle(request))
-					deferredRequests.add(request);
+				deferredRequests.add(request);
 			}
 		}
 

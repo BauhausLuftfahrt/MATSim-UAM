@@ -10,7 +10,7 @@
 		<param name="searchRadius" value="50500" />
 		<param name="walkDistance" value="500" />
 		<param name="routingStrategy" value="mintraveltime" />
-		<param name="ptSimulation" value="true" />
+		<param name="ptSimulation" value="false" /> <!-- Example of deactivating PT vehicle simulation -->
 	</module>
 	
 	<module name="global" >
@@ -32,7 +32,7 @@
 		<param name="lastIteration" value="10" />
 		<param name="writeEventsInterval" value="1" />
 		<param name="writePlansInterval" value="1" />
-		<param name="outputDirectory" value="output" />
+		<param name="outputDirectory" value="output-NoPtSimulation" />
 		<param name="overwriteFiles" value="deleteDirectoryIfExists" />
 	</module>
 
@@ -132,6 +132,12 @@
 		<parameterset type="teleportedModeParameters">
 			<param name="mode" value="walk" />
 			<param name="teleportedModeSpeed" value="2.2" />
+			<param name="beelineDistanceFactor" value="1.0" />
+		</parameterset>
+		<!-- When simulating UAM: only use this parameterset when not simulating PT. If simulating PT must remove it. -->
+		<parameterset type="teleportedModeParameters">
+			<param name="mode" value="pt" />
+			<param name="teleportedModeSpeed" value="10.0" />
 			<param name="beelineDistanceFactor" value="1.0" />
 		</parameterset>
 	</module>

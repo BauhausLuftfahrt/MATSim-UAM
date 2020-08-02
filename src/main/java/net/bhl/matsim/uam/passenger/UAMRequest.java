@@ -1,7 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
-import net.bhl.matsim.uam.dispatcher.Dispatcher;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;
@@ -27,11 +27,11 @@ public class UAMRequest implements PassengerRequest {
 	private final double latestStartTime;
 	private UAMDropoffTask dropoffTask;
 	private UAMPickupTask pickupTask;
-	private Dispatcher dispatcher;
+	private UAMDispatcher dispatcher;
 	private double distance;
 
 	public UAMRequest(Id<Request> id, MobsimPassengerAgent passengerAgent, Link originLink, Link destinationLink,
-					  double pickupTime, double submissionTime, Dispatcher dispatcher, double distance) {
+                      double pickupTime, double submissionTime, UAMDispatcher dispatcher, double distance) {
 		this.id = id;
 		this.submissionTime = submissionTime;
 		this.quantity = 1.0;
@@ -70,7 +70,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public void setRejected(boolean rejected) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public String getMode() {
-		return UAMModes.UAM_MODE;
+		return UAMConstants.uam;
 	}
 
 	public UAMDropoffTask getDropoffTask() {
@@ -118,7 +118,7 @@ public class UAMRequest implements PassengerRequest {
 		this.pickupTask = pickupTask;
 	}
 
-	public Dispatcher getDispatcher() {
+	public UAMDispatcher getDispatcher() {
 		return dispatcher;
 	}
 

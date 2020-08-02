@@ -6,6 +6,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.*;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -110,14 +111,13 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		double currentTime = departureTime;
 
 		switch (uamRoute.accessMode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				Link accessOriginLink = carNetwork.getLinks().get(fromFacility.getLinkId());
 				if (accessOriginLink == null)
 					accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
 				Link accessDestinationLink = carNetwork.getLinks()
 						.get(uamRoute.bestOriginStation.getLocationLink().getId());
-				Leg carLeg = createCarLeg(UAMModes.UAM_ACCESS + TransportMode.car, accessOriginLink,
+				Leg carLeg = createCarLeg(UAMConstants.access + TransportMode.car, accessOriginLink,
 						accessDestinationLink, departureTime, person, routeFactory, populationFactory);
 				currentTime += carLeg.getTravelTime();
 				trip.add(carLeg);
@@ -144,13 +144,13 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
 						network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-						uamRoute.accessMode, UAMModes.UAM_ACCESS + uamRoute.accessMode);
+						uamRoute.accessMode, UAMConstants.access + uamRoute.accessMode);
 				currentTime += uavAccessLeg.getTravelTime();
 				trip.add(uavAccessLeg);
 		}
 
 		/* origin station */
-		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
+		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMConstants.interaction,
 				uamRoute.bestOriginStation.getLocationLink().getId());
 		uav_interaction1.setMaximumDuration(uamRoute.bestOriginStation.getPreFlightTime()); // Changes the value for the
 		// duration of UAM
@@ -163,10 +163,9 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		// affect events
 
 		try {
-			// TODO REWORK
-			int index = (int) Math.floor(departureTime / 1800.0);
+			// TODO: Rework this section and make it more efficient.
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
-					.getWaitingTimes()[index];
+					.getWaitingTime(departureTime);
 			currentTime += waitTime;
 		} catch (IndexOutOfBoundsException e) {
 			if (counterWarningWaitingTimeSlot < counterLimit)
@@ -202,7 +201,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 		// station
-		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
+		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMConstants.interaction,
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 		uav_interaction2.setMaximumDuration(uamRoute.bestDestinationStation.getPostFlightTime()); // Changes the value
 		// for the duration
@@ -218,7 +217,6 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 		/* egress leg */
 		switch (uamRoute.egressMode) {
-			case TransportMode.taxi:
 			case TransportMode.car:
 				Link egressDestinationLink = carNetwork.getLinks().get(toFacility.getLinkId());
 				if (egressDestinationLink == null)
@@ -227,7 +225,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 				Link egressOriginLink = carNetwork.getLinks()
 						.get(uamRoute.bestDestinationStation.getLocationLink().getId());
 
-				Leg carLeg = createCarLeg(UAMModes.UAM_EGRESS + TransportMode.car, egressOriginLink,
+				Leg carLeg = createCarLeg(UAMConstants.egress + TransportMode.car, egressOriginLink,
 						egressDestinationLink, currentTime, person, routeFactory, populationFactory);
 				trip.add(carLeg);
 				break;
@@ -249,7 +247,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
 						uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
-						uamRoute.egressMode, UAMModes.UAM_EGRESS + uamRoute.egressMode);
+						uamRoute.egressMode, UAMConstants.egress + uamRoute.egressMode);
 				trip.add(uavEgressLeg);
 		}
 
@@ -275,7 +273,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
 	private Leg createUAMLeg(Link originLink, Link destinationLink, UAMFlightLeg flightLeg,
 							 RouteFactories routeFactory, PopulationFactory populationFactory) {
-		return createNetworkLeg(UAMModes.UAM_MODE, originLink, destinationLink, flightLeg.links, routeFactory,
+		return createNetworkLeg(UAMConstants.uam, originLink, destinationLink, flightLeg.links, routeFactory,
 				populationFactory, flightLeg.travelTime, flightLeg.distance);
 	}
 
@@ -309,7 +307,7 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 	@Override
 	public StageActivityTypes getStageActivityTypes() {
 		final CompositeStageActivityTypes stageTypes = new CompositeStageActivityTypes();
-		stageTypes.addActivityTypes(new StageActivityTypesImpl(UAMModes.UAM_INTERACTION));
+		stageTypes.addActivityTypes(new StageActivityTypesImpl(UAMConstants.interaction));
 		return stageTypes;
 	}
 }

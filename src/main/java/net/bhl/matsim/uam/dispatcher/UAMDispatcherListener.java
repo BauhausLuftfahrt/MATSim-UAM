@@ -14,11 +14,11 @@ import java.util.List;
 public class UAMDispatcherListener implements MobsimBeforeSimStepListener {
 
 	@Inject
-	List<Dispatcher> dispatchers;
+	List<UAMDispatcher> dispatchers;
 
 	@Override
 	public void notifyMobsimBeforeSimStep(MobsimBeforeSimStepEvent e) {
-		for (Dispatcher d : dispatchers) {
+		for (UAMDispatcher d : dispatchers) {
 			d.onNextTimeStep(e.getSimulationTime());
 		}
 	}

@@ -4,11 +4,14 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.dispatcher.*;
+import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPreferPooledDispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
+import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.passenger.UAMRequestCreator;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
@@ -51,21 +54,18 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	private UAMXMLReader uamReader;
 
 	public UAMQsimModule(UAMXMLReader uamReader, UAMManager uamManager) {
-		super(UAMModes.UAM_MODE);
+		super(UAMConstants.uam);
 		this.uamReader = uamReader;
 		this.uamManager = uamManager;
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
 		DynActivityEngineModule.configureComponents(components);
-		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
+		components.addComponent(DvrpModes.mode(UAMConstants.uam));
 	}
 
 	@Override
 	protected void configureQSim() {
-		install(new VrpAgentSourceQSimModule(getMode()));
-		install(new PassengerEngineQSimModule(getMode()));
-
 		bindModal(PassengerRequestCreator.class).to(UAMRequestCreator.class);
 		bindModal(DynActionCreator.class).to(UAMActionCreator.class);
 		bindModal(VrpOptimizer.class).to(UAMOptimizer.class);
@@ -84,11 +84,14 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
 		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
+
+		install(new VrpAgentSourceQSimModule(getMode()));
+		install(new PassengerEngineQSimModule(getMode()));
 	}
 
 	@Provides
 	@Singleton
-	VrpLegFactory provideLegCreator(@DvrpMode(UAMModes.UAM_MODE) VrpOptimizer optimizer, QSim qSim) {
+	VrpLegFactory provideLegCreator(@DvrpMode(UAMConstants.uam) VrpOptimizer optimizer, QSim qSim) {
 		return new VrpLegFactory() {
 			@Override
 			public VrpLeg create(DvrpVehicle vehicle) {
@@ -100,12 +103,12 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Provides
 	@Singleton
-	List<Dispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-										@Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
+                                           @Named(UAMConstants.uam) Network network, @DvrpMode(UAMConstants.uam) Fleet data) {
 
-		Dispatcher dispatcher = new UAMClosestRangedPooledDispatcher(appender, uamManager, network, data);
+		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
 
-		List<Dispatcher> dispatchers = new ArrayList<>();
+		List<UAMDispatcher> dispatchers = new ArrayList<>();
 		dispatchers.add(dispatcher);
 		return dispatchers;
 	}

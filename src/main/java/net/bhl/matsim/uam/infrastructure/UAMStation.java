@@ -36,9 +36,6 @@ public interface UAMStation {
 	 */
 	double getDefaultWaitTime();
 
-	/**
-	 * TODO
-	 */
 	Link getLocationLink();
 
 	String getName();

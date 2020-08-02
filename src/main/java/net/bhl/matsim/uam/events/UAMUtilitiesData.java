@@ -10,6 +10,6 @@ import java.util.Set;
  */
 @Deprecated
 public class UAMUtilitiesData {
-	public static Set<UAMUtilitiesAccessEgress> accessEgressOptions = new HashSet<UAMUtilitiesAccessEgress>();
-	public static Set<UAMUtilitiesTrip> tripOptions = new HashSet<UAMUtilitiesTrip>();
+	public static Set<UAMUtilitiesAccessEgress> accessEgressOptions = new HashSet<>();
+	public static Set<UAMUtilitiesTrip> tripOptions = new HashSet<>();
 }

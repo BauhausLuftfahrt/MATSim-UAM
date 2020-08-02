@@ -3,7 +3,7 @@ package net.bhl.matsim.uam.vrpagent;
 import com.google.inject.Inject;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.*;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
@@ -26,7 +26,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String STAY_ACTIVITY_TYPE = "UAMStay";
 	public static final String TURNAROUND_ACTIVITY_TYPE = "UAMTurnAround";
 	@Inject
-	@DvrpMode(UAMModes.UAM_MODE)
+	@DvrpMode(UAMConstants.uam)
 	private PassengerEngine passengerEngine;
 
 	@Inject

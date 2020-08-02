@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.utils;
+package net.bhl.matsim.uam.analysis.trips.run;
 
 import java.io.*;
 
@@ -33,9 +33,7 @@ public class RunConvertDeckGLBuildings {
 
 			boolean first = true;
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
-				if (!line.contains("coordinates"))
-					continue;
-				else {
+				if (line.contains("coordinates")) {
 					if (!first)
 						bw.write("," + System.lineSeparator());
 

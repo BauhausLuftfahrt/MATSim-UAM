@@ -8,7 +8,7 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public interface Dispatcher {
+public interface UAMDispatcher {
 
 	/**
 	 * @param request UAM Request

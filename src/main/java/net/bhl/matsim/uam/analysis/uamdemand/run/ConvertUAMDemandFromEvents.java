@@ -5,7 +5,8 @@ import net.bhl.matsim.uam.analysis.uamdemand.UAMDemandItem;
 import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMListener;
 import net.bhl.matsim.uam.analysis.uamdemand.readers.EventsUAMReader;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
@@ -40,10 +41,11 @@ public class ConvertUAMDemandFromEvents {
 
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
-				UAMModes.UAM_INTERACTION);
+				UAMConstants.interaction);
 
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());
-		Collection<String> networkRouteModes = Arrays.asList("car", "uam", "access_uam_car", "egress_uam_car");
+		Collection<String> networkRouteModes = Arrays.asList(TransportMode.car, UAMConstants.uam,
+				UAMConstants.access + TransportMode.car, UAMConstants.egress + TransportMode.car);
 
 		UAMListener uamListener = new UAMListener(netw, uamVehicles, stageActivityTypes, mainModeIdentifier,
 				networkRouteModes);
