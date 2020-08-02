@@ -62,8 +62,7 @@ public class UAMStrategyRouter {
 		try {
 			route = strategy.getRoute(person, fromFacility, toFacility, departureTime);
 			UAMRoutes.getInstance().add(person.getId(), departureTime, route);
-		} catch (NullPointerException e) {
-			// TODO
+		} catch (NullPointerException ignored) {
 		}
 
 		return route;

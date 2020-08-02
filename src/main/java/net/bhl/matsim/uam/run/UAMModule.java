@@ -19,7 +19,6 @@ import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
 import net.bhl.matsim.uam.qsim.UAMQsimModule;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
-import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
 import org.matsim.api.core.v01.TransportMode;
@@ -62,7 +61,7 @@ public class UAMModule extends AbstractModule {
 
 	@Override
 	public void install() {
-		bind(DvrpModes.key(PassengerRequestValidator.class, UAMModes.uam))
+		bind(DvrpModes.key(PassengerRequestValidator.class, UAMConstants.uam))
 				.toInstance(new DefaultPassengerRequestValidator());
 		installQSimModule(new UAMQsimModule(uamReader, uamManager));
 		installQSimModule(new DynActivityEngineModule());
@@ -82,14 +81,14 @@ public class UAMModule extends AbstractModule {
 		addControlerListenerBinding().to(WaitingStationData.class);
 
 		addControlerListenerBinding()
-				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named(UAMModes.uam)));
+				.to(Key.get(ParallelLeastCostPathCalculatorShutdownListener.class, Names.named(UAMConstants.uam)));
 
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
 
 		// we need to bind our router for the uam trips
-		addRoutingModuleBinding(UAMModes.uam).toProvider(UAMRoutingModuleProvider.class);
+		addRoutingModuleBinding(UAMConstants.uam).toProvider(UAMRoutingModuleProvider.class);
 
 		// we still need to provide a way to identify our trips
 		// as being uam trips.
@@ -97,27 +96,27 @@ public class UAMModule extends AbstractModule {
 		bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
-		bind(VehicleType.class).annotatedWith(Names.named(UAMModes.uam)).toInstance(VehicleUtils.getDefaultVehicleType());
+		bind(VehicleType.class).annotatedWith(Names.named(UAMConstants.uam)).toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
 				.toInstance(VehicleUtils.getDefaultVehicleType());
 
-		bind(TravelTime.class).annotatedWith(Names.named(UAMModes.uam))
+		bind(TravelTime.class).annotatedWith(Names.named(UAMConstants.uam))
 				.to(Key.get(TravelTime.class, Names.named(DvrpTravelTimeModule.DVRP_ESTIMATED)));
 
 		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING))
 				.toInstance(this.networkUAM);
 		bind(Network.class).annotatedWith(Names.named(TransportMode.car)).toInstance(this.networkCar);
 
-		bind(Network.class).annotatedWith(Names.named(UAMModes.uam))
+		bind(Network.class).annotatedWith(Names.named(UAMConstants.uam))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));
 	}
 
 	@Provides
 	@Singleton
-	@Named(UAMModes.uam)
+	@Named(UAMConstants.uam)
 	private ParallelLeastCostPathCalculator provideParallelLeastCostPathCalculator(UAMConfigGroup uamConfig,
-																				   @Named(UAMModes.uam) TravelTime travelTime) {
+																				   @Named(UAMConstants.uam) TravelTime travelTime) {
 		int parallelRouters = uamConfig.getParallelRouters();
 		if (1 == parallelRouters) {
 			return new SerialLeastCostPathCalculator(new DijkstraFactory().createPathCalculator(networkUAM,
@@ -130,15 +129,15 @@ public class UAMModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	@Named(UAMModes.uam)
+	@Named(UAMConstants.uam)
 	private ParallelLeastCostPathCalculatorShutdownListener provideParallelLeastCostPathCalculatorShutdownListener(
-			@Named(UAMModes.uam) ParallelLeastCostPathCalculator calculator) {
+			@Named(UAMConstants.uam) ParallelLeastCostPathCalculator calculator) {
 		return new ParallelLeastCostPathCalculatorShutdownListener(calculator);
 	}
 
 	@Provides
 	@Singleton
-	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.uam) ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph provideUAMStationConnectionGraph(UAMManager uamManager, @Named(UAMConstants.uam) ParallelLeastCostPathCalculator plcpc) {
 		return new UAMStationConnectionGraph(uamManager, plcpc);
 	}
 

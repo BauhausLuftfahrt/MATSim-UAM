@@ -4,6 +4,7 @@ import ch.ethz.matsim.baseline_scenario.transit.events.PublicTransitEvent;
 import net.bhl.matsim.uam.analysis.transit.TransitTripItem;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.events.*;
 import org.matsim.api.core.v01.events.handler.*;
 import org.matsim.api.core.v01.network.Network;
@@ -66,7 +67,7 @@ public class TransitTripListener
 			item.legDepartureTime = event.getTime();
 			item.intermediateOrigin = network.getLinks().get(event.getLinkId()).getCoord();
 
-			if (item.mode.equals("pt")) {
+			if (item.mode.equals(TransportMode.pt)) {
 				item.numberOfTransfers += 1;
 			}
 		}
@@ -77,7 +78,7 @@ public class TransitTripListener
 		TransitTripListenerItem item = ongoing.get(event.getPersonId());
 
 		if (item != null) {
-			if (item.mode.equals("pt")) {
+			if (item.mode.equals(TransportMode.pt)) {
 				item.inVehicleDistance += event.getDistance();
 			} else if (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk)) {
 				item.transferDistance += event.getDistance();
@@ -110,7 +111,7 @@ public class TransitTripListener
 		Coord intermediateDestination = network.getLinks().get(event.getLinkId()).getCoord();
 
 		if (item != null) {
-			if (item.mode.equals("pt")) {
+			if (item.mode.equals(TransportMode.pt)) {
 				item.inVehicleCrowflyDistance += CoordUtils.calcEuclideanDistance(item.intermediateOrigin,
 						intermediateDestination);
 			} else if (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk)) {
@@ -127,7 +128,7 @@ public class TransitTripListener
 			TransitTripListenerItem item = ongoing.remove(event.getPersonId());
 
 			if (item != null) {
-				if (item.mode.equals("pt") || (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk))) {
+				if (item.mode.equals(TransportMode.pt) || (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk))) {
 					item.destination = network.getLinks().get(event.getLinkId()).getCoord();
 					item.numberOfTransfers = Math.max(item.numberOfTransfers, 0);
 					item.crowflyDistance = CoordUtils.calcEuclideanDistance(item.origin, item.destination);

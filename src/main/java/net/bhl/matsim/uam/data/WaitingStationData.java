@@ -33,12 +33,7 @@ public class WaitingStationData implements BeforeMobsimListener {
 	@Override
 	public void notifyBeforeMobsim(BeforeMobsimEvent event) {
 		waitingData.clear();
-		for (UAMStation station : uamManager.getStations().stations.values()) {
-
+		for (UAMStation station : uamManager.getStations().getUAMStations().values())
 			waitingData.put(station.getId(), new WaitingData(station.getDefaultWaitTime()));
-		}
-
 	}
-
-
 }

@@ -5,6 +5,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.jfree.util.Log;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -97,7 +98,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 				break;
 			}
 			case "vehicle": {
-				Id<DvrpVehicle> id = Id.create("uam_vh_" + atts.getValue("id"), DvrpVehicle.class);
+				Id<DvrpVehicle> id = Id.create(UAMConstants.vehicle + atts.getValue("id"), DvrpVehicle.class);
 				Id<UAMVehicleType> vehicleTypeId = Id.create(atts.getValue("type"), UAMVehicleType.class);
 
 				// gets starttime and endtime

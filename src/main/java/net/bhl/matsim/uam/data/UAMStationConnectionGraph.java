@@ -5,7 +5,7 @@ import com.google.inject.name.Named;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.router.UAMFlightSegments;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
@@ -30,7 +30,7 @@ public class UAMStationConnectionGraph {
 	final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
 	private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;
 
-	public UAMStationConnectionGraph(UAMManager uamManager, @Named(UAMModes.uam) ParallelLeastCostPathCalculator plcpc) {
+	public UAMStationConnectionGraph(UAMManager uamManager, @Named(UAMConstants.uam) ParallelLeastCostPathCalculator plcpc) {
 		log.info("Calculating travel times and distances between all UAM stations.");
 
 		legs = new HashMap<>();
@@ -39,8 +39,8 @@ public class UAMStationConnectionGraph {
 		double horizontalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getCruiseSpeed();
 		double verticalSpeed = uamManager.getVehicles().entrySet().iterator().next().getValue().getVerticalSpeed();
 
-		for (UAMStation uamStationOrigin : uamManager.getStations().stations.values()) {
-			for (UAMStation uamStationDestination : uamManager.getStations().stations.values()) {
+		for (UAMStation uamStationOrigin : uamManager.getStations().getUAMStations().values()) {
+			for (UAMStation uamStationDestination : uamManager.getStations().getUAMStations().values()) {
 				if (uamStationOrigin == uamStationDestination)
 					continue;
 

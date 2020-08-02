@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.analysis.traffic.run;
 
 import net.bhl.matsim.uam.analysis.traffic.CSVLinkStatsWriter;
 import net.bhl.matsim.uam.analysis.traffic.LinkStatsItem;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -46,8 +47,8 @@ public class ConvertLinkStatsFromEvents {
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
 
         Set<String> modes = new HashSet<>(Arrays.asList(analyzedModes));
-		tconfig.setAnalyzedModes(modes); // TODO does nothing?
-		tconfig.setFilterModes(filterModes); // TODO does nothing?
+		tconfig.setAnalyzedModes(modes);
+		tconfig.setFilterModes(filterModes);
 
 		tconfig.setCalculateLinkToLinkTravelTimes(calculateLinkToLinkTravelTimes);
 		tconfig.setCalculateLinkTravelTimes(calculateLinkTravelTimes);

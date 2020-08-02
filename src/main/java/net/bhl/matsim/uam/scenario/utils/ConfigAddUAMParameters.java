@@ -1,7 +1,7 @@
 package net.bhl.matsim.uam.scenario.utils;
 
 import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
@@ -31,19 +31,19 @@ public class ConfigAddUAMParameters {
 				Integer.parseInt(args[i++]), UAMStrategy.UAMStrategyType.valueOf(args[i++].toUpperCase()),
 				Boolean.parseBoolean(args[i]));
 		ConfigWriter configWriter = new ConfigWriter(config);
-		configWriter.write(args[0] + "." + UAMModes.uam + ".xml");
+		configWriter.write(args[0] + "." + UAMConstants.uam + ".xml");
 	}
 
 	public static void addUAMParameters(Config config, String inputUAMFile, String modes, int threads, int searchRadius,
 										int walkDistance, UAMStrategy.UAMStrategyType routingStrategy, boolean ptSimulation) {
-		config.getModules().put(UAMModes.uam, new UAMConfigGroup());
-		config.getModules().get(UAMModes.uam).addParam("inputUAMFile", inputUAMFile);
-		config.getModules().get(UAMModes.uam).addParam("availableAccessModes", modes);
-		config.getModules().get(UAMModes.uam).addParam("parallelRouters", "" + threads);
-		config.getModules().get(UAMModes.uam).addParam("searchRadius", "" + searchRadius);
-		config.getModules().get(UAMModes.uam).addParam("walkDistance", "" + walkDistance);
-		config.getModules().get(UAMModes.uam).addParam("routingStrategy", routingStrategy.toString());
-		config.getModules().get(UAMModes.uam).addParam("ptSimulation", String.valueOf(ptSimulation));
+		config.getModules().put(UAMConstants.uam, new UAMConfigGroup());
+		config.getModules().get(UAMConstants.uam).addParam("inputUAMFile", inputUAMFile);
+		config.getModules().get(UAMConstants.uam).addParam("availableAccessModes", modes);
+		config.getModules().get(UAMConstants.uam).addParam("parallelRouters", "" + threads);
+		config.getModules().get(UAMConstants.uam).addParam("searchRadius", "" + searchRadius);
+		config.getModules().get(UAMConstants.uam).addParam("walkDistance", "" + walkDistance);
+		config.getModules().get(UAMConstants.uam).addParam("routingStrategy", routingStrategy.toString());
+		config.getModules().get(UAMConstants.uam).addParam("ptSimulation", String.valueOf(ptSimulation));
 
 		// If PT simulation is desired (true), PT may not be listed under teleportedModeParameters, else it must be
 		ConfigGroup planscalcroute = config.getModules().get("planscalcroute");
@@ -75,19 +75,19 @@ public class ConfigAddUAMParameters {
 
 		// UAM planCalcScore activities
 		ConfigGroup uamInteractionParam = config.getModules().get("planCalcScore").createParameterSet("activityParams");
-		uamInteractionParam.addParam("activityType", UAMModes.interaction);
+		uamInteractionParam.addParam("activityType", UAMConstants.interaction);
 		uamInteractionParam.addParam("scoringThisActivityAtAll", "false");
 		config.getModules().get("planCalcScore").addParameterSet(uamInteractionParam);
 
 		String mainMode = config.getModules().get("qsim").getParams().get("mainMode");
 		config.getModules().get("qsim").addParam("mainMode",
-				mainMode + "," + UAMModes.access + "," + UAMModes.egress);
+				mainMode + "," + UAMConstants.access + "," + UAMConstants.egress);
 
 		// UAM planCalcScore modes
-		String[] modeScores = {UAMModes.uam,
-				UAMModes.access + TransportMode.walk, UAMModes.egress + TransportMode.walk,
-				UAMModes.access + TransportMode.car, UAMModes.egress + TransportMode.car,
-				UAMModes.access + TransportMode.bike, UAMModes.egress + TransportMode.bike};
+		String[] modeScores = {UAMConstants.uam,
+				UAMConstants.access + TransportMode.walk, UAMConstants.egress + TransportMode.walk,
+				UAMConstants.access + TransportMode.car, UAMConstants.egress + TransportMode.car,
+				UAMConstants.access + TransportMode.bike, UAMConstants.egress + TransportMode.bike};
 		for (String modeScore : modeScores) {
 			ConfigGroup modeParam = config.getModules().get("planCalcScore").createParameterSet("modeParams");
 			modeParam.addParam("mode", modeScore);

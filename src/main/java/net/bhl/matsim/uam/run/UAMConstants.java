@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.router;
+package net.bhl.matsim.uam.run;
 
 /**
  * Provides UAM trip segment identifiers. The following trips are currently being modelled: UAM access trip (via
@@ -7,11 +7,15 @@ package net.bhl.matsim.uam.router;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class UAMModes {
+public class UAMConstants {
 	public static final String uam = "uam";
 
 	public static final String access = "access_" + uam + "_";
 	public static final String egress = "egress_" + uam + "_";
 
 	public static final String interaction = uam + "_interaction";
+
+	public static final String vehicle = uam + "_vh_";
+
+	public static final double waitingTimeBinSize = 1800.0; // [s]
 }

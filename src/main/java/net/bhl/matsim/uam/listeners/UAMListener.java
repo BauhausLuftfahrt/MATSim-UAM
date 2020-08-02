@@ -37,12 +37,10 @@ public class UAMListener implements IterationEndsListener {
 					+ "egressMode,uamTrip");
 			writer.newLine();
 			for (Id<Person> personId : data.keySet()) {
-
 				for (UAMData d : data.get(personId)) {
 					writer.write(personId.toString() + ",");
 					writer.write(d.toString());
 					writer.newLine();
-
 				}
 			}
 			writer.close();
@@ -50,60 +48,5 @@ public class UAMListener implements IterationEndsListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-/*		// UAMUtilitiesData
-		if (!UAMUtilitiesData.tripOptions.isEmpty()) {
-			BufferedWriter writerTrip = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamTripUtilities.csv"));
-
-			try {
-				boolean first = true;
-				for (UAMUtilitiesTrip trip : UAMUtilitiesData.tripOptions) {
-					if (first) {
-						writerTrip.write(trip.getHeader());
-						first = false;
-					}
-					writerTrip.newLine();
-					writerTrip.write(trip.toString());
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					writerTrip.close();
-					//UAMUtilitiesData.tripOptions.clear();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		if (!UAMUtilitiesData.accessEgressOptions.isEmpty()) {
-			BufferedWriter writerOption = IOUtils.getBufferedWriter(event.getServices().getControlerIO().getIterationFilename(event.getIteration(), "uamAccessUtilities.csv"));
-
-			try {
-				boolean first = true;
-				for (UAMUtilitiesAccessEgress option : UAMUtilitiesData.accessEgressOptions) {
-					if (first) {
-						writerOption.write(option.getHeader());
-						first = false;
-					}
-					writerOption.newLine();
-					writerOption.write(option.toString());
-				}
-
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					writerOption.close();
-					//UAMUtilitiesData.accessEgressOptions.clear();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}*/
 	}
 }

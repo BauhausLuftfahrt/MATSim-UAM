@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -19,6 +19,7 @@ import org.matsim.api.core.v01.events.handler.PersonEntersVehicleEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
+import org.matsim.pt.PtConstants;
 import org.matsim.vehicles.Vehicle;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 	public void handleEvent(PersonDepartureEvent event) {
 		Network network = scenario.getNetwork();
 
-		if (event.getLegMode().startsWith(UAMModes.access)) {
+		if (event.getLegMode().startsWith(UAMConstants.access)) {
 
 			UAMData data = new UAMData();
 			data.startTime = event.getTime();
@@ -75,14 +76,14 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 				this.demand.put(event.getPersonId(), newEntry);
 			}
 
-		} else if (event.getLegMode().startsWith(UAMModes.egress)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.egress)) {
 			tempPTData.remove(event.getPersonId());
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
 			data.departureFromStationTime = event.getTime();
 			uamTrips.remove(event.getPersonId());
 
-		} else if (event.getLegMode().equals("access_walk") || event.getLegMode().equals("transit_walk")
-				|| event.getLegMode().equals("pt")) {
+		} else if (event.getLegMode().equals(TransportMode.access_walk) || event.getLegMode().equals(TransportMode.transit_walk)
+				|| event.getLegMode().equals(TransportMode.pt)) {
 
 			// we need to store the information about the pt trip
 			// in case this becomes an access or an egress uam trip
@@ -93,7 +94,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 				tempPTData.put(event.getPersonId(), ptData);
 			}
 
-		} else if (event.getLegMode().equals(UAMModes.uam)) {
+		} else if (event.getLegMode().equals(UAMConstants.uam)) {
 			Link link = network.getLinks().get(event.getLinkId());
 			UAMStation station = this.manager.getStations().getNearestUAMStation(link);
 			if (tempPTData.containsKey(event.getPersonId())) {
@@ -127,9 +128,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 
 			}
 		}
-		if (event.getPersonId().toString().startsWith("uam_vh_")) {
-			// TODO: pooling is not correctly documented for take-off time
-			// this needs to be corrected
+		if (event.getPersonId().toString().startsWith(UAMConstants.vehicle)) {
 			if (vehicleToPerson.containsKey(event.getPersonId())) {
 				for (Id<Person> passenger : this.vehicleToPerson.get(event.getPersonId())) {
 					UAMData data = this.demand.get(passenger).get(this.demand.get(passenger).size() - 1);
@@ -151,7 +150,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 	public void handleEvent(PersonArrivalEvent event) {
 		Network network = scenario.getNetwork();
 
-		if (event.getLegMode().equals(UAMModes.uam)) {
+		if (event.getLegMode().equals(UAMConstants.uam)) {
 			uamTrips.put(event.getPersonId(), true);
 
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
@@ -165,7 +164,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 			data.landingTime = event.getTime() - deboardingTime; // #Landing time is when the vehicle touches the ground
 			data.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			data.uamTrip = true;
-		} else if (event.getLegMode().startsWith(UAMModes.egress)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.egress)) {
 
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
 			data.egressMode = event.getLegMode();
@@ -173,11 +172,11 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 			data.destinationLink = network.getLinks().get(event.getLinkId());
 			uamTrips.put(event.getPersonId(), false);
 
-		} else if (event.getLegMode().startsWith(UAMModes.access)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.access)) {
 			UAMData data = this.demand.get(event.getPersonId()).get(this.demand.get(event.getPersonId()).size() - 1);
 			data.arrivalAtStationTime = event.getTime();
-		} else if (event.getLegMode().equals("egress_walk") || event.getLegMode().equals("transit_walk")
-				|| (event.getLegMode().equals("pt") && !scenario.getConfig().transit().isUseTransit())) {
+		} else if (event.getLegMode().equals(TransportMode.egress_walk) || event.getLegMode().equals(TransportMode.transit_walk)
+				|| (event.getLegMode().equals(TransportMode.pt) && !scenario.getConfig().transit().isUseTransit())) {
 			// we are still in the potential access or egress pt trip
 			PTData data = tempPTData.get(event.getPersonId());
 			data.endTime = event.getTime();
@@ -195,7 +194,7 @@ public class UAMDemand implements PersonArrivalEventHandler, PersonDepartureEven
 
 		// when we arrive at the destination we need to check if there was an egress pt
 		// trip and add that information to the UAMData
-		if (!event.getActType().equals(UAMModes.interaction) && !event.getActType().equals("pt interaction")) {
+		if (!event.getActType().equals(UAMConstants.interaction) && !event.getActType().equals(PtConstants.TRANSIT_ACTIVITY_TYPE)) {
 			if (uamTrips.containsKey(event.getPersonId()) && uamTrips.get(event.getPersonId())) {
 
 				if (tempPTData.containsKey(event.getPersonId())) {

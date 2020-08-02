@@ -7,6 +7,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.utils.collections.QuadTree;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -15,8 +16,8 @@ import java.util.Map;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStations {
-	public Map<Id<UAMStation>, UAMStation> stations; // TODO can this be private
-	public QuadTree<UAMStation> spatialStations; // TODO can this be private
+	private Map<Id<UAMStation>, UAMStation> stations;
+	private QuadTree<UAMStation> spatialStations;
 
 	public UAMStations(Map<Id<UAMStation>, UAMStation> stations, Network network) {
 
@@ -39,8 +40,7 @@ public class UAMStations {
 		return spatialStations.getClosest(link.getCoord().getX(), link.getCoord().getY());
 	}
 
-	public UAMStation getNearesUAMStation(Coord coord) {
-		return spatialStations.getClosest(coord.getX(), coord.getY());
+	public Collection<UAMStation> getUAMStationsInRadius(Coord coord, double radius) {
+		return spatialStations.getDisk(coord.getX(), coord.getY(), radius);
 	}
-
 }

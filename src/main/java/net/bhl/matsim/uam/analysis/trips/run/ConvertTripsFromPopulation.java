@@ -6,7 +6,7 @@ import net.bhl.matsim.uam.analysis.trips.readers.PopulationTripReader;
 import net.bhl.matsim.uam.analysis.trips.utils.BasicHomeActivityTypes;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
@@ -39,7 +39,7 @@ public class ConvertTripsFromPopulation {
 
 		// Add UAM stage activity types
 		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE,
-				UAMModes.interaction);
+				UAMConstants.interaction);
 
 		HomeActivityTypes homeActivityTypes = new BasicHomeActivityTypes();
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());

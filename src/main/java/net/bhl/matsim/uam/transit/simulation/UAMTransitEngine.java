@@ -123,7 +123,7 @@ public class UAMTransitEngine implements DepartureHandler, MobsimEngine {
 
 		for (AgentDeparture departure : departures) {
 			eventsManager
-					.processEvent(new PersonStuckEvent(time, departure.agent.getId(), departure.departureLinkId, "pt"));
+					.processEvent(new PersonStuckEvent(time, departure.agent.getId(), departure.departureLinkId, TransportMode.pt));
 			agentCounter.decLiving();
 			processedAgents.add(departure.agent);
 		}
@@ -131,7 +131,7 @@ public class UAMTransitEngine implements DepartureHandler, MobsimEngine {
 		for (AgentArrival arrival : arrivals) {
 			if (!processedAgents.contains(arrival.agent)) {
 				eventsManager
-						.processEvent(new PersonStuckEvent(time, arrival.agent.getId(), arrival.arrivalLinkId, "pt"));
+						.processEvent(new PersonStuckEvent(time, arrival.agent.getId(), arrival.arrivalLinkId, TransportMode.pt));
 				agentCounter.decLiving();
 			}
 		}

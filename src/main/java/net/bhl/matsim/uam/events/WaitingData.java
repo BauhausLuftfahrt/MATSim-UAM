@@ -1,15 +1,16 @@
 package net.bhl.matsim.uam.events;
 
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.run.UAMConstants;
+import org.matsim.api.core.v01.Scenario;
+
 /**
  * Class that store waiting times of a UAM station.
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class WaitingData {
-
-	// 30min bins
 	double[] cumWaitingTimes = new double[60];
-
 	int[] count = new int[60];
 
 	private double defaultWaitTime;
@@ -19,9 +20,9 @@ public class WaitingData {
 	}
 
 	public void addWaitingTime(double waitingTime, double arrivalTime) {
-		// TODO avoid literal (30 = 30:00:00 simulation end)
+		//int simulationEnd = Integer.parseInt(scenario.getConfig().getModules().get("qsim").getParams().get("endTime").substring(0,2));
 		if (arrivalTime < 30 * 3600.0) {
-			int index = (int) Math.floor(arrivalTime / 1800.0);
+			int index = (int) Math.floor(arrivalTime / UAMConstants.waitingTimeBinSize);
 
 			cumWaitingTimes[index] += waitingTime;
 			count[index]++;
@@ -29,7 +30,6 @@ public class WaitingData {
 	}
 
 	public double[] getWaitingTimes() {
-
 		double[] waitingTimes = new double[60];
 		for (int i = 0; i < 60; i++) {
 			if (count[i] != 0)
@@ -37,8 +37,6 @@ public class WaitingData {
 			else
 				waitingTimes[i] = defaultWaitTime;
 		}
-
 		return waitingTimes;
 	}
-
 }

@@ -6,7 +6,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
@@ -53,7 +53,7 @@ public class RunCreateUAMPersonAttributes {
 		Network network = scenario.getNetwork();
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(scenario.getNetwork());
 		Set<String> modes = new HashSet<>();
-		modes.add(UAMModes.uam);
+		modes.add(UAMConstants.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 
@@ -76,8 +76,8 @@ public class RunCreateUAMPersonAttributes {
 					if (!uamConfigGroup.getStaticSearchRadius())
 						System.err.println("Warning: UAM search radius must be static = true! Setting it to static.");
 
-					Collection<UAMStation> stations = uamStations.spatialStations.getDisk(originCoord.getX(),
-							originCoord.getY(), uamConfigGroup.getSearchRadius());
+					Collection<UAMStation> stations = uamStations.getUAMStationsInRadius(originCoord,
+							uamConfigGroup.getSearchRadius());
 
 					if (!stations.isEmpty()) {
 						// at least one station within reach

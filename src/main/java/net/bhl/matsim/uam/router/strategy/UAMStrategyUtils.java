@@ -77,8 +77,7 @@ public class UAMStrategyUtils {
 		if (!uamConfig.getStaticSearchRadius())
 			radius *= CoordUtils.calcEuclideanDistance(fromFacility.getCoord(), toFacility.getCoord());
 
-		return landingStations.spatialStations.getDisk(fromFacility.getCoord().getX(),
-				fromFacility.getCoord().getY(), radius);
+		return landingStations.getUAMStationsInRadius(fromFacility.getCoord(), radius);
 	}
 
 	/**

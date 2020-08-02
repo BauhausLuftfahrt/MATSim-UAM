@@ -3,7 +3,7 @@ package net.bhl.matsim.uam.scoring;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Person;
@@ -26,7 +26,7 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 	final private Network network;
 
 	@Inject
-	public UAMScoringFunctionFactory(Scenario scenario, @Named(UAMModes.uam) Network network) {
+	public UAMScoringFunctionFactory(Scenario scenario, @Named(UAMConstants.uam) Network network) {
 		params = new SubpopulationScoringParameters(scenario);
 		standardFactory = new CharyparNagelScoringFunctionFactory(scenario);
 		this.network = network;

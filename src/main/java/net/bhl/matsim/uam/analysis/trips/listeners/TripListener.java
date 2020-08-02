@@ -157,9 +157,6 @@ public class TripListener implements ActivityStartEventHandler, ActivityEndEvent
 	}
 
 	private double getNetworkDistance(TripListenerItem trip) {
-
-		// TODO RAOUL CHECK FOR HOW UAM IS DONE HERE
-
 		if (networkRouteModes.contains(mainModeIdentifier.identifyMainMode(trip.elements))) {
 			double distance = 0.0;
 

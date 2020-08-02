@@ -9,6 +9,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
@@ -40,7 +41,7 @@ public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 	@Inject
 	private UAMManager uamManager;
 	@Inject
-	@Named(UAMModes.uam)
+	@Named(UAMConstants.uam)
 	private ParallelLeastCostPathCalculator plcpc;
 	@Inject
 	private LeastCostPathCalculatorFactory lcpcf;

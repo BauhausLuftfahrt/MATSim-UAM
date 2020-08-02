@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.analysis.trips.run;
 
 import net.bhl.matsim.uam.analysis.trips.DeckGLTripItem;
 import net.bhl.matsim.uam.analysis.trips.listeners.DeckGLTripListener;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -69,7 +69,7 @@ public class ConvertDeckGLTripsFromEvents {
 
 			for (Iterator<Id<Vehicle>> it = deckGLTrips.keySet().iterator(); it.hasNext(); ) {
 				Id<Vehicle> id = it.next();
-				int vendor = id.toString().contains(UAMModes.uam) ? 1 : 0;
+				int vendor = id.toString().contains(UAMConstants.uam) ? 1 : 0;
 				bw.write("{\"vendor\": " + vendor + ", ");
 				bw.write("\"segments\": [");
 

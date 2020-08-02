@@ -1,6 +1,6 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -82,7 +82,7 @@ public class RunGenerateNetworkChangeEventsFile {
 		for (Link l : network.getLinks().values()) {
 
 			// skip UAM links
-			if (l.getAllowedModes().contains(UAMModes.uam)) continue;
+			if (l.getAllowedModes().contains(UAMConstants.uam)) continue;
 
 			double length = l.getLength();
 			double previousTravelTime = l.getLength() / l.getFreespeed();

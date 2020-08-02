@@ -5,7 +5,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
@@ -25,6 +25,7 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.MainModeIdentifier;
 import org.matsim.core.router.StageActivityTypes;
+import org.matsim.pt.PtConstants;
 import org.matsim.vehicles.Vehicle;
 
 import java.util.*;
@@ -54,7 +55,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 		this.network = network;
 		this.stageActivityTypes = stageActivityTypes;
 		Set<String> modes = new HashSet<>();
-		modes.add(UAMModes.uam);
+		modes.add(UAMConstants.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter = new TransportModeNetworkFilter(this.network);
 		filter.filter(networkUAM, modes);
@@ -73,10 +74,10 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 
 	@Override
 	public void handleEvent(PersonDepartureEvent event) {
-		if (event.getLegMode().startsWith(UAMModes.access)) {
+		if (event.getLegMode().startsWith(UAMConstants.access)) {
 			ongoing.put(event.getPersonId(), new UAMListenerItem(event.getPersonId(),
 					network.getLinks().get(event.getLinkId()).getCoord(), event.getTime(), event.getLegMode()));
-		} else if (event.getLegMode().startsWith(UAMModes.egress)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.egress)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.departureFromStationTime = event.getTime();
 		} else if (event.getLegMode().equals(TransportMode.access_walk)
@@ -90,7 +91,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 				ptData.originLink = network.getLinks().get(event.getLinkId());
 				tempPTData.put(event.getPersonId(), ptData);
 			}
-		} else if (event.getLegMode().equals(UAMModes.uam)) {
+		} else if (event.getLegMode().equals(UAMConstants.uam)) {
 			Coord originStationCoord = network.getLinks().get(event.getLinkId()).getCoord();
 			UAMStation station = uamStations.getNearestUAMStation(network.getLinks().get(event.getLinkId()));
 
@@ -115,9 +116,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 		}
 
 		if (event.getLegMode().equals(TransportMode.car)
-				&& event.getPersonId().toString().startsWith("uam_vh_")) { // TODO should not be based on ID
-			// TODO: pooling is not correctly documented for take-off time
-			// this needs to be corrected
+				&& event.getPersonId().toString().startsWith(UAMConstants.vehicle)) {
 			if (vehicleToPerson.containsKey(event.getPersonId())) {
 				for (Id<Person> passenger : this.vehicleToPerson.get(event.getPersonId())) {
 					UAMDemandItem uamData = ongoing.get(passenger);
@@ -130,7 +129,7 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 
 	@Override
 	public void handleEvent(PersonArrivalEvent event) {
-		if (event.getLegMode().equals(UAMModes.uam)) {
+		if (event.getLegMode().equals(UAMConstants.uam)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			tempPTData.remove(event.getPersonId());
 			uamData.destinationStationCoord = network.getLinks().get(event.getLinkId()).getCoord();
@@ -141,12 +140,12 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 			// ground
 			uamData.vehicleId = this.personToVehicle.get(event.getPersonId()).toString();
 			uamData.uamTrip = true;
-		} else if (event.getLegMode().startsWith(UAMModes.egress)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.egress)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.egressMode = event.getLegMode();
 			uamData.endTime = event.getTime();
 			uamData.destination = network.getLinks().get(event.getLinkId()).getCoord();
-		} else if (event.getLegMode().startsWith(UAMModes.access)) {
+		} else if (event.getLegMode().startsWith(UAMConstants.access)) {
 			UAMDemandItem uamData = ongoing.get(event.getPersonId());
 			uamData.arrivalAtStationTime = event.getTime();
 		} else if (event.getLegMode().equals(TransportMode.egress_walk)
@@ -164,8 +163,8 @@ public class UAMListener implements ActivityStartEventHandler, PersonDepartureEv
 		// when we arrive at the destination we need to check if there was an egress pt
 		// trip and add that information to the UAMData
 		UAMDemandItem uamData = ongoing.get(event.getPersonId());
-		if (!event.getActType().equals(UAMModes.interaction)
-				&& !event.getActType().equals("pt interaction")) {
+		if (!event.getActType().equals(UAMConstants.interaction)
+				&& !event.getActType().equals(PtConstants.TRANSIT_ACTIVITY_TYPE)) {
 			if (ongoing.containsKey(event.getPersonId())) {
 				if (uamData.uamTrip) {
 					if (tempPTData.containsKey(event.getPersonId())) {
