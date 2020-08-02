@@ -171,9 +171,8 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 		// TODO: Rework this section and make it more efficient.
 		try {
-			int index = (int) Math.floor(departureTime / UAMConstants.waitingTimeBinSize);
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
-					.getWaitingTimes()[index];
+					.getWaitingTime(departureTime);
 			currentTime += waitTime;
 		} catch (IndexOutOfBoundsException e) {
 			if (counterWarningWaitingTimeSlot < counterLimit)
