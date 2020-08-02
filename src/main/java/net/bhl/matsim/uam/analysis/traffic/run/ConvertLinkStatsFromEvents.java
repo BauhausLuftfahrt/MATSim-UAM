@@ -45,8 +45,7 @@ public class ConvertLinkStatsFromEvents {
 
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
 
-		Set<String> modes = new HashSet<>();
-		modes.addAll(Arrays.asList(analyzedModes));
+        Set<String> modes = new HashSet<>(Arrays.asList(analyzedModes));
 		tconfig.setAnalyzedModes(modes); // TODO does nothing?
 		tconfig.setFilterModes(filterModes); // TODO does nothing?
 

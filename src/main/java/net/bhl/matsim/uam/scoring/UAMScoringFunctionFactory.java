@@ -34,7 +34,6 @@ public class UAMScoringFunctionFactory implements ScoringFunctionFactory {
 
 	@Override
 	public ScoringFunction createNewScoringFunction(Person person) {
-		SumScoringFunction sf = (SumScoringFunction) standardFactory.createNewScoringFunction(person);
-		return sf;
+		return (SumScoringFunction) standardFactory.createNewScoringFunction(person);
 	}
 }

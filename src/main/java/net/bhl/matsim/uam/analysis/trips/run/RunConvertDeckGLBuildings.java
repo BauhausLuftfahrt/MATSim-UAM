@@ -33,9 +33,7 @@ public class RunConvertDeckGLBuildings {
 
 			boolean first = true;
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
-				if (!line.contains("coordinates")) {
-                }
-				else {
+				if (line.contains("coordinates")) {
 					if (!first)
 						bw.write("," + System.lineSeparator());
 

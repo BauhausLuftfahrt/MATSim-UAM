@@ -21,6 +21,8 @@ public class UAMUtilitiesAccessEgress {
 	private String mode;
 	private double time;
 
+	private final String header = "person,station,link,access,utility,mode,time";
+
 	public UAMUtilitiesAccessEgress(Id<Person> person, Id<UAMStation> station, Id<Link> link, boolean access,
 									double utility, String mode, double time) {
 		this.person = person;
@@ -50,7 +52,7 @@ public class UAMUtilitiesAccessEgress {
 	}
 
 	public String getHeader() {
-		return "person,station,link,access,utility,mode,time";
+		return header;
 	}
 
 	public String toString() {
