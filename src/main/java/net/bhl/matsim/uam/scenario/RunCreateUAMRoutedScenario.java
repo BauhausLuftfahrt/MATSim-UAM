@@ -285,7 +285,8 @@ public class RunCreateUAMRoutedScenario {
 		String networkFileName = UAMModes.uam + (nodesInput != null ? "_routed" : "") + "_network.xml.gz";
 		NetworkConfigGroup networkConfigGroup = (NetworkConfigGroup) config.getModules().get("network");
 		networkConfigGroup.setInputFile(networkFileName);
-		ConfigAddUAMParameters.addUAMParameters(config, vehiclesFileName, "car,walk", 2, 9999,
+		ConfigAddUAMParameters.addUAMParameters(config, vehiclesFileName,
+				TransportMode.car + "," + TransportMode.walk, 2, 9999,
 				500, UAMStrategy.UAMStrategyType.MINTRAVELTIME, true);
 
 		// WRITE UAM CONFIG

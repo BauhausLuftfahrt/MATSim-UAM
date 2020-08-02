@@ -22,6 +22,7 @@ import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.passenger.DefaultPassengerRequestValidator;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
@@ -106,7 +107,7 @@ public class UAMModule extends AbstractModule {
 
 		bind(Network.class).annotatedWith(Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING))
 				.toInstance(this.networkUAM);
-		bind(Network.class).annotatedWith(Names.named("car")).toInstance(this.networkCar);
+		bind(Network.class).annotatedWith(Names.named(TransportMode.car)).toInstance(this.networkCar);
 
 		bind(Network.class).annotatedWith(Names.named(UAMModes.uam))
 				.to(Key.get(Network.class, Names.named(DvrpRoutingNetworkProvider.DVRP_ROUTING)));

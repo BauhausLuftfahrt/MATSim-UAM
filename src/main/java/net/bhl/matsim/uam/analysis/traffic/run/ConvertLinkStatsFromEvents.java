@@ -31,7 +31,7 @@ public class ConvertLinkStatsFromEvents {
 	static boolean calculateLinkTravelTimes = true;
 	static boolean calculateLinkToLinkTravelTimes = false;
 	static boolean filterModes = true;
-	static String[] analyzedModes = {"car"};
+	static String[] analyzedModes = {TransportMode.car};
 
 	static public void main(String[] args) throws IOException {
 		// PROVIDE: NETWORK EVENTS OUTFILE-NAME

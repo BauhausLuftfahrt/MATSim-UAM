@@ -31,7 +31,7 @@ import java.util.Map;
 public class UAMRoutingModuleProvider implements Provider<RoutingModule> {
 
 	@Inject
-	@Named("car")
+	@Named(TransportMode.car)
 	Network networkCar;
 	@Inject(optional = true)
 	BaselineTransitRoutingModule transitRouting;

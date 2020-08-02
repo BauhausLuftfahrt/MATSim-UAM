@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.scenario.network;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
@@ -22,8 +23,8 @@ import java.util.Set;
 @Deprecated
 public class RunAddModeToNetwork {
 
-	private static final String searchMode = "car";
-	private static final String addedMode = "car_passenger";
+	private static final String searchMode = TransportMode.car;
+	private static final String addedMode = TransportMode.car + "_passenger";
 
 	public static void main(String[] args) throws Exception {
 		Config config = ConfigUtils.createConfig();

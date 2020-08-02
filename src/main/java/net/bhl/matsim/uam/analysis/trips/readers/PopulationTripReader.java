@@ -80,7 +80,7 @@ public class PopulationTripReader {
 	}
 
 	private double getNetworkDistance(TripStructureUtils.Trip trip) {
-		if (mainModeIdentifier.identifyMainMode(trip.getTripElements()).equals("car")) {
+		if (mainModeIdentifier.identifyMainMode(trip.getTripElements()).equals(TransportMode.car)) {
 			NetworkRoute route = (NetworkRoute) trip.getLegsOnly().get(0).getRoute();
 			double distance = 0.0;
 

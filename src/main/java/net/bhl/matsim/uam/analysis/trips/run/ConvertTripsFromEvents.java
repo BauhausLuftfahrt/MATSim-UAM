@@ -8,6 +8,7 @@ import net.bhl.matsim.uam.analysis.trips.utils.BasicHomeActivityTypes;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMModes;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.io.MatsimNetworkReader;
@@ -45,8 +46,8 @@ public class ConvertTripsFromEvents {
 
 		HomeActivityTypes homeActivityTypes = new BasicHomeActivityTypes();
 		MainModeIdentifier mainModeIdentifier = new UAMMainModeIdentifier(new MainModeIdentifierImpl());
-		Collection<String> networkRouteModes = Arrays.asList("car", UAMModes.uam,
-				UAMModes.access + "car", UAMModes.egress + "car");
+		Collection<String> networkRouteModes = Arrays.asList(TransportMode.car, UAMModes.uam,
+				UAMModes.access + TransportMode.car, UAMModes.egress + TransportMode.car);
 
 		TripListener tripListener = new TripListener(netw, stageActivityTypes, homeActivityTypes, mainModeIdentifier,
 				networkRouteModes);

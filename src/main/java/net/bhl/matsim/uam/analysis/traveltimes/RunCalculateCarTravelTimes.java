@@ -70,7 +70,7 @@ public class RunCalculateCarTravelTimes {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Network networkCar = NetworkUtils.createNetwork();
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);
 
 		// LEAST COST PATH CALCULATOR

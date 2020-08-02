@@ -85,9 +85,9 @@ public class ConfigAddUAMParameters {
 
 		// UAM planCalcScore modes
 		String[] modeScores = {UAMModes.uam,
-				UAMModes.access + "walk", UAMModes.egress + "walk",
-				UAMModes.access + "car", UAMModes.egress + "car",
-				UAMModes.access + "bike", UAMModes.egress + "bike"};
+				UAMModes.access + TransportMode.walk, UAMModes.egress + TransportMode.walk,
+				UAMModes.access + TransportMode.car, UAMModes.egress + TransportMode.car,
+				UAMModes.access + TransportMode.bike, UAMModes.egress + TransportMode.bike};
 		for (String modeScore : modeScores) {
 			ConfigGroup modeParam = config.getModules().get("planCalcScore").createParameterSet("modeParams");
 			modeParam.addParam("mode", modeScore);

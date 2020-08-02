@@ -79,7 +79,7 @@ public class TransitTripListener
 		if (item != null) {
 			if (item.mode.equals("pt")) {
 				item.inVehicleDistance += event.getDistance();
-			} else if (item.mode.contains("walk") && !item.mode.equals("walk")) {
+			} else if (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk)) {
 				item.transferDistance += event.getDistance();
 			}
 		}
@@ -113,7 +113,7 @@ public class TransitTripListener
 			if (item.mode.equals("pt")) {
 				item.inVehicleCrowflyDistance += CoordUtils.calcEuclideanDistance(item.intermediateOrigin,
 						intermediateDestination);
-			} else if (item.mode.contains("walk") && !item.mode.equals("walk")) {
+			} else if (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk)) {
 				item.transferCrowflyDistance += CoordUtils.calcEuclideanDistance(item.intermediateOrigin,
 						intermediateDestination);
 				item.transferTime += event.getTime() - item.legDepartureTime;
@@ -127,7 +127,7 @@ public class TransitTripListener
 			TransitTripListenerItem item = ongoing.remove(event.getPersonId());
 
 			if (item != null) {
-				if (item.mode.equals("pt") || (item.mode.contains("walk") && !item.mode.equals("walk"))) {
+				if (item.mode.equals("pt") || (item.mode.contains(TransportMode.walk) && !item.mode.equals(TransportMode.walk))) {
 					item.destination = network.getLinks().get(event.getLinkId()).getCoord();
 					item.numberOfTransfers = Math.max(item.numberOfTransfers, 0);
 					item.crowflyDistance = CoordUtils.calcEuclideanDistance(item.origin, item.destination);
