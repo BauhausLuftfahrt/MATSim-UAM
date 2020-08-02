@@ -11,7 +11,7 @@ import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
-import net.bhl.matsim.uam.infrastructure.readers.*;
+import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.router.UAMModes;
 import net.bhl.matsim.uam.router.strategy.*;
 import org.apache.log4j.Logger;

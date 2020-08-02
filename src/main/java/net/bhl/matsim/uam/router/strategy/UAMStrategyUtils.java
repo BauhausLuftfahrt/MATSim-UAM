@@ -24,7 +24,6 @@ import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * This class provides the methods used for different UAMStrategies.
