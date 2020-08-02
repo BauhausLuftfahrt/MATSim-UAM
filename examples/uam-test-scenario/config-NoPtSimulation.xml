@@ -10,7 +10,7 @@
 		<param name="searchRadius" value="50500" />
 		<param name="walkDistance" value="500" />
 		<param name="routingStrategy" value="mintraveltime" />
-		<param name="ptSimulation" value="false" />
+		<param name="ptSimulation" value="false" /> <!-- Example of deactivating PT vehicle simulation -->
 	</module>
 	
 	<module name="global" >
