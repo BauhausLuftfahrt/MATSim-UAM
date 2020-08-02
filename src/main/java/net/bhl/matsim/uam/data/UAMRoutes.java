@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  * <p>
- * TODO rework, with faster internal workings than massive HashMap!
+ * TODO: Rework, with faster internal workings than massive HashMap.
  */
 public class UAMRoutes {
 

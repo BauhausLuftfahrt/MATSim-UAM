@@ -29,7 +29,7 @@ public class BatchConvertUAMDemandFromEvents {
 
 		String[] ecl = {"csv"};
 		Collection<File> alreadyExistingFiles = FileUtils.listFiles(folder, ecl, true);
-		Collection<String> alreadyExistingFileNames = new HashSet<String>();
+		Collection<String> alreadyExistingFileNames = new HashSet<>();
 		for (File f : alreadyExistingFiles) {
 			alreadyExistingFileNames.add(f.getAbsolutePath());
 		}

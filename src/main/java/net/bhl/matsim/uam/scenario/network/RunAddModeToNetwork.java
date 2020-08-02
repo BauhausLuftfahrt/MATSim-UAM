@@ -1,6 +1,7 @@
 package net.bhl.matsim.uam.scenario.network;
 
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
@@ -19,10 +20,11 @@ import java.util.Set;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunAddModeToNetwork {
 
-	private static final String searchMode = "car";
-	private static final String addedMode = "car_passenger";
+	private static final String searchMode = TransportMode.car;
+	private static final String addedMode = TransportMode.car + "_passenger";
 
 	public static void main(String[] args) throws Exception {
 		Config config = ConfigUtils.createConfig();
@@ -31,8 +33,7 @@ public class RunAddModeToNetwork {
 		Network network = scenario.getNetwork();
 
 		for (Link l : network.getLinks().values()) {
-			Set<String> modes = new HashSet<String>();
-			modes.addAll(l.getAllowedModes());
+			Set<String> modes = new HashSet<>(l.getAllowedModes());
 			if (modes.contains(searchMode)) {
 				modes.add(addedMode);
 				l.setAllowedModes(modes);

@@ -2,7 +2,7 @@ package net.bhl.matsim.uam.qsim;
 
 import com.google.inject.Inject;
 import net.bhl.matsim.uam.events.UAMPrebookVehicle;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -15,6 +15,7 @@ import org.matsim.core.mobsim.framework.PlanAgent;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
+import org.matsim.pt.PtConstants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 	Set<Id<Person>> bookedTrips = new HashSet<>();
 	@Inject
-	@DvrpMode(UAMModes.UAM_MODE)
+	@DvrpMode(UAMConstants.uam)
 	private PassengerEngine passengerEngine;
 
 	@Inject
@@ -42,10 +43,10 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 			modesRequiringManualUAMPrebooking = new HashSet<>();
 			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
-			if (mainMode.contains(UAMModes.UAM_ACCESS + TransportMode.car))
-				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_ACCESS + TransportMode.car);
-			if (mainMode.contains(UAMModes.UAM_EGRESS + TransportMode.car))
-				modesRequiringManualUAMPrebooking.add(UAMModes.UAM_EGRESS + TransportMode.car);
+			if (mainMode.contains(UAMConstants.access + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMConstants.access + TransportMode.car);
+			if (mainMode.contains(UAMConstants.egress + TransportMode.car))
+				modesRequiringManualUAMPrebooking.add(UAMConstants.egress + TransportMode.car);
 		}
 		// else: already initiated
 	}
@@ -59,10 +60,10 @@ public class UAMDepartureHandler implements DepartureHandler {
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
 		initiateUAMDepartureHandler();
-		// TODO is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
+		// TODO: Is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
 
 		if (agent instanceof PlanAgent) {
-			if (agent.getMode().startsWith(UAMModes.UAM_ACCESS)) {
+			if (agent.getMode().startsWith(UAMConstants.access)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
@@ -88,7 +89,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 					}
 				}
 
-			} else if (agent.getMode().equals(UAMModes.UAM_MODE))
+			} else if (agent.getMode().equals(UAMConstants.uam))
 				bookedTrips.remove(agent.getId());
 		}
 
@@ -99,7 +100,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(planElementsIndex);
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
+				if (((Leg) pe).getMode().equals(UAMConstants.uam))
 					return (Leg) pe;
 			}
 			planElementsIndex++;
@@ -113,7 +114,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (!found) {
 			PlanElement pe = plan.getPlanElements().get(index);
 			if (pe instanceof Leg) {
-				if (((Leg) pe).getMode().equals(UAMModes.UAM_MODE))
+				if (((Leg) pe).getMode().equals(UAMConstants.uam))
 					found = true;
 				else
 					travelTime += ((Leg) pe).getTravelTime();
@@ -128,9 +129,9 @@ public class UAMDepartureHandler implements DepartureHandler {
 		while (true) {
 			PlanElement pe = plan.getPlanElements().get(index);
 			if (pe instanceof Activity) {
-				if (((Activity) pe).getType().equals(UAMModes.UAM_INTERACTION))
+				if (((Activity) pe).getType().equals(UAMConstants.interaction))
 					return true;
-				else if (((Activity) pe).getType().equals("pt interaction")) {
+				else if (((Activity) pe).getType().equals(PtConstants.TRANSIT_ACTIVITY_TYPE)) {
 					index++;
 
 					continue;

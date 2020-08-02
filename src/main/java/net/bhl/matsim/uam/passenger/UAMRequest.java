@@ -1,7 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
 import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import org.matsim.api.core.v01.Id;
@@ -70,7 +70,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public void setRejected(boolean rejected) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class UAMRequest implements PassengerRequest {
 
 	@Override
 	public String getMode() {
-		return UAMModes.UAM_MODE;
+		return UAMConstants.uam;
 	}
 
 	public UAMDropoffTask getDropoffTask() {

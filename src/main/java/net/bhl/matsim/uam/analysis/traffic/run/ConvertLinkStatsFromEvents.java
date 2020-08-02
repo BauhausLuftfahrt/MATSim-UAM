@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.analysis.traffic.run;
 
 import net.bhl.matsim.uam.analysis.traffic.CSVLinkStatsWriter;
 import net.bhl.matsim.uam.analysis.traffic.LinkStatsItem;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.api.experimental.events.EventsManager;
@@ -31,7 +32,7 @@ public class ConvertLinkStatsFromEvents {
 	static boolean calculateLinkTravelTimes = true;
 	static boolean calculateLinkToLinkTravelTimes = false;
 	static boolean filterModes = true;
-	static String[] analyzedModes = {"car"};
+	static String[] analyzedModes = {TransportMode.car};
 
 	static public void main(String[] args) throws IOException {
 		// PROVIDE: NETWORK EVENTS OUTFILE-NAME
@@ -45,11 +46,9 @@ public class ConvertLinkStatsFromEvents {
 
 		TravelTimeCalculatorConfigGroup tconfig = new TravelTimeCalculatorConfigGroup();
 
-		Set<String> modes = new HashSet<>();
-		for (String mode : analyzedModes)
-			modes.add(mode);
-		tconfig.setAnalyzedModes(modes); // TODO does nothing?
-		tconfig.setFilterModes(filterModes); // TODO does nothing?
+        Set<String> modes = new HashSet<>(Arrays.asList(analyzedModes));
+		tconfig.setAnalyzedModes(modes);
+		tconfig.setFilterModes(filterModes);
 
 		tconfig.setCalculateLinkToLinkTravelTimes(calculateLinkToLinkTravelTimes);
 		tconfig.setCalculateLinkTravelTimes(calculateLinkTravelTimes);
@@ -70,7 +69,7 @@ public class ConvertLinkStatsFromEvents {
 		TravelTime tts = ttc.getLinkTravelTimes();
 		for (Link link : netw.getLinks().values()) {
 			Map<Integer, Double> timeDependantSpeeds = new HashMap<>();
-			for (int time = 0 + timeBinSize / 2; time < maxTime; time += timeBinSize) {
+			for (int time = timeBinSize / 2; time < maxTime; time += timeBinSize) {
 				timeDependantSpeeds.put(time, link.getLength() / tts.getLinkTravelTime(link, time, null, null));
 			}
 

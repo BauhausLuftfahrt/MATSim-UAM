@@ -4,14 +4,14 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import net.bhl.matsim.uam.data.UAMFleetData;
-import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPreferPooledDispatcher;
+import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.passenger.UAMRequestCreator;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
 import net.bhl.matsim.uam.schedule.UAMStayTask;
@@ -54,14 +54,14 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	private UAMXMLReader uamReader;
 
 	public UAMQsimModule(UAMXMLReader uamReader, UAMManager uamManager) {
-		super(UAMModes.UAM_MODE);
+		super(UAMConstants.uam);
 		this.uamReader = uamReader;
 		this.uamManager = uamManager;
 	}
 
 	public static void configureComponents(QSimComponentsConfig components) {
 		DynActivityEngineModule.configureComponents(components);
-		components.addComponent(DvrpModes.mode(UAMModes.UAM_MODE));
+		components.addComponent(DvrpModes.mode(UAMConstants.uam));
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 
 	@Provides
 	@Singleton
-	VrpLegFactory provideLegCreator(@DvrpMode(UAMModes.UAM_MODE) VrpOptimizer optimizer, QSim qSim) {
+	VrpLegFactory provideLegCreator(@DvrpMode(UAMConstants.uam) VrpOptimizer optimizer, QSim qSim) {
 		return new VrpLegFactory() {
 			@Override
 			public VrpLeg create(DvrpVehicle vehicle) {
@@ -104,7 +104,7 @@ public class UAMQsimModule extends AbstractDvrpModeQSimModule {
 	@Provides
 	@Singleton
 	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-                                           @Named("uam") Network network, @DvrpMode(UAMModes.UAM_MODE) Fleet data) {
+                                           @Named(UAMConstants.uam) Network network, @DvrpMode(UAMConstants.uam) Fleet data) {
 
 		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
 

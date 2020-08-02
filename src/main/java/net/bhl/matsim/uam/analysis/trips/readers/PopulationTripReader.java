@@ -4,6 +4,7 @@ import net.bhl.matsim.uam.analysis.trips.TripItem;
 import net.bhl.matsim.uam.analysis.trips.utils.HomeActivityTypes;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
@@ -80,7 +81,7 @@ public class PopulationTripReader {
 	}
 
 	private double getNetworkDistance(TripStructureUtils.Trip trip) {
-		if (mainModeIdentifier.identifyMainMode(trip.getTripElements()).equals("car")) {
+		if (mainModeIdentifier.identifyMainMode(trip.getTripElements()).equals(TransportMode.car)) {
 			NetworkRoute route = (NetworkRoute) trip.getLegsOnly().get(0).getRoute();
 			double distance = 0.0;
 

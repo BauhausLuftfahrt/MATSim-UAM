@@ -58,8 +58,8 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 
 		List<? extends Task> tasks = schedule.getTasks();
 		int index = currentTask.getTaskIdx() + 1;
-		UAMTask nextTask = null;
 
+		UAMTask nextTask;
 		if (index < tasks.size()) {
 			nextTask = (UAMTask) tasks.get(index);
 		} else {
@@ -96,7 +96,7 @@ public class UAMOptimizer implements VrpOptimizer, OnlineTrackerListener, Mobsim
 			}
 		}
 
-		if (nextTask != null && nextTask instanceof UAMDropoffTask) {
+		if (nextTask instanceof UAMDropoffTask) {
 			// throws a transit event in order to let us know that the drop off
 			// has been performed
 			// this is used later in the analysis to know which person was

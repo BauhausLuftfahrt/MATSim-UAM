@@ -21,7 +21,7 @@ public class CSVUAMDemandWriter {
 	}
 
 	public CSVUAMDemandWriter(Collection<UAMDemandItem> uamData, String delimiter) {
-		this.uamData = new HashSet<UAMDemandItem>(uamData);
+		this.uamData = new HashSet<>(uamData);
 		this.delimiter = delimiter;
 	}
 
@@ -61,7 +61,7 @@ public class CSVUAMDemandWriter {
 							uamData.vehicleId, uamData.originStationId.toString(),
 							uamData.destinationStationId.toString(), uamData.accessMode,
 							uamData.egressMode, String.valueOf(uamData.uamTrip)});
-		} catch (Exception NullPointerException) {
+		} catch (Exception ignored) {
 		}
 		return "uamData could not be read";
 	}

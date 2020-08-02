@@ -20,6 +20,7 @@ import java.util.Random;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunAddPopulationAttributes {
 
 	private double carOwnsershipPercent = 0.75;
@@ -53,7 +54,7 @@ public class RunAddPopulationAttributes {
 			p.getAttributes().putAttribute("bikeAvailability",
 					new Random().nextDouble() < bikeOwnsershipPercent ? "always" : "never");
 
-			Double rand = new Random().nextDouble();
+			double rand = new Random().nextDouble();
 			p.getAttributes().putAttribute("hasLicense", rand < carOwnsershipPercent ? "true" : "false"); // excepted as
 			// string
 			// instead

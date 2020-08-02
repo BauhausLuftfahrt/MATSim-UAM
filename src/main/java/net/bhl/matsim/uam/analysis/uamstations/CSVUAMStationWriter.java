@@ -21,7 +21,7 @@ public class CSVUAMStationWriter {
 	}
 
 	public CSVUAMStationWriter(Collection<UAMStationItem> uamStations, String delimiter) {
-		this.uamStations = new HashSet<UAMStationItem>(uamStations);
+		this.uamStations = new HashSet<>(uamStations);
 		this.delimiter = delimiter;
 	}
 
@@ -51,7 +51,7 @@ public class CSVUAMStationWriter {
 							String.valueOf(station.postflighttime),
 							String.valueOf(station.defaultwaittime),
 							station.link});
-		} catch (Exception NullPointerException) {
+		} catch (Exception ignored) {
 		}
 		return "uamData could not be read";
 	}

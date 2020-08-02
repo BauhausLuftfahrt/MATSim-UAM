@@ -21,7 +21,7 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 
 	public UAMLinkSpeedCalculator(Map<String, Double> mapVehicleVerticalSpeeds,
 								  Map<String, Double> mapVehicleHorizontalSpeeds, LinkSpeedCalculator delegate) {
-		// TODO use mapping of vehicle types instead of vehicles themselves!
+		// TODO: Use mapping of vehicle types instead of vehicles themselves.
 		this.mapVehicleVerticalSpeeds = mapVehicleVerticalSpeeds;
 		this.mapVehicleHorizontalSpeeds = mapVehicleHorizontalSpeeds;
 
@@ -43,22 +43,5 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 		}
 
 		return delegate.getMaximumVelocity(vehicle, link, time);
-
-		// TODO can this be removed?
-
-		//		boolean isMajor = true;
-		//
-		//		for (Link other : link.getToNode().getInLinks().values()) {
-		//			if (other.getCapacity() >= link.getCapacity())
-		//				isMajor = false;
-		//		}
-		//
-		//		if (isMajor || link.getToNode().getInLinks().size() == 1) {
-		//			return delegate.getMaximumVelocity(vehicle, link, time);
-		//		} else {
-		//			double travelTime = link.getLength() / ;
-		//			travelTime += crossingPenalty;
-		//			return link.getLength() / travelTime;
-		//		}
 	}
 }

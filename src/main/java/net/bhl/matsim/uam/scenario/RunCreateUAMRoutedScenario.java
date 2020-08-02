@@ -3,7 +3,9 @@ package net.bhl.matsim.uam.scenario;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import com.google.common.collect.Iterables;
 import net.bhl.matsim.uam.router.UAMFlightSegments;
-import net.bhl.matsim.uam.router.UAMModes;
+import net.bhl.matsim.uam.run.UAMConstants;
+import net.bhl.matsim.uam.router.strategy.UAMStrategy;
+import net.bhl.matsim.uam.scenario.utils.ConfigAddUAMParameters;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -15,6 +17,8 @@ import org.matsim.api.core.v01.network.Node;
 import org.matsim.contrib.util.CSVReaders;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.ConfigWriter;
+import org.matsim.core.config.groups.NetworkConfigGroup;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
@@ -31,6 +35,7 @@ import org.matsim.core.utils.io.MatsimXmlWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -42,103 +47,83 @@ import java.util.concurrent.Future;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class RunCreateUAMScenario {
+public class RunCreateUAMRoutedScenario {
+	// SETTINGS
+	private static final boolean use_z_values = false;
+	private static final double max_horizontal_vtol_distance = 500;
+	private static final double permlanes = 1;
+	private static final double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
-	private static boolean use_z_values = false;
+	// LATERALS
+	private static final String name_uam_nodes = UAMConstants.uam + "_st_";
+	private static final String name_uam_waypoints = UAMConstants.uam + "_wp_";
+	private static final String name_uam_ground_link = UAMConstants.uam + "_gl-";
+	private static final String name_uam_station_link = UAMConstants.uam + "_sl-";
+	private static final String name_uam_vertical_link = UAMConstants.uam + "_vl-";
+	private static final String name_uam_horizontal_link = UAMConstants.uam + "_hl-";
+	private static final String name_uam_station_ground_access = "_ga";
+	private static final String name_uam_station_flight_access = "_fa";
+	private static final String name_uam_station_flight_level = "_fl";
 
-	private static String name_uam_nodes = "uam_st_";
-	private static String name_uam_waypoints = "uam_wp_";
-	private static String name_uam_ground_link = "uam_gl-";
-	private static String name_uam_station_link = "uam_sl-";
-	private static String name_uam_vertical_link = "uam_vl-";
-	private static String name_uam_horizontal_link = "uam_hl-";
-	private static String name_uam_station_ground_access = "_ga";
-	private static String name_uam_station_flight_access = "_fa";
-	private static String name_uam_station_flight_level = "_fl";
+	private static final String name_uam_dtd = "src/main/resources/dtd/uam.dtd";
 
-	private static String name_uam_dtd = "src/main/resources/dtd/uam.dtd";
+	private static final double min_link_length = 1;
+	private static final double NO_LENGTH = -1;
 
-	static String outputFolder = "uam-scenarios";
+	private static double uamMaxLinkSpeed = 100;
+	private static double uamLinkCapacity = 999;
 
-	private static String mode_uam = UAMModes.UAM_MODE;
-	private static String mode_car = TransportMode.car;
-
-	private static double min_link_length = 1;
-	private static double max_horizontal_vtol_distance = 500;
-	private static double permlanes = 1;
-	static double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
-
-	private static double default_link_capacity = 99999; // vehicles per hour
-	static double max_link_freespeed = 350; // per second
-
-	private static double NO_LENGTH = -1;
-
-	// TODO Adjust documentation to inclusion of max-cruise-speed
 	public static void main(String[] args) {
-		System.out.println("ARGS: base-folder* base-network.xml* uam-stations.csv* uam-vehicles.csv flight-nodes.csv flight-links.csv");
+		System.out.println("ARGS: config.xml* uam-stations.csv* flight-nodes.csv* flight-links.csv* uam-vehicles.csv");
 		System.out.println("(* required)");
 
 		// ARGS
 		int j = 0;
-		String folder = args[j++];
-		String networkInput = folder + "\\" + args[j++];
-		String stationInput = folder + "\\" + args[j++];
-		String nodesInput = null;
-		String linksInput = null;
+		String configInput = args[j++];
+		String stationInput = args[j++];
+		String nodesInput = args[j++];
+		String linksInput = args[j++];
 		String vehicleInput = null;
 
-		boolean withVehicles = args.length >= 4;
-		boolean withNetwork = args.length >= 5;
-
-		if (withVehicles)
-			vehicleInput = folder + "\\" + args[j++];
-
-		if (withNetwork) {
-			nodesInput = folder + "\\" + args[j++];
-			linksInput = folder + "\\" + args[j];
-		}
+		if (args.length > j)
+			vehicleInput = args[j];
 
 		// Run
-		convert(networkInput, stationInput, withVehicles, vehicleInput, withNetwork, nodesInput, linksInput);
+		convert(configInput, stationInput, nodesInput, linksInput, vehicleInput);
 	}
 
-	public static void convert (String networkInput, String stationInput) {
-		convert(networkInput, stationInput, false, null, false, null, null);
+	public static void convert (String configInput, String stationInput, double uamMaxLinkSpeed, double uamLinkCapacity) {
+		convert(configInput, stationInput, uamMaxLinkSpeed, uamLinkCapacity, null);
 	}
 
-	public static void convert (String networkInput, String stationInput, String vehicleInput) {
-		convert(networkInput, stationInput, true, vehicleInput, false, null, null);
+	public static void convert (String configInput, String stationInput, double uamMaxLinkSpeed, double uamLinkCapacity,
+								String vehicleInput) {
+		RunCreateUAMRoutedScenario.uamMaxLinkSpeed = uamMaxLinkSpeed;
+		RunCreateUAMRoutedScenario.uamLinkCapacity = uamLinkCapacity;
+		convert(configInput, stationInput, null, null, vehicleInput);
 	}
 
-	public static void convert (String networkInput, String stationInput, String vehicleInput, String nodesInput, String linksInput) {
-		convert(networkInput, stationInput, true, vehicleInput, true, nodesInput, linksInput);
+	public static void convert(String configInput, String stationInput, String nodesInput, String linksInput) {
+		convert(configInput, stationInput, nodesInput, linksInput, null);
 	}
 
-	public static void convert(String networkInput, String stationInput,
-							   boolean withVehicles, String vehicleInput,
-							   boolean withNetwork, String nodesInput, String linksInput) {
-		// READ NETWORK
-		Config config = ConfigUtils.createConfig();
-		config.network().setInputFile(networkInput);
+	public static void convert(String configInput, String stationInput, String nodesInput, String linksInput,
+				String vehicleInput) {
+		// READ REQUIRED INPUT FILES
+		Config config = ConfigUtils.loadConfig(configInput);
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 		Network network = scenario.getNetwork();
-
-		// READ CSV INPUT
 		List<String[]> stations = CSVReaders.readCSV(stationInput);
-		List<String[]> nodes = null;
-		List<String[]> links = null;
+
 		List<String[]> vehicles = null;
-
-		if (withNetwork) {
-			nodes = CSVReaders.readCSV(nodesInput);
-			links = CSVReaders.readCSV(linksInput);
-		}
-
-		if (withVehicles)
+		if (vehicleInput != null)
 			vehicles = CSVReaders.readCSV(vehicleInput);
 
 		// GENERATE FLIGHT LINKS AND NODES FOR DIRECT OR USE INPUT FLIGHT NETWORK
-		if (withNetwork) {
+		if (nodesInput != null) {
+			List<String[]> nodes = CSVReaders.readCSV(nodesInput);
+			List<String[]> links = CSVReaders.readCSV(linksInput);
+
 			// INDIRECT FLIGHT
 			// create flight nodes
 			for (String[] line : Iterables.skip(nodes, 1)) { // skip CSV header
@@ -155,17 +140,14 @@ public class RunCreateUAMScenario {
 				double capacity = Double.parseDouble(line[2]);
 				double freespeed = Double.parseDouble(line[3]);
 
-				Set<String> modesUam = new HashSet<>();
-				modesUam.add(mode_uam);
-				try {
-					addLink(network, from, to, modesUam, capacity, freespeed);
-					addLink(network, to, from, modesUam, capacity, freespeed);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(-1);
-				}
-			}
+				if (freespeed > uamMaxLinkSpeed)
+					uamMaxLinkSpeed = freespeed;
 
+				Set<String> modesUam = new HashSet<>();
+				modesUam.add(UAMConstants.uam);
+
+				addLink(network, from, to, modesUam, capacity, freespeed);
+			}
 		} else {
 			// DIRECT FLIGHT BETWEEN ALL STATIONS
 			// create flight level accesses
@@ -188,14 +170,10 @@ public class RunCreateUAMScenario {
 					Id<Node> from = flightAccesses.get(k);
 
 					Set<String> mode = new HashSet<>();
-					mode.add(mode_uam);
-					try {
-						addLink(network, to, from, mode);
-						addLink(network, from, to, mode);
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.exit(-1);
-					}
+					mode.add(UAMConstants.uam);
+
+					addLink(network, to, from, mode);
+					addLink(network, from, to, mode);
 				}
 			}
 		}
@@ -204,7 +182,7 @@ public class RunCreateUAMScenario {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Network networkUAM = NetworkUtils.createNetwork();
 		Set<String> modesUam = new HashSet<>();
-		modesUam.add(mode_uam);
+		modesUam.add(UAMConstants.uam);
 		filter.filter(networkUAM, modesUam);
 
 		// clean up UAM network
@@ -212,13 +190,12 @@ public class RunCreateUAMScenario {
 
 		filter = new TransportModeNetworkFilter(network);
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add(mode_car); // only car
+		modesCar.add(TransportMode.car); // only car
 		Network networkCar = NetworkUtils.createNetwork();
 		filter.filter(networkCar, modesCar);
 
 		// temp. storage of all UAM stations
 		Set<Id<Node>> stationIDs = new HashSet<>();
-
 		for (String[] line : Iterables.skip(stations, 1)) { // skip CSV header
 			int i = 0;
 			String station_id = line[i++];
@@ -248,13 +225,8 @@ public class RunCreateUAMScenario {
 				Id<Node> node_fl_id = Id.createNodeId(name_uam_nodes + station_id + name_uam_station_flight_level);
 				addNode(network, node_fl_id, station_x, station_y, vtol_z);
 
-				try {
-					addLink(network, node_fl_id, uamNode.getId(), modesUam);
-					addLink(network, uamNode.getId(), node_fl_id, modesUam);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(-1);
-				}
+				addLink(network, node_fl_id, uamNode.getId(), modesUam);
+				addLink(network, uamNode.getId(), node_fl_id, modesUam);
 
 				uamNode = network.getNodes().get(node_fl_id);
 			}
@@ -269,53 +241,63 @@ public class RunCreateUAMScenario {
 
 			// station links
 			Set<String> modes = new HashSet<>();
-			modes.add(mode_uam);
-			modes.add(mode_car);
-			try {
-				addLink(network, node_ga_id, node_fa_id, modes, default_link_capacity, max_link_freespeed);
-				addLink(network, node_fa_id, node_ga_id, modes, default_link_capacity, max_link_freespeed);
+			modes.add(UAMConstants.uam);
+			modes.add(TransportMode.car);
 
-				// flight access links
-				addLink(network, node_fa_id, uamNode.getId(), modesUam, flight_access_capacity, flight_access_freespeed,
-						vtol_z);
-				addLink(network, uamNode.getId(), node_fa_id, modesUam, flight_access_capacity, flight_access_freespeed,
-						vtol_z);
+			addLink(network, node_ga_id, node_fa_id, modes);
+			addLink(network, node_fa_id, node_ga_id, modes);
 
-				// ground access links
-				addLink(network, node_ga_id, roadNode.getId(), modesCar, road_access_capacity, road_access_freespeed);
-				addLink(network, roadNode.getId(), node_ga_id, modesCar, road_access_capacity, road_access_freespeed);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(-1);
-			}
+			// flight access links
+			addLink(network, node_fa_id, uamNode.getId(), modesUam, flight_access_capacity, flight_access_freespeed,
+					vtol_z);
+			addLink(network, uamNode.getId(), node_fa_id, modesUam, flight_access_capacity, flight_access_freespeed,
+					vtol_z);
+
+			// ground access links
+			addLink(network, node_ga_id, roadNode.getId(), modesCar, road_access_capacity, road_access_freespeed);
+			addLink(network, roadNode.getId(), node_ga_id, modesCar, road_access_capacity, road_access_freespeed);
+
 		}
 
-		// Output names
-		String path = networkInput.substring(0, networkInput.lastIndexOf("\\"));
-		path += "\\" + outputFolder;
+		// OUTPUT FOLDER
+		int pathIndex = configInput.lastIndexOf("\\");
+		String path = pathIndex >= 0 ? configInput.substring(0, pathIndex) : ".";
+		path += "\\" + "uam-scenario_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date());
 		new File(path).mkdir();
-		String fileName = networkInput.substring(networkInput.lastIndexOf("\\"), networkInput.lastIndexOf(".xml")) + "_" +
-				stationInput.substring(stationInput.lastIndexOf("\\") + 1, stationInput.lastIndexOf(".csv")) + "_" +
-				vehicleInput.substring(vehicleInput.lastIndexOf("\\") + 1, vehicleInput.lastIndexOf(".csv"));
-		fileName = fileName.replace("stations", "s").replace("vehicles", "v")
-				+ (withNetwork ? "_routed" : "");
 
 		// WRITE STATION DISTANCE CSV
 		try {
-			calculateStationDistances(network, stationIDs, path + "\\" + fileName + "_uam_distances.csv");
+			calculateStationDistances(network, stationIDs, path + "\\" + UAMConstants.uam + "_distances.csv");
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
-
-		// WRITE UAM NETWORK
-		NetworkWriter netwriter = new NetworkWriter(network);
-		netwriter.write(path + "\\" + fileName + "_uam_network.xml.gz");
 
 		// ADD UAM VEHICLES
-		if (withVehicles) {
+		String vehiclesFileName = "<REPLACE WITH UAM VEHICLES FILE NAME>";
+		if (vehicleInput != null) {
+			vehiclesFileName = UAMConstants.uam + "_vehicles.xml.gz";
 			UAMVehiclesXmlWriter vehwriter = new UAMVehiclesXmlWriter();
-			vehwriter.write(path + "\\" + fileName + "_uam_vehicles.xml.gz", stations, vehicles);
+			vehwriter.write(path + "\\" + vehiclesFileName, stations, vehicles);
 		}
+
+		// UPDATE CONFIG
+		String networkFileName = UAMConstants.uam + (nodesInput != null ? "_routed" : "") + "_network.xml.gz";
+		NetworkConfigGroup networkConfigGroup = (NetworkConfigGroup) config.getModules().get("network");
+		networkConfigGroup.setInputFile(networkFileName);
+		ConfigAddUAMParameters.addUAMParameters(config, vehiclesFileName,
+				TransportMode.car + "," + TransportMode.walk, 2, 9999,
+				500, UAMStrategy.UAMStrategyType.MINTRAVELTIME, true);
+
+		// WRITE UAM CONFIG
+		ConfigWriter configWriter = new ConfigWriter(config);
+		configWriter.write(path + "\\" + UAMConstants.uam + "_config.xml");
+
+		// WRITE UAM NETWORK
+		network.setName((network.getName().isEmpty() ? "" : network.getName() + "-") + UAMConstants.uam);
+		network.getAttributes().putAttribute(UAMConstants.uam + "MaxLinkFreeSpeed", uamMaxLinkSpeed);
+		NetworkWriter netwriter = new NetworkWriter(network);
+		netwriter.write(path + "\\" + networkFileName);
 
 		System.out.println("done.");
 	}
@@ -324,7 +306,7 @@ public class RunCreateUAMScenario {
 			throws IOException, InterruptedException, ExecutionException {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Set<String> modes = new HashSet<>();
-		modes.add(mode_uam);
+		modes.add(UAMConstants.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
 
@@ -334,7 +316,7 @@ public class RunCreateUAMScenario {
 				new DijkstraFactory(), networkUAM, new OnlyTimeDependentTravelDisutility(travelTime), travelTime);
 
 		FileWriter csvWriter = new FileWriter(filename);
-		csvWriter.append("fromStation,fromNode,toStation,toNode,cruisedistance_m,vtoldistance_m\n");
+		csvWriter.append("fromStation,fromNode,toStation,toNode,cruisedistance,vtoldistance\n");
 
 		for (Id<Node> uamStationOrigin : stations) {
 			for (Id<Node> uamStationDestination : stations) {
@@ -375,20 +357,24 @@ public class RunCreateUAMScenario {
 
 	private static void addNode(Network network, Id<Node> station_id, double station_x, double station_y,
 								double station_z) {
-		NetworkUtils.createAndAddNode(network, station_id, createCoord(station_x, station_y, station_z));
+		try {
+			NetworkUtils.createAndAddNode(network, station_id, createCoord(station_x, station_y, station_z));
+		} catch (IllegalArgumentException e) {
+			networkAlreadyContainsUam(e);
+		}
 	}
 
-	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes) throws Exception {
-		addLink(network, from, to, modes, default_link_capacity, max_link_freespeed);
+	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes) {
+		addLink(network, from, to, modes, uamLinkCapacity, uamMaxLinkSpeed);
 	}
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes, double capacity,
-								double freespeed) throws Exception {
+								double freespeed) {
 		addLink(network, from, to, modes, capacity, freespeed, NO_LENGTH);
 	}
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes, double capacity,
-								double freespeed, double length) throws Exception {
+								double freespeed, double length){
 		Map<Id<Node>, ? extends Node> allNodes = network.getNodes();
 		Node fromNode = allNodes.get(from);
 		Node toNode = allNodes.get(to);
@@ -417,8 +403,11 @@ public class RunCreateUAMScenario {
 				|| (!f.endsWith(name_uam_station_ground_access) && t.endsWith(name_uam_station_ground_access))) {
 			// ground access link
 			id = Id.createLinkId(name_uam_ground_link + from + "-" + to);
-		} else
-			throw new Exception("Unknown UAM link type.");
+		} else {
+			System.err.println("WARN: Unknown link type for link between nodes: " + from.toString()
+					+ " and " + to.toString());
+			id = Id.createLinkId(UAMConstants.uam + from + "-" + to);
+		}
 
 		if (length == NO_LENGTH)
 			length = Math.max(CoordUtils.calcEuclideanDistance(fromNode.getCoord(), toNode.getCoord()) * detour_factor,
@@ -426,11 +415,10 @@ public class RunCreateUAMScenario {
 
 		Link link = network.getFactory().createLink(id, fromNode, toNode);
 		link.setLength(length);
-		link.setFreespeed(Math.min(freespeed, max_link_freespeed));
+		link.setFreespeed(freespeed);
 		link.setCapacity(capacity);
 		link.setNumberOfLanes(permlanes);
 		link.setAllowedModes(modes);
-
 
 		if (vertical)
 			link.getAttributes().putAttribute(UAMFlightSegments.ATTRIBUTE, UAMFlightSegments.VERTICAL);
@@ -440,8 +428,8 @@ public class RunCreateUAMScenario {
 
 		try {
 			network.addLink(link);
-		} catch (Exception e) {
-			// Avoid error on duplicate link entries (simply skip)
+		} catch (IllegalArgumentException e) {
+			networkAlreadyContainsUam(e);
 		}
 	}
 
@@ -456,13 +444,25 @@ public class RunCreateUAMScenario {
 		return s.replaceAll("[^a-zA-Z0-9]", "x").trim().toLowerCase();
 	}
 
+	private static void networkAlreadyContainsUam(Exception e) {
+		e.printStackTrace();
+		System.err.println("#---------------------------------------------------------------------------------------#");
+		System.err.println("ERROR: Could not create " + UAMConstants.uam
+				+ " network, the input network already contains " + UAMConstants.uam
+				+ " nodes/links.");
+		System.err.println("FIX: Make sure your input network does not already contain "
+				+ UAMConstants.uam + ", e.g. by deleting all " + UAMConstants.uam + "nodes and links.");
+		System.err.println("#---------------------------------------------------------------------------------------#");
+		System.exit(-1);
+	}
+
 	private static class UAMVehiclesXmlWriter extends MatsimXmlWriter {
 
 		public void write(String file, List<String[]> stations, List<String[]> vehicles) {
 			openFile(file);
 			writeXmlHead();
-			writeDoctype(mode_uam, name_uam_dtd);
-			writeStartTag(mode_uam, Collections.emptyList());
+			writeDoctype(UAMConstants.uam, name_uam_dtd);
+			writeStartTag(UAMConstants.uam, Collections.emptyList());
 
 			writeStartTag("stations", Collections.emptyList());
 			writeStations(stations);
@@ -476,7 +476,7 @@ public class RunCreateUAMScenario {
 			writeVehicles(stations, vehicles);
 			writeEndTag("vehicles");
 
-			writeEndTag(mode_uam);
+			writeEndTag(UAMConstants.uam);
 			close();
 		}
 
@@ -487,7 +487,7 @@ public class RunCreateUAMScenario {
 				int i = 0;
 				String station_id = station[i++];
 				String station_name = station[i];
-				i = 11;
+				i = 10;
 				String station_preflighttime = station[i++];
 				String station_postflighttime = station[i++];
 				String station_defaultwaittime = station[i];

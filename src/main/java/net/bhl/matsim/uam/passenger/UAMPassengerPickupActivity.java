@@ -26,8 +26,8 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
 	private double maximumRequestT0 = 0;
 
-	private double endTime = 0.0;
-	private int passengersAboard = 0;
+	private double endTime;
+	private int passengersAboard;
 
 	public UAMPassengerPickupActivity(PassengerEngine passengerEngine, DynAgent driver,
 									  DvrpVehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,

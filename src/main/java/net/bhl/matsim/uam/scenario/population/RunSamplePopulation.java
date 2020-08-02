@@ -1,4 +1,4 @@
-package net.bhl.matsim.uam.scenario;
+package net.bhl.matsim.uam.scenario.population;
 
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRoute;
 import ch.ethz.matsim.baseline_scenario.transit.routing.DefaultEnrichedTransitRouteFactory;
@@ -19,6 +19,7 @@ import org.matsim.core.scenario.ScenarioUtils;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
+@Deprecated
 public class RunSamplePopulation {
 	public static void main(final String[] args) {
 		RunSamplePopulation app = new RunSamplePopulation();
@@ -29,7 +30,7 @@ public class RunSamplePopulation {
 		String inputPopFilename = null;
 		String outputPopFilename = null;
 		String netFilename = null;
-		Double percentage = 0.1;
+		double percentage = 0.1;
 
 		if (args != null) {
 			if (!(args.length == 3 || args.length == 4)) {

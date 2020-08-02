@@ -3,14 +3,12 @@ package net.bhl.matsim.uam.router.strategy;
 import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.Person;
 import org.matsim.facilities.Facility;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,9 +34,8 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 		UAMStation bestStationOrigin = null, bestStationDestination = null;
 		Collection<UAMStation> stationsOrigin = strategyUtils.getPossibleStations(fromFacility, toFacility);
 		Collection<UAMStation> stationsDestination = strategyUtils.getPossibleStations(toFacility, fromFacility);
-		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = new HashMap<>();
-
-		accessRoutesData = strategyUtils.getAccessOptions(true, stationsOrigin, fromFacility, departureTime);
+		Map<Id<UAMStation>, UAMAccessOptions> accessRoutesData = strategyUtils.getAccessOptions(true,
+				stationsOrigin, fromFacility, departureTime);
 		// UAM flight time + access and egress travel time + process times
 		double minTotalTime = Double.POSITIVE_INFINITY;
 		Set<String> modes = strategyUtils.getModes();

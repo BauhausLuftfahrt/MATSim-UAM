@@ -6,6 +6,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.*;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.router.strategy.UAMStrategyRouter;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
@@ -122,7 +123,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 					accessOriginLink = NetworkUtils.getNearestLinkExactly(carNetwork, fromFacility.getCoord());
 				Link accessDestinationLink = carNetwork.getLinks()
 						.get(uamRoute.bestOriginStation.getLocationLink().getId());
-				String mode = "access_uam_car";
+				String mode = UAMConstants.access + TransportMode.car;
 				Leg carLeg = createCarLeg(accessOriginLink, accessDestinationLink, departureTime, person, routeFactory,
 						populationFactory, mode);
 				currentTime += carLeg.getTravelTime();
@@ -150,13 +151,13 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavAccessLeg = createTeleportationLeg(routeFactory, populationFactory,
 						network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
-						uamRoute.accessMode, "access_uam_" + uamRoute.accessMode);
+						uamRoute.accessMode, UAMConstants.access + uamRoute.accessMode);
 				currentTime += uavAccessLeg.getTravelTime();
 				trip.add(uavAccessLeg);
 		}
 
 		/* origin station */
-		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
+		Activity uav_interaction1 = populationFactory.createActivityFromLinkId(UAMConstants.interaction,
 				uamRoute.bestOriginStation.getLocationLink().getId());
 		uav_interaction1.setMaximumDuration(uamRoute.bestOriginStation.getPreFlightTime()); // Changes the value for the
 		// duration of UAM
@@ -168,9 +169,9 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		currentTime += uamRoute.bestOriginStation.getPreFlightTime(); // Still have to figure out why this doesn't
 		// affect events
 
-		// TODO REWORK
+		// TODO: Rework this section and make it more efficient.
 		try {
-			int index = (int) Math.floor(departureTime / 1800.0);
+			int index = (int) Math.floor(departureTime / UAMConstants.waitingTimeBinSize);
 			double waitTime = this.waitingData.getWaitingData().get(uamRoute.bestOriginStation.getId())
 					.getWaitingTimes()[index];
 			currentTime += waitTime;
@@ -202,7 +203,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 		Route routeUAV = routeFactory.createRoute(Route.class, uamRoute.bestOriginStation.getLocationLink().getId(),
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 
-		final Leg uavLeg = populationFactory.createLeg(UAMModes.UAM_MODE);
+		final Leg uavLeg = populationFactory.createLeg(UAMConstants.uam);
 		uavLeg.setRoute(routeUAV);
 
 		// Add information on future path for plan output files
@@ -237,7 +238,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 
 		/* destination station */ // Add here passenger activities that only the passenger performs at destination
 		// station
-		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMModes.UAM_INTERACTION,
+		Activity uav_interaction2 = populationFactory.createActivityFromLinkId(UAMConstants.interaction,
 				uamRoute.bestDestinationStation.getLocationLink().getId());
 		uav_interaction2.setMaximumDuration(uamRoute.bestDestinationStation.getPostFlightTime()); // Changes the value
 		// for the duration
@@ -262,7 +263,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 						.get(uamRoute.bestDestinationStation.getLocationLink().getId());
 
 				Leg carLeg = createCarLeg(egressOriginLink, egressDestinationLink, currentTime, person, routeFactory,
-						populationFactory, "egress_uam_car");
+						populationFactory, UAMConstants.egress + TransportMode.car);
 				trip.add(carLeg);
 				break;
 			case TransportMode.pt:
@@ -283,7 +284,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 			default:
 				Leg uavEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
 						uamRoute.bestDestinationStation.getLocationLink(), network.getLinks().get(toFacility.getLinkId()),
-						uamRoute.egressMode, "egress_uam_" + uamRoute.egressMode);
+						uamRoute.egressMode, UAMConstants.egress + uamRoute.egressMode);
 				trip.add(uavEgressLeg);
 		}
 
@@ -328,7 +329,7 @@ public class UAMIntermodalRoutingModule implements RoutingModule {
 	@Override
 	public StageActivityTypes getStageActivityTypes() {
 		final CompositeStageActivityTypes stageTypes = new CompositeStageActivityTypes();
-		stageTypes.addActivityTypes(new StageActivityTypesImpl("uam_interaction"));
+		stageTypes.addActivityTypes(new StageActivityTypesImpl(UAMConstants.interaction));
 		return stageTypes;
 	}
 

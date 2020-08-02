@@ -6,6 +6,7 @@ import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.core.config.Config;
@@ -70,7 +71,7 @@ public class RunCalculateCarTravelTimes {
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
 		Network networkCar = NetworkUtils.createNetwork();
 		Set<String> modesCar = new HashSet<>();
-		modesCar.add("car");
+		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);
 
 		// LEAST COST PATH CALCULATOR
