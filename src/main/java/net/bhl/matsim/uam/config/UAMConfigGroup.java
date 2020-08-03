@@ -1,8 +1,8 @@
 package net.bhl.matsim.uam.config;
 
-import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.apache.log4j.Logger;
 import org.matsim.core.config.ReflectiveConfigGroup;
 

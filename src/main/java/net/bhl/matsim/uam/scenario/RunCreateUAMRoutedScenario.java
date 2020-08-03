@@ -3,8 +3,8 @@ package net.bhl.matsim.uam.scenario;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import com.google.common.collect.Iterables;
 import net.bhl.matsim.uam.router.UAMFlightSegments;
-import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
+import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.scenario.utils.ConfigAddUAMParameters;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
@@ -262,7 +262,7 @@ public class RunCreateUAMRoutedScenario {
 		// OUTPUT FOLDER
 		int pathIndex = configInput.lastIndexOf("\\");
 		String path = pathIndex >= 0 ? configInput.substring(0, pathIndex) : ".";
-		path += "\\" + "uam-scenario_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date());
+		path += "\\" + UAMConstants.uam + "-scenario_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date());
 		new File(path).mkdir();
 
 		// WRITE STATION DISTANCE CSV

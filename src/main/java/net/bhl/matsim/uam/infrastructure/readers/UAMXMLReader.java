@@ -134,7 +134,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 					vehiclesForData.put(id, vehicleCopy);
 
 				} catch (NullPointerException e) {
-					Log.warn("UAM vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
+					Log.warn(UAMConstants.uam.toUpperCase() + " vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
 				}
 				break;
 			}

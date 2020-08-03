@@ -1,8 +1,8 @@
 package net.bhl.matsim.uam.scenario.utils;
 
 import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.core.config.Config;

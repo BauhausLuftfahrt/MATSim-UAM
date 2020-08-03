@@ -12,8 +12,8 @@ import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
-import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.router.strategy.*;
+import net.bhl.matsim.uam.run.UAMConstants;
 import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -65,7 +65,7 @@ public class RunCalculateUAMTravelTimes {
 		System.out.println("ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name*");
 		System.out.println("(* required)");
 
-		log.warn("UAM process times are being ignored! All passenger processes are set to duration of 0.");
+		log.warn(UAMConstants.uam.toUpperCase() + " process times are being ignored! All passenger processes are set to duration of 0.");
 
 		// ARGS
 		int j = 0;
