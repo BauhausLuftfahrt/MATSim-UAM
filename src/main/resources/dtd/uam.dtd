@@ -8,8 +8,6 @@
 <!ELEMENT station EMPTY>
 <!ATTLIST station	id				CDATA	#REQUIRED
 					link  			CDATA	#REQUIRED
-					x				CDATA	#IMPLIED
-					y				CDATA	#IMPLIED
 					name 			CDATA	#IMPLIED
 					preflighttime	CDATA	#REQUIRED
 					postflighttime	CDATA	#REQUIRED

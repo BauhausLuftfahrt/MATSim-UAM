@@ -63,17 +63,8 @@ public class UAMXMLReader extends MatsimXmlParser {
 
 				// Get station access/egress link or coordinates, to find nearest link
 				String linkName = atts.getValue("link");
-				Link link;
-				if (linkName != null) {
-					// A network link, to which the landing station is connected has been provided
-					List<Link> links = NetworkUtils.getLinks(network, linkName);
-					link = links.get(0);
-				} else {
-					// No network link has been provided, automatically assign the nearest link
-					double x = Double.parseDouble(atts.getValue("x"));
-					double y = Double.parseDouble(atts.getValue("y"));
-					link = NetworkUtils.getNearestLink(network, new Coord(x, y));
-				}
+				List<Link> links = NetworkUtils.getLinks(network, linkName);
+				Link link = links.get(0);
 
 				// Create UAm station and register it on station map
 				UAMStation ls = new UAMStationSimple(preFlightTime, postFlightTime, defaultWaitTime, link, id, stationName);
