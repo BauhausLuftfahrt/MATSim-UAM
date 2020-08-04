@@ -41,7 +41,7 @@
 		<param name="numberOfThreads" value="4" />
 		<param name="flowCapacityFactor" value="0.1" />
 		<param name="storageCapacityFactor" value="0.1" />
-		<param name="mainMode" value="car"/>
+		<param name="mainMode" value="car,access_uam_car,egress_uam_car"/>
 	</module>
 
 	<module name="transit">

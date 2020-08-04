@@ -81,7 +81,9 @@ public class ConfigAddUAMParameters {
 
 		String mainMode = config.getModules().get("qsim").getParams().get("mainMode");
 		config.getModules().get("qsim").addParam("mainMode",
-				mainMode + "," + UAMConstants.access + "," + UAMConstants.egress);
+				mainMode.replace("[", ""). replace("]", "")
+						+ "," + UAMConstants.access + TransportMode.car
+						+ "," + UAMConstants.egress + TransportMode.car);
 
 		// UAM planCalcScore modes
 		String[] modeScores = {UAMConstants.uam,
