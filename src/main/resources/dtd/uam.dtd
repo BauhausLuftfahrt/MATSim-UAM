@@ -29,8 +29,8 @@
 <!ATTLIST vehicle	id				CDATA	#REQUIRED
 					type			CDATA	#REQUIRED
 					initialstation	CDATA	#REQUIRED
-					starttime		CDATA	#IMPLIED
-					endtime			CDATA	#IMPLIED>
+					starttime		CDATA	#REQUIRED
+					endtime			CDATA	#REQUIRED>
 
 <!-- ============================================================ -->
 

@@ -104,6 +104,7 @@ public class UAMXMLReader extends MatsimXmlParser {
 				// gets starttime and endtime
 				double starttime = Time.parseTime(atts.getValue("starttime"));
 				double endtime = Time.parseTime(atts.getValue("endtime"));
+				// TODO check whether start- and endtimes work correctly
 
 				// gets initial station
 				Id<UAMStation> stationid = Id.create(atts.getValue("initialstation"), UAMStation.class);

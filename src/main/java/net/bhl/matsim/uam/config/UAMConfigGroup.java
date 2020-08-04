@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-//import net.bhl.matsim.uam.router.UAMStrategyRouter.UAMStrategyType;
-
 /**
  * Config group for the UAM. This class sets the parameters required for UAM
  * simulation. Its parameters can be set in the config file, under the uam
@@ -21,7 +19,6 @@ import java.util.Set;
  */
 public class UAMConfigGroup extends ReflectiveConfigGroup {
 	public static final String GROUP_NAME = UAMConstants.uam;
-	// teleportation
 	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
 	private String inputUAMFile;
 	private Set<String> availableAccessModes;
