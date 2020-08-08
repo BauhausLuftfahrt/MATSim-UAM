@@ -50,8 +50,6 @@ import java.util.concurrent.Future;
 public class RunCreateUAMRoutedScenario {
 	// SETTINGS
 	private static final boolean use_z_values = false;
-	private static final double max_horizontal_vtol_distance = 500;
-	private static final double permlanes = 1;
 	private static final double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	// LATERALS
@@ -69,6 +67,9 @@ public class RunCreateUAMRoutedScenario {
 
 	private static final double min_link_length = 1;
 	private static final double NO_LENGTH = -1;
+
+	private static final double max_horizontal_vtol_distance = 500;
+	private static final double permlanes = 1;
 
 	private static double uamMaxLinkSpeed = 100;
 	private static double uamLinkCapacity = 999;
