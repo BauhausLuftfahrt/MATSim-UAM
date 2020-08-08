@@ -49,8 +49,8 @@ import java.util.concurrent.Future;
  */
 public class RunCreateUAMRoutedScenario {
 	// SETTINGS
-	private static final boolean use_z_values = false;
-	private static final double detour_factor = 1.0; // default: 1.0, i.e. no detour from link distance
+	private static final boolean useZCoordinate = false; // default: false, i.e. use pseudo-3D (i.e. 2D) network
+	private static final double detourFactor = 1.0; // default: 1.0, i.e. no detour from link distance
 
 	// LATERALS
 	private static final String name_uam_nodes = UAMConstants.uam + "_st_";
@@ -66,7 +66,7 @@ public class RunCreateUAMRoutedScenario {
 	private static final String name_uam_dtd = "src/main/resources/dtd/uam.dtd";
 
 	private static final double min_link_length = 1;
-	private static final double NO_LENGTH = -1;
+	private static final double no_length = -1;
 
 	private static final double max_horizontal_vtol_distance = 500;
 	private static final double permlanes = 1;
@@ -300,7 +300,7 @@ public class RunCreateUAMRoutedScenario {
 		// WRITE UAM NETWORK
 		network.setName((network.getName().isEmpty() ? "" : network.getName() + "-") + UAMConstants.uam);
 		network.getAttributes().putAttribute(UAMConstants.uam + "MaxLinkFreeSpeed", uamMaxLinkSpeed);
-		network.getAttributes().putAttribute(UAMConstants.uam + "DetourFactor", detour_factor);
+		network.getAttributes().putAttribute(UAMConstants.uam + "DetourFactor", detourFactor);
 		NetworkWriter netwriter = new NetworkWriter(network);
 		netwriter.write(path + "\\" + networkFileName);
 
@@ -375,7 +375,7 @@ public class RunCreateUAMRoutedScenario {
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes, double capacity,
 								double freespeed) {
-		addLink(network, from, to, modes, capacity, freespeed, NO_LENGTH);
+		addLink(network, from, to, modes, capacity, freespeed, no_length);
 	}
 
 	private static void addLink(Network network, Id<Node> from, Id<Node> to, Set<String> modes, double capacity,
@@ -414,8 +414,8 @@ public class RunCreateUAMRoutedScenario {
 			id = Id.createLinkId(UAMConstants.uam + from + "-" + to);
 		}
 
-		if (length == NO_LENGTH)
-			length = Math.max(CoordUtils.calcEuclideanDistance(fromNode.getCoord(), toNode.getCoord()) * detour_factor,
+		if (length == no_length)
+			length = Math.max(CoordUtils.calcEuclideanDistance(fromNode.getCoord(), toNode.getCoord()) * detourFactor,
 					min_link_length);
 
 		Link link = network.getFactory().createLink(id, fromNode, toNode);
@@ -439,7 +439,7 @@ public class RunCreateUAMRoutedScenario {
 	}
 
 	private static Coord createCoord(double x, double y, double z) {
-		if (use_z_values)
+		if (useZCoordinate)
 			return new Coord(x, y, z);
 		else
 			return new Coord(x, y);
