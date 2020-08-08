@@ -71,8 +71,8 @@ public class RunCreateUAMRoutedScenario {
 	private static final double max_horizontal_vtol_distance = 500;
 	private static final double permlanes = 1;
 
-	private static double uamMaxLinkSpeed = 100;
-	private static double uamLinkCapacity = 999;
+	private static double uamMaxLinkSpeed = -1;
+	private static double uamLinkCapacity = -1;
 
 	public static void main(String[] args) {
 		System.out.println("ARGS: config.xml* uam-stations.csv* flight-nodes.csv* flight-links.csv* uam-vehicles.csv");
@@ -143,6 +143,9 @@ public class RunCreateUAMRoutedScenario {
 
 				if (freespeed > uamMaxLinkSpeed)
 					uamMaxLinkSpeed = freespeed;
+
+				if (capacity > uamLinkCapacity)
+					uamLinkCapacity = capacity;
 
 				Set<String> modesUam = new HashSet<>();
 				modesUam.add(UAMConstants.uam);
