@@ -1,4 +1,4 @@
-station_id,station_name,station_x,station_y,station_z,vtol_z,ground_access_capacity,ground_access_freespeed,flight_access_capacity,flight_access_freespeed,station_preflighttime,station_postflighttime,station_defaultwaittime
+station_id,station_name,x,y,z,vtol_z,ground_access_capacity,ground_access_freespeed,flight_access_capacity,flight_access_freespeed,preflighttime,postflighttime,defaultwaittime
 A,Alpha,6020,500,0,600,99999,100,99999,100,600,120,0
 B,Bravo,6020,-500,0,600,99999,100,99999,100,600,120,0
 C,Charlie,14020,500,0,600,99999,100,99999,100,600,120,0

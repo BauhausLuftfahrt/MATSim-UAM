@@ -1,4 +1,4 @@
-﻿node_from,node_to,link_capacity,link_freespeed
+﻿from_node,to_node,link_capacity,link_freespeed
 0,2,999,100
 1,2,999,100
 2,3,999,100
