@@ -429,7 +429,7 @@
 	</module>
 	<module name="qsim" >
 		<param name="endTime" value="12:00:00" />
-		<param name="flowCapacityFactor" value="0.1" />
+		<param name="flowCapacityFactor" value="1.0" />
 		<!-- decides if waiting vehicles enter the network after or before the already driving vehicles were moved. Default: false -->
 		<param name="insertingWaitingVehiclesBeforeDrivingVehicles" value="true" />
 		<!-- If link dynamics is set as SeepageQ, set to false if all seep modes should perform seepage. Default is true (better option). -->
@@ -458,7 +458,7 @@
 		<param name="snapshotStyle" value="equiDist" />
 		<param name="snapshotperiod" value="00:00:00" />
 		<param name="startTime" value="undefined" />
-		<param name="storageCapacityFactor" value="0.1" />
+		<param name="storageCapacityFactor" value="1.0" />
 		<!-- time in seconds.  Time after which the frontmost vehicle on a link is called `stuck' if it does not move. -->
 		<param name="stuckTime" value="10.0" />
 		<param name="timeStepSize" value="00:00:01" />

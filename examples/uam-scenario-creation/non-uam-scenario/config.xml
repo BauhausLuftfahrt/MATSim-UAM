@@ -27,8 +27,8 @@
 	<module name="qsim">
 		<param name="endTime" value="12:00:00" />
 		<param name="numberOfThreads" value="4" />
-		<param name="flowCapacityFactor" value="0.1" />
-		<param name="storageCapacityFactor" value="0.1" />
+		<param name="flowCapacityFactor" value="1" />
+		<param name="storageCapacityFactor" value="1" />
 		<param name="mainMode" value="car"/>
 	</module>
 
