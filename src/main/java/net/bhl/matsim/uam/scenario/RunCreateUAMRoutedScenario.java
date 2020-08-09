@@ -549,7 +549,7 @@ public class RunCreateUAMRoutedScenario {
 				for (String[] station : Iterables.skip(stations, 1)) {
 					for (int j = 0; j < vehiclesperstation; j++) {
 						List<Tuple<String, String>> atts = new ArrayList<>();
-						atts.add(new Tuple<>("id", "st" + station[0] + "-" + j));
+						atts.add(new Tuple<>("id", "st" + station[0] + "-" + type + "-" + j));
 						atts.add(new Tuple<>("type", type));
 						atts.add(new Tuple<>("initialstation", station[0]));
 						atts.add(new Tuple<>("starttime", starttime));
