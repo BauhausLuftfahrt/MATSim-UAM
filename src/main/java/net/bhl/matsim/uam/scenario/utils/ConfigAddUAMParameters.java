@@ -21,8 +21,7 @@ import java.util.Collection;
 public class ConfigAddUAMParameters {
 
 	public static void main(String[] args) {
-
-		System.out.println("args: path to config, UAM input file, modes, number of threads, search radius, " +
+		System.out.println("ARGS: path to config, UAM input file, modes, number of threads, search radius, " +
 				"walk distance, routing strategy, PT Simulation used");
 
 		int i = 0;
