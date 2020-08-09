@@ -17,9 +17,9 @@
 
 	<module name="controler" >
 		<param name="firstIteration" value="0" />
-		<param name="lastIteration" value="50" />
-		<param name="writeEventsInterval" value="10" />
-		<param name="writePlansInterval" value="10" />
+		<param name="lastIteration" value="0" />
+		<param name="writeEventsInterval" value="1" />
+		<param name="writePlansInterval" value="1" />
 		<param name="outputDirectory" value="output" />
 		<param name="overwriteFiles" value="deleteDirectoryIfExists" />
 	</module>
@@ -54,21 +54,8 @@
 
 	<module name="strategy">
 		<param name="maxAgentPlanMemorySize" value="1" />
-		<param name="fractionOfIterationsToDisableInnovation" value="0.8" />
 
-		<param name="ModuleProbability_1" value="0.7" />
-		<param name="Module_1" value="ChangeExpBeta" />
-
-		<param name="ModuleProbability_2" value="0.3" />
-		<param name="Module_2" value="SubtourModeChoice" />	
-	</module>
-
-	<module name="subtourModeChoice" >
-		<!-- Defines the chain-based modes, seperated by commas -->
-		<param name="chainBasedModes" value="car" />
-		<!-- Defines whether car availability must be considered or not. A agent has no car only if it has no license, or never access to a car -->
-		<param name="considerCarAvailability" value="false" />
-		<!-- Defines all the modes available, including chain-based modes, seperated by commas -->
-		<param name="modes" value="car,walk" />
+		<param name="ModuleProbability_1" value="1" />
+		<param name="Module_1" value="KeepLastSelected" />
 	</module>
 </config>
