@@ -17,7 +17,7 @@
 
 	<module name="controler" >
 		<param name="firstIteration" value="0" />
-		<param name="lastIteration" value="20" />
+		<param name="lastIteration" value="50" />
 		<param name="writeEventsInterval" value="10" />
 		<param name="writePlansInterval" value="10" />
 		<param name="outputDirectory" value="output" />
@@ -25,7 +25,7 @@
 	</module>
 
 	<module name="qsim">
-		<param name="endTime" value="24:00:00" />
+		<param name="endTime" value="12:00:00" />
 		<param name="numberOfThreads" value="4" />
 		<param name="flowCapacityFactor" value="0.1" />
 		<param name="storageCapacityFactor" value="0.1" />

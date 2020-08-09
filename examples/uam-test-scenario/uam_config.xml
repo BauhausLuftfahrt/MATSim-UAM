@@ -39,7 +39,7 @@
 		<!-- Default=0;  -->
 		<param name="firstIteration" value="0" />
 		<!-- Default=1000;  -->
-		<param name="lastIteration" value="20" />
+		<param name="lastIteration" value="50" />
 		<!-- Defines which mobility simulation will be used. Currently supported: qsim JDEQSim 
 		Depending on the chosen mobsim, you'll have to add additional config modules to configure the corresponding mobsim.
 		For 'qsim', add a module 'qsim' to the config. -->
@@ -428,7 +428,7 @@
 		<param name="ptCountsInterval" value="10" />
 	</module>
 	<module name="qsim" >
-		<param name="endTime" value="24:00:00" />
+		<param name="endTime" value="12:00:00" />
 		<param name="flowCapacityFactor" value="0.1" />
 		<!-- decides if waiting vehicles enter the network after or before the already driving vehicles were moved. Default: false -->
 		<param name="insertingWaitingVehiclesBeforeDrivingVehicles" value="true" />
