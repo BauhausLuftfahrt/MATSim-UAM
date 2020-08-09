@@ -21,14 +21,13 @@ import java.util.Collection;
 public class ConfigAddUAMParameters {
 
 	public static void main(String[] args) {
-		System.out.println("ARGS: path to config, UAM input file, modes, number of threads, search radius, " +
-				"walk distance, routing strategy, PT Simulation used");
+		System.out.println("ARGS: path to config, UAM input file, modes");
 
 		int i = 0;
 		Config config = ConfigUtils.loadConfig(args[i++], new DvrpConfigGroup());
-		addUAMParameters(config, args[i++], args[i++], Integer.parseInt(args[i++]), Integer.parseInt(args[i++]),
-				Integer.parseInt(args[i++]), UAMStrategy.UAMStrategyType.valueOf(args[i++].toUpperCase()),
-				Boolean.parseBoolean(args[i]));
+		// Using default inputs for optional parameters
+		addUAMParameters(config, args[i++], args[i++], 2, 5000, 500,
+				UAMStrategy.UAMStrategyType.MINTRAVELTIME, true);
 		ConfigWriter configWriter = new ConfigWriter(config);
 		configWriter.write(args[0] + "." + UAMConstants.uam + ".xml");
 	}
