@@ -4,31 +4,31 @@
 	<person id="00">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:00:00"></activity>
-			<leg mode="uam" dep_time="06:00:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="06:00:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:00:00" end_time="10:00:00"></activity>
-			<leg mode="uam" dep_time="10:00:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="10:00:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:00:00"></activity>
 		</plan>
 	</person>
 	<person id="01">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:01:00"></activity>
-			<leg mode="car" dep_time="06:01:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="06:01:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:01:00" end_time="10:01:00"></activity>
-			<leg mode="car" dep_time="10:01:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="10:01:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:01:00"></activity>
 		</plan>
 	</person>
 	<person id="02">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:02:00"></activity>
-			<leg mode="walk" dep_time="06:02:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="06:02:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:02:00" end_time="10:02:00"></activity>
-			<leg mode="walk" dep_time="10:02:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="10:02:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:02:00"></activity>
 		</plan>
 	</person>
-	<person id="10">
+	<person id="03">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:03:00"></activity>
 			<leg mode="uam" dep_time="06:03:00" trav_time="01:00:00"></leg>
@@ -37,7 +37,7 @@
 			<activity type="home" link="0001" x="0" y="0" start_time="11:03:00"></activity>
 		</plan>
 	</person>
-	<person id="11">
+	<person id="04">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:04:00"></activity>
 			<leg mode="car" dep_time="06:04:00" trav_time="01:00:00"></leg>
@@ -46,40 +46,103 @@
 			<activity type="home" link="0001" x="0" y="0" start_time="11:04:00"></activity>
 		</plan>
 	</person>
-	<person id="12">
+	<person id="05">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:05:00"></activity>
-			<leg mode="walk" dep_time="06:05:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="06:05:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:05:00" end_time="10:05:00"></activity>
-			<leg mode="walk" dep_time="10:05:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="10:05:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:05:00"></activity>
 		</plan>
 	</person>
-	<person id="20">
+	<person id="06">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:06:00"></activity>
-			<leg mode="uam" dep_time="06:06:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="06:06:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:06:00" end_time="10:06:00"></activity>
-			<leg mode="uam" dep_time="10:06:00" trav_time="01:00:00"></leg>
+			<leg mode="car" dep_time="10:06:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:06:00"></activity>
 		</plan>
 	</person>
-	<person id="21">
+	<person id="07">
 		<plan selected="yes">
 			<activity type="home" link="0001" x="0" y="0" end_time="06:07:00"></activity>
-			<leg mode="car" dep_time="06:07:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="06:07:00" trav_time="01:00:00"></leg>
 			<activity type="work" link="0910" x="20040" y="0" start_time="07:07:00" end_time="10:07:00"></activity>
-			<leg mode="car" dep_time="10:07:00" trav_time="01:00:00"></leg>
+			<leg mode="uam" dep_time="10:07:00" trav_time="01:00:00"></leg>
 			<activity type="home" link="0001" x="0" y="0" start_time="11:07:00"></activity>
 		</plan>
 	</person>
-	<person id="22">
+	<person id="08">
 		<plan selected="yes">
-			<activity type="home" link="0001" x="0" y="0" end_time="06:08:00"></activity>
-			<leg mode="walk" dep_time="06:08:00" trav_time="01:00:00"></leg>
-			<activity type="work" link="0910" x="20040" y="0" start_time="07:08:00" end_time="10:08:00"></activity>
-			<leg mode="walk" dep_time="10:08:00" trav_time="01:00:00"></leg>
-			<activity type="home" link="0001" x="0" y="0" start_time="11:08:00"></activity>
+			<activity type="home" link="0001" x="0" y="0" end_time="06:10:00"></activity>
+			<leg mode="car" dep_time="06:10:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:10:00" end_time="10:10:00"></activity>
+			<leg mode="car" dep_time="10:10:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:10:00"></activity>
+		</plan>
+	</person>
+	<person id="09">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:11:00"></activity>
+			<leg mode="uam" dep_time="06:11:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:11:00" end_time="10:11:00"></activity>
+			<leg mode="uam" dep_time="10:11:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:11:00"></activity>
+		</plan>
+	</person>
+	<person id="10">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:12:00"></activity>
+			<leg mode="car" dep_time="06:12:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:02:00" end_time="10:12:00"></activity>
+			<leg mode="car" dep_time="10:12:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:12:00"></activity>
+		</plan>
+	</person>
+	<person id="11">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:13:00"></activity>
+			<leg mode="uam" dep_time="06:13:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:13:00" end_time="10:13:00"></activity>
+			<leg mode="uam" dep_time="10:13:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:13:00"></activity>
+		</plan>
+	</person>
+	<person id="12">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:14:00"></activity>
+			<leg mode="car" dep_time="06:14:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:14:00" end_time="10:14:00"></activity>
+			<leg mode="car" dep_time="10:14:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:14:00"></activity>
+		</plan>
+	</person>
+	<person id="13">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:15:00"></activity>
+			<leg mode="uam" dep_time="06:15:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:15:00" end_time="10:15:00"></activity>
+			<leg mode="uam" dep_time="10:15:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:15:00"></activity>
+		</plan>
+	</person>
+	<person id="14">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:16:00"></activity>
+			<leg mode="car" dep_time="06:16:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:16:00" end_time="10:16:00"></activity>
+			<leg mode="car" dep_time="10:16:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:16:00"></activity>
+		</plan>
+	</person>
+	<person id="15">
+		<plan selected="yes">
+			<activity type="home" link="0001" x="0" y="0" end_time="06:17:00"></activity>
+			<leg mode="uam" dep_time="06:17:00" trav_time="01:00:00"></leg>
+			<activity type="work" link="0910" x="20040" y="0" start_time="07:17:00" end_time="10:17:00"></activity>
+			<leg mode="uam" dep_time="10:17:00" trav_time="01:00:00"></leg>
+			<activity type="home" link="0001" x="0" y="0" start_time="11:17:00"></activity>
 		</plan>
 	</person>
 </population>

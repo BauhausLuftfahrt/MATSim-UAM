@@ -518,7 +518,7 @@
 		<!-- Defines whether car availability must be considered or not. A agent has no car only if it has no license, or never access to a car -->
 		<param name="considerCarAvailability" value="false" />
 		<!-- Defines all the modes available, including chain-based modes, seperated by commas -->
-		<param name="modes" value="car,walk,uam" />
+		<param name="modes" value="car,walk" />
 	</module>
 	<module name="transit" >
 		<!-- The Coordinates Reference System in which the coordinates are expressed in the input file. At import, the coordinates will be converted to the coordinate system defined in "global", and willbe converted back at export. If not specified, no conversion happens. -->
