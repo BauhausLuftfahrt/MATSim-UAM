@@ -47,10 +47,7 @@ import java.util.concurrent.Executors;
 /**
  * This script generates csv file containing estimated travel times by UAM for
  * trips. The trips file must contain departure time and origin and destination
- * coordinates for the trips. Necessary inputs are in the following order:
- * -Network file; -UAM vehicles file -Transit Schedule file; -Transit Vehicles
- * file; -Trips file; -strategy name(minTraveltime, minDistance,
- * minAccessTravelTime, minAccessDistance) -output file; ;
+ * coordinates for the trips.
  *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
@@ -275,7 +272,10 @@ public class RunCalculateUAMTravelTimes {
 				trip.originStation = uamRoute.bestOriginStation.getId().toString();
 				trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
 
-				trip.accessTime = strategyUtils.getAccessTime(fromFacility, (double) trip.departureTime,
+				trip.processTime = uamRoute.bestOriginStation.getPreFlightTime()
+						+ uamRoute.bestDestinationStation.getPostFlightTime();
+
+				trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
 						uamRoute.bestOriginStation, uamRoute.accessMode);
 
 				trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
@@ -283,7 +283,7 @@ public class RunCalculateUAMTravelTimes {
 				trip.egressTime = strategyUtils.getEgressTime(toFacility, trip.departureTime,
 						uamRoute.bestDestinationStation, uamRoute.egressMode);
 
-				trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime;
+				trip.travelTime = trip.accessTime + trip.flightTime + trip.egressTime + trip.processTime;
 			} catch (NullPointerException e) {
 				//e.printStackTrace();
 			}

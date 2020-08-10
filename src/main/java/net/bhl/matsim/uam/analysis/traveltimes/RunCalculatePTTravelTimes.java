@@ -35,9 +35,7 @@ import java.util.concurrent.Executors;
 /**
  * This script generates csv file containing estimated travel times by Pt for
  * trips. The trips file must contain departure time and origin and destination
- * coordinates for the trips. Necessary inputs are in the following order:
- * -Network file; -Transit Schedule file; -Transit Vehicles file; -Trips file;
- * -output file;
+ * coordinates for the trips.
  *
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
