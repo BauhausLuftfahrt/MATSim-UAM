@@ -63,7 +63,7 @@ public class RunCalculateUAMTravelTimes {
 	private static ArrayBlockingQueue<DefaultParallelLeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name*");
+		System.out.println("ARGS: config.xml* trips.csv* outputfile-name*");
 		System.out.println("(* required)");
 
 		log.warn(UAMConstants.uam.toUpperCase() + " process times are being ignored! All passenger processes are set to duration of 0.");

@@ -51,7 +51,7 @@ public class RunCalculatePTTravelTimes {
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(
-				"ARGS: config.xml* tripsCoordinateFile.csv* outputfile-name* write-description");
+				"ARGS: config.xml* trips.csv* outputfile-name* write-description");
 		System.out.println("(* required)");
 
 		// ARGS
