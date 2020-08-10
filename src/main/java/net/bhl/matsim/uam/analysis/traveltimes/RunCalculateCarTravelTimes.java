@@ -1,5 +1,6 @@
 package net.bhl.matsim.uam.analysis.traveltimes;
 
+import com.opencsv.CSVParser;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
@@ -131,7 +132,7 @@ public class RunCalculateCarTravelTimes {
 
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
-			writer.write(String.join(",",
+			writer.write(String.join(String.valueOf(CSVParser.DEFAULT_SEPARATOR),
 					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
@@ -144,7 +145,8 @@ public class RunCalculateCarTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",", new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
+		return String.join(String.valueOf(CSVParser.DEFAULT_SEPARATOR),
+				new String[]{"origin_x", "origin_y", "destination_x", "destination_y",
 				"departure_time", "travel_time", "distance", "description"});
 	}
 

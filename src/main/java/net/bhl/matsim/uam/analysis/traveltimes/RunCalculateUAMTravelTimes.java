@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.analysis.traveltimes;
 import ch.ethz.matsim.av.plcpc.DefaultParallelLeastCostPathCalculator;
 import ch.ethz.matsim.av.plcpc.ParallelLeastCostPathCalculator;
 import ch.sbb.matsim.routing.pt.raptor.*;
+import com.opencsv.CSVParser;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.ThreadCounter;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItem;
 import net.bhl.matsim.uam.analysis.traveltimes.utils.TripItemReader;
@@ -179,7 +180,7 @@ public class RunCalculateUAMTravelTimes {
 
 		writer.write(formatHeader() + "\n");
 		for (TripItem trip : trips) {
-			writer.write(String.join(",",
+			writer.write(String.join(String.valueOf(CSVParser.DEFAULT_SEPARATOR),
 					new String[]{String.valueOf(trip.origin.getX()), String.valueOf(trip.origin.getY()),
 							String.valueOf(trip.destination.getX()), String.valueOf(trip.destination.getY()),
 							String.valueOf(trip.departureTime), String.valueOf(trip.travelTime),
@@ -194,7 +195,7 @@ public class RunCalculateUAMTravelTimes {
 	}
 
 	private static String formatHeader() {
-		return String.join(",",
+		return String.join(String.valueOf(CSVParser.DEFAULT_SEPARATOR),
 				new String[]{"origin_x", "origin_y", "destination_x", "destination_y", "departure_time",
 						"travel_time", "access_time", "flight_time", "egress_time", "access_mode",
 						"egress_mode", "orig_station", "dest_station"});
@@ -274,7 +275,7 @@ public class RunCalculateUAMTravelTimes {
 				trip.originStation = uamRoute.bestOriginStation.getId().toString();
 				trip.destinationStation = uamRoute.bestDestinationStation.getId().toString();
 
-				trip.accessTime = strategyUtils.getAccessTime(fromFacility, trip.departureTime,
+				trip.accessTime = strategyUtils.getAccessTime(fromFacility, (double) trip.departureTime,
 						uamRoute.bestOriginStation, uamRoute.accessMode);
 
 				trip.flightTime = strategyUtils.getFlightTime(uamRoute.bestOriginStation, uamRoute.bestDestinationStation);
