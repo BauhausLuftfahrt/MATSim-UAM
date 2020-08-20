@@ -63,8 +63,6 @@ public class RunCalculateUAMTravelTimes {
 		System.out.println("ARGS: config.xml* trips.csv* outputfile-name*");
 		System.out.println("(* required)");
 
-		log.warn(UAMConstants.uam.toUpperCase() + " process times are being ignored! All passenger processes are set to duration of 0.");
-
 		// ARGS
 		int j = 0;
 		String configInput = args[j++];
