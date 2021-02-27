@@ -183,26 +183,26 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 					.getWaitingTime(departureTime);
 			currentTime += waitTime;
 		} catch (IndexOutOfBoundsException e) {
-			if (counterWarningWaitingTimeSlot < counterLimit)
-				log.warn(UAMConstants.uam.toUpperCase() + " waiting time requests for non-existent time slot. Using default value of "
-						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
-						+ uamRoute.bestOriginStation.getId().toString());
-
-			if (counterWarningWaitingTimeSlot == counterLimit - 1)
-				log.warn("No more waiting time warnings will be reported.");
+//			if (counterWarningWaitingTimeSlot < counterLimit)
+//				log.warn(UAMConstants.uam.toUpperCase() + " waiting time requests for non-existent time slot. Using default value of "
+//						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
+//						+ uamRoute.bestOriginStation.getId().toString());
+//
+//			if (counterWarningWaitingTimeSlot == counterLimit - 1)
+//				log.warn("No more waiting time warnings will be reported.");
 
 			counterWarningWaitingTimeSlot++;
 			currentTime += uamRoute.bestOriginStation.getDefaultWaitTime(); // Added wait time of Origin Station
 		} catch (NullPointerException e) {
-			if (counterWarningWaitingTimeNull < counterLimit)
-				log.warn(UAMConstants.uam.toUpperCase() + " waiting time not available. Using default value of "
-						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
-						+ uamRoute.bestOriginStation.getId().toString());
-
-			if (counterWarningWaitingTimeNull == counterLimit - 1)
-				log.warn("No more waiting time warnings will be reported.");
-
-			counterWarningWaitingTimeNull++;
+//			if (counterWarningWaitingTimeNull < counterLimit)
+//				log.warn(UAMConstants.uam.toUpperCase() + " waiting time not available. Using default value of "
+//						+ uamRoute.bestOriginStation.getDefaultWaitTime() + " for station "
+//						+ uamRoute.bestOriginStation.getId().toString());
+//
+//			if (counterWarningWaitingTimeNull == counterLimit - 1)
+//				log.warn("No more waiting time warnings will be reported.");
+//
+//			counterWarningWaitingTimeNull++;
 			currentTime += uamRoute.bestOriginStation.getDefaultWaitTime(); // Added wait time of Origin Station
 		}
 
