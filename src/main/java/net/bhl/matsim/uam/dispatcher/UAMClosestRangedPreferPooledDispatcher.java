@@ -87,9 +87,9 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 					if (((UAMPickupTask) schedule.getTasks().get(i)).getRequests().size() < vehicle.getCapacity()) {
 						// TODO: probably should not be added at all here
 						// as these are enroute vehicles
-						this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(),
-								vehicle);
-						this.availableVehicleLocations.put(vehicle, coord);
+						//this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(),
+						//		vehicle);
+						//this.availableVehicleLocations.put(vehicle, coord);
 						return;
 					}
 					break;
@@ -155,7 +155,7 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 				for (int i = index; i < schedule.getTaskCount(); i++) {
 					Task task = schedule.getTasks().get(i);
 					if (task instanceof UAMPickupTask) {
-						if (((UAMPickupTask) schedule.getTasks().get(index)).getRequests().size() < vehicle
+						if (((UAMPickupTask) schedule.getTasks().get(i)).getRequests().size() < vehicle
 								.getCapacity()) {
 							enRouteOrAwaitingPickupVehicles.add(vehicle);
 						}
