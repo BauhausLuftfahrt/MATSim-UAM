@@ -84,7 +84,9 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 			for (int i = index; i < schedule.getTaskCount(); i++) {
 				Task taskN = schedule.getTasks().get(i);
 				if (taskN instanceof UAMPickupTask) {
-					if (((UAMPickupTask) schedule.getTasks().get(index)).getRequests().size() < vehicle.getCapacity()) {
+					if (((UAMPickupTask) schedule.getTasks().get(i)).getRequests().size() < vehicle.getCapacity()) {
+						// TODO: probably should not be added at all here
+						// as these are enroute vehicles
 						this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(),
 								vehicle);
 						this.availableVehicleLocations.put(vehicle, coord);
