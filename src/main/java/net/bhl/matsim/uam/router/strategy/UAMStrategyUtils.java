@@ -108,8 +108,9 @@ public class UAMStrategyUtils {
 				double travelTime = uamAccessLeg.travelTime;
 
 				// TODO: Does this make sense?
-				if (distance <= uamConfig.getWalkDistance() && modes.contains(TransportMode.walk))
-					continue;
+				// I do not think so Feb 21 mb
+				//if (distance <= uamConfig.getWalkDistance() && modes.contains(TransportMode.walk))
+				//	continue;
 
 				if (distance < minDistance) {
 					minDistance = distance;
