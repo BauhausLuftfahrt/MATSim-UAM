@@ -81,7 +81,7 @@ public class UAMModule extends AbstractModule {
 		// we still need to provide a way to identify our trips
 		// as being uam trips.
 		// This is for instance used at re-routing.
-		bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
+		//bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
 		bind(VehicleType.class).annotatedWith(Names.named(UAMConstants.uam))
