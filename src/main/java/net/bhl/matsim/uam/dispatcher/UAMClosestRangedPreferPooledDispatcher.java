@@ -121,8 +121,13 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 				this.availableVehiclesTree.get(vehicle.getVehicleType()).remove(coord.getX(), coord.getY(), vehicle);
 
 				appender.schedule(request, vehicle, now);
-				if (vehicle.getCapacity() > 1)
-					enRouteOrAwaitingPickupVehicles.add(vehicle);
+				for (Task task : vehicle.getSchedule().getTasks()) {
+					if (task instanceof UAMPickupTask) {
+						if (((UAMPickupTask) task).getRequests().size() < vehicle.getCapacity()) {
+							enRouteOrAwaitingPickupVehicles.add(vehicle);
+						}
+					}
+				}
 			} else {
 				deferredRequests.add(request);
 			}
