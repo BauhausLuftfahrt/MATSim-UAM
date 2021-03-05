@@ -27,6 +27,7 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
+import net.bhl.matsim.uam.schedule.UAMTaskType;
 
 /**
  * UAM Dispatcher that allows pooled ride between passengers and uses vehicle
@@ -82,11 +83,37 @@ public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 		Schedule schedule = vehicle.getSchedule();
 		Task task = schedule.getCurrentTask();
 
-		if (task instanceof Task) {
+		if (task.getTaskType().equals(UAMTaskType.STAY)) {
 			Coord coord = ((StayTask) task).getLink().getCoord();
-			this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(), vehicle);
-			this.availableVehicleLocations.put(vehicle, coord);
-			return;
+			// check if this vehicle has a pickup task next
+			// and then check if it has space
+			// because this vehicle might have be rerouted previously
+			// to another station for pickup
+			int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
+
+			for (int i = index; i < schedule.getTaskCount(); i++) {
+				Task taskN = schedule.getTasks().get(i);
+				if (taskN instanceof UAMPickupTask) {
+					if (((UAMPickupTask) schedule.getTasks().get(i)).getRequests().size() < vehicle.getCapacity()) {
+						// TODO: probably should not be added at all here
+						// as these are enroute vehicles
+						//this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(),
+						//		vehicle);
+						//this.availableVehicleLocations.put(vehicle, coord);
+						return;
+					}
+					break;
+				}
+				else if (i == schedule.getTaskCount() - 1) {
+					// means we do not have any pickup tasks
+					// so we can add this vehicle to the available list
+					// as it is empty
+					this.availableVehiclesTree.get(vehicle.getVehicleType()).put(coord.getX(), coord.getY(),
+							vehicle);
+					this.availableVehicleLocations.put(vehicle, coord);
+					return;
+				}
+			}
 		}
 
 		if (task instanceof UAMPickupTask)
@@ -125,12 +152,17 @@ public class UAMClosestRangedPooledDispatcher implements UAMDispatcher {
 				this.availableVehiclesTree.get(vehicle.getVehicleType()).remove(coord.getX(), coord.getY(), vehicle);
 
 				appender.schedule(request, vehicle, now);
+				Schedule schedule = vehicle.getSchedule();
+				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
 
-				for (Task task : vehicle.getSchedule().getTasks()) {
+				for (int i = index; i < schedule.getTaskCount(); i++) {
+					Task task = schedule.getTasks().get(i);
 					if (task instanceof UAMPickupTask) {
-						if (((UAMPickupTask) task).getRequests().size() < vehicle.getCapacity()) {
+						if (((UAMPickupTask) schedule.getTasks().get(i)).getRequests().size() < vehicle
+								.getCapacity()) {
 							enRouteOrAwaitingPickupVehicles.add(vehicle);
 						}
+						break;
 					}
 				}
 
