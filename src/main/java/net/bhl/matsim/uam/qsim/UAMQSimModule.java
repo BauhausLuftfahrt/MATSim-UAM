@@ -85,12 +85,9 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 		bindModal(UAMSingleRideAppender.class).to(UAMSingleRideAppender.class);
 		bind(UAMSingleRideAppender.class);
-		// bind(UAMDepartureHandler.class);
 
-		// bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
-		// addModalQSimComponentBinding().to(UAMDepartureHandler.class);
 
 		install(new VrpAgentSourceQSimModule(getMode()));
 		install(new PassengerEngineQSimModule(getMode()));

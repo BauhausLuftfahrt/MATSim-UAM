@@ -15,8 +15,6 @@ import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.network.algorithms.TransportModeNetworkFilter;
 import org.matsim.core.router.DijkstraFactory;
-import org.matsim.core.router.MainModeIdentifier;
-import org.matsim.core.router.MainModeIdentifierImpl;
 import org.matsim.core.router.costcalculators.OnlyTimeDependentTravelDisutility;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.TravelTime;
@@ -35,13 +33,11 @@ import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
-import net.bhl.matsim.uam.events.UAMPrebookVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.listeners.UAMListener;
 import net.bhl.matsim.uam.listeners.UAMShutdownListener;
 import net.bhl.matsim.uam.qsim.UAMQSimModule;
-import net.bhl.matsim.uam.router.UAMMainModeIdentifier;
 import net.bhl.matsim.uam.router.UAMRoutingModuleProvider;
 import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
 
@@ -75,7 +71,6 @@ public class UAMModule extends AbstractModule {
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
-		addEventHandlerBinding().to(UAMPrebookVehicle.class);
 
 		// we need to bind our router for the uam trips
 		addRoutingModuleBinding(UAMConstants.uam).toProvider(UAMRoutingModuleProvider.class);
@@ -83,7 +78,8 @@ public class UAMModule extends AbstractModule {
 		// we still need to provide a way to identify our trips
 		// as being uam trips.
 		// This is for instance used at re-routing.
-		//bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new MainModeIdentifierImpl()));
+		// bind(MainModeIdentifier.class).toInstance(new UAMMainModeIdentifier(new
+		// MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
 		bind(VehicleType.class).annotatedWith(Names.named(UAMConstants.uam))
