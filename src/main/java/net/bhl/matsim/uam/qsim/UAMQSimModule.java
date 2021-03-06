@@ -25,11 +25,9 @@ import org.matsim.contrib.dvrp.vrpagent.VrpLeg;
 import org.matsim.contrib.dvrp.vrpagent.VrpLegFactory;
 import org.matsim.core.mobsim.qsim.QSim;
 import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
-import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 
 import net.bhl.matsim.uam.data.UAMFleetData;
 import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPreferPooledDispatcher;
@@ -75,12 +73,12 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 		bindModal(UAMSingleRideAppender.class).to(UAMSingleRideAppender.class);
 		bind(UAMSingleRideAppender.class);
-		bind(UAMDepartureHandler.class);
+		// bind(UAMDepartureHandler.class);
 
-		bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
+		// bindModal(DepartureHandler.class).to(UAMDepartureHandler.class);
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
-		addModalQSimComponentBinding().to(UAMDepartureHandler.class);
+		// addModalQSimComponentBinding().to(UAMDepartureHandler.class);
 
 		install(new VrpAgentSourceQSimModule(getMode()));
 		install(new PassengerEngineQSimModule(getMode()));
