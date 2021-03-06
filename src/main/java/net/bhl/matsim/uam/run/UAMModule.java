@@ -35,6 +35,7 @@ import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.events.UAMDemand;
+import net.bhl.matsim.uam.events.UAMPrebookVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMStations;
 import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.listeners.UAMListener;
@@ -74,7 +75,8 @@ public class UAMModule extends AbstractModule {
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
-
+		addEventHandlerBinding().to(UAMPrebookVehicle.class);
+		bind(UAMPrebookVehicle.class).asEagerSingleton();
 		// we need to bind our router for the uam trips
 		addRoutingModuleBinding(UAMConstants.uam).toProvider(UAMRoutingModuleProvider.class);
 

@@ -4,12 +4,11 @@ import net.bhl.matsim.uam.qsim.UAMDepartureHandler;
 import org.matsim.api.core.v01.events.PersonDepartureEvent;
 import org.matsim.api.core.v01.events.handler.PersonDepartureEventHandler;
 
-public class UAMPrebookVehicle implements PersonDepartureEventHandler {
-	private UAMDepartureHandler departureHandler;
+import com.google.inject.Inject;
 
-	public UAMPrebookVehicle(UAMDepartureHandler departureHandler) {
-		this.departureHandler = departureHandler;
-	}
+public class UAMPrebookVehicle implements PersonDepartureEventHandler {
+	@Inject
+	private UAMDepartureHandler departureHandler;
 
 	@Override
 	public void reset(int iteration) {
