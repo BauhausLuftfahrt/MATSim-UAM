@@ -1,19 +1,20 @@
 package net.bhl.matsim.uam.qsim;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.google.common.base.Verify;
+import com.google.inject.Inject;
+import net.bhl.matsim.uam.events.UAMPrebookVehicle;
+import net.bhl.matsim.uam.passenger.UAMRequestCreator;
+import net.bhl.matsim.uam.qsim.UAMTripInfo.BookedRequest;
+import net.bhl.matsim.uam.run.UAMConstants;
 
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.population.Activity;
-import org.matsim.api.core.v01.population.Leg;
-import org.matsim.api.core.v01.population.Person;
-import org.matsim.api.core.v01.population.Plan;
-import org.matsim.api.core.v01.population.PlanElement;
-import org.matsim.api.core.v01.population.Route;
+import org.matsim.api.core.v01.population.*;
+import org.matsim.contrib.dvrp.optimizer.Request;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
@@ -23,9 +24,8 @@ import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.DepartureHandler;
 import org.matsim.pt.PtConstants;
 
-import com.google.inject.Inject;
-
-import net.bhl.matsim.uam.run.UAMConstants;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class defines the departure handler for UAM simulation.
@@ -48,13 +48,9 @@ public class UAMDepartureHandler implements DepartureHandler {
 
 	private Set<String> modesRequiringManualUAMPrebooking;
 
-	@Inject
-	public UAMDepartureHandler() {
-		initiateUAMDepartureHandler();
-	}
 	public void initiateUAMDepartureHandler() {
 		if (modesRequiringManualUAMPrebooking == null) {
-			//qsim.getEventsManager().addHandler(new UAMPrebookVehicle(this));
+			qsim.getEventsManager().addHandler(new UAMPrebookVehicle(this));
 
 			modesRequiringManualUAMPrebooking = new HashSet<>();
 			String mainMode = this.qsim.getScenario().getConfig().getModules().get("qsim").getParams().get("mainMode");
@@ -84,7 +80,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 	@Override
 	public boolean handleDeparture(double now, MobsimAgent agent, Id<Link> linkId) {
 		// Must be initiated before first use (cannot be done in constructor as this itself is passes as a variable)
-		//initiateUAMDepartureHandler();
+		initiateUAMDepartureHandler();
 		// TODO: Is there a way to initiate the UAMDepartureHandler at the beginning of an iteration?
 
 		if (agent instanceof PlanAgent) {
