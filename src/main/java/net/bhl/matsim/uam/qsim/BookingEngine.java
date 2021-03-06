@@ -83,11 +83,12 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 						now + uam_interaction.getMaximumDuration().seconds()
 								+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
 						now);
-			} else if (agent.getMode().equals(TransportMode.transit_walk)
-					|| agent.getMode().equals(TransportMode.access_walk)) {
+			} else if (agent.getMode().equals(TransportMode.walk)) {
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-				if (isUamTrip(plan, planElementsIndex)) {
+				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
+
+				if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
 					if (!bookedTrips.contains(agent.getId())) {
 						double travelTime = getTravelTime(plan, planElementsIndex);
 						final Leg uamLeg = getUamLeg(plan, planElementsIndex);
@@ -172,25 +173,6 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 			index++;
 		}
 		return travelTime;
-	}
-
-	private boolean isUamTrip(Plan plan, Integer planElementsIndex) {
-		int index = planElementsIndex + 1;
-		while (true) {
-			PlanElement pe = plan.getPlanElements().get(index);
-			if (pe instanceof Activity) {
-				if (((Activity) pe).getType().equals(UAMConstants.interaction))
-					return true;
-				else if (((Activity) pe).getType().equals(PtConstants.TRANSIT_ACTIVITY_TYPE)) {
-					index++;
-
-					continue;
-				} else
-					return false;
-			}
-			index++;
-		}
-
 	}
 
 }
