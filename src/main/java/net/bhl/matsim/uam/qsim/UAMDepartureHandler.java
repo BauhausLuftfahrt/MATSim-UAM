@@ -63,6 +63,7 @@ public class UAMDepartureHandler implements DepartureHandler {
 	}
 
 	public void manualUAMPrebooking(String mode, double now, Id<Person> id, Id<Link> linkId) {
+		initiateUAMDepartureHandler();
 		if (modesRequiringManualUAMPrebooking.contains(mode))
 			handleDeparture(now, qsim.getAgents().get(id), linkId);
 	}	
