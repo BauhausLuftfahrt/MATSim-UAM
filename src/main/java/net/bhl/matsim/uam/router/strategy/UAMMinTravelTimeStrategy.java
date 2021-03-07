@@ -55,12 +55,11 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 						+ accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime + process;
 				for (String mode : modes) {
 					// Calculates the time travel for the egress routes
-					UAMAccessLeg accessLeg = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
+					UAMAccessLeg egressLeg = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
 							stationDestination, mode);
-					if (accessLeg == null)
+					if (egressLeg == null)
 						continue;
-					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
-							stationDestination, mode).travelTime;
+					double egressTravelTime = egressLeg.travelTime;
 					// Calculates the minimum total time
 					double totalTime = accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime
 							+ process + egressTravelTime;
