@@ -1,5 +1,6 @@
 package net.bhl.matsim.uam.router.strategy;
 
+import net.bhl.matsim.uam.data.UAMAccessLeg;
 import net.bhl.matsim.uam.data.UAMAccessOptions;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
@@ -54,6 +55,10 @@ public class UAMMinTravelTimeStrategy implements UAMStrategy {
 						+ accessRoutesData.get(stationOrigin.getId()).getFastestAccessTime() + flyTime + process;
 				for (String mode : modes) {
 					// Calculates the time travel for the egress routes
+					UAMAccessLeg accessLeg = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
+							stationDestination, mode);
+					if (accessLeg == null)
+						continue;
 					double egressTravelTime = strategyUtils.estimateAccessLeg(false, toFacility, currentDepartureTime,
 							stationDestination, mode).travelTime;
 					// Calculates the minimum total time
