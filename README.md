@@ -23,10 +23,13 @@ Older versions can be used by replacing the version text with any of the listed 
 
 ## Versions and Change Log
 
-### v2.2 (untested, currently work-in-progress)
+### Development
 General:
 - Update to MATSim v12
 - Removal of ptSimulation config setting
+- Changed prebooking infrastructure, now there is a BookingEngine
+- Dispatchers are updated to account for possibility of StayTask when vehicle is sent from a different station (StayTask-FlyTask-StayTask-PickupTask-...)
+- Added integration test
 
 ### v2.1
 General:
