@@ -3,6 +3,7 @@ package net.bhl.matsim.uam;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import org.matsim.api.core.v01.Id;
@@ -36,13 +37,11 @@ import net.bhl.matsim.uam.qsim.UAMQSimModule;
 import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import net.bhl.matsim.uam.run.UAMModule;
 
-// TODO: remove this testing class eventually
-
 public class RunCorsicaIT {
 	static public void main(String[] args) {
-		System.out.println(RunCorsicaIT.class.getResource("/examples/uam-corsica-scenario/corsica/corsica_config.xml"));
+		System.out.println(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 
-		Config config = ConfigUtils.loadConfig(RunCorsicaIT.class.getResource("/examples/uam-corsica-scenario/corsica/corsica_config.xml"));
+		Config config = ConfigUtils.loadConfig(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 
 		{
 			// Remove some standard eqasim config groups
