@@ -90,58 +90,7 @@ public class RunUAMScenario {
 
 		controler = new Controler(scenario);
 
-		/**
-		 * TESTING START TODO
-		 */
-
-		UAMConfigGroup uamConfig = (UAMConfigGroup) config.getModules().get(UAMConfigGroup.GROUP_NAME);
-		uamConfig.setInputFile("uam_network.xml");
-
-		uamConfig.setAccessEgressModesAsString("car");
-		uamConfig.setSearchRadius(1e5);
-
-		/** TESTING END */
-
-		// Initiate Urban Air Mobility XML reading and parsing
-		Network network = controler.getScenario().getNetwork();
-
-		/* TESTING START */
-
-		NetworkFactory factory = network.getFactory();
-
-		Link hubAjaccio = network.getLinks().get(Id.createLinkId("62245"));
-		Link hubBastia = network.getLinks().get(Id.createLinkId("15431"));
-
-		Set<String> linkModes = new HashSet<>(hubAjaccio.getAllowedModes());
-		linkModes.add("uam");
-		hubAjaccio.setAllowedModes(linkModes);
-
-		linkModes = new HashSet<>(hubBastia.getAllowedModes());
-		linkModes.add("uam");
-		hubBastia.setAllowedModes(linkModes);
-
-		Link uam1 = factory.createLink(Id.createLinkId("uam1"), hubAjaccio.getToNode(), hubBastia.getFromNode());
-		Link uam2 = factory.createLink(Id.createLinkId("uam2"), hubBastia.getToNode(), hubAjaccio.getFromNode());
-
-		uam1.setAllowedModes(Collections.singleton("uam"));
-		uam2.setAllowedModes(Collections.singleton("uam"));
-
-		network.addLink(hubAjaccio);
-		network.addLink(hubBastia);
-		network.addLink(uam1);
-		network.addLink(uam2);
-
-		hubAjaccio.getAttributes().putAttribute("type", "uam_horizontal");
-		hubBastia.getAttributes().putAttribute("type", "uam_horizontal");
-		uam1.getAttributes().putAttribute("type", "uam_horizontal");
-		uam2.getAttributes().putAttribute("type", "uam_horizontal");
 		
-		uam1.setFreespeed(100.0);
-		uam2.setFreespeed(100.0);
-		uam1.setCapacity(1000000.0);
-		uam2.setCapacity(1000000.0);
-
-		/* TESTING END */
 
 		// sets transit modules in case of simulating/not pT
 		/*controler.getConfig().transit().setUseTransit(uamConfigGroup.getPtSimulation());
@@ -154,24 +103,18 @@ public class RunUAMScenario {
 
 		controler.addOverridingModule(new UAMModule());
 		controler.addOverridingModule(new UAMSpeedModule());
-		// controler.addOverridingModule(new DvrpTravelTimeModule());
+		controler.addOverridingModule(new SwissRailRaptorModule());
 
 		controler.configureQSimComponents(configurator -> {
 			UAMQSimModule.activateModes().configure(configurator);
 		});
 
-		// TODO: Did this for testing 11 Feb
 		controler.getConfig().transit().setUseTransit(true);
-		controler.getConfig().transit().setUsingTransitInMobsim(false);
+		controler.getConfig().transit().setUsingTransitInMobsim(true);
 		controler.getConfig().qsim().setSimStarttimeInterpretation(StarttimeInterpretation.onlyUseStarttime);
 		controler.getConfig().qsim().setStartTime(0.0);
 
 		DvrpConfigGroup.get(config).setNetworkModesAsString("uam");
-		config.getModules().remove(DiscreteModeChoiceConfigGroup.GROUP_NAME);
-		config.getModules().remove("eqasim");
-		config.getModules().remove("eqasim:calibration");
-		config.getModules().remove("swissRailRaptor");
-
 		config.planCalcScore().addModeParams(new ModeParams("access_uam_car"));
 		config.planCalcScore().addModeParams(new ModeParams("egress_uam_car"));
 		config.planCalcScore().addModeParams(new ModeParams("uam"));
