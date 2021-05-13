@@ -51,7 +51,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	@Positive
 	private double searchRadius = 5000.0;
 
-	private boolean useDynamicSearchRadius = true;
+	private boolean useDynamicSearchRadius = false;
 
 	@Positive
 	private double walkDistance = 500.0;
