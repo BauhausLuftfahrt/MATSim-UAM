@@ -161,6 +161,8 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 						network.getLinks().get(fromFacility.getLinkId()), uamRoute.bestOriginStation.getLocationLink(),
 						uamRoute.accessMode, UAMConstants.access + uamRoute.accessMode);
 				currentTime += uavAccessLeg.getTravelTime().seconds();
+				uavAccessLeg.setTravelTime(0.0);
+				uavAccessLeg.getRoute().setTravelTime(0.0);
 				trip.add(uavAccessLeg);
 		}
 
