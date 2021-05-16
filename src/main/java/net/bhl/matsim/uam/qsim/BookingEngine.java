@@ -72,35 +72,75 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 	public boolean manualUAMPrebooking(double now, MobsimAgent agent) {
 
 		if (agent instanceof PlanAgent) {
-			if (agent.getMode().startsWith(UAMConstants.access)) {
-				Plan plan = ((PlanAgent) agent).getCurrentPlan();
-				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
-				final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
-				Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
 
-				performPrebooking(leg, agent,
-						now + uam_interaction.getMaximumDuration().seconds()
-								+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
-						now);
-			} else if (agent.getMode().equals(TransportMode.walk)) {
-				Plan plan = ((PlanAgent) agent).getCurrentPlan();
-				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
+			if (((PlanAgent) agent).getCurrentPlanElement() instanceof Leg) {
 
-				if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
-					if (!bookedTrips.contains(agent.getId())) {
-						double travelTime = getTravelTime(plan, planElementsIndex);
-						final Leg uamLeg = getUamLeg(plan, planElementsIndex);
-						Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
+				if (agent.getMode().startsWith(UAMConstants.access)) {
+					Plan plan = ((PlanAgent) agent).getCurrentPlan();
+					final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
+					final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
+					final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
+					Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
 
-						performPrebooking(uamLeg, agent, now + uam_interaction.getMaximumDuration().seconds()
-								+ (travelTime <= 0 ? 1 : travelTime), now);
+					performPrebooking(leg, agent, now + uam_interaction.getMaximumDuration().seconds()
+							+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
+							now);
+				} else if (agent.getMode().equals(TransportMode.walk)) {
+					Plan plan = ((PlanAgent) agent).getCurrentPlan();
+					final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
+					final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
+
+					if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
+						if (!bookedTrips.contains(agent.getId())) {
+							double travelTime = getTravelTime(plan, planElementsIndex);
+							final Leg uamLeg = getUamLeg(plan, planElementsIndex);
+							Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
+
+							performPrebooking(uamLeg, agent, now + uam_interaction.getMaximumDuration().seconds()
+									+ (travelTime <= 0 ? 1 : travelTime), now);
+						}
 					}
-				}
 
-			} else if (agent.getMode().equals(UAMConstants.uam))
-				bookedTrips.remove(agent.getId());
+				} else if (agent.getMode().equals(UAMConstants.uam))
+					bookedTrips.remove(agent.getId());
+			} else {
+
+				// we are not on the leg, this could happen if the access leg is
+				// zero seconds long
+				// first check this
+				Plan plan = ((PlanAgent) agent).getCurrentPlan();
+				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
+				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex - 1);
+				if (!(accessLeg.getTravelTime().seconds() == 0.0))
+					throw new RuntimeException("Person with id " + agent.getId().toString()
+							+ " should be on a leg but it is not. It is on "
+							+ ((PlanAgent) agent).getCurrentPlanElement().toString());
+				else {
+					if (accessLeg.getMode().startsWith(UAMConstants.access)) {
+						final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 1);
+						Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex);
+
+						performPrebooking(leg, agent, now + uam_interaction.getMaximumDuration().seconds()
+								+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
+								now);
+					} else if (accessLeg.getMode().equals(TransportMode.walk)) {
+
+						if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
+							if (!bookedTrips.contains(agent.getId())) {
+								double travelTime = getTravelTime(plan, planElementsIndex - 1);
+								final Leg uamLeg = getUamLeg(plan, planElementsIndex - 1);
+								Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex);
+
+								performPrebooking(uamLeg, agent, now + uam_interaction.getMaximumDuration().seconds()
+										+ (travelTime <= 0 ? 1 : travelTime), now);
+							}
+						}
+
+					} else if (agent.getMode().equals(UAMConstants.uam))
+						bookedTrips.remove(agent.getId());
+
+				}
+			}
 		}
 
 		return false;
