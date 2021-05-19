@@ -17,9 +17,9 @@
 
 	<repositories>
 		<repository>
+			<!-- Repository for MATSim (MATSim is not on Maven central, releases and snapshots) -->
 			<id>matsim</id>
-			<name>MATSim Maven repository</name>
-			<url>https://repo.matsim.org/repository/matsim/</url>
+			<url>https://repo.matsim.org/repository/matsim</url>
 		</repository>
 		<repository>
 			<id>osgeo</id>
