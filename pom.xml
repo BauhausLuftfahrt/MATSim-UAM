@@ -18,8 +18,8 @@
 	<repositories>
 		<repository>
 			<id>matsim</id>
-			<name>MATSim release repository</name>
-			<url>http://dl.bintray.com/matsim/matsim</url>
+			<name>MATSim Maven repository</name>
+			<url>https://repo.matsim.org/repository/matsim/</url>
 		</repository>
 		<repository>
 			<id>osgeo</id>
