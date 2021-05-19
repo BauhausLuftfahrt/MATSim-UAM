@@ -30,6 +30,7 @@ General:
 - Changed prebooking infrastructure, now there is a BookingEngine
 - Dispatchers are updated to account for possibility of StayTask when vehicle is sent from a different station (StayTask-FlyTask-StayTask-PickupTask-...)
 - Added integration test
+- Added clarification of useDynamicSearchRadius (default is now false)
 
 ### v2.1
 General:
