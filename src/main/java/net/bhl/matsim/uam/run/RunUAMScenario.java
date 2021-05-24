@@ -83,7 +83,7 @@ public class RunUAMScenario {
 		controler.addOverridingModule(new DvrpModule());
 
 		controler.addOverridingModule(new UAMModule());
-		controler.addQSimModule(new UAMSpeedModule());
+		controler.addOverridingQSimModule(new UAMSpeedModule());
 		controler.addOverridingModule(new SwissRailRaptorModule());
 
 		controler.configureQSimComponents(configurator -> {
