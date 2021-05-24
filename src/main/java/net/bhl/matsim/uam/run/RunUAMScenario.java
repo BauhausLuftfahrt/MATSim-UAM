@@ -1,17 +1,12 @@
 package net.bhl.matsim.uam.run;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.matsim.api.core.v01.Id;
+import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
+import net.bhl.matsim.uam.qsim.UAMQSimModule;
+import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import org.matsim.api.core.v01.Scenario;
-import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.network.Network;
-import org.matsim.api.core.v01.network.NetworkFactory;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
-import org.matsim.contribs.discrete_mode_choice.modules.config.DiscreteModeChoiceConfigGroup;
 import org.matsim.core.config.CommandLine;
 import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
@@ -21,11 +16,6 @@ import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ModeParams;
 import org.matsim.core.config.groups.QSimConfigGroup.StarttimeInterpretation;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
-
-import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptorModule;
-import net.bhl.matsim.uam.config.UAMConfigGroup;
-import net.bhl.matsim.uam.qsim.UAMQSimModule;
-import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 
 /**
  * The RunUAMScenario program start a MATSim run including Urban Air Mobility
@@ -90,19 +80,10 @@ public class RunUAMScenario {
 
 		controler = new Controler(scenario);
 
-		
-
-		// sets transit modules in case of simulating/not pT
-		/*controler.getConfig().transit().setUseTransit(uamConfigGroup.getPtSimulation());
-		if (uamConfigGroup.getPtSimulation()) {
-			controler.addOverridingModule(new SwissRailRaptorModule());
-			// controler.addOverridingModule(new BaselineTransitModule());
-		}*/
-
 		controler.addOverridingModule(new DvrpModule());
 
 		controler.addOverridingModule(new UAMModule());
-		controler.addOverridingModule(new UAMSpeedModule());
+		controler.addQSimModule(new UAMSpeedModule());
 		controler.addOverridingModule(new SwissRailRaptorModule());
 
 		controler.configureQSimComponents(configurator -> {
