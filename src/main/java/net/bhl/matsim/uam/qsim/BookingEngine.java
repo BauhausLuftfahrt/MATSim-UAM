@@ -111,9 +111,9 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 				Plan plan = ((PlanAgent) agent).getCurrentPlan();
 				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
 				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex - 1);
-				if (!(Math.abs(accessLeg.getTravelTime().seconds() - 0.0) < 0.0001))
+				if (!(accessLeg.getTravelTime().seconds()  < 1.0))
 					throw new RuntimeException("Person with id " + agent.getId().toString()
-							+ " should be on a leg but it is not. It is on "
+							+ " should be on a leg" + accessLeg.toString() + " but it is not. It is on "
 							+ ((PlanAgent) agent).getCurrentPlanElement().toString());
 				else {
 					if (accessLeg.getMode().startsWith(UAMConstants.access)) {

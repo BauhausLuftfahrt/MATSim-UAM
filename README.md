@@ -31,6 +31,7 @@ General:
 - Dispatchers are updated to account for possibility of StayTask when vehicle is sent from a different station (StayTask-FlyTask-StayTask-PickupTask-...)
 - Added integration test
 - Added clarification of useDynamicSearchRadius (default is now false)
+- In BookingEngine the case where access leg is zero seconds long is now handled properly
 
 ### v2.1
 General:
