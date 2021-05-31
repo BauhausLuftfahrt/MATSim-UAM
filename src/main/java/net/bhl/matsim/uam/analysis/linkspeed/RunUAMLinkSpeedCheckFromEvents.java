@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class RunUAMLinkSpeedCheckFromEvents {
+    // PROVIDE: NETWORK EVENTS OUTFILE-NAME
     public static void main(String[] args) {
         EventsManager manager = EventsUtils.createEventsManager();
 
