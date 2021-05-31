@@ -3,9 +3,9 @@ package net.bhl.matsim.uam;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
+import org.junit.Test;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Link;
@@ -38,10 +38,12 @@ import net.bhl.matsim.uam.qsim.UAMSpeedModule;
 import net.bhl.matsim.uam.run.UAMModule;
 
 public class RunCorsicaIT {
-	static public void main(String[] args) {
+	@Test
+	public void testCorsica() {
 		System.out.println(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 
 		Config config = ConfigUtils.loadConfig(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
+		config.controler().setLastIteration(2);
 
 		{
 			// Remove some standard eqasim config groups
