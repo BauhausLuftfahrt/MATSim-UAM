@@ -150,7 +150,7 @@ public class RunCorsicaIT {
 
 		controller.addOverridingModule(new DvrpModule());
 		controller.addOverridingModule(new UAMModule());
-		controller.addOverridingModule(new UAMSpeedModule());
+		controller.addOverridingQSimModule(new UAMSpeedModule());
 		controller.addOverridingModule(new SwissRailRaptorModule());
 		controller.configureQSimComponents(UAMQSimModule.activateModes());
 
