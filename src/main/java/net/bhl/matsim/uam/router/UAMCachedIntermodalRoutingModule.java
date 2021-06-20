@@ -105,12 +105,12 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			optionalUamRoute = strategyRouter.estimateUAMRoute(person, fromFacility, toFacility, departureTime);
 
 		if (optionalUamRoute.isEmpty()) {
-//			if (counterWarningConvertedToWalk < counterLimit)
-//				log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
-//						+ " could be calculated. Trip has been converted to walk.");
-//
-//			if (counterWarningConvertedToWalk == counterLimit - 1)
-//				log.warn("No more UAM prediction warnings will be reported.");
+			if (counterWarningConvertedToWalk < counterLimit)
+				log.warn("No UAM prediction for person: " + person.getId() + " at time: " + departureTime
+						+ " could be calculated. Trip has been converted to walk.");
+
+			if (counterWarningConvertedToWalk == counterLimit - 1)
+				log.warn("No more UAM prediction warnings will be reported.");
 
 			counterWarningConvertedToWalk++;
 			Leg l = createTeleportationLeg(routeFactory, populationFactory,
