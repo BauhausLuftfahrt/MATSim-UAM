@@ -24,6 +24,8 @@ Older versions can be used by replacing the version text with any of the listed 
 ## Versions and Change Log
 
 ### Development
+
+### v3.0.0
 General:
 - Update to MATSim v12
 - Removal of ptSimulation config setting
