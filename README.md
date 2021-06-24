@@ -1,7 +1,7 @@
 
 # UAM-Extension
 
-This extension enhances MATSim (see the project's [Website](https://www.matsim.org) or [GitHub](https://github.com/matsim-org) pages) by allowing the definition and simulation of Urban Air Mobility infrastructure, vehicles, and operations. This extension is a collaborative development project between [Airbus Urban Mobility](https://www.airbus.com/innovation/urban-air-mobility.html), [Bauhaus Luftfahrt e.V.](https://www.bauhaus-luftfahrt.net), [ETH Zürich](https://www.ethz.ch), and [TU München](https://www.tse.bgu.tum.de) and authored by [Raoul Rothfeld](https://github.com/RRothfeld) and [Milos Balac](https://github.com/balacmi), with support from [Aitan Militão](https://github.com/Aitanm).
+This extension enhances MATSim (see the project's [Website](https://www.matsim.org) or [GitHub](https://github.com/matsim-org) pages) by allowing the definition and simulation of Urban Air Mobility infrastructure, vehicles, and operations. This extension is a collaborative development project between [Airbus Urban Mobility](https://www.airbus.com/innovation/urban-air-mobility.html), [Bauhaus Luftfahrt e.V.](https://www.bauhaus-luftfahrt.net), [ETH Zürich](https://www.ethz.ch), and [TU München](https://www.tse.bgu.tum.de) and authored by [Raoul Rothfeld](https://github.com/RRothfeld) and [Milos Balac](https://github.com/balacmi), with support from [Aitan Militão](https://github.com/Aitanm) and [Sebastian Hörl](https://github.com/sebhoerl).
 
 ## Installation
 Add the following to your maven pom.xml under `repositories`:
