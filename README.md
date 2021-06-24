@@ -7,23 +7,25 @@ This extension enhances MATSim (see the project's [Website](https://www.matsim.o
 Add the following to your maven pom.xml under `repositories`:
 ```xml
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>eth-ivt-uam</id>
+            <url>https://packagecloud.io/eth-ivt/uam/maven2</url>
         </repository>
 ```
 And the following to you maven pom.xml under `dependencies` for the latest version under active development:
 ```xml
         <dependency>
-            <groupId>com.github.BauhausLuftfahrt</groupId>
-            <artifactId>MATSim-UAM</artifactId>
-            <version>master-SNAPSHOT</version>
+            <groupId>net.bhl.matsim</groupId>
+            <artifactId>matsim-uam</artifactId>
+            <version>3.0.0</version>
         </dependency>
 ```
-Older versions can be used by replacing the version text with any of the listed tags on [GitHub MATSim-UAM tags](https://github.com/BauhausLuftfahrt/MATSim-UAM/tags).
+Older versions are currently not supported.
 
 ## Versions and Change Log
 
 ### Development
+
+### v3.0.0
 General:
 - Update to MATSim v12
 - Removal of ptSimulation config setting
