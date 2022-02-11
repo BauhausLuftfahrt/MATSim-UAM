@@ -81,7 +81,12 @@ Logging:
 - Publication of first open source MATSim-UAM version
 
 ## Related Publications
-The following list provides a reverse-chronological overview of publications related to or based on or related to the UAM-Extension:
+
+If you use this repository, please use the following citation in your papers or reports:
+
+Rothfeld, R. L., Balac, M., Ploetner, K. O., & Antoniou, C. (2018). Agent-based Simulation of Urban Air Mobility. 2018 Modeling and Simulation Technologies Conference, 1–10. https://doi.org/10.2514/6.2018-3891
+
+The following list provides a reverse-chronological overview of publications related to or based on the UAM-Extension:
 * Rothfeld, R. (2021). Agent-based Modelling and Simulation of Urban Air Mobility Operation: An Evaluation of Travel Times and Transport Performance. Dissertation. Technical University of Munich.
 * Rothfeld, R., Fu, M., Balać, M., & Antoniou, C. (2021). Potential Urban Air Mobility Travel Time Savings: An Exploratory Analysis of Munich, Paris, and San Francisco. Sustainability, 13(4). https://doi.org/10.3390/su13042217
 * Straubinger, A., Rothfeld, R., Shamiyeh, M., Buechter, K.-D., Kaiser, J., & Ploetner, K. O. (2020). An Overview of Current Research and Developments in Urban Air Mobility - Setting the Scene for UAM Introduction. Journal of Air Transport Management, 87(101852). https://doi.org/10.1016/j.jairtraman.2020.101852
