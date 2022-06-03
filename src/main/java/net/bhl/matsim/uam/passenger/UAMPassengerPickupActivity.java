@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
-	private final PassengerEngineWithPrebooking passengerEngine;
+	private final PassengerEngine passengerEngine;
 	private final DynAgent driver;
 	private final Set<? extends PassengerRequest> requests;
 	private final double pickupDuration;
@@ -30,7 +30,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	private double endTime;
 	private int passengersAboard;
 
-	public UAMPassengerPickupActivity(PassengerEngineWithPrebooking passengerEngine, DynAgent driver,
+	public UAMPassengerPickupActivity(PassengerEngine passengerEngine, DynAgent driver,
 									  DvrpVehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,
 									  double pickupDuration, String activityType) {
 		if (requests.size() > vehicle.getCapacity()) {

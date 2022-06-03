@@ -36,7 +36,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Inject
 	@DvrpMode(UAMConstants.uam)
-	private PassengerEngineWithPrebooking passengerEngine;
+	private PassengerEngine passengerEngine;
 
 	@Inject
 	private VrpLegFactory legCreator;
