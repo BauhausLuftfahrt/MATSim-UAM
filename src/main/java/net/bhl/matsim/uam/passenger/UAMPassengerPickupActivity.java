@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.passenger;
 
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.contrib.dvrp.passenger.PassengerPickupActivity;
 import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.contrib.dvrp.schedule.StayTask;
@@ -18,7 +19,7 @@ import java.util.Set;
 
 public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 
-	private final PassengerEngine passengerEngine;
+	private final PassengerEngineWithPrebooking passengerEngine;
 	private final DynAgent driver;
 	private final Set<? extends PassengerRequest> requests;
 	private final double pickupDuration;
@@ -29,7 +30,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 	private double endTime;
 	private int passengersAboard;
 
-	public UAMPassengerPickupActivity(PassengerEngine passengerEngine, DynAgent driver,
+	public UAMPassengerPickupActivity(PassengerEngineWithPrebooking passengerEngine, DynAgent driver,
 									  DvrpVehicle vehicle, StayTask pickupTask, Set<? extends PassengerRequest> requests,
 									  double pickupDuration, String activityType) {
 		if (requests.size() > vehicle.getCapacity()) {
@@ -49,7 +50,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 		double now = pickupTask.getBeginTime();
 
 		for (PassengerRequest request : requests) {
-			if (passengerEngine.pickUpPassenger(this, driver, request, pickupTask.getBeginTime())) {
+			if (passengerEngine.tryPickUpPassenger(this, driver, request, pickupTask.getBeginTime())) {
 				passengersAboard++;
 			}
 
@@ -107,7 +108,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 			throw new IllegalArgumentException("I am waiting for different passengers!");
 		}
 
-		if (passengerEngine.pickUpPassenger(this, driver, request, now)) {
+		if (passengerEngine.tryPickUpPassenger(this, driver, request, now)) {
 			passengersAboard++;
 		} else {
 			throw new IllegalStateException("The passenger is not on the link or not available for departure!");

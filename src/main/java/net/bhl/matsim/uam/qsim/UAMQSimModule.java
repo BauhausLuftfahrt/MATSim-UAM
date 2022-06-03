@@ -15,6 +15,7 @@ import org.matsim.contrib.dvrp.fleet.Fleet;
 import org.matsim.contrib.dvrp.optimizer.VrpOptimizer;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.passenger.PassengerEngineQSimModule;
+import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestCreator;
 import org.matsim.contrib.dvrp.run.AbstractDvrpModeQSimModule;
 import org.matsim.contrib.dvrp.run.DvrpMode;
@@ -67,7 +68,7 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 		addModalComponent(BookingEngine.class, modalProvider(getter -> {
 			Scenario scenario = getter.get(Scenario.class);
-			PassengerEngine passengerEngine = getter.getModal(PassengerEngine.class);
+			PassengerEngineWithPrebooking passengerEngine = getter.getModal(PassengerEngineWithPrebooking.class);
 			EventsManager eventsManager = getter.get(EventsManager.class);
 			Network network = getter.getModal(Network.class);
 			return new BookingEngine(scenario, passengerEngine, eventsManager, network);

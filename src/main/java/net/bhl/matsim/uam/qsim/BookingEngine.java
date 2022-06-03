@@ -19,6 +19,7 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Route;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
@@ -40,11 +41,11 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 	private InternalInterface internalInterface;
 	private Set<String> uamModes = new HashSet<>();
 	private Scenario scenario;
-	private PassengerEngine passengerEngine;
+	private PassengerEngineWithPrebooking passengerEngine;
 	private EventsManager eventsManager;
 	private Network network;
 
-	public BookingEngine(Scenario scenario, PassengerEngine passengerEngine, EventsManager eventsManager,
+	public BookingEngine(Scenario scenario, PassengerEngineWithPrebooking passengerEngine, EventsManager eventsManager,
 			Network network) {
 		this.scenario = scenario;
 		this.passengerEngine = passengerEngine;

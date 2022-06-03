@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.vrpagent;
 
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.schedule.StayTask;
 import org.matsim.contrib.dvrp.schedule.Task;
@@ -35,7 +36,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Inject
 	@DvrpMode(UAMConstants.uam)
-	private PassengerEngine passengerEngine;
+	private PassengerEngineWithPrebooking passengerEngine;
 
 	@Inject
 	private VrpLegFactory legCreator;
