@@ -28,9 +28,11 @@ import org.matsim.pt.router.TransitRouter;
 
 import com.opencsv.CSVParser;
 
+import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorInVehicleCostCalculator;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorIntermodalAccessEgress;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorParametersForPerson;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorStopFinder;
+import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorTransferCostCalculator;
 import ch.sbb.matsim.routing.pt.raptor.LeastCostRaptorRouteSelector;
 import ch.sbb.matsim.routing.pt.raptor.RaptorStaticConfig;
 import ch.sbb.matsim.routing.pt.raptor.RaptorUtils;
@@ -77,8 +79,8 @@ public class RunCalculatePTTravelTimes {
 		Network network = scenario.getNetwork();
 
 		RaptorStaticConfig raptorStaticConfig = RaptorUtils.createStaticConfig(config);
-		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), raptorStaticConfig,
-				network);
+		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), null, raptorStaticConfig,
+				network, null);
 
 		//Provide routers
 		for (int i = 0; i < processes; i++) {
@@ -87,7 +89,9 @@ public class RunCalculatePTTravelTimes {
 					scenario, 0, 1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
-					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
+					new DefaultRaptorStopFinder(new DefaultRaptorIntermodalAccessEgress(), router),
+					new DefaultRaptorInVehicleCostCalculator(),
+					new DefaultRaptorTransferCostCalculator()));
 		}
 
 		// READ TRIPS INPUT

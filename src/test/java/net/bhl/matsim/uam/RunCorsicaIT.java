@@ -65,6 +65,7 @@ public class RunCorsicaIT {
 			config.strategy().setPlanSelectorForRemoval("WorstPlanSelector");
 			config.transit().setUseTransit(true);
 			config.transit().setUsingTransitInMobsim(true);
+			
 		}
 
 		{
@@ -107,8 +108,8 @@ public class RunCorsicaIT {
 
 			// Prepare the links of the hubs
 
-			Link hubAjaccio = network.getLinks().get(Id.createLinkId("62245"));
-			Link hubBastia = network.getLinks().get(Id.createLinkId("15431"));
+			Link hubAjaccio = network.getLinks().get(Id.createLinkId("30176"));
+			Link hubBastia = network.getLinks().get(Id.createLinkId("62340"));
 
 			for (Link hub : Arrays.asList(hubAjaccio, hubBastia)) {
 				Set<String> modes = new HashSet<>(hub.getAllowedModes());

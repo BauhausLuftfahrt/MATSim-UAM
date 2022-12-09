@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.passenger;
 
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
+import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.contrib.dvrp.passenger.PassengerPickupActivity;
 import org.matsim.contrib.dvrp.passenger.PassengerRequest;
 import org.matsim.contrib.dvrp.schedule.StayTask;
@@ -49,7 +50,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 		double now = pickupTask.getBeginTime();
 
 		for (PassengerRequest request : requests) {
-			if (passengerEngine.pickUpPassenger(this, driver, request, pickupTask.getBeginTime())) {
+			if (passengerEngine.tryPickUpPassenger(this, driver, request, pickupTask.getBeginTime())) {
 				passengersAboard++;
 			}
 
@@ -107,7 +108,7 @@ public class UAMPassengerPickupActivity implements PassengerPickupActivity {
 			throw new IllegalArgumentException("I am waiting for different passengers!");
 		}
 
-		if (passengerEngine.pickUpPassenger(this, driver, request, now)) {
+		if (passengerEngine.tryPickUpPassenger(this, driver, request, now)) {
 			passengersAboard++;
 		} else {
 			throw new IllegalStateException("The passenger is not on the link or not available for departure!");

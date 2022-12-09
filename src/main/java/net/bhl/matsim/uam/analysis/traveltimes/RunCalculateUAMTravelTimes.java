@@ -44,9 +44,11 @@ import org.matsim.pt.router.TransitRouter;
 
 import com.opencsv.CSVParser;
 
+import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorInVehicleCostCalculator;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorIntermodalAccessEgress;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorParametersForPerson;
 import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorStopFinder;
+import ch.sbb.matsim.routing.pt.raptor.DefaultRaptorTransferCostCalculator;
 import ch.sbb.matsim.routing.pt.raptor.LeastCostRaptorRouteSelector;
 import ch.sbb.matsim.routing.pt.raptor.RaptorUtils;
 import ch.sbb.matsim.routing.pt.raptor.SwissRailRaptor;
@@ -120,8 +122,8 @@ public class RunCalculateUAMTravelTimes {
 		UAMManager uamManager = new UAMManager(network, uamStations, uamReader.getVehicles());
 
 		// data for parallel public transport router
-		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(),
-				RaptorUtils.createStaticConfig(config), network);
+		SwissRailRaptorData data = SwissRailRaptorData.create(scenario.getTransitSchedule(), null,
+				RaptorUtils.createStaticConfig(config), network, null);
 
 		// Generate data for other routers
 		TravelTimeCalculator.Builder builder = new TravelTimeCalculator.Builder(network);
@@ -153,7 +155,9 @@ public class RunCalculateUAMTravelTimes {
 			router.put(TransportMode.pt, new TeleportationRoutingModule(TransportMode.pt, scenario, 0, 1.5));
 			ptRouters.add(new SwissRailRaptor(data, new DefaultRaptorParametersForPerson(config),
 					new LeastCostRaptorRouteSelector(),
-					new DefaultRaptorStopFinder(null, new DefaultRaptorIntermodalAccessEgress(), router)));
+					new DefaultRaptorStopFinder(new DefaultRaptorIntermodalAccessEgress(), router),
+					new DefaultRaptorInVehicleCostCalculator(),
+					new DefaultRaptorTransferCostCalculator()));
 			uamRouters.add(new DijkstraFactory().createPathCalculator(networkUAM, travelDisutility, travelTime));
 		}
 
