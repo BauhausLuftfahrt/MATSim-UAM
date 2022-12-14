@@ -18,8 +18,8 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.Route;
-import org.matsim.contrib.dvrp.passenger.PassengerEngine;
 import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
+import org.matsim.contrib.dynagent.DynAgent;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.MobsimAgent;
 import org.matsim.core.mobsim.framework.MobsimPassengerAgent;
@@ -29,7 +29,7 @@ import org.matsim.core.mobsim.framework.listeners.MobsimBeforeSimStepListener;
 import org.matsim.core.mobsim.qsim.InternalInterface;
 import org.matsim.core.mobsim.qsim.agents.WithinDayAgentUtils;
 import org.matsim.core.mobsim.qsim.interfaces.MobsimEngine;
-import org.matsim.pt.PtConstants;
+import org.matsim.core.mobsim.qsim.pt.TransitDriverAgentImpl;
 
 import net.bhl.matsim.uam.run.UAMConstants;
 
@@ -40,14 +40,12 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 	private final List<MobsimAgent> processBookingAgents = new LinkedList<>();
 	private InternalInterface internalInterface;
 	private Set<String> uamModes = new HashSet<>();
-	private Scenario scenario;
 	private PassengerEngineWithPrebooking passengerEngine;
 	private EventsManager eventsManager;
 	private Network network;
 
 	public BookingEngine(Scenario scenario, PassengerEngineWithPrebooking passengerEngine, EventsManager eventsManager,
 			Network network) {
-		this.scenario = scenario;
 		this.passengerEngine = passengerEngine;
 		this.eventsManager = eventsManager;
 		this.network = network;
@@ -63,88 +61,43 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 
 	@Override
 	public void handleEvent(PersonDepartureEvent event) {
+		MobsimAgent agent = internalInterface.getMobsim().getAgents().get(event.getPersonId());
+		if (agent instanceof TransitDriverAgentImpl || agent instanceof DynAgent)
+			return;
 		if (uamModes.contains(event.getLegMode())) {
-			MobsimAgent agent = internalInterface.getMobsim().getAgents().get(event.getPersonId());
 			bookingAgents.add(agent);
 		}
 
-	}
+		else {
+			Plan plan = ((PlanAgent) agent).getCurrentPlan();
 
-	public boolean manualUAMPrebooking(double now, MobsimAgent agent) {
-
-		if (agent instanceof PlanAgent) {
-
-			if (((PlanAgent) agent).getCurrentPlanElement() instanceof Leg) {
-
-				if (agent.getMode().startsWith(UAMConstants.access)) {
-					Plan plan = ((PlanAgent) agent).getCurrentPlan();
-					final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-					final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
-					final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 2);
-					Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
-
-					performPrebooking(leg, agent, now + uam_interaction.getMaximumDuration().seconds()
-							+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
-							now);
-				} else if (agent.getMode().equals(TransportMode.walk)) {
-					Plan plan = ((PlanAgent) agent).getCurrentPlan();
-					final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-					final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex);
-
-					if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
-						if (!bookedTrips.contains(agent.getId())) {
-							double travelTime = getTravelTime(plan, planElementsIndex);
-							final Leg uamLeg = getUamLeg(plan, planElementsIndex);
-							Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex + 1);
-
-							performPrebooking(uamLeg, agent, now + uam_interaction.getMaximumDuration().seconds()
-									+ (travelTime <= 0 ? 1 : travelTime), now);
-						}
-					}
-
-				} else if (agent.getMode().equals(UAMConstants.uam))
-					bookedTrips.remove(agent.getId());
-			} else {
-
-				// we are not on the leg, this could happen if the access leg is
-				// zero seconds long
-				// first check this
-				Plan plan = ((PlanAgent) agent).getCurrentPlan();
-				final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
-				final Leg accessLeg = (Leg) plan.getPlanElements().get(planElementsIndex - 1);
-				if (!(accessLeg.getTravelTime().seconds()  < 1.0))
-					throw new RuntimeException("Person with id " + agent.getId().toString()
-							+ " should be on a leg" + accessLeg.toString() + " but it is not. It is on "
-							+ ((PlanAgent) agent).getCurrentPlanElement().toString());
-				else {
-					if (accessLeg.getMode().startsWith(UAMConstants.access)) {
-						final Leg leg = (Leg) plan.getPlanElements().get(planElementsIndex + 1);
-						Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex);
-
-						performPrebooking(leg, agent, now + uam_interaction.getMaximumDuration().seconds()
-								+ (accessLeg.getTravelTime().seconds() <= 0 ? 1 : accessLeg.getTravelTime().seconds()),
-								now);
-					} else if (accessLeg.getMode().equals(TransportMode.walk)) {
-
-						if (accessLeg.getAttributes().getAttribute("routingMode").equals(UAMConstants.uam)) {
-							if (!bookedTrips.contains(agent.getId())) {
-								double travelTime = getTravelTime(plan, planElementsIndex - 1);
-								final Leg uamLeg = getUamLeg(plan, planElementsIndex - 1);
-								Activity uam_interaction = (Activity) plan.getPlanElements().get(planElementsIndex);
-
-								performPrebooking(uamLeg, agent, now + uam_interaction.getMaximumDuration().seconds()
-										+ (travelTime <= 0 ? 1 : travelTime), now);
-							}
-						}
-
-					} else if (agent.getMode().equals(UAMConstants.uam))
-						bookedTrips.remove(agent.getId());
-
+			final Integer planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
+			if (isUamTrip(plan, planElementsIndex)) {
+				if (!bookedTrips.contains(agent.getId())) {
+					bookingAgents.add(agent);
 				}
 			}
 		}
 
-		return false;
+		if (event.getLegMode().equals("uam"))
+			this.bookedTrips.remove(agent.getId());
+
+	}
+
+	public void manualUAMPrebooking(double now, MobsimAgent agent) {
+
+		if (!bookedTrips.contains(agent.getId())) {
+			Plan plan = ((PlanAgent) agent).getCurrentPlan();
+			int planElementsIndex = WithinDayAgentUtils.getCurrentPlanElementIndex(agent);
+
+			double travelTime = getTravelTime(plan, planElementsIndex);
+			final Leg uamLeg = getUamLeg(plan, planElementsIndex);
+
+			this.bookedTrips.add(plan.getPerson().getId());
+
+			performPrebooking(uamLeg, agent, now + (travelTime <= 0 ? 1 : travelTime), now);
+		}
+
 	}
 
 	private void performPrebooking(Leg uamLeg, MobsimAgent agent, double departureTime, double submissionTime) {
@@ -211,9 +164,31 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 				else
 					travelTime += ((Leg) pe).getTravelTime().seconds();
 			}
+			else {
+				travelTime += ((Activity)pe).getMaximumDuration().seconds();
+			}
 			index++;
 		}
 		return travelTime;
+	}
+
+	private boolean isUamTrip(Plan plan, Integer planElementsIndex) {
+		int index = planElementsIndex;
+		while (true) {
+			PlanElement pe = plan.getPlanElements().get(index);
+			if (pe instanceof Activity) {
+				if (((Activity) pe).getType().equals(UAMConstants.interaction))
+					return true;
+				else if (((Activity) pe).getType().equals("pt interaction")) {
+					index++;
+
+					continue;
+				} else
+					return false;
+			}
+			index++;
+		}
+
 	}
 
 }
