@@ -16,14 +16,18 @@ And the following to you maven pom.xml under `dependencies` for the latest versi
         <dependency>
             <groupId>net.bhl.matsim</groupId>
             <artifactId>matsim-uam</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
         </dependency>
 ```
-Older versions are currently not supported.
+Versions 4.0.0, and 3.0.0 are also available. Older versions are currently not supported.
 
 ## Versions and Change Log
 
 ### Development
+
+### v4.0.1
+- Fixed a bug in BookingEngine preventing PT+UAM combo
+- Simplifed BookingEngine code
 
 ### v4.0.0
 General:
