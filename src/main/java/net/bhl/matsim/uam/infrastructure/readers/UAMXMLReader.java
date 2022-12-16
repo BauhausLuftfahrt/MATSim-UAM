@@ -3,6 +3,7 @@ package net.bhl.matsim.uam.infrastructure.readers;
 import com.google.common.collect.ImmutableMap;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
+import net.bhl.matsim.uam.infrastructure.UAMStationWithChargers;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
 import net.bhl.matsim.uam.run.UAMConstants;
@@ -60,6 +61,8 @@ public class UAMXMLReader extends MatsimXmlParser {
 				double preFlightTime = Double.parseDouble(atts.getValue("preflighttime"));
 				double postFlightTime = Double.parseDouble(atts.getValue("postflighttime"));
 				double defaultWaitTime = Double.parseDouble(atts.getValue("defaultwaittime"));
+				int numberOfChargers = Integer.parseInt(atts.getValue("numberOfChargers"));
+				double chargingSpeed = Double.parseDouble(atts.getValue("chargingSpeed"));
 
 				// Get station access/egress link or coordinates, to find nearest link
 				String linkName = atts.getValue("link");
@@ -67,7 +70,8 @@ public class UAMXMLReader extends MatsimXmlParser {
 				Link link = links.get(0);
 
 				// Create UAm station and register it on station map
-				UAMStation ls = new UAMStationSimple(preFlightTime, postFlightTime, defaultWaitTime, link, id, stationName);
+				UAMStation ls = new UAMStationWithChargers(preFlightTime, postFlightTime, defaultWaitTime, link, id, stationName,
+						numberOfChargers, chargingSpeed);
 				stations.put(id, ls);
 				break;
 			}
@@ -82,9 +86,14 @@ public class UAMXMLReader extends MatsimXmlParser {
 				double boardingTime = Double.parseDouble(atts.getValue("boardingtime"));
 				double deboardingTime = Double.parseDouble(atts.getValue("deboardingtime"));
 				double turnAroundTime = Double.parseDouble(atts.getValue("turnaroundtime"));
+				
+				double maximumCharge = Double.parseDouble(atts.getValue("maximumCharge"));
+				double energyConsumptionVertical = Double.parseDouble(atts.getValue("energyConsumptionVertical"));
+				double energyConsumptionHorizontal = Double.parseDouble(atts.getValue("energyConsumptionHorizontal"));
 
 				UAMVehicleType vehicleType = new UAMVehicleType(id, capacity, range, horizontalSpeed, verticalSpeed,
-						boardingTime, deboardingTime, turnAroundTime);
+						boardingTime, deboardingTime, turnAroundTime, energyConsumptionVertical, energyConsumptionHorizontal,
+						maximumCharge);
 				vehicleTypes.put(id, vehicleType);
 				break;
 			}

@@ -14,6 +14,7 @@ public class UAMVehicle extends DvrpVehicleImpl {
 
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
+	private double currentCharge;
 
 	public UAMVehicle(DvrpVehicleSpecification specification, Link startLink, Id<UAMStation> stationId,
 					  UAMVehicleType vehicleType) {
