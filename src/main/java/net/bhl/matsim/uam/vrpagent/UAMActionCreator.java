@@ -13,6 +13,7 @@ import org.matsim.contrib.dynagent.IdleDynActivity;
 
 import com.google.inject.Inject;
 
+import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMChargingActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
@@ -43,6 +44,9 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Inject
 	private VrpLegFactory legCreator;
+	
+	@Inject
+	private UAMManager uamManager;
 
 	@Override
 	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
@@ -63,7 +67,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 		} else if (task.getTaskType().equals(UAMTaskType.TURNAROUND)) {
 			return new IdleDynActivity(TURNAROUND_ACTIVITY_TYPE, task.getEndTime());
 		} else if (task.getTaskType().equals(UAMTaskType.CHARGING)) {
-			return new UAMChargingActivity((UAMChargingTask) task, (UAMVehicle) vehicle);
+			return new UAMChargingActivity((UAMChargingTask) task, (UAMVehicle) vehicle, uamManager);
 		} else {
 			throw new IllegalStateException();
 		}

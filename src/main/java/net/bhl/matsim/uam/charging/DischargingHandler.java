@@ -7,6 +7,8 @@ import org.matsim.api.core.v01.events.handler.LinkLeaveEventHandler;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 
+import com.google.inject.Inject;
+
 import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 
@@ -14,7 +16,8 @@ public class DischargingHandler implements LinkLeaveEventHandler {
 
 	private UAMManager uamManager;
 	private Scenario scenario;
-	
+
+	@Inject
 	public DischargingHandler(UAMManager uamManager, Scenario scenario) {
 		this.uamManager = uamManager;
 		this.scenario = scenario;
@@ -31,11 +34,10 @@ public class DischargingHandler implements LinkLeaveEventHandler {
 			double dischargedAmount = link.getAttributes().getAttribute("type").equals("uam_vertical")
 					? uamVehicle.getVehicleType().getEnergyConsumptionVertical() * link.getLength()
 					: uamVehicle.getVehicleType().getEnergyConsumptionHorizontal() * link.getLength();
-
-			uamVehicle.setCurrentCharge(uamVehicle.getCurrentCharge() - dischargedAmount);
+			this.uamManager.getChargeVehicle().put(uamVehicle.getId(),
+					this.uamManager.getChargeVehicle().get(uamVehicle.getId()) - dischargedAmount);
 
 		}
-
 	}
 
 }

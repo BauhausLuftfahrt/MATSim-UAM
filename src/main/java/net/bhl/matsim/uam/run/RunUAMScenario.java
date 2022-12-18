@@ -41,7 +41,7 @@ public class RunUAMScenario {
 
 	public static void parseArguments(String[] args) {
 		try {
-			cmd = new CommandLine.Builder(args).allowOptions("config-path").build();
+			cmd = new CommandLine.Builder(args).allowOptions("config-path", "use-charging").build();
 
 			if (cmd.hasOption("config-path"))
 				path = cmd.getOption("config-path").get();
@@ -82,7 +82,7 @@ public class RunUAMScenario {
 
 		controler.addOverridingModule(new DvrpModule());
 
-		controler.addOverridingModule(new UAMModule());
+		controler.addOverridingModule(new UAMModule(config));
 		controler.addOverridingQSimModule(new UAMSpeedModule());
 		controler.addOverridingModule(new SwissRailRaptorModule());
 

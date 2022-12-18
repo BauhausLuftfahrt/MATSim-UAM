@@ -11,7 +11,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import net.bhl.matsim.uam.router.strategy.UAMStrategyUtils;
 import org.apache.log4j.Logger;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ReflectiveConfigGroup;
@@ -37,6 +36,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	static public final String USE_DYNAMIC_SEARCH_RADIUS = "useDynamicSearchRadius";
 	static public final String WALK_DISTANCE = "walkDistance";
 	static public final String ROUTING_STRATEGY = "routingStrategy";
+	static public final String CHARGING = "useCharging";
 
 	static private final String ACCESS_EGRESS_MODES_EXP = "Comma-separated list of possible access/egress modes";
 	static private final String INPUT_FILE_EXP = "Path to the input file for UAM infrastructure and vehicles";
@@ -45,7 +45,8 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	static private final String WALK_DISTANCE_EXP = "If the access/egress distance is less than this distance, walk will be the UAM access and egress mode";
 	static private final String ROUTING_STRATEGY_EXP = "Selects the used routing strategy among " + String.join(", ",
 			Arrays.asList(UAMStrategyType.values()).stream().map(String::valueOf).collect(Collectors.toList()));
-
+	static private final String CHARGING_EXP = "yes/no; default is no; if yes the dispatcher with charging will be used; this dispatcher charges the vehicle at the closest avaialble charger at the end of each dropoff task";
+	
 	@NotEmpty
 	private Set<String> accessEgressModes = new HashSet<>();
 
@@ -62,6 +63,8 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 
 	@NotNull
 	private UAMStrategyType routingStrategy = UAMStrategyType.MINACCESSTRAVELTIME;
+	
+	private String useCharging = "no";
 
 	protected void checkConsistency(Config config) {
 		super.checkConsistency(config);
@@ -78,6 +81,7 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 		map.put(USE_DYNAMIC_SEARCH_RADIUS, USE_DYNAMIC_SEARCH_RADIUS_EXP);
 		map.put(WALK_DISTANCE, WALK_DISTANCE_EXP);
 		map.put(ROUTING_STRATEGY, ROUTING_STRATEGY_EXP);
+		map.put(CHARGING, CHARGING_EXP);
 		return map;
 	}
 
@@ -152,5 +156,15 @@ public class UAMConfigGroup extends ReflectiveConfigGroup {
 	@StringSetter(ROUTING_STRATEGY)
 	public void setRoutingStrategy(UAMStrategyType routingStrategy) {
 		this.routingStrategy = routingStrategy;
+	}
+	
+	@StringGetter(CHARGING)
+	public boolean getUseCharging() {
+		return useCharging.equals("yes");
+	}
+
+	@StringSetter(CHARGING)
+	public void setUseCharging(String useCharging) {
+		this.useCharging = useCharging;
 	}
 }

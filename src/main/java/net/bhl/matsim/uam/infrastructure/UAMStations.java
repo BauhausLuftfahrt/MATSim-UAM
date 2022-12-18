@@ -18,6 +18,7 @@ import java.util.Map;
 public class UAMStations {
 	private Map<Id<UAMStation>, UAMStation> stations;
 	private QuadTree<UAMStation> spatialStations;
+	private QuadTree<UAMStation> spatialStationsWithChargers;
 
 	public UAMStations(Map<Id<UAMStation>, UAMStation> stations, Network network) {
 
@@ -29,6 +30,18 @@ public class UAMStations {
 			double x = station.getLocationLink().getCoord().getX();
 			double y = station.getLocationLink().getCoord().getY();
 			spatialStations.put(x, y, station);
+		}
+		
+		spatialStationsWithChargers = new QuadTree<>(bounds[0], bounds[1], bounds[2], bounds[3]);
+		for (UAMStation station : stations.values()) {
+			double x = station.getLocationLink().getCoord().getX();
+			double y = station.getLocationLink().getCoord().getY();
+			if (station instanceof UAMStationWithChargers) {
+				if (((UAMStationWithChargers) station).getNumberOfChargers() > 0) {
+					spatialStationsWithChargers.put(x, y, station);
+
+				}
+			}
 		}
 	}
 
@@ -42,5 +55,9 @@ public class UAMStations {
 
 	public Collection<UAMStation> getUAMStationsInRadius(Coord coord, double radius) {
 		return spatialStations.getDisk(coord.getX(), coord.getY(), radius);
+	}
+	
+	public UAMStation getNearestUAMStationWithCharger(Link link) {
+		return spatialStationsWithChargers.getClosest(link.getCoord().getX(), link.getCoord().getY());
 	}
 }
