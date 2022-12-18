@@ -24,6 +24,8 @@ Versions 4.0.0, and 3.0.0 are also available. Older versions are currently not s
 ## Versions and Change Log
 
 ### Development
+- Added possability to simlate charging/discharging
+- Added a simple dispatcher that works with charging infrastructure (sends vehicle to charge after every served request)
 
 ### v4.0.1
 - Fixed a bug in BookingEngine preventing PT+UAM combo

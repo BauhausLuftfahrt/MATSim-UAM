@@ -2,6 +2,7 @@ package net.bhl.matsim.uam.dispatcher;
 
 import com.google.inject.Inject;
 
+import net.bhl.matsim.uam.charging.ChargingHandler;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
@@ -26,20 +27,22 @@ import java.util.*;
  *
  * @author RRothfeld (Raoul Rothfeld)
  */
-public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
+public class UAMClosestRangedPooledDWithChargingDispatcher implements UAMDispatcher {
 	final Set<UAMVehicle> enRouteOrAwaitingPickupVehicles = new HashSet<>();
 	@Inject
-	final private UAMSingleRideAppender appender;
+	final private UAMSingleRideWithChargingAppender appender;
 	final private Queue<UAMRequest> pendingRequests = new LinkedList<>();
 	final private Map<UAMVehicleType, QuadTree<UAMVehicle>> availableVehiclesTree = new HashMap<>();
 	final private Map<UAMVehicle, Coord> availableVehicleLocations = new HashMap<>();
 	final boolean reoptimize = true;
+	private final ChargingHandler chargingHandler;
 	private final UAMManager uamManager;
 
 	@Inject
-	public UAMClosestRangedPreferPooledDispatcher(UAMSingleRideAppender appender, UAMManager uamManager,
-			Network network, Fleet data) {
+	public UAMClosestRangedPooledDWithChargingDispatcher(UAMSingleRideWithChargingAppender appender, UAMManager uamManager,
+			Network network, Fleet data, ChargingHandler chargingHandler) {
 		this.appender = appender;
+		this.chargingHandler = chargingHandler;
 		this.uamManager = uamManager;
 
 		double[] bounds = NetworkUtils.getBoundingBox(network.getNodes().values()); // minX, minY, maxX, maxY
@@ -110,6 +113,11 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 
 		if (task instanceof UAMPickupTask)
 			this.enRouteOrAwaitingPickupVehicles.remove(vehicle);
+
+		if (task instanceof UAMChargingTask) {
+			this.chargingHandler.addVehicleToCharge(vehicle, (UAMChargingTask) task);
+		}
+
 	}
 
 	private void reoptimize(double now) {
@@ -150,7 +158,8 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 				Coord coord = availableVehicleLocations.get(vehicle);
 				this.availableVehiclesTree.get(vehicle.getVehicleType()).remove(coord.getX(), coord.getY(), vehicle);
 
-				appender.schedule(request, vehicle, now);
+				appender.schedule(request, vehicle, now,
+						this.uamManager.getStations().getNearestUAMStationWithCharger(request.getToLink()).getId());
 				Schedule schedule = vehicle.getSchedule();
 				int index = schedule.getTasks().indexOf(schedule.getCurrentTask());
 

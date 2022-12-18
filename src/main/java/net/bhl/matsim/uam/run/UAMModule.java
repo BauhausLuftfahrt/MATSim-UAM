@@ -9,6 +9,7 @@ import org.matsim.contrib.dvrp.router.DvrpModeRoutingNetworkModule;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
+import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.network.NetworkUtils;
@@ -28,6 +29,8 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
+import net.bhl.matsim.uam.analysis.uamdemand.listeners.UAMChargingHandler;
+import net.bhl.matsim.uam.charging.DischargingHandler;
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMStationConnectionGraph;
 import net.bhl.matsim.uam.data.WaitingStationData;
@@ -47,6 +50,11 @@ import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMModule extends AbstractModule {
+	private Config config;
+	public UAMModule(Config config) {
+		this.config = config;
+	}
+	
 	@Override
 	public void install() {
 		DvrpModes.registerDvrpMode(binder(), UAMConstants.uam);
@@ -71,6 +79,14 @@ public class UAMModule extends AbstractModule {
 		bind(WaitingStationData.class).asEagerSingleton();
 		// bindng of event handlers
 		addEventHandlerBinding().to(UAMDemand.class);
+		
+		//handler responsible to discharg the battery when the vehicle is flying
+		if ( ((UAMConfigGroup)this.config.getModules().get(UAMConfigGroup.GROUP_NAME)).getUseCharging()) {
+			addEventHandlerBinding().to(DischargingHandler.class);
+		}
+		bind(UAMChargingHandler.class).asEagerSingleton();
+		addEventHandlerBinding().to(UAMChargingHandler.class);
+		
 
 		// we need to bind our router for the uam trips
 		addRoutingModuleBinding(UAMConstants.uam).toProvider(UAMRoutingModuleProvider.class);

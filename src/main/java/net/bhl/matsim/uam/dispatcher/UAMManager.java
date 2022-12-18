@@ -35,6 +35,7 @@ public class UAMManager implements IterationStartsListener {
 	private UAMStations stations;
 	private QuadTree<UAMStation> stationsTree;
 	private Map<Id<DvrpVehicle>, UAMVehicle> vehicles = new HashMap<>();
+	private Map<Id<DvrpVehicle>, Double> chargeVehicle = new HashMap<>();
 
 	private Network network;
 
@@ -42,6 +43,9 @@ public class UAMManager implements IterationStartsListener {
 		this.network = network;
 		this.stations = stations;
 		this.vehicles = vehicles;
+		for (UAMVehicle uamVehicle : vehicles.values()) {
+			chargeVehicle.put(uamVehicle.getId(), uamVehicle.getVehicleType().getMaximumCharge());
+		}
 	}
 
 	public UAMStations getStations() {
@@ -64,6 +68,8 @@ public class UAMManager implements IterationStartsListener {
 		availableVehicles = new HashSet<>();
 
 		vehicleLocations = new HashMap<>();
+		
+		chargeVehicle.clear();
 
 		for (UAMStation station : stations.getUAMStations().values()) {
 			stationsTree.put(station.getLocationLink().getCoord().getX(), station.getLocationLink().getCoord().getY(),
@@ -78,5 +84,13 @@ public class UAMManager implements IterationStartsListener {
 			Link stationLink = station.getLocationLink();
 			this.mapAvailableVehicles.put(stationLink.getCoord().getX(), stationLink.getCoord().getY(), vehicle);
 		}
+		
+		for (UAMVehicle uamVehicle : vehicles.values()) {
+			chargeVehicle.put(uamVehicle.getId(), uamVehicle.getVehicleType().getMaximumCharge());
+		}
+	}
+
+	public Map<Id<DvrpVehicle>, Double> getChargeVehicle() {
+		return chargeVehicle;
 	}
 }

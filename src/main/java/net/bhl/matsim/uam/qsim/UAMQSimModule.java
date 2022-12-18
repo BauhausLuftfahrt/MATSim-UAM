@@ -34,7 +34,10 @@ import org.matsim.core.mobsim.qsim.components.QSimComponentsConfigurator;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import net.bhl.matsim.uam.charging.ChargingHandler;
+import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMFleetData;
+import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPooledDWithChargingDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMClosestRangedPreferPooledDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcher;
 import net.bhl.matsim.uam.dispatcher.UAMDispatcherListener;
@@ -44,7 +47,9 @@ import net.bhl.matsim.uam.infrastructure.readers.UAMXMLReader;
 import net.bhl.matsim.uam.passenger.UAMRequestCreator;
 import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMOptimizer;
+import net.bhl.matsim.uam.schedule.UAMSingleChargingActivityAppender;
 import net.bhl.matsim.uam.schedule.UAMSingleRideAppender;
+import net.bhl.matsim.uam.schedule.UAMSingleRideWithChargingAppender;
 import net.bhl.matsim.uam.schedule.UAMTaskType;
 import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
 
@@ -69,7 +74,8 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 		addModalComponent(BookingEngine.class, modalProvider(getter -> {
 			Scenario scenario = getter.get(Scenario.class);
-			PassengerEngineWithPrebooking passengerEngine = (PassengerEngineWithPrebooking) getter.getModal(PassengerEngine.class);
+			PassengerEngineWithPrebooking passengerEngine = (PassengerEngineWithPrebooking) getter
+					.getModal(PassengerEngine.class);
 			EventsManager eventsManager = getter.get(EventsManager.class);
 			Network network = getter.getModal(Network.class);
 			return new BookingEngine(scenario, passengerEngine, eventsManager, network);
@@ -85,14 +91,23 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 		bindModal(UAMDispatcherListener.class).to(UAMDispatcherListener.class);
 		bindModal(Fleet.class).to(UAMFleetData.class);
 
+		bindModal(UAMSingleRideWithChargingAppender.class).to(UAMSingleRideWithChargingAppender.class);
+		bind(UAMSingleRideWithChargingAppender.class);
+
 		bindModal(UAMSingleRideAppender.class).to(UAMSingleRideAppender.class);
 		bind(UAMSingleRideAppender.class);
+
+		bindModal(UAMSingleChargingActivityAppender.class).to(UAMSingleChargingActivityAppender.class);
+		bind(UAMSingleChargingActivityAppender.class);
 
 		addModalQSimComponentBinding().to(UAMDispatcherListener.class);
 		addModalQSimComponentBinding().to(UAMOptimizer.class);
 
 		install(new VrpAgentSourceQSimModule(getMode()));
-		install(new PassengerEngineQSimModule(getMode(),PassengerEngineType.WITH_PREBOOKING));
+		install(new PassengerEngineQSimModule(getMode(), PassengerEngineType.WITH_PREBOOKING));
+		bind(ChargingHandler.class).asEagerSingleton();
+		bindModal(ChargingHandler.class).to(ChargingHandler.class);
+		addModalQSimComponentBinding().to(ChargingHandler.class);
 	}
 
 	@Provides
@@ -109,13 +124,19 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 	@Provides
 	@Singleton
-	List<UAMDispatcher> provideDispatchers(UAMSingleRideAppender appender, UAMManager uamManager,
-			@DvrpMode(UAMConstants.uam) Network network, @DvrpMode(UAMConstants.uam) Fleet data) {
-
-		UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
-
+	List<UAMDispatcher> provideDispatchers(UAMSingleRideWithChargingAppender appenderCharger,
+			UAMSingleRideAppender appender, UAMManager uamManager, @DvrpMode(UAMConstants.uam) Network network,
+			@DvrpMode(UAMConstants.uam) Fleet data, ChargingHandler chargingHandler, Scenario scenario) {
 		List<UAMDispatcher> dispatchers = new ArrayList<>();
-		dispatchers.add(dispatcher);
+
+		if (((UAMConfigGroup) scenario.getConfig().getModules().get(UAMConfigGroup.GROUP_NAME)).getUseCharging()) {
+			UAMDispatcher dispatcher = new UAMClosestRangedPooledDWithChargingDispatcher(appenderCharger, uamManager,
+					network, data, chargingHandler);
+			dispatchers.add(dispatcher);
+		} else {
+			UAMDispatcher dispatcher = new UAMClosestRangedPreferPooledDispatcher(appender, uamManager, network, data);
+			dispatchers.add(dispatcher);
+		}
 		return dispatchers;
 	}
 

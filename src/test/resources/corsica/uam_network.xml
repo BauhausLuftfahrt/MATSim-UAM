@@ -8,6 +8,8 @@
       postflighttime="60.0"
       defaultwaittime="60.0"
       link="30176"
+      numberOfChargers="1"
+      chargingSpeed="1"
     />
     <station
       id="Bastia"
@@ -15,6 +17,8 @@
       postflighttime="60.0"
       defaultwaittime="60.0"
       link="62340"
+      numberOfChargers="1"
+      chargingSpeed="1"
     />
   </stations>
   <vehicleTypes>
@@ -27,6 +31,9 @@
       boardingtime="60"
       deboardingtime="60"
       turnaroundtime="60"
+      maximumCharge="1000"
+      energyConsumptionHorizontal="1"
+      energyConsumptionVertical="1"
     />
   </vehicleTypes>
   <vehicles>

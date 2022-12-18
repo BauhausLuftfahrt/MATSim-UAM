@@ -11,7 +11,9 @@
 					name 			CDATA	#IMPLIED
 					preflighttime	CDATA	#REQUIRED
 					postflighttime	CDATA	#REQUIRED
-					defaultwaittime	CDATA	#REQUIRED>
+					defaultwaittime	CDATA	#REQUIRED
+					numberOfChargers	CDATA	#REQUIRED
+					chargingSpeed	CDATA	#REQUIRED>
 					
 <!ELEMENT vehicleType EMPTY>
 <!ATTLIST vehicleType	id				CDATA	#REQUIRED
@@ -21,7 +23,10 @@
 						verticalspeed	CDATA	#REQUIRED
 						turnaroundtime	CDATA	#REQUIRED
 						boardingtime	CDATA	#REQUIRED
-						deboardingtime	CDATA	#REQUIRED>
+						deboardingtime	CDATA	#REQUIRED
+						maximumCharge	CDATA	#REQUIRED
+						energyConsumptionHorizontal	CDATA	#REQUIRED
+						energyConsumptionVertical	CDATA	#REQUIRED>
 
 <!ELEMENT vehicle EMPTY>
 <!ATTLIST vehicle	id				CDATA	#REQUIRED

@@ -14,12 +14,14 @@ public class UAMVehicle extends DvrpVehicleImpl {
 
 	private final Id<UAMStation> initialStationId;
 	private final UAMVehicleType vehicleType;
+	private double currentCharge;
 
 	public UAMVehicle(DvrpVehicleSpecification specification, Link startLink, Id<UAMStation> stationId,
 					  UAMVehicleType vehicleType) {
 		super(specification, startLink);
 		this.initialStationId = stationId;
 		this.vehicleType = vehicleType;
+		this.setCurrentCharge(this.vehicleType.getMaximumCharge());
 	}
 
 	public Id<UAMStation> getInitialStationId() {
@@ -83,6 +85,14 @@ public class UAMVehicle extends DvrpVehicleImpl {
 
 	public UAMVehicleType getVehicleType() {
 		return this.vehicleType;
+	}
+
+	public double getCurrentCharge() {
+		return currentCharge;
+	}
+
+	public void setCurrentCharge(double currentCharge) {
+		this.currentCharge = currentCharge;
 	}
 
 }

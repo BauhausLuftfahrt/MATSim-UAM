@@ -17,6 +17,7 @@ import org.matsim.api.core.v01.population.Plan;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.contrib.dvrp.run.DvrpConfigGroup;
 import org.matsim.contrib.dvrp.run.DvrpModule;
+import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ActivityParams;
@@ -39,11 +40,12 @@ import net.bhl.matsim.uam.run.UAMModule;
 
 public class RunCorsicaIT {
 	@Test
-	public void testCorsica() {
+	public void testCorsica() throws ConfigurationException {
 		System.out.println(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 
 		Config config = ConfigUtils.loadConfig(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 		config.controler().setLastIteration(2);
+		config.controler().setWriteEventsInterval(1);
 
 		{
 			// Remove some standard eqasim config groups
@@ -88,6 +90,9 @@ public class RunCorsicaIT {
 			uamConfig.setInputFile("uam_network.xml");
 			uamConfig.setAccessEgressModes(ImmutableSet.of("car"));
 			uamConfig.setSearchRadius(10 * 1e3);
+			
+			// charging
+			uamConfig.setUseCharging("yes");
 
 			// Add UAM scoring
 			config.planCalcScore().addModeParams(new ModeParams("access_uam_car"));
@@ -150,7 +155,7 @@ public class RunCorsicaIT {
 		Controler controller = new Controler(scenario);
 
 		controller.addOverridingModule(new DvrpModule());
-		controller.addOverridingModule(new UAMModule());
+		controller.addOverridingModule(new UAMModule(config));
 		controller.addOverridingQSimModule(new UAMSpeedModule());
 		controller.addOverridingModule(new SwissRailRaptorModule());
 		controller.configureQSimComponents(UAMQSimModule.activateModes());

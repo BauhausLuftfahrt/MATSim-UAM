@@ -2,7 +2,6 @@ package net.bhl.matsim.uam.vrpagent;
 
 import org.matsim.contrib.dvrp.fleet.DvrpVehicle;
 import org.matsim.contrib.dvrp.passenger.PassengerEngine;
-import org.matsim.contrib.dvrp.passenger.PassengerEngineWithPrebooking;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.schedule.StayTask;
 import org.matsim.contrib.dvrp.schedule.Task;
@@ -14,9 +13,13 @@ import org.matsim.contrib.dynagent.IdleDynActivity;
 
 import com.google.inject.Inject;
 
+import net.bhl.matsim.uam.dispatcher.UAMManager;
+import net.bhl.matsim.uam.infrastructure.UAMVehicle;
+import net.bhl.matsim.uam.passenger.UAMChargingActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
 import net.bhl.matsim.uam.run.UAMConstants;
+import net.bhl.matsim.uam.schedule.UAMChargingTask;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
 import net.bhl.matsim.uam.schedule.UAMPickupTask;
 import net.bhl.matsim.uam.schedule.UAMTaskType;
@@ -33,6 +36,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 	public static final String STAY_ACTIVITY_TYPE = UAMConstants.uam.toUpperCase() + "Stay";
 	public static final String TURNAROUND_ACTIVITY_TYPE = UAMConstants.uam.toUpperCase() + "TurnAround";
 	public static final String TRANSIT_ACTIVITY_TYPE = UAMConstants.uam.toUpperCase() + "Transit";
+	public static final String CHARGING_ACTIVITY_TYPE = UAMConstants.uam.toUpperCase() + "Charging";
 
 	@Inject
 	@DvrpMode(UAMConstants.uam)
@@ -40,6 +44,9 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 	@Inject
 	private VrpLegFactory legCreator;
+	
+	@Inject
+	private UAMManager uamManager;
 
 	@Override
 	public DynAction createAction(DynAgent dynAgent, DvrpVehicle vehicle, double now) {
@@ -59,6 +66,8 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 			return new UAMStayActivity((StayTask) task, STAY_ACTIVITY_TYPE);
 		} else if (task.getTaskType().equals(UAMTaskType.TURNAROUND)) {
 			return new IdleDynActivity(TURNAROUND_ACTIVITY_TYPE, task.getEndTime());
+		} else if (task.getTaskType().equals(UAMTaskType.CHARGING)) {
+			return new UAMChargingActivity((UAMChargingTask) task, (UAMVehicle) vehicle, uamManager);
 		} else {
 			throw new IllegalStateException();
 		}
