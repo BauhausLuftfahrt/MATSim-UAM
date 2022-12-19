@@ -12,6 +12,7 @@ import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.mobsim.framework.events.MobsimAfterSimStepEvent;
 import org.matsim.core.mobsim.framework.listeners.MobsimAfterSimStepListener;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import net.bhl.matsim.uam.dispatcher.UAMManager;
@@ -103,6 +104,14 @@ public class ChargingHandler implements MobsimAfterSimStepListener {
 			}
 		}
 
+	}
+
+	public ImmutableMap<Id<UAMStation>, Set<UAMVehicle>> getChargingVehicles() {
+		return ImmutableMap.copyOf(chargingVehicles);
+	}
+
+	public ImmutableMap<Id<UAMStation>, Queue<UAMVehicle>> getQueueingVehicles() {
+		return ImmutableMap.copyOf(queueingVehicles);
 	}
 
 }
