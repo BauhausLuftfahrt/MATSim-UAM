@@ -74,6 +74,7 @@ public class UAMSingleChargingActivityAppender {
 		boolean requiresPickupFlight = !stayTask.getLink().getId().equals(chargingLink.getId());
 		double startTime = stayTask.getStatus() == Task.TaskStatus.STARTED ? now : stayTask.getBeginTime();
 		double scheduleEndTime = schedule.getEndTime();
+		stayTask.setEndTime(startTime);
 
 		if (!requiresPickupFlight) {
 			// we are already there
@@ -88,14 +89,14 @@ public class UAMSingleChargingActivityAppender {
 					startTime, pickupPath, travelTime);
 			DriveTask chargingFlyTask = new DriveTask(UAMTaskType.FLY, chargePathWithTravelData);
 			schedule.addTask(chargingFlyTask);
-			now = chargingFlyTask.getEndTime();
+			startTime = chargingFlyTask.getEndTime();
 			UAMChargingTask chargingTask = new UAMChargingTask(UAMTaskType.CHARGING, chargingFlyTask.getEndTime(),
 					chargingFlyTask.getEndTime() + 60.0, chargingLink,
 					this.uamStations.getNearestUAMStation(chargingLink).getId());
 			schedule.addTask(chargingTask);
 		}
 
-		schedule.addTask(new StayTask(UAMTaskType.STAY, now + 60.0, scheduleEndTime, chargingLink));
+		schedule.addTask(new StayTask(UAMTaskType.STAY, startTime + 60.0, scheduleEndTime, chargingLink));
 	}
 
 	public void update() {
