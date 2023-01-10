@@ -25,6 +25,9 @@ Versions 4.1.1, 4.1.0, 4.0.1, 4.0.0, and 3.0.0 are also available. Older version
 
 ### Development
 
+- fixed the Bug regarding running the script "RunCalculateUAMTravelTimes.java" on Mac/Linux
+- support packing jar with dependencies
+
 ### v4.1.2
 - fixed a single charging activity appender
 
