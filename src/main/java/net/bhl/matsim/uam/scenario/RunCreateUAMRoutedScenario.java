@@ -271,14 +271,14 @@ public class RunCreateUAMRoutedScenario {
 		}
 
 		// OUTPUT FOLDER
-		int pathIndex = configInput.lastIndexOf("\\");
+		int pathIndex = configInput.lastIndexOf("/");
 		String path = pathIndex >= 0 ? configInput.substring(0, pathIndex) : ".";
-		path += "\\" + UAMConstants.uam + "-scenario_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date());
+		path += "/" + UAMConstants.uam + "-scenario_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm").format(new Date());
 		new File(path).mkdir();
 
 		// WRITE STATION DISTANCE CSV
 		try {
-			calculateStationDistances(network, stationIDs, path + "\\" + UAMConstants.uam + "_distances.csv");
+			calculateStationDistances(network, stationIDs, path + "/" + UAMConstants.uam + "_distances.csv");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -289,7 +289,7 @@ public class RunCreateUAMRoutedScenario {
 		if (vehicleInput != null) {
 			vehiclesFileName = UAMConstants.uam + "_vehicles.xml.gz";
 			UAMVehiclesXmlWriter vehwriter = new UAMVehiclesXmlWriter();
-			vehwriter.write(path + "\\" + vehiclesFileName, stations, vehicles);
+			vehwriter.write(path + "/" + vehiclesFileName, stations, vehicles);
 		}
 
 		// UPDATE CONFIG
@@ -302,14 +302,14 @@ public class RunCreateUAMRoutedScenario {
 
 		// WRITE UAM CONFIG
 		ConfigWriter configWriter = new ConfigWriter(config);
-		configWriter.write(path + "\\" + UAMConstants.uam + "_config.xml");
+		configWriter.write(path + "/" + UAMConstants.uam + "_config.xml");
 
 		// WRITE UAM NETWORK
 		//network.setName((network.getName().isEmpty() ? "" : network.getName() + "-") + UAMConstants.uam);
 		network.getAttributes().putAttribute(UAMConstants.uam + "MaxLinkFreeSpeed", uamMaxLinkSpeed);
 		network.getAttributes().putAttribute(UAMConstants.uam + "DetourFactor", detourFactor);
 		NetworkWriter netwriter = new NetworkWriter(network);
-		netwriter.write(path + "\\" + networkFileName);
+		netwriter.write(path + "/" + networkFileName);
 
 		System.out.println("done.");
 	}
