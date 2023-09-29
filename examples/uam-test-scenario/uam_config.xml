@@ -469,8 +469,8 @@
 		<param name="usingFastCapacityUpdate" value="true" />
 		<!-- if the qsim should use as many runners as there are threads (Christoph's 
 			dissertation version) or more of them, together with a thread pool (seems 
-			to be faster in some situations, but is not tested). -->
-		<param name="usingThreadpool" value="true" />
+			to be faster in some situations, but is not tested). 
+		<param name="usingThreadpool" value="true" /> -->
 		<!-- Defines what happens if an agent wants to depart, but the specified 
 			vehicle is not available. One of: teleport wait exception -->
 		<param name="vehicleBehavior" value="teleport" />
