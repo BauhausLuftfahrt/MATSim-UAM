@@ -16,10 +16,10 @@ And the following to you maven pom.xml under `dependencies` for the latest versi
         <dependency>
             <groupId>net.bhl.matsim</groupId>
             <artifactId>matsim-uam</artifactId>
-            <version>4.1.2</version>
+            <version>4.1.3</version>
         </dependency>
 ```
-Versions 4.1.1, 4.1.0, 4.0.1, 4.0.0, and 3.0.0 are also available. Older versions are currently not supported.
+Versions 4.1.2, 4.1.1, 4.1.0, 4.0.1, 4.0.0, and 3.0.0 are also available. Older versions are currently not supported.
 
 ## Versions and Change Log
 
