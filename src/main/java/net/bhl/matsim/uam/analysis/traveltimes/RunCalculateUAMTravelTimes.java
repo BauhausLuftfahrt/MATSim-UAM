@@ -171,7 +171,7 @@ public class RunCalculateUAMTravelTimes {
 		ExecutorService es = Executors.newFixedThreadPool(processes);
 		for (TripItem trip : trips) {
 			if (trips.size() < 100 || counter % (trips.size() / 100) == 0)
-				log.info("Calculation completion: " + counter + "/" + trips.size() + " ("
+				log.info("Calculation started for: " + counter + "/" + trips.size() + " ("
 						+ String.format("%.0f", (double) counter / trips.size() * 100) + "%).");
 
 			while (threadCounter.getProcesses() >= processes - 1)
@@ -258,8 +258,8 @@ public class RunCalculateUAMTravelTimes {
 				e.printStackTrace();
 			}
 
-			Link from = NetworkUtils.getNearestLink(network, trip.origin);
-			Link to = NetworkUtils.getNearestLink(network, trip.destination);
+			Link from = NetworkUtils.getNearestLink(networkCar, trip.origin);
+			Link to = NetworkUtils.getNearestLink(networkCar, trip.destination);
 			Facility fromFacility = new LinkWrapperFacility(from);
 			Facility toFacility = new LinkWrapperFacility(to);
 
