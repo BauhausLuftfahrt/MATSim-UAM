@@ -162,7 +162,9 @@ public class BookingEngine implements MobsimEngine, PersonDepartureEventHandler,
 				if (((Leg) pe).getMode().equals(UAMConstants.uam))
 					found = true;
 				else
-					travelTime += ((Leg) pe).getTravelTime().seconds();
+					// It seems the leg itself does no longer store travel times, but only its route
+					// travelTime += ((Leg) pe).getTravelTime().seconds();
+					travelTime += ((Leg) pe).getRoute().getTravelTime().seconds();
 			}
 			else {
 				travelTime += ((Activity)pe).getMaximumDuration().seconds();
