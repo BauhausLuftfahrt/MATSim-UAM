@@ -3,7 +3,9 @@ package net.bhl.matsim.uam.analysis.trips.readers;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.matsim.api.core.v01.Coord;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -61,15 +63,34 @@ public class PopulationTripReader {
 
 				List<Leg> legs = trip.getLegsOnly();
 
-				tripItems.add(new TripItem(person.getId(), personTripIndex, trip.getOriginActivity().getCoord(),
-						trip.getDestinationActivity().getCoord(), trip.getOriginActivity().getEndTime().seconds(),
-						legs.get(legs.size() - 1).getDepartureTime().seconds()
-								+ legs.get(legs.size() - 1).getTravelTime().seconds()
-								- legs.get(0).getDepartureTime().seconds(),
-						getNetworkDistance(trip) / 1000.0, mainModeIdentifier.identifyMainMode(trip.getTripElements()),
-						trip.getOriginActivity().getType(), trip.getDestinationActivity().getType(), isHomeTrip,
-						CoordUtils.calcEuclideanDistance(trip.getOriginActivity().getCoord(),
-								trip.getDestinationActivity().getCoord()) / 1000.0));
+				Id<Person> personId = person.getId();
+				int personTripId = personTripIndex;
+				Coord origin = trip.getOriginActivity().getCoord();
+				Coord destination = trip.getDestinationActivity().getCoord();
+				double networkDistance = getNetworkDistance(trip);
+				String mode = mainModeIdentifier.identifyMainMode(trip.getTripElements());
+				String preceedingPurpose = trip.getOriginActivity().getType();
+				String followingPurpose = trip.getDestinationActivity().getType();
+				boolean returning = isHomeTrip;
+				double crowflyDistance = CoordUtils.calcEuclideanDistance(trip.getOriginActivity().getCoord(),
+						trip.getDestinationActivity().getCoord());
+
+				// Setting indicators for missing times before trying to retrieve actual end/departure times
+				double startTime = -1;
+				double travelTime = -1;
+				try {
+					startTime = trip.getOriginActivity().getEndTime().seconds();
+					travelTime = legs.get(legs.size() - 1).getDepartureTime().seconds()
+							+ legs.get(legs.size() - 1).getTravelTime().seconds()
+							- legs.get(0).getDepartureTime().seconds();
+
+				} catch (NoSuchElementException e) {
+					System.err.println("Some activities and/or legs of Person with Id " + personId.toString() +
+							" are missing, reporting missing times as -1.");
+				}
+
+				tripItems.add(new TripItem(personId, personTripId, origin, destination, startTime, travelTime,
+						networkDistance, mode, preceedingPurpose, followingPurpose, returning, crowflyDistance));
 
 				personTripIndex++;
 			}

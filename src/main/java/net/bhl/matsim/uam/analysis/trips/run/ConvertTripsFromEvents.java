@@ -29,8 +29,8 @@ import net.bhl.matsim.uam.run.UAMConstants;
  */
 public class ConvertTripsFromEvents {
 	static public void main(String[] args) throws IOException {
-		// PROVIDE: NETWORK EVENTS OUTFILE-NAME
-		extract(args[0], args[1], args[2]);
+		// PROVIDE: NETWORK EVENTS
+		extract(args[0], args[1], args[1] + ".trips.csv");
 		System.out.println("done.");
 	}
 
