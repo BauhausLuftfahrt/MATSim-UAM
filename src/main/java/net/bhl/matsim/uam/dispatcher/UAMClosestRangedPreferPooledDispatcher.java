@@ -135,6 +135,10 @@ public class UAMClosestRangedPreferPooledDispatcher implements UAMDispatcher {
 				if (availableVehiclesTree.get(type).size() == 0)
 					continue;
 
+				// TODO - Ignore vehicles if they are not currently in service
+				//Simulation will fail if the closest vehicle's schedule (see start time of that vehicle) has
+				// not yet started, i.e.  the current time (double now) is before that vehicle's start time (same
+				// applies if current time is past that vehicle's end time).
 				UAMVehicle closestVehiclesOfType = availableVehiclesTree.get(type).getClosest(requestCoord.getX(),
 						requestCoord.getY());
 				double currentDistance = NetworkUtils.getEuclideanDistance(requestCoord,
