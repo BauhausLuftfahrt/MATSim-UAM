@@ -10,9 +10,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<matsim.version>13.0</matsim.version>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<matsim.version>2024.0</matsim.version>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 	</properties>
 	
 	<distributionManagement>
@@ -88,6 +88,11 @@
 		<dependency>
 			<groupId>org.matsim.contrib</groupId>
 			<artifactId>discrete_mode_choice</artifactId>
+			<version>${matsim.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.matsim.contrib</groupId>
+			<artifactId>common</artifactId>
 			<version>${matsim.version}</version>
 		</dependency>
 		<dependency>
