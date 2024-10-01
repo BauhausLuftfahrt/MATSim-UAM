@@ -39,7 +39,7 @@ public class WaitingStationData implements BeforeMobsimListener {
 		waitingData.clear();
 
 		int simulationEndTime = Integer.parseInt(config.getModules().get("qsim").getParams().get("endTime").substring(0,2));
-		int waitingTimeBinSize = Integer.parseInt(config.getModules().get("travelTimeCalculator").getParams().get("travelTimeBinSize"));
+		double waitingTimeBinSize = Double.parseDouble(config.getModules().get("travelTimeCalculator").getParams().get("travelTimeBinSize"));
 		for (UAMStation station : uamManager.getStations().getUAMStations().values())
 			waitingData.put(station.getId(), new WaitingData(simulationEndTime * 3600,
 					waitingTimeBinSize,	station.getDefaultWaitTime()));
