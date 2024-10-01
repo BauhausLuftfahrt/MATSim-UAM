@@ -21,7 +21,7 @@ import org.matsim.contrib.dvrp.passenger.PassengerRequestCreator;
 import org.matsim.contrib.dvrp.run.AbstractDvrpModeQSimModule;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.run.DvrpQSimComponents;
-import org.matsim.contrib.dvrp.schedule.StayTask;
+import org.matsim.contrib.dvrp.schedule.DefaultStayTask;
 import org.matsim.contrib.dvrp.tracker.OnlineTrackerListener;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentLogic.DynActionCreator;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
@@ -156,7 +156,7 @@ public class UAMQSimModule extends AbstractDvrpModeQSimModule {
 
 		for (DvrpVehicle veh : returnVehicles.values()) {
 			// create a new Fleet every new iteration
-			veh.getSchedule().addTask(new StayTask(UAMTaskType.STAY, veh.getServiceBeginTime(),
+			veh.getSchedule().addTask(new DefaultStayTask(UAMTaskType.STAY, veh.getServiceBeginTime(),
 					Double.POSITIVE_INFINITY, veh.getStartLink()));
 			returnVehicles.put(veh.getId(), (UAMVehicle) veh);
 		}
