@@ -4,8 +4,8 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
 import net.bhl.matsim.uam.vrpagent.UAMActionCreator;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.events.Event;
+import org.matsim.api.core.v01.events.HasPersonId;
 import org.matsim.api.core.v01.population.Person;
-import org.matsim.core.api.internal.HasPersonId;
 
 import java.util.Map;
 
@@ -35,12 +35,13 @@ public class UAMTransitEvent extends Event implements HasPersonId {
 	@Override
 	public Map<String, String> getAttributes() {
 		Map<String, String> attr = super.getAttributes();
-		attr.put("person", request.getPassengerId().toString());
+		attr.put("person", request.getPassengerIds().toString());
 		return attr;
 	}
 
 	@Override
 	public Id<Person> getPersonId() {
-		return request.getPassengerId();
+		//TODO: currently only returning one person, should be corrected int eh future milos '24'
+		return request.getPassengerIds().get(0);
 	}
 }
