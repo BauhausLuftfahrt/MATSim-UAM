@@ -11,20 +11,25 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
+import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.router.DefaultRoutingRequest;
 import org.matsim.core.router.LinkWrapperFacility;
 import org.matsim.core.router.RoutingModule;
+import org.matsim.core.router.RoutingRequest;
 import org.matsim.core.router.TeleportationRoutingModule;
 import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.pt.router.TransitRouter;
+import org.matsim.utils.objectattributes.attributable.AttributesImpl;
 
 import com.opencsv.CSVParser;
 
@@ -53,7 +58,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
 
 public class RunCalculatePTTravelTimes {
 	private static final int processes = Runtime.getRuntime().availableProcessors();
-	private static final Logger log = Logger.getLogger(RunCalculatePTTravelTimes.class);
+	private static final Logger log = LogManager.getLogger(RunCalculatePTTravelTimes.class);
 	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
 
 	private static boolean writeDescription = true;
@@ -175,23 +180,30 @@ public class RunCalculatePTTravelTimes {
 			Link to = NetworkUtils.getNearestLink(network, trip.destination);
 
 			try {
-				List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from),
-						new LinkWrapperFacility(to), trip.departureTime, null);
+				RoutingRequest routingRequest = DefaultRoutingRequest.of(
+					new LinkWrapperFacility(from),
+					new LinkWrapperFacility(to),
+					trip.departureTime,
+					null,
+					new AttributesImpl());
+				List<? extends PlanElement> elements = transitRouter.calcRoute(routingRequest);
 				double time = 0;
 				double distance = 0;
 				StringBuilder routeList = new StringBuilder();
-				for (Leg leg : legs) {
-					if (time != 0 && writeDescription)
-						routeList.append("->");
-					time += leg.getTravelTime().seconds();
-					distance += leg.getRoute().getDistance();
-					if (writeDescription) {
-						routeList.append("[mode:").append(leg.getMode()).append("]");
-						routeList.append("[start:").append(leg.getRoute().getStartLinkId()).append("]");
-						routeList.append("[end:").append(leg.getRoute().getEndLinkId()).append("]");
-						routeList.append("[time:").append(leg.getTravelTime()).append("]");
-						routeList.append("[distance:").append(leg.getRoute().getDistance()).append("]");
-					}
+				for (PlanElement el : elements) {
+					if (el instanceof Leg) {
+						if (time != 0 && writeDescription)
+							routeList.append("->");
+						time += ((Leg)el).getTravelTime().seconds();
+						distance += ((Leg)el).getRoute().getDistance();
+						if (writeDescription) {
+							routeList.append("[mode:").append(((Leg)el).getMode()).append("]");
+							routeList.append("[start:").append(((Leg)el).getRoute().getStartLinkId()).append("]");
+							routeList.append("[end:").append(((Leg)el).getRoute().getEndLinkId()).append("]");
+							routeList.append("[time:").append(((Leg)el).getTravelTime()).append("]");
+							routeList.append("[distance:").append(((Leg)el).getRoute().getDistance()).append("]");
+						}
+					}					
 				}
 				trip.travelTime = time;
 				trip.distance = distance;
