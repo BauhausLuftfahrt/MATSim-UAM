@@ -6,6 +6,7 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.passenger.DefaultPassengerRequestValidator;
 import org.matsim.contrib.dvrp.passenger.PassengerRequestValidator;
 import org.matsim.contrib.dvrp.router.DvrpModeRoutingNetworkModule;
+import org.matsim.contrib.dvrp.run.AbstractDvrpModeModule;
 import org.matsim.contrib.dvrp.run.DvrpMode;
 import org.matsim.contrib.dvrp.run.DvrpModes;
 import org.matsim.contrib.dvrp.vrpagent.VrpAgentSourceQSimModule;
@@ -49,19 +50,20 @@ import net.bhl.matsim.uam.scoring.UAMScoringFunctionFactory;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMModule extends AbstractModule {
+public class UAMModule extends AbstractDvrpModeModule {
 	private Config config;
 	public UAMModule(Config config) {
+		super(UAMConstants.uam);
 		this.config = config;
 	}
 	
 	@Override
 	public void install() {
-		DvrpModes.registerDvrpMode(binder(), UAMConstants.uam);
-		install(new DvrpModeRoutingNetworkModule(UAMConstants.uam, true));
+		DvrpModes.registerDvrpMode(binder(), getMode());
+		install(new DvrpModeRoutingNetworkModule(getMode(), true));
 
-		bind(DvrpModes.key(PassengerRequestValidator.class, UAMConstants.uam))
-				.toInstance(new DefaultPassengerRequestValidator());
+		bindModal(PassengerRequestValidator.class).to(DefaultPassengerRequestValidator.class);
+
 		installQSimModule(new UAMQSimModule());
 
 		// bining our own scoring function factory
@@ -98,11 +100,12 @@ public class UAMModule extends AbstractModule {
 		// MainModeIdentifierImpl()));
 
 		// here we provide vehicles and network to be used for uam trips
-		bind(VehicleType.class).annotatedWith(Names.named(UAMConstants.uam))
-				.toInstance(VehicleUtils.getDefaultVehicleType());
+		// bind(VehicleType.class).annotatedWith(Names.named(UAMConstants.uam))
+		// 		.toInstance(VehicleUtils.getDefaultVehicleType());
 
-		bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
-				.toInstance(VehicleUtils.getDefaultVehicleType());
+		bindModal(VehicleType.class).toInstance(VehicleUtils.getDefaultVehicleType());
+		//bind(VehicleType.class).annotatedWith(Names.named(VrpAgentSourceQSimModule.DVRP_VEHICLE_TYPE))
+		//		.toInstance(VehicleUtils.getDefaultVehicleType());
 
 		bind(TravelTime.class).annotatedWith(Names.named(UAMConstants.uam)).toInstance(new FreeSpeedTravelTime());
 
