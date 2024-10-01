@@ -40,7 +40,7 @@ public class UAMPassengerDropoffActivity implements DynActivity {
 	@Override
 	public void finalizeAction(double now) {
 		for (PassengerRequest request : requests) {
-			passengerEngine.dropOffPassenger(driver, request, now);
+			passengerEngine.dropOffPassengers(driver, request.getId(), now);
 		}
 	}
 
