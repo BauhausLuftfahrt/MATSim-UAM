@@ -17,15 +17,11 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 	final private Map<String, Double> mapVehicleVerticalSpeeds;
 	final private Map<String, Double> mapVehicleHorizontalSpeeds;
 
-	final private LinkSpeedCalculator delegate;
-
 	public UAMLinkSpeedCalculator(Map<String, Double> mapVehicleVerticalSpeeds,
-								  Map<String, Double> mapVehicleHorizontalSpeeds, LinkSpeedCalculator delegate) {
+								  Map<String, Double> mapVehicleHorizontalSpeeds ) {
 		// TODO: Use mapping of vehicle types instead of vehicles themselves.
 		this.mapVehicleVerticalSpeeds = mapVehicleVerticalSpeeds;
 		this.mapVehicleHorizontalSpeeds = mapVehicleHorizontalSpeeds;
-
-		this.delegate = delegate;
 	}
 
 	@Override
@@ -42,6 +38,6 @@ public class UAMLinkSpeedCalculator implements LinkSpeedCalculator {
 			// Non-flight link
 		}
 
-		return delegate.getMaximumVelocity(vehicle, link, time);
+		return Math.min( vehicle.getMaximumVelocity(), link.getFreespeed( time ) );
 	}
 }
