@@ -25,6 +25,9 @@ Versions 4.1.2, 4.1.1, 4.1.0, 4.0.1, 4.0.0, and 3.0.0 are also available. Older 
 
 ### Development
 
+- Update to MATSim 2024.0
+- Update to Java 21
+
 ### v4.1.3
 
 - fixed the Bug regarding running the script "RunCalculateUAMTravelTimes.java" on Mac/Linux

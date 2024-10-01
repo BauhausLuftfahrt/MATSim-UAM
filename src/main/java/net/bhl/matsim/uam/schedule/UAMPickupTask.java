@@ -5,7 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.schedule.StayTask;
+import org.matsim.contrib.dvrp.passenger.PassengerRequest;
+import org.matsim.contrib.dvrp.schedule.DefaultStayTask;
 
 import net.bhl.matsim.uam.passenger.UAMRequest;
 
@@ -15,8 +16,8 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMPickupTask extends StayTask {
-	private final Set<UAMRequest> requests = new HashSet<>();
+public class UAMPickupTask extends DefaultStayTask {
+	private final Set<PassengerRequest> requests = new HashSet<>();
 	private final double boardingTime;
 
 	public UAMPickupTask(double beginTime, double endTime, Link link, double boardingTime) {
@@ -33,10 +34,11 @@ public class UAMPickupTask extends StayTask {
 			request.setPickupTask(this);
 	}
 
-	public Set<UAMRequest> getRequests() {
+	public Set<PassengerRequest> getRequests() {
 		return this.requests;
 	}
 
+	@Deprecated
 	public void addRequest(UAMRequest request) {
 		requests.add(request);
 		request.setPickupTask(this);

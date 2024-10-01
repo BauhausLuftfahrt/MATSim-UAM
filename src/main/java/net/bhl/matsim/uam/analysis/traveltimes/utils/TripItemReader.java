@@ -1,8 +1,9 @@
 package net.bhl.matsim.uam.analysis.traveltimes.utils;
 
 import org.matsim.api.core.v01.Coord;
-import org.matsim.contrib.util.CSVReaders;
 import org.matsim.core.utils.misc.Time;
+
+import net.bhl.matsim.uam.infrastructure.readers.CSVReaders;
 
 import java.io.IOException;
 import java.util.ArrayList;

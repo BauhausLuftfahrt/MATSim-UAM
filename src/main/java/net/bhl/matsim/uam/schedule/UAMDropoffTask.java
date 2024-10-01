@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.matsim.api.core.v01.network.Link;
-import org.matsim.contrib.dvrp.schedule.StayTask;
+import org.matsim.contrib.dvrp.schedule.DefaultStayTask;
 
 import net.bhl.matsim.uam.passenger.UAMRequest;
 
@@ -15,7 +15,7 @@ import net.bhl.matsim.uam.passenger.UAMRequest;
  *
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
-public class UAMDropoffTask extends StayTask {
+public class UAMDropoffTask extends DefaultStayTask {
 	private final Set<UAMRequest> requests = new HashSet<>();
 	private final double deboardingTime;
 

@@ -20,10 +20,11 @@ import org.matsim.contrib.dvrp.run.DvrpModule;
 import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ActivityParams;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ModeParams;
+import org.matsim.core.config.groups.QSimConfigGroup;
 import org.matsim.core.config.groups.QSimConfigGroup.StarttimeInterpretation;
-import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
+import org.matsim.core.config.groups.ReplanningConfigGroup.StrategySettings;
+import org.matsim.core.config.groups.ScoringConfigGroup.ActivityParams;
+import org.matsim.core.config.groups.ScoringConfigGroup.ModeParams;
 import org.matsim.core.config.groups.SubtourModeChoiceConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.router.TripStructureUtils;
@@ -44,8 +45,12 @@ public class RunCorsicaIT {
 		System.out.println(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
 
 		Config config = ConfigUtils.loadConfig(RunCorsicaIT.class.getResource("/corsica/corsica_config.xml"));
-		config.controler().setLastIteration(2);
-		config.controler().setWriteEventsInterval(1);
+
+		((QSimConfigGroup) config.getModules().get(QSimConfigGroup.GROUP_NAME))
+						.setPcuThresholdForFlowCapacityEasing(1.0);
+						
+		config.controller().setLastIteration(2);
+		config.controller().setWriteEventsInterval(1);
 
 		{
 			// Remove some standard eqasim config groups
@@ -55,7 +60,7 @@ public class RunCorsicaIT {
 
 			// Replace some standard eqasim settings
 
-			for (StrategySettings strategy : config.strategy().getStrategySettings()) {
+			for (StrategySettings strategy : config.replanning().getStrategySettings()) {
 				if (strategy.getStrategyName().equals("DiscreteModeChoice")) {
 					strategy.setStrategyName("SubtourModeChoice");
 				} else if (strategy.getStrategyName().equals("KeepLastSelected")) {
@@ -64,7 +69,7 @@ public class RunCorsicaIT {
 			}
 			String[] modes = { "car", "pt", "walk", "uam", "bike" };
 			((SubtourModeChoiceConfigGroup) config.getModules().get("subtourModeChoice")).setModes(modes);
-			config.strategy().setPlanSelectorForRemoval("WorstPlanSelector");
+			config.replanning().setPlanSelectorForRemoval("WorstPlanSelector");
 			config.transit().setUseTransit(true);
 			config.transit().setUsingTransitInMobsim(true);
 			
@@ -75,7 +80,7 @@ public class RunCorsicaIT {
 			DvrpConfigGroup dvrpConfig = new DvrpConfigGroup();
 			config.addModule(dvrpConfig);
 
-			DvrpConfigGroup.get(config).setNetworkModes(ImmutableSet.of("uam"));
+			dvrpConfig.networkModes = ImmutableSet.of("uam");
 
 			// Some necessary DVRP settings
 			config.qsim().setSimStarttimeInterpretation(StarttimeInterpretation.onlyUseStarttime);
@@ -95,10 +100,10 @@ public class RunCorsicaIT {
 			uamConfig.setUseCharging("yes");
 
 			// Add UAM scoring
-			config.planCalcScore().addModeParams(new ModeParams("access_uam_car"));
-			config.planCalcScore().addModeParams(new ModeParams("egress_uam_car"));
-			config.planCalcScore().addModeParams(new ModeParams("uam"));
-			config.planCalcScore()
+			config.scoring().addModeParams(new ModeParams("access_uam_car"));
+			config.scoring().addModeParams(new ModeParams("egress_uam_car"));
+			config.scoring().addModeParams(new ModeParams("uam"));
+			config.scoring()
 					.addActivityParams(new ActivityParams("uam_interaction").setScoringThisActivityAtAll(false));
 		}
 

@@ -33,13 +33,13 @@ public class UAMRequestCreator implements PassengerRequestCreator {
 	private UAMManager uamManager;
 
 	@Override
-	public PassengerRequest createRequest(Id<Request> id, Id<Person> passengerId, Route route, Link fromLink,
+	public PassengerRequest createRequest(Id<Request> id, List<Id<Person>> passengerIds, Route route, Link fromLink,
 			Link toLink, double departureTime, double submissionTime) {
 		// We currently have only one dispatcher, this might change in the future
 		double distance = stationConnectionutilities.getFlightLeg(
 				uamManager.getStations().getNearestUAMStation(fromLink).getId(),
 				uamManager.getStations().getNearestUAMStation(toLink).getId()).distance;
-		return new UAMRequest(id, passengerId, fromLink, toLink, departureTime, submissionTime, dispatchers.get(0),
+		return new UAMRequest(id, passengerIds, fromLink, toLink, departureTime, submissionTime, dispatchers.get(0),
 				distance);
 	}
 

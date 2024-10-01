@@ -8,6 +8,8 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
+import org.matsim.contrib.dvrp.schedule.DefaultDriveTask;
+import org.matsim.contrib.dvrp.schedule.DefaultStayTask;
 import org.matsim.contrib.dvrp.schedule.DriveTask;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedules;
@@ -87,7 +89,7 @@ public class UAMSingleChargingActivityAppender {
 
 			VrpPathWithTravelData chargePathWithTravelData = VrpPaths.createPath(stayTask.getLink(), chargingLink,
 					startTime, pickupPath, travelTime);
-			DriveTask chargingFlyTask = new DriveTask(UAMTaskType.FLY, chargePathWithTravelData);
+			DriveTask chargingFlyTask = new DefaultDriveTask(UAMTaskType.FLY, chargePathWithTravelData);
 			schedule.addTask(chargingFlyTask);
 			startTime = chargingFlyTask.getEndTime();
 			UAMChargingTask chargingTask = new UAMChargingTask(UAMTaskType.CHARGING, chargingFlyTask.getEndTime(),
@@ -96,7 +98,7 @@ public class UAMSingleChargingActivityAppender {
 			schedule.addTask(chargingTask);
 		}
 
-		schedule.addTask(new StayTask(UAMTaskType.STAY, startTime + 60.0, scheduleEndTime, chargingLink));
+		schedule.addTask(new DefaultStayTask(UAMTaskType.STAY, startTime + 60.0, scheduleEndTime, chargingLink));
 	}
 
 	public void update() {

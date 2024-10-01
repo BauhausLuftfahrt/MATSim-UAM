@@ -3,7 +3,9 @@ package net.bhl.matsim.uam.router.strategy;
 import net.bhl.matsim.uam.data.UAMRoute;
 import net.bhl.matsim.uam.infrastructure.UAMStation;
 import net.bhl.matsim.uam.run.UAMConstants;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.population.Activity;
 import org.matsim.api.core.v01.population.Leg;
 import org.matsim.api.core.v01.population.Person;
@@ -25,7 +27,7 @@ public class UAMPredefinedStrategy implements UAMStrategy {
 	public static final String ORIG_STATION = "originStation";
 	public static final String DEST_STATION = "destinationStation";
 	public static final String EGRESS_MODE = "egressMode";
-	private static final Logger log = Logger.getLogger(UAMPredefinedStrategy.class);
+	private static final Logger log = LogManager.getLogger(UAMPredefinedStrategy.class);
 	private UAMStrategyUtils strategyUtils;
 
 	public UAMPredefinedStrategy(UAMStrategyUtils strategyUtils) {

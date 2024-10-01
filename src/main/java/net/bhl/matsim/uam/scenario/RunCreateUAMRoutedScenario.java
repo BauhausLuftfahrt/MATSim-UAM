@@ -21,7 +21,6 @@ import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.api.core.v01.network.Node;
-import org.matsim.contrib.util.CSVReaders;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.ConfigWriter;
@@ -42,6 +41,7 @@ import org.matsim.core.utils.io.MatsimXmlWriter;
 
 import com.google.common.collect.Iterables;
 
+import net.bhl.matsim.uam.infrastructure.readers.CSVReaders;
 import net.bhl.matsim.uam.router.UAMFlightSegments;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy;
 import net.bhl.matsim.uam.run.UAMConstants;

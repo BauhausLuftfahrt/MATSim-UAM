@@ -9,6 +9,8 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.contrib.dvrp.path.VrpPathWithTravelData;
 import org.matsim.contrib.dvrp.path.VrpPaths;
+import org.matsim.contrib.dvrp.schedule.DefaultDriveTask;
+import org.matsim.contrib.dvrp.schedule.DefaultStayTask;
 import org.matsim.contrib.dvrp.schedule.DriveTask;
 import org.matsim.contrib.dvrp.schedule.Schedule;
 import org.matsim.contrib.dvrp.schedule.Schedules;
@@ -82,7 +84,7 @@ public class UAMSingleRideWithChargingAppender {
 
 		VrpPathWithTravelData pickupPathWithTravelData = VrpPaths.createPath(stayTask.getLink(), request.getFromLink(),
 				startTime, pickupPath, travelTime);
-		DriveTask pickupFlyTask = new DriveTask(UAMTaskType.FLY, pickupPathWithTravelData);
+		DriveTask pickupFlyTask = new DefaultDriveTask(UAMTaskType.FLY, pickupPathWithTravelData);
 
 		double pickUpTaskStartTime = request.getEarliestStartTime();
 		// For the case when the Aircraft is not already at the correct station:
@@ -98,7 +100,7 @@ public class UAMSingleRideWithChargingAppender {
 
 		VrpPathWithTravelData dropoffPathWithTravelData = VrpPaths.createPath(request.getFromLink(),
 				request.getToLink(), flyTaskStartTime, dropoffPath, travelTime);
-		DriveTask dropoffFlyTask = new DriveTask(UAMTaskType.FLY, dropoffPathWithTravelData);
+		DriveTask dropoffFlyTask = new DefaultDriveTask(UAMTaskType.FLY, dropoffPathWithTravelData);
 
 		double dropOffStartTime = flyTaskStartTime + dropoffPathWithTravelData.getTravelTime();
 		double tatStartTime = dropOffStartTime + vehicle.getDeboardingTime();
@@ -106,7 +108,7 @@ public class UAMSingleRideWithChargingAppender {
 				vehicle.getDeboardingTime(), Collections.singletonList(request));
 
 		double tatEndTime = tatStartTime + vehicle.getTurnAroundTime();
-		StayTask turnAroundTask = new StayTask(UAMTaskType.TURNAROUND, tatStartTime, tatEndTime, request.getToLink());
+		StayTask turnAroundTask = new DefaultStayTask(UAMTaskType.TURNAROUND, tatStartTime, tatEndTime, request.getToLink());
 
 		double stayEndTime = pickUpTaskStartTime;
 		if (requiresPickupFlight)
@@ -116,7 +118,7 @@ public class UAMSingleRideWithChargingAppender {
 		if (requiresPickupFlight) {
 			schedule.addTask(pickupFlyTask);
 
-			StayTask uamStayTask = new StayTask(UAMTaskType.STAY, pickupFlyTask.getEndTime(), pickUpTaskStartTime,
+			StayTask uamStayTask = new DefaultStayTask(UAMTaskType.STAY, pickupFlyTask.getEndTime(), pickUpTaskStartTime,
 					pickupFlyTask.getPath().getToLink());
 			schedule.addTask(uamStayTask);
 		}
@@ -143,7 +145,7 @@ public class UAMSingleRideWithChargingAppender {
 
 			VrpPathWithTravelData chargingPathWithTravelData = VrpPaths.createPath(dropoffTask.getLink(), chargingLink,
 					turnAroundTask.getEndTime(), chargingPath, travelTime);
-			DriveTask chargingFlyTask = new DriveTask(UAMTaskType.FLY, chargingPathWithTravelData);
+			DriveTask chargingFlyTask = new DefaultDriveTask(UAMTaskType.FLY, chargingPathWithTravelData);
 			schedule.addTask(chargingFlyTask);
 			
 			UAMChargingTask chargingTask = new UAMChargingTask(UAMTaskType.CHARGING, chargingFlyTask.getEndTime(),
@@ -152,7 +154,7 @@ public class UAMSingleRideWithChargingAppender {
 			schedule.addTask(chargingTask);
 			
 		}
-		schedule.addTask(new StayTask(UAMTaskType.STAY, turnAroundTask.getEndTime() + 60, scheduleEndTime,
+		schedule.addTask(new DefaultStayTask(UAMTaskType.STAY, turnAroundTask.getEndTime() + 60, scheduleEndTime,
 				turnAroundTask.getLink()));
 	}
 

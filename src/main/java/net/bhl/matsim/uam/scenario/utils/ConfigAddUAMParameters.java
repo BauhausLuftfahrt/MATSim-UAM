@@ -9,7 +9,8 @@ import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.ConfigWriter;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
+import org.matsim.core.config.groups.RoutingConfigGroup;
+import org.matsim.core.config.groups.RoutingConfigGroup.TeleportedModeParams;
 
 import java.util.Collection;
 
@@ -49,10 +50,10 @@ public class ConfigAddUAMParameters {
 
 		boolean ptParamsExistent = false;
 		for (ConfigGroup cg : teleportedModeParameters) {
-			if (!(cg instanceof PlansCalcRouteConfigGroup.ModeRoutingParams))
+			if (!(cg instanceof RoutingConfigGroup.ModeRoutingParams))
 				continue;
 
-			PlansCalcRouteConfigGroup.ModeRoutingParams mrp = (PlansCalcRouteConfigGroup.ModeRoutingParams) cg;
+				RoutingConfigGroup.ModeRoutingParams mrp = (RoutingConfigGroup.ModeRoutingParams) cg;
 
 			if (mrp.getMode().equals(TransportMode.pt)) {
 				ptParamsExistent = true;
@@ -63,8 +64,8 @@ public class ConfigAddUAMParameters {
 		}
 
 		if (!ptSimulation && !ptParamsExistent) {
-			PlansCalcRouteConfigGroup.ModeRoutingParams modeRoutingParams =
-					new PlansCalcRouteConfigGroup.ModeRoutingParams();
+			TeleportedModeParams modeRoutingParams =
+					new TeleportedModeParams();
 			modeRoutingParams.setMode(TransportMode.pt);
 			modeRoutingParams.setTeleportedModeSpeed(10.0);
 			modeRoutingParams.setBeelineDistanceFactor(1.0);
