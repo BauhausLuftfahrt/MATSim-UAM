@@ -1,5 +1,7 @@
 package net.bhl.matsim.uam.passenger;
 
+import java.util.List;
+
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.population.Person;
@@ -21,7 +23,7 @@ public class UAMRequest implements PassengerRequest {
 	final private double submissionTime;
 	final private Link originLink;
 	final private Link destinationLink;
-	final private Id<Person> passengerId;
+	final private List<Id<Person>> passengerIds;
 	private final double quantity;
 	private final double earliestStartTime;
 	private final double latestStartTime;
@@ -30,7 +32,7 @@ public class UAMRequest implements PassengerRequest {
 	private UAMDispatcher dispatcher;
 	private double distance;
 
-	public UAMRequest(Id<Request> id, Id<Person> passengerId, Link originLink, Link destinationLink, double pickupTime,
+	public UAMRequest(Id<Request> id, List<Id<Person>> passengerIds, Link originLink, Link destinationLink, double pickupTime,
 			double submissionTime, UAMDispatcher dispatcher, double distance) {
 		this.id = id;
 		this.submissionTime = submissionTime;
@@ -39,7 +41,7 @@ public class UAMRequest implements PassengerRequest {
 		this.destinationLink = destinationLink;
 		this.earliestStartTime = pickupTime;
 		this.latestStartTime = pickupTime;
-		this.passengerId = passengerId;
+		this.passengerIds = passengerIds;
 		this.dispatcher = dispatcher;
 		this.distance = distance;
 	}
@@ -69,8 +71,8 @@ public class UAMRequest implements PassengerRequest {
 	}
 
 	@Override
-	public Id<Person> getPassengerId() {
-		return passengerId;
+	public List<Id<Person>> getPassengerIds() {
+		return passengerIds;
 	}
 
 	@Override
@@ -114,6 +116,11 @@ public class UAMRequest implements PassengerRequest {
 
 	public void setDistance(double distance) {
 		this.distance = distance;
+	}
+
+	@Override
+	public int getPassengerCount() {
+		return this.passengerIds.size();
 	}
 
 }

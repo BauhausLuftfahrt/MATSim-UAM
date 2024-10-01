@@ -17,7 +17,7 @@ import net.bhl.matsim.uam.dispatcher.UAMManager;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.passenger.UAMChargingActivity;
 import net.bhl.matsim.uam.passenger.UAMPassengerDropoffActivity;
-import net.bhl.matsim.uam.passenger.UAMPassengerPickupActivity;
+import net.bhl.matsim.uam.passenger.UAMSinglePassengerPerRequestPickupActivity;
 import net.bhl.matsim.uam.run.UAMConstants;
 import net.bhl.matsim.uam.schedule.UAMChargingTask;
 import net.bhl.matsim.uam.schedule.UAMDropoffTask;
@@ -54,7 +54,7 @@ public class UAMActionCreator implements VrpAgentLogic.DynActionCreator {
 
 		if (task.getTaskType().equals(UAMTaskType.PICKUP)) {
 			UAMPickupTask mpt = (UAMPickupTask) task;
-			return new UAMPassengerPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
+			return new UAMSinglePassengerPerRequestPickupActivity(passengerEngine, dynAgent, vehicle, mpt, mpt.getRequests(),
 					mpt.getBoardingTime(), PICKUP_ACTIVITY_TYPE);
 		} else if (task.getTaskType().equals(UAMTaskType.DROPOFF)) {
 			UAMDropoffTask mdt = (UAMDropoffTask) task;
