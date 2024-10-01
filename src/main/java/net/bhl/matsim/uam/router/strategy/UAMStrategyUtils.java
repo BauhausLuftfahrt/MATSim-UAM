@@ -7,21 +7,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.population.Leg;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
+import org.matsim.api.core.v01.population.PlanElement;
+import org.matsim.core.config.groups.RoutingConfigGroup;
 import org.matsim.core.network.NetworkUtils;
+import org.matsim.core.router.DefaultRoutingRequest;
 import org.matsim.core.router.LinkWrapperFacility;
+import org.matsim.core.router.RoutingRequest;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.router.TransitRouter;
+import org.matsim.utils.objectattributes.attributable.AttributesImpl;
 
 import net.bhl.matsim.uam.config.UAMConfigGroup;
 import net.bhl.matsim.uam.data.UAMAccessLeg;
@@ -36,7 +41,7 @@ import net.bhl.matsim.uam.infrastructure.UAMStations;
  * @author Aitanm (Aitan Militao), RRothfeld (Raoul Rothfeld)
  */
 public class UAMStrategyUtils {
-	private static final Logger log = Logger.getLogger(UAMStrategyUtils.class);
+	private static final Logger log = LogManager.getLogger(UAMStrategyUtils.class);
 	private final Scenario scenario;
 	private UAMStations landingStations;
 	private UAMConfigGroup uamConfig;
@@ -165,16 +170,23 @@ public class UAMStrategyUtils {
 			return new UAMAccessLeg(path.travelTime, distanceByCar, path.links);
 		case TransportMode.pt:
 			if (transitRouter != null) {
-				List<Leg> legs = transitRouter.calcRoute(new LinkWrapperFacility(from), new LinkWrapperFacility(to),
-						time, null);
+				RoutingRequest routingRequest = DefaultRoutingRequest.of(
+					new LinkWrapperFacility(from),
+					new LinkWrapperFacility(to),
+					time,
+					null,
+					new AttributesImpl());
+				List<? extends PlanElement> elements = transitRouter.calcRoute(routingRequest);
 				double distanceByPt = 0.0;
 				double timeByPt = 0.0;
 				// pt router can return null under certain conditions
-				if (legs == null)
+				if (elements == null)
 					return null;
-				for (Leg leg : legs) {
-					timeByPt += leg.getTravelTime().seconds();
-					distanceByPt += leg.getRoute().getDistance();
+				for (PlanElement pe : elements) {
+					if (pe instanceof Leg) {
+						timeByPt += ((Leg)pe).getTravelTime().seconds();
+						distanceByPt += ((Leg)pe).getRoute().getDistance();
+					}
 				}
 				return new UAMAccessLeg(timeByPt, distanceByPt, null);
 			}
@@ -184,12 +196,12 @@ public class UAMStrategyUtils {
 	}
 
 	private UAMAccessLeg getBeelineAccessLeg(Facility facility, UAMStation station, String mode) {
-		double distanceFactor = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
+		double distanceFactor = ((RoutingConfigGroup) scenario.getConfig().getModules().get("routing"))
 				.getBeelineDistanceFactors().get(mode);
 		double distance = CoordUtils.calcEuclideanDistance(
 				scenario.getNetwork().getLinks().get(facility.getLinkId()).getCoord(),
 				station.getLocationLink().getCoord());
-		double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
+		double speed = ((RoutingConfigGroup) scenario.getConfig().getModules().get("routing"))
 				.getTeleportedModeSpeeds().get(mode);
 
 		return new UAMAccessLeg(distance * distanceFactor / speed, distance * distanceFactor, null);

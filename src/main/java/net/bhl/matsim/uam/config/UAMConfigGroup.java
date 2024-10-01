@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ReflectiveConfigGroup;
 import org.matsim.core.config.consistency.BeanValidationConfigConsistencyChecker;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
 
 /**
@@ -26,7 +26,7 @@ import net.bhl.matsim.uam.router.strategy.UAMStrategy.UAMStrategyType;
  * @author balacmi (Milos Balac), RRothfeld (Raoul Rothfeld)
  */
 public class UAMConfigGroup extends ReflectiveConfigGroup {
-	private static final Logger log = Logger.getLogger(UAMConfigGroup.class);
+	private static final Logger log = LogManager.getLogger(UAMConfigGroup.class);
 
 	public static final String GROUP_NAME = "uam";
 

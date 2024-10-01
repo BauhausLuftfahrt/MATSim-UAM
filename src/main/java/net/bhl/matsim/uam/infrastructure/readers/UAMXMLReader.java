@@ -1,14 +1,15 @@
 package net.bhl.matsim.uam.infrastructure.readers;
 
 import com.google.common.collect.ImmutableMap;
+
 import net.bhl.matsim.uam.infrastructure.UAMStation;
-import net.bhl.matsim.uam.infrastructure.UAMStationSimple;
 import net.bhl.matsim.uam.infrastructure.UAMStationWithChargers;
 import net.bhl.matsim.uam.infrastructure.UAMVehicle;
 import net.bhl.matsim.uam.infrastructure.UAMVehicleType;
 import net.bhl.matsim.uam.run.UAMConstants;
-import org.jfree.util.Log;
-import org.matsim.api.core.v01.Coord;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.api.core.v01.network.Network;
@@ -33,6 +34,9 @@ import java.util.Stack;
  */
 public class UAMXMLReader extends MatsimXmlParser {
 
+	private static final Logger log = LogManager.getLogger(UAMXMLReader.class);
+
+
     public final Network network;
     private final Map<Id<DvrpVehicle>, UAMVehicle> vehiclesForData = new HashMap<>();
     private final Map<Id<UAMStation>, UAMStation> stations = new HashMap<>();
@@ -43,6 +47,7 @@ public class UAMXMLReader extends MatsimXmlParser {
     private final FleetSpecificationImpl fleetSpecification = new FleetSpecificationImpl();
 
     public UAMXMLReader(Network uamNetwork) {
+		super(ValidationType.DTD_ONLY);
         this.network = uamNetwork;
     }
 
@@ -135,12 +140,12 @@ public class UAMXMLReader extends MatsimXmlParser {
 					vehiclesForData.put(id, vehicleCopy);
 
 				} catch (NullPointerException e) {
-					Log.warn(UAMConstants.uam.toUpperCase() + " vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
+					log.warn(UAMConstants.uam.toUpperCase() + " vehicle " + id + " could not be added. Check correct initial station or vehicle type.");
 				}
 				break;
 			}
 			default:
-				Log.warn("There was an error parsing the UAM xml-file. Non vehicle/station element found.");
+				log.warn("There was an error parsing the UAM xml-file. Non vehicle/station element found.");
 		}
     }
 

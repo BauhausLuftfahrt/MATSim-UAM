@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -15,18 +16,21 @@ import org.matsim.api.core.v01.population.Person;
 import org.matsim.api.core.v01.population.PlanElement;
 import org.matsim.api.core.v01.population.PopulationFactory;
 import org.matsim.api.core.v01.population.Route;
-import org.matsim.core.config.groups.PlansCalcRouteConfigGroup;
+import org.matsim.core.config.groups.RoutingConfigGroup;
 import org.matsim.core.network.NetworkUtils;
 import org.matsim.core.population.routes.NetworkRoute;
 import org.matsim.core.population.routes.RouteFactories;
+import org.matsim.core.router.DefaultRoutingRequest;
 import org.matsim.core.router.LinkWrapperFacility;
 import org.matsim.core.router.RoutingModule;
+import org.matsim.core.router.RoutingRequest;
 import org.matsim.core.router.util.LeastCostPathCalculator;
 import org.matsim.core.router.util.LeastCostPathCalculator.Path;
 import org.matsim.core.utils.geometry.CoordUtils;
 import org.matsim.facilities.Facility;
 import org.matsim.pt.config.TransitConfigGroup;
 import org.matsim.pt.router.TransitRouter;
+import org.matsim.utils.objectattributes.attributable.AttributesImpl;
 
 import com.google.common.base.Verify;
 
@@ -47,7 +51,7 @@ import net.bhl.matsim.uam.run.UAMConstants;
  */
 public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 
-	private static final Logger log = Logger.getLogger(UAMCachedIntermodalRoutingModule.class);
+	private static final Logger log = LogManager.getLogger(UAMCachedIntermodalRoutingModule.class);
 	private final int counterLimit = 10;
 	private final Scenario scenario;
 	private int counterWarningWaitingTimeSlot = 0;
@@ -90,9 +94,68 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 				carNetwork, stationConnections);
 	}
 
+
+	private Leg createTeleportationLeg(RouteFactories routeFactory, PopulationFactory populationFactory,
+									   Link originLink, Link destinationLink, String mode, String actualMode) {
+
+		double speed = ((RoutingConfigGroup) scenario.getConfig().getModules().get(RoutingConfigGroup.GROUP_NAME))
+				.getTeleportedModeSpeeds().get(mode);
+		Route route = routeFactory.createRoute(Route.class, originLink.getId(), destinationLink.getId());
+		double dist = CoordUtils.calcEuclideanDistance(originLink.getCoord(), destinationLink.getCoord());
+		route.setDistance(dist);
+		route.setTravelTime(dist / speed + 1.0);
+
+		final Leg teleportationleg = populationFactory.createLeg(actualMode);
+		teleportationleg.setTravelTime(dist / speed + 1.0);
+
+		teleportationleg.setRoute(route);
+		return teleportationleg;
+	}
+
+	private Leg createUAMLeg(Link originLink, Link destinationLink, UAMFlightLeg flightLeg,
+							 RouteFactories routeFactory, PopulationFactory populationFactory) {
+		return createNetworkLeg(UAMConstants.uam, originLink, destinationLink, flightLeg.links, routeFactory,
+				populationFactory, flightLeg.travelTime, flightLeg.distance);
+	}
+
+	private Leg createCarLeg(String mode, Link originLink, Link destinationLink, double departureTime, Person person,
+							 RouteFactories routeFactory, PopulationFactory populationFactory) {
+		Verify.verifyNotNull(originLink);
+		Verify.verifyNotNull(destinationLink);
+		Path path = plcpccar.calcLeastCostPath(originLink.getToNode(), destinationLink.getFromNode(), departureTime,
+				person, null);
+
+		double distance = 0;
+		for (Link link : path.links)
+			distance += link.getLength();
+
+		return createNetworkLeg(mode, originLink, destinationLink, path.links, routeFactory,
+				populationFactory, path.travelTime, distance);
+	}
+
+	private Leg createNetworkLeg(String mode, Link originLink, Link destinationLink, List<Link> links,
+								 RouteFactories routeFactory, PopulationFactory populationFactory, double travelTime,
+								 double distance) {
+		NetworkRoute route = routeFactory.createRoute(NetworkRoute.class, originLink.getId(), destinationLink.getId());
+		route.setLinkIds(originLink.getId(), NetworkUtils.getLinkIds(links), destinationLink.getId());
+		route.setTravelTime(travelTime);
+		route.setDistance(distance);
+
+		Leg leg = populationFactory.createLeg(mode);
+		leg.setTravelTime(travelTime);
+		leg.setRoute(route);
+		return leg;
+	}
+
 	@Override
-	public List<? extends PlanElement> calcRoute(Facility fromFacility, Facility toFacility, double departureTime,
-												 Person person) {
+	public List<? extends PlanElement> calcRoute(RoutingRequest request) {
+
+		Person person = request.getPerson();
+		Facility fromFacility = request.getFromFacility();
+		Facility toFacility = request.getToFacility();
+		double departureTime = request.getDepartureTime();
+
+
 		Network network = scenario.getNetwork();
 
 		PopulationFactory populationFactory = scenario.getPopulation().getFactory();
@@ -140,9 +203,16 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			case TransportMode.pt:
 				// checks if pt is being simulated before adding the trip
 				if (scenario.getConfig().transit().isUseTransit()) {
+
+					RoutingRequest routingRequest = DefaultRoutingRequest.of(
+					fromFacility,
+					new LinkWrapperFacility(uamRoute.bestOriginStation.getLocationLink()),
+					departureTime,
+					person,
+					new AttributesImpl());
+
 					@SuppressWarnings("unchecked")				
-					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(fromFacility,
-							new LinkWrapperFacility(uamRoute.bestOriginStation.getLocationLink()), departureTime, person);
+					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(routingRequest);
 					for (PlanElement leg : legs) {
 						if (leg instanceof Leg)
 							currentTime += ((Leg) leg).getTravelTime().seconds();
@@ -249,10 +319,15 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 			case TransportMode.pt:
 				// checks if pt is being simulated before adding the trip
 				if (scenario.getConfig().transit().isUseTransit()) {
+					RoutingRequest routingRequest = DefaultRoutingRequest.of(
+						new LinkWrapperFacility(uamRoute.bestDestinationStation.getLocationLink()),
+					toFacility,
+					currentTime,
+					person,
+					new AttributesImpl());
+
 					@SuppressWarnings("unchecked")
-					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(
-							new LinkWrapperFacility(uamRoute.bestDestinationStation.getLocationLink()), toFacility,
-							currentTime, person);
+					List<PlanElement> legs = (List<PlanElement>) this.transitRouterDelegate.calcRoute(routingRequest);
 					trip.addAll(legs);
 				} else {
 					Leg uavPtEgressLeg = createTeleportationLeg(routeFactory, populationFactory,
@@ -269,57 +344,6 @@ public class UAMCachedIntermodalRoutingModule implements RoutingModule {
 		}
 
 		return trip;
-	}
 
-	private Leg createTeleportationLeg(RouteFactories routeFactory, PopulationFactory populationFactory,
-									   Link originLink, Link destinationLink, String mode, String actualMode) {
-
-		double speed = ((PlansCalcRouteConfigGroup) scenario.getConfig().getModules().get("planscalcroute"))
-				.getTeleportedModeSpeeds().get(mode);
-		Route route = routeFactory.createRoute(Route.class, originLink.getId(), destinationLink.getId());
-		double dist = CoordUtils.calcEuclideanDistance(originLink.getCoord(), destinationLink.getCoord());
-		route.setDistance(dist);
-		route.setTravelTime(dist / speed + 1.0);
-
-		final Leg teleportationleg = populationFactory.createLeg(actualMode);
-		teleportationleg.setTravelTime(dist / speed + 1.0);
-
-		teleportationleg.setRoute(route);
-		return teleportationleg;
-	}
-
-	private Leg createUAMLeg(Link originLink, Link destinationLink, UAMFlightLeg flightLeg,
-							 RouteFactories routeFactory, PopulationFactory populationFactory) {
-		return createNetworkLeg(UAMConstants.uam, originLink, destinationLink, flightLeg.links, routeFactory,
-				populationFactory, flightLeg.travelTime, flightLeg.distance);
-	}
-
-	private Leg createCarLeg(String mode, Link originLink, Link destinationLink, double departureTime, Person person,
-							 RouteFactories routeFactory, PopulationFactory populationFactory) {
-		Verify.verifyNotNull(originLink);
-		Verify.verifyNotNull(destinationLink);
-		Path path = plcpccar.calcLeastCostPath(originLink.getToNode(), destinationLink.getFromNode(), departureTime,
-				person, null);
-
-		double distance = 0;
-		for (Link link : path.links)
-			distance += link.getLength();
-
-		return createNetworkLeg(mode, originLink, destinationLink, path.links, routeFactory,
-				populationFactory, path.travelTime, distance);
-	}
-
-	private Leg createNetworkLeg(String mode, Link originLink, Link destinationLink, List<Link> links,
-								 RouteFactories routeFactory, PopulationFactory populationFactory, double travelTime,
-								 double distance) {
-		NetworkRoute route = routeFactory.createRoute(NetworkRoute.class, originLink.getId(), destinationLink.getId());
-		route.setLinkIds(originLink.getId(), NetworkUtils.getLinkIds(links), destinationLink.getId());
-		route.setTravelTime(travelTime);
-		route.setDistance(distance);
-
-		Leg leg = populationFactory.createLeg(mode);
-		leg.setTravelTime(travelTime);
-		leg.setRoute(route);
-		return leg;
 	}
 }

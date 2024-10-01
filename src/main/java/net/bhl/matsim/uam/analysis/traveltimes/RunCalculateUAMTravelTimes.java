@@ -14,7 +14,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.network.Link;
@@ -80,7 +81,7 @@ import net.bhl.matsim.uam.run.UAMConstants;
 
 public class RunCalculateUAMTravelTimes {
 	private static final int processes = Runtime.getRuntime().availableProcessors();
-	private static final Logger log = Logger.getLogger(RunCalculateUAMTravelTimes.class);
+	private static final Logger log = LogManager.getLogger(RunCalculateUAMTravelTimes.class);
 	private static ArrayBlockingQueue<LeastCostPathCalculator> carRouters = new ArrayBlockingQueue<>(processes);
 	private static ArrayBlockingQueue<TransitRouter> ptRouters = new ArrayBlockingQueue<>(processes);
 	private static ArrayBlockingQueue<LeastCostPathCalculator> uamRouters = new ArrayBlockingQueue<>(processes);
@@ -131,7 +132,7 @@ public class RunCalculateUAMTravelTimes {
 		TravelTimeCalculator ttc = builder.build();
 		TravelTime travelTime = ttc.getLinkTravelTimes();
 		TravelDisutility travelDisutility = TravelDisutilityUtils
-				.createFreespeedTravelTimeAndDisutility(config.planCalcScore());
+				.createFreespeedTravelTimeAndDisutility(config.scoring());
 
 		com.google.inject.Injector injector = Injector.createInjector(config, new AbstractModule() {
 			@Override

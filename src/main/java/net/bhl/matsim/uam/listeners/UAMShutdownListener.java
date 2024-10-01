@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigGroup;
 import org.matsim.core.controler.OutputDirectoryHierarchy;
@@ -25,7 +26,7 @@ import net.bhl.matsim.uam.config.UAMConfigGroup;
  */
 
 public class UAMShutdownListener implements ShutdownListener {
-	private static final Logger log = Logger.getLogger(UAMListener.class);
+	private static final Logger log = LogManager.getLogger(UAMListener.class);
 
 	@Inject
 	private OutputDirectoryHierarchy controlerIO;

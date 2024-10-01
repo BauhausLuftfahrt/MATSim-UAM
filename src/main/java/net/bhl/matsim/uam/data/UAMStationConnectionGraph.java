@@ -5,7 +5,8 @@ import static java.lang.Math.min;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.network.Link;
 import org.matsim.core.router.util.LeastCostPathCalculator;
@@ -26,7 +27,7 @@ import net.bhl.matsim.uam.run.UAMConstants;
  */
 public class UAMStationConnectionGraph {
 
-	final private static Logger log = Logger.getLogger(UAMStationConnectionGraph.class);
+	final private static Logger log = LogManager.getLogger(UAMStationConnectionGraph.class);
 	private Map<Id<UAMStation>, Map<Id<UAMStation>, UAMFlightLeg>> legs;
 
 	public UAMStationConnectionGraph(UAMManager uamManager,

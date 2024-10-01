@@ -72,7 +72,7 @@ public class RunCalculateUAMRoutes {
 	static public UAMStationConnectionGraph calculateRoutes(UAMXMLReader uamReader) {
 		TravelTime tt = new FreeSpeedTravelTime();
 		TravelDisutility td = TravelDisutilityUtils
-				.createFreespeedTravelTimeAndDisutility(ConfigUtils.createConfig().planCalcScore());
+				.createFreespeedTravelTimeAndDisutility(ConfigUtils.createConfig().scoring());
 
 		UAMStations uamStations = new UAMStations(uamReader.getStations(), uamReader.network);
 		UAMManager uamManager = new UAMManager(uamReader.network, uamStations, uamReader.getVehicles());

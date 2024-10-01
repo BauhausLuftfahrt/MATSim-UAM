@@ -11,11 +11,13 @@ import org.matsim.core.config.CommandLine;
 import org.matsim.core.config.CommandLine.ConfigurationException;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ActivityParams;
-import org.matsim.core.config.groups.PlanCalcScoreConfigGroup.ModeParams;
 import org.matsim.core.config.groups.QSimConfigGroup.StarttimeInterpretation;
+import org.matsim.core.config.groups.ScoringConfigGroup.ActivityParams;
+import org.matsim.core.config.groups.ScoringConfigGroup.ModeParams;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.scenario.ScenarioUtils;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * The RunUAMScenario program start a MATSim run including Urban Air Mobility
@@ -95,14 +97,14 @@ public class RunUAMScenario {
 		controler.getConfig().qsim().setSimStarttimeInterpretation(StarttimeInterpretation.onlyUseStarttime);
 		controler.getConfig().qsim().setStartTime(0.0);
 
-		DvrpConfigGroup.get(config).setNetworkModesAsString("uam");
-		config.planCalcScore().addModeParams(new ModeParams("access_uam_car"));
-		config.planCalcScore().addModeParams(new ModeParams("egress_uam_car"));
-		config.planCalcScore().addModeParams(new ModeParams("uam"));
-		config.planCalcScore()
+		DvrpConfigGroup.get(config).networkModes = ImmutableSet.of("uam");
+		config.scoring().addModeParams(new ModeParams("access_uam_car"));
+		config.scoring().addModeParams(new ModeParams("egress_uam_car"));
+		config.scoring().addModeParams(new ModeParams("uam"));
+		config.scoring()
 				.addActivityParams(new ActivityParams("uam_interaction").setScoringThisActivityAtAll(false));
 
-		config.controler().setWriteEventsInterval(1);
+		config.controller().setWriteEventsInterval(1);
 		
 		return controler;
 	}
