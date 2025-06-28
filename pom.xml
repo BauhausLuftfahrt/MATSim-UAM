@@ -30,7 +30,13 @@
 					<archive>
 						<manifest>
 							<mainClass>net.bhl.matsim.uam.run.RunUAMScenario</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
+						<manifestEntries>
+							<Specification-Vendor>matsim-uam</Specification-Vendor>
+							<Implementation-Vendor>matsim-uam</Implementation-Vendor>
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
