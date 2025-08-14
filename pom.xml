@@ -67,6 +67,10 @@
 			<name>Geotools repository</name>
 			<url>https://repo.osgeo.org/repository/release/</url>
 		</repository>
+		<repository>
+			<id>eth-ivt-uam</id>
+			<url>https://packagecloud.io/eth-ivt/uam/maven2</url>
+		</repository>
 	</repositories>
 
 	<dependencies>

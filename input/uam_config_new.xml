@@ -79,8 +79,8 @@
 			system defined in "global", and willbe converted back at export. If not specified, 
 			no conversion happens. -->
 		<param name="inputCRS" value="null" />
-		<param name="inputChangeEventsFile" value="input/base_case_network_change_events.xml.gz" />
-		<param name="inputNetworkFile" value="input/pt_network_schedule/network_pt_road.xml.gz" />
+		<param name="inputChangeEventsFile" value="base_case_network_change_events.xml.gz" />
+		<param name="inputNetworkFile" value="pt_network_schedule/network_pt_road.xml.gz" />
 		<param name="laneDefinitionsFile" value="null" />
 		<param name="timeVariantNetwork" value="true" />
 	</module>
@@ -370,7 +370,7 @@
 			no conversion happens. -->
 		<param name="inputCRS" value="null" />
 		<param name="inputPersonAttributesFile" value="null" />
-		<param name="inputPlansFile" value="input/matsimPlans_5_percent.xml.gz" />
+		<param name="inputPlansFile" value="matsimPlans_5_percent.xml.gz" />
 		<!-- Defines how routes are stored in memory. Currently supported: LinkNetworkRoute, 
 			CompressedNetworkRoute. -->
 		<param name="networkRouteType" value="LinkNetworkRoute" />
@@ -567,7 +567,7 @@
 			Defaults to 'pt'. -->
 		<param name="transitModes" value="pt" />
 		<!-- Input file containing the transit schedule to be simulated. -->
-		<param name="transitScheduleFile" value="input/pt_network_schedule/schedule.xml" />
+		<param name="transitScheduleFile" value="pt_network_schedule/schedule.xml" />
 		<!-- Optional input file containing additional attributes for transit stop 
 			facilities, stored as ObjectAttributes. -->
 		<param name="transitStopsAttributesFile" value="null" />
@@ -576,7 +576,7 @@
 		<param name="useTransit" value="true" />
 		<!-- Input file containing the vehicles used by the departures in the transit 
 			schedule. -->
-		<param name="vehiclesFile" value="input/pt_network_schedule/vehicles.xml" />
+		<param name="vehiclesFile" value="pt_network_schedule/vehicles.xml" />
 	</module>
 	<module name="transitRouter">
 		<!-- additional time the router allocates when a line switch happens. Can 
@@ -598,7 +598,7 @@
 	</module>
 
 	<module name="uam">
-		<param name="inputFile" value="uam_vehicles.xml.gz" />
+		<param name="inputFile" value="/home/shahriar-iqbal-zame/IdeaProjects/matsim_uam/examples/uam-test-scenario/uam_vehicles.xml.gz" />
 		<param name="routingStrategy" value="MINTRAVELTIME" />
 		<param name="searchRadius" value="9999.0" />
 		<param name="accessEgressModes" value="walk,car" />

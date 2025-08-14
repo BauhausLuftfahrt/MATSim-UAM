@@ -1,3 +1,2 @@
 vehicle_type,vehicleperstation,starttime,endtime,range,capacity,cruisespeed,verticalspeed,boardingtime,deboardingtime,turnaroundtime,maximumCharge,energyConsumptionHorizontal,energyConsumptionVertical
-S,2,00:00:00,24:00:00,60000,2,33.3,10,30,30,120,999,0,0
-
+S,999,00:00:00,30:00:00,9999999999,2,89.44,10,240,240,120,999,0,0

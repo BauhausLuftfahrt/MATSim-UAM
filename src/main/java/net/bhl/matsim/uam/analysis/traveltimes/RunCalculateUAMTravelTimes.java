@@ -110,7 +110,9 @@ public class RunCalculateUAMTravelTimes {
 		modes.add(UAMConstants.uam);
 		Network networkUAM = NetworkUtils.createNetwork();
 		filter.filter(networkUAM, modes);
-		Network networkCar = NetworkUtils.createNetwork();
+
+
+		Network networkCar = NetworkUtils.createNetwork(config.network());
 		Set<String> modesCar = new HashSet<>();
 		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);

@@ -71,7 +71,17 @@ public class RunCalculateCarTravelTimes {
 
 		// CREATE CAR NETWORK
 		TransportModeNetworkFilter filter = new TransportModeNetworkFilter(network);
-		Network networkCar = NetworkUtils.createNetwork();
+
+		//Old line: start
+		// Network networkCar = NetworkUtils.createNetwork();
+		//Old line: end
+
+		// New addition - Start = To have time variant network.
+		// ⬇️ Use the config-aware creator so the factory is time-variant
+		Network networkCar = NetworkUtils.createNetwork(config.network());
+		// New addition - End
+
+
 		Set<String> modesCar = new HashSet<>();
 		modesCar.add(TransportMode.car);
 		filter.filter(networkCar, modesCar);
